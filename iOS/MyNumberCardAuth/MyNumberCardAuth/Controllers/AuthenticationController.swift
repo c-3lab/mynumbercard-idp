@@ -12,6 +12,7 @@ class AuthenticationController: ObservableObject {
     @Published var viewState:ShowView = .UserVerificationView
     @Published var runMode:Mode = .Login
     @Published var isAlert:Bool = false
+    @Published var isLinkAlert:Bool = false
     @Published var messageTitle:String = ""
     @Published var messageString:String = ""
     @Published var isErrorOpenURL:Bool = false
@@ -23,8 +24,11 @@ class AuthenticationController: ObservableObject {
     @Published var termsOfUseURL:String = Bundle.main.object(forInfoDictionaryKey: "TermsOfServiceURL") as! String
     @Published var privacyPolicyURL:String = Bundle.main.object(forInfoDictionaryKey: "PrivacyPolicyURL") as! String
     @Published var protectionPolicyURL:String = Bundle.main.object(forInfoDictionaryKey: "ProtectionPolicyURL") as! String
+    // 問い合わせURL
+    @Published var inquiryURL:String = Bundle.main.object(forInfoDictionaryKey: "InquiryURL") as! String
     
     public func clear(){
+        self.isLinkAlert = false
         self.isAlert = false
         self.messageTitle = ""
         self.messageString = ""

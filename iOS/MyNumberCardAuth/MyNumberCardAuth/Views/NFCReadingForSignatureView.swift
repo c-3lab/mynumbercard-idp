@@ -47,25 +47,34 @@ struct NFCReadingForSignatureView: View {
                         controller.inputPIN = String(controller.inputPIN.prefix(16))
                     }
                 }
+                .alert(isPresented:$authenticationController.isAlert){
+                    Alert(title:Text(self.authenticationController.messageTitle),message:Text(self.authenticationController.messageString),dismissButton: .default(Text("OK"),action: {
+                            if(self.authenticationController.isErrorOpenURL == true){
+                                if (self.authenticationController.openURL.isEmpty == false)
+                                {
+                                    if let openURL = URL(string:self.authenticationController.openURL){
+                                        UIApplication.shared.open(openURL)
+                                    };
+                                }
+                            }
+                    }))
+                }
             
             Button(NSLocalizedString("common01-002", comment: "読み取り開始")) {
                 if controller.isEnableButton() {
                     self.authenticationController.readStart(pin: controller.inputPIN, nonce: controller.nonce ,actionURL: controller.actionURL)
                 }
             }.modifier(SmallButtonModifier(color: controller.toggleColor()))
-            
-        }
-        .alert(isPresented:$authenticationController.isAlert){
-            Alert(title:Text(self.authenticationController.messageTitle),message:Text(self.authenticationController.messageString),dismissButton: .default(Text("OK"),action: {
-                    if(self.authenticationController.isErrorOpenURL == true){
-                        if (self.authenticationController.openURL.isEmpty == false)
+            .alert(isPresented:self.$authenticationController.isLinkAlert){
+                    Alert(title:Text(self.authenticationController.messageTitle),message:Text(self.authenticationController.messageString),primaryButton: .default(Text(NSLocalizedString("e03-005", comment: "問い合わせページ")),action: {
+                        if (self.authenticationController.inquiryURL.isEmpty == false)
                         {
-                            if let openURL = URL(string:self.authenticationController.openURL){
+                            if let openURL = URL(string:self.authenticationController.inquiryURL){
                                 UIApplication.shared.open(openURL)
                             };
                         }
-                    }
-            }))
+                    }),secondaryButton: .default(Text("OK"),action: {})
+                    )}
         }
     }
 }

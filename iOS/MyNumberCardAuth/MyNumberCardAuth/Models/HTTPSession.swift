@@ -57,6 +57,7 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate{
                 if(httpResponse.statusCode == 404){
                     DispatchQueue.main.async {
                         self.authenticationController.isAlert = true
+                        self.authenticationController.isErrorOpenURL = true
                         self.authenticationController.messageTitle = NSLocalizedString("e02-001", comment: "認証失敗")
                         self.authenticationController.messageString = NSLocalizedString("e02-002", comment: "ユーザー未登録のため、利用者登録を行ってください。")
                     }
@@ -64,13 +65,12 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate{
 
                 if(httpResponse.statusCode == 401){
                     DispatchQueue.main.async {
-                        self.authenticationController.isAlert = true
-                        self.authenticationController.isErrorOpenURL = true
+                        self.authenticationController.isLinkAlert = true
                         self.authenticationController.messageTitle = NSLocalizedString("e03-001", comment: "認証失敗")
                         if(self.authenticationController.runMode == .Login){
-                            self.authenticationController.messageString = NSLocalizedString("e03-002", comment: "利用者証明用電子証明書が失効しています。")
+                            self.authenticationController.messageString = NSLocalizedString("e03-002", comment: "利用者証明用電子証明書が失効しています。") + NSLocalizedString("e03-004", comment: "お住まいの市区町村の窓口へお問い合わせください。")
                         }else{
-                            self.authenticationController.messageString = NSLocalizedString("e03-003", comment: "署名用電子証明書が失効しています。")
+                            self.authenticationController.messageString = NSLocalizedString("e03-003", comment: "署名用電子証明書が失効しています。") + NSLocalizedString("e03-004", comment: "お住まいの市区町村の窓口へお問い合わせください。")
                         }
                     }
                 }

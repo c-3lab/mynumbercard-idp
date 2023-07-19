@@ -32,6 +32,8 @@
 "e03-001" = "Authentication failure";
 "e03-002" = "The electronic certificate for user certification has been revoked.";
 "e03-003" = "The electronic signature certificate has expired.";
+"e03-004" = "Please inquire at the window of your municipality.";
+"e03-005" = "Contact page";
 "e04-001" = "Registration failed";
 "e04-002" = "Since the user is already registered, please log in";
 "e05-001" = "Reloading My Number Card";

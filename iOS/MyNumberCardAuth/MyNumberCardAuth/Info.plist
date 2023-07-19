@@ -13,6 +13,8 @@
 			<array/>
 		</dict>
 	</array>
+	<key>InquiryURL</key>
+	<string>https://www.kojinbango-card.go.jp/contact/</string>
 	<key>PrivacyPolicyURL</key>
 	<string>https://native-app.abelsoft.in-private.dev/open-id/privacy-policy.html</string>
 	<key>ProtectionPolicyURL</key>
