@@ -59,8 +59,8 @@ class AuthenticationController: ObservableObject {
     }
     
     public func setOpenURL(queryDict : [String: String]){
-        if(((queryDict["errorURL"]) != nil)){
-            if let url = queryDict["errorURL"]{
+        if(((queryDict["error_url"]) != nil)){
+            if let url = queryDict["error_url"]{
                 self.openURL = url
             }
         }
