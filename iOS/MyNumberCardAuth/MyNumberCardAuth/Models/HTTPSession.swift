@@ -98,17 +98,7 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate{
                     }
                 }
                 
-                // EC2版(認証APIが製造された場合は不要になる、デモ操作用の処理)
                 if let redirectURL = httpResponse.allHeaderFields["Location"] as? String,
-                   let newURL = URL(string: redirectURL) {
-                    print("リダイレクト先のURL: \(newURL)")
-                    DispatchQueue.main.async {
-                        UIApplication.shared.open(newURL)
-                    }
-                }
-                
-                // ブラウザでリダイレクトを表示
-                if let redirectURL = httpResponse.allHeaderFields["redirect_uri"] as? String,
                    let newURL = URL(string: redirectURL) {
                     print("リダイレクト先のURL: \(newURL)")
                     DispatchQueue.main.async {
