@@ -1,0 +1,9 @@
+{
+    "themes": [
+	{
+            "name" : "call-native-app",
+            "types": [ "login" ]
+	}
+    ]
+}
+

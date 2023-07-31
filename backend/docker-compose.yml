@@ -1,0 +1,76 @@
+version: '3.6'
+services:
+  keycloak:
+    build: ./keycloak
+    hostname: keycloak
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./keycloak/data:/opt/keycloak/data
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - TZ=Asia/Tokyo
+    command:
+      - "start-dev"
+  dummy-platform:
+    image: nginx:1.23.3
+    hostname: dummy-platform
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Tokyo
+    volumes:
+      # If you want to ssl port enable, modify ssl.conf file and tls directory comment out to enable.
+      # And, you need certificate and private key put on tls/certs, tls/private directory.
+      - ./examples/dummy-platform/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+      #- ./dummy-platform/nginx/conf.d/ssl.conf:/etc/nginx/conf.d/ssl.conf
+      #- ./nginx/tls/certs:/etc/pki/tls/certs:ro
+      #- ./nginx/tls/private:/etc/pki/tls/private:ro
+      - ./examples/dummy-platform/nginx/verify:/usr/share/nginx/html/verify
+    expose:
+      # If you want to ssl port enable, modify "443" comment out to enable.
+      - "80"
+      #- "443"
+    networks:
+      default:
+        aliases:
+          - dummy-platform
+  web-service:
+    build: examples/sample-web-service/docker
+    hostname: web-service
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Tokyo
+    ports:
+      - "3000:3000"
+    networks:
+      default:
+        aliases:
+          - web-app
+  native-app-settings:
+    image: nginx:1.23.3
+    hostname: native-app-settings
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Tokyo
+    volumes:
+      # [Notice] You need SSL/TLS enabled!
+      # Running smartphone application using http scheme does not work in SSL/TLS disable environment.
+      # And, you must 443/tcp port open allow access from google and apple CDN.
+
+      # If you want to ssl port enable, modify ssl.conf file and tls directory comment out to enable.
+      # And, you need certificate and private key put on tls/certs, tls/private directory.
+      - ./native-app-settings/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+      #- ./native-app-settings/nginx/conf.d/ssl.conf:/etc/nginx/conf.d/ssl.conf
+      #- ./native-app-settings/nginx/tls/certs:/etc/pki/tls/certs:ro
+      #- ./native-app-settings/nginx/tls/private:/etc/pki/tls/private:ro
+      - ./native-app-settings/nginx/html:/srv/html
+    ports:
+      # If you want to ssl port enable, modify "443:443" comment out to enable.
+      - "80:80"
+      #- "443:443"
+networks:
+  default:
+    external: false
+    name: keycloak_network
