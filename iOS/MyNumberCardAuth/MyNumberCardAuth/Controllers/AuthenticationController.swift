@@ -39,10 +39,10 @@ class AuthenticationController: ObservableObject {
         let authenticationManager = AuthenticationManager(authenticationController: self)
         switch(self.viewState){
         case .SignatureView:
-            authenticationManager.authenticateForSignature(pin: pin, nonce: nonce ,actionURL: actionURL)
+            authenticationManager.authenticateForSignature(pin: pin, nonce: nonce, actionURL: actionURL)
             break;
         case .UserVerificationView:
-            authenticationManager.authenticate(pin: pin, nonce: nonce ,actionURL: actionURL)
+            authenticationManager.authenticate(pin: pin, nonce: nonce, actionURL: actionURL)
             break
         case.ExplanationView:
             break
