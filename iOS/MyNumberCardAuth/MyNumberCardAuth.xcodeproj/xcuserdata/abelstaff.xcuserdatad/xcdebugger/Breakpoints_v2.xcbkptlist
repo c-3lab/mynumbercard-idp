@@ -14,8 +14,8 @@
             filePath = "MyNumberCardAuth/Models/AuthenticationManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "87"
-            endingLineNumber = "87"
+            startingLineNumber = "73"
+            endingLineNumber = "73"
             landmarkName = "computeDigitalSignatureForUserAuthentication(userAuthenticationPIN:dataToSign:)"
             landmarkType = "7">
             <Locations>
@@ -203,8 +203,8 @@
             filePath = "MyNumberCardAuth/Models/AuthenticationManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "77"
-            endingLineNumber = "77"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
             landmarkName = "computeDigitalSignatureForUserAuthentication(userAuthenticationPIN:dataToSign:)"
             landmarkType = "7">
             <Locations>
@@ -267,8 +267,8 @@
             filePath = "MyNumberCardAuth/Models/AuthenticationManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "94"
-            endingLineNumber = "94"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
             landmarkName = "computeDigitalSignatureForSignature(SignaturePIN:dataToSign:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -283,8 +283,8 @@
             filePath = "MyNumberCardAuth/Models/AuthenticationManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "95"
-            endingLineNumber = "95"
+            startingLineNumber = "81"
+            endingLineNumber = "81"
             landmarkName = "computeDigitalSignatureForSignature(SignaturePIN:dataToSign:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -423,8 +423,8 @@
             filePath = "MyNumberCardAuth/Models/AuthenticationManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "167"
-            endingLineNumber = "167"
+            startingLineNumber = "148"
+            endingLineNumber = "148"
             landmarkName = "sendVerifySignatureRequest(signature:x509File:actionURL:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -439,8 +439,8 @@
             filePath = "MyNumberCardAuth/Models/AuthenticationManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "131"
-            endingLineNumber = "131"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
             landmarkName = "sendVerifySignatureRequest(signature:x509File:actionURL:)"
             landmarkType = "7">
             <Locations>
@@ -800,8 +800,8 @@
             filePath = "MyNumberCardAuth/Models/AuthenticationManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "164"
-            endingLineNumber = "164"
+            startingLineNumber = "145"
+            endingLineNumber = "145"
             landmarkName = "sendVerifySignatureRequest(signature:x509File:actionURL:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -816,8 +816,8 @@
             filePath = "MyNumberCardAuth/Models/AuthenticationManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "165"
-            endingLineNumber = "165"
+            startingLineNumber = "146"
+            endingLineNumber = "146"
             landmarkName = "sendVerifySignatureRequest(signature:x509File:actionURL:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -874,23 +874,55 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "27E1D4BC-3E7D-4F22-B14B-47C0DED4E57E"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MyNumberCardAuth/Controllers/AuthenticationController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
+            startingLineNumber = "66"
+            endingLineNumber = "66"
             landmarkName = "setOpenURL(queryDict:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "27E1D4BC-3E7D-4F22-B14B-47C0DED4E57E - 966292a95a1103d7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MyNumberCardAuth.AuthenticationController.setOpenURL(queryDict: Swift.Dictionary&lt;Swift.String, Swift.String&gt;) -&gt; ()"
+                  moduleName = "MyNumberCardAuth"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abelstaff/Desktop/mynumbercard-idp/iOS/MyNumberCardAuth/MyNumberCardAuth/Controllers/AuthenticationController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "66"
+                  endingLineNumber = "66"
+                  offsetFromSymbolStart = "464">
+               </Location>
+               <Location
+                  uuid = "27E1D4BC-3E7D-4F22-B14B-47C0DED4E57E - 966292a95a1103d7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MyNumberCardAuth.AuthenticationController.setOpenURL(queryDict: Swift.Dictionary&lt;Swift.String, Swift.String&gt;) -&gt; ()"
+                  moduleName = "MyNumberCardAuth"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abelstaff/Desktop/mynumbercard-idp/iOS/MyNumberCardAuth/MyNumberCardAuth/Controllers/AuthenticationController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "66"
+                  endingLineNumber = "66"
+                  offsetFromSymbolStart = "700">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "6DE19474-9F59-47B6-9785-40191F9B7575"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MyNumberCardAuth/Models/HTTPSession.swift"
@@ -995,6 +1027,22 @@
             startingLineNumber = "42"
             endingLineNumber = "42"
             landmarkName = "readStart(pin:nonce:actionURL:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "52C46164-3952-496D-8F80-4204B25DC161"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MyNumberCardAuth/Controllers/AuthenticationController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "67"
+            endingLineNumber = "67"
+            landmarkName = "setOpenURL(queryDict:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

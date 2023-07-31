@@ -28,13 +28,13 @@
 "e01-001" = "Failure";
 "e01-002" = "An unexpected error has occurred.";
 "e02-001" = "Authentication failure";
-"e02-002" = "Since you have not registered as a user, please register as a user";
+"e02-002" = "Since you have not registered as a user, please register as a user.";
 "e03-001" = "Authentication failure";
 "e03-002" = "The electronic certificate for user certification has been revoked.";
 "e03-003" = "The electronic signature certificate has expired.";
 "e03-004" = "Please contact the window of your municipality, or contact the window of the My Number Card Comprehensive Site from the link below.";
 "e03-005" = "Contact page";
 "e04-001" = "Registration failed";
-"e04-002" = "Since the user is already registered, please log in";
+"e04-002" = "Since the user is already registered, please log in.";
 "e05-001" = "Reloading My Number Card";
 "e05-002" = "I need to change my registration information. Please read the signature digital certificate to make changes.";

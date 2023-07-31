@@ -88,10 +88,8 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate{
                 if(httpResponse.statusCode == 410 )
                 {
                     DispatchQueue.main.async {
-                        
                         self.authenticationController.viewState = .SignatureView
                         self.authenticationController.runMode = .Replacement
-                        
                         self.authenticationController.isAlert = true
                         self.authenticationController.messageTitle = NSLocalizedString("e05-001", comment: "マイナンバーカードの再読み込み")
                         self.authenticationController.messageString = NSLocalizedString("e05-002", comment: "登録情報の変更が必要です。変更を行うため署名用電子証明書の読み取りを行ってください。")

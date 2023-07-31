@@ -79,7 +79,7 @@ public class IndividualNumberReader: MiFareReader {
     
     /// マイナンバーカードで署名用電子署名を生成する
     /// - Parameters:
-    ///   - userAuthenticationPIN: 署名用秘密鍵用暗証番号
+    ///   - SignaturePIN: 署名用秘密鍵用暗証番号
     ///   - dataToSign: 署名対象データ
     public func computeDigitalSignatureForSignature(SignaturePIN: String = "",dataToSign: [UInt8]) {
         self.individualNumberCardExecuteType = .computeDigitalSignatureForSignature

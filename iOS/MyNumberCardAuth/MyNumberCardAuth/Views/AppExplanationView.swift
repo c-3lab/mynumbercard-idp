@@ -30,7 +30,6 @@ struct AppExplanationView: View {
                     {
                         UIApplication.shared.open(openURL)
                     }
-                    
                 }
             }.modifier(SmallButtonModifier(color: self.authenticationController.toggleColor(url: self.authenticationController.termsOfUseURL)))
             
@@ -40,7 +39,6 @@ struct AppExplanationView: View {
                     {
                         UIApplication.shared.open(openURL)
                     }
-                    
                 }
             }.modifier(SmallButtonModifier(color: self.authenticationController.toggleColor(url: self.authenticationController.privacyPolicyURL)))
 
@@ -50,7 +48,6 @@ struct AppExplanationView: View {
                     {
                         UIApplication.shared.open(openURL)
                     }
-                    
                 }
             }.modifier(SmallButtonModifier(color: self.authenticationController.toggleColor(url: self.authenticationController.protectionPolicyURL)))
         }

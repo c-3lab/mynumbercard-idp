@@ -17,7 +17,7 @@ class AuthenticationController: ObservableObject {
     @Published var messageString:String = ""
     @Published var isErrorOpenURL:Bool = false
     @Published var nonceHash:String = ""
-    @Published var queryDict : [String: String]?
+    @Published var queryDict:[String: String]?
     @Published var openURL:String = ""
     
     // 利用規約/プライバシーポリシー/個人情報保護方針URL
@@ -35,7 +35,7 @@ class AuthenticationController: ObservableObject {
         self.isErrorOpenURL = false
     }
     
-    public func readStart(pin : String,nonce : String,actionURL : String){
+    public func readStart(pin: String, nonce: String, actionURL: String){
         let authenticationManager = AuthenticationManager(authenticationController: self)
         switch(self.viewState){
         case .SignatureView:
@@ -50,7 +50,7 @@ class AuthenticationController: ObservableObject {
         
     }
     
-    public func toggleColor(url:String) -> Color{
+    public func toggleColor(url: String) -> Color{
         if (url.isEmpty == false) {
             return Color(UIColor.blue)
         }else{
@@ -59,10 +59,11 @@ class AuthenticationController: ObservableObject {
     }
     
     public func
-    setOpenURL(queryDict : [String: String]){
+    setOpenURL(queryDict: [String : String]){
         if(((queryDict["error_url"]) != nil)){
             if let url = queryDict["error_url"]{
-                self.openURL = url
+                let replaceUrl = url.replacingOccurrences(of: "&amp;", with: "&")
+                self.openURL = replaceUrl
             }
         }
     }
