@@ -1,0 +1,31 @@
+<resources>
+    <string name="about_this_app">About this app</string>
+    <string name="terms_of_use">Terms Of Service</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="person_Info_protection_policy">Personal Data Protection Policy</string>
+    <string name="about_this_app_detail">It is an application for logging in using a browser. Start it from your browser and use it.</string>
+    <string name="password">password</string>
+    <string name="start_reading">start reading</string>
+    <string name="screen_title">My number card \n authentication</string>
+    <string name="description_first_user_verification">Enter the password (4-digit number) of the electronic</string>
+    <string name="digital_cert_for_user_verification">certificate for user verification</string>
+    <string name="password_input_for_user_verification">of My Number Card and press the start reading button</string>
+    <string name="description_first_sign">Enter the password (6 to 16 alphanumeric characters) of the electronic</string>
+    <string name="digital_cert_for_sign">certificate for signature</string>
+    <string name="password_input_for_sign">of My Number Card and press the start reading button</string>
+    <string name="failure">Failure</string>
+    <string name="failure_description">An unexpected error has occurred.</string>
+    <string name="auth_failure">Authentication failure</string>
+    <string name="auth_failure_description">Since you have not registered as a user, please register as a user</string>
+    <string name="user_cert_lapse">The electronic certificate for user certification has been revoked.</string>
+    <string name="sign_cert_lapse">The electronic signature certificate has expired.</string>
+    <string name="contact_page">Contact page</string>
+    <string name="lapse_description">Please contact the window of your municipality, or contact the window of the My Number Card Comprehensive Site from the link below.</string>
+    <string name="registration_failure">Registration failed</string>
+    <string name="registration_failure_description">Since the user is already registered, please log in</string>
+    <string name="my_number_card_reload">Reloading My Number Card</string>
+    <string name="my_number_card_reload_description">I need to change my registration information. Please read the signature digital certificate to make changes.</string>
+    <string name="in_correct_pin">The password for my number card is invalid.</string>
+    <string name="try_count_Is_not_left">The number of password attempts for my number card has exceeded the upper limit.</string>
+    <string name="my_number_card_read_failure">Failed to read my number card.</string>
+</resources>
