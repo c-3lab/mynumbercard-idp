@@ -119,8 +119,6 @@ fun CertReadScreen(
 
             viewModel.myNumberCardAuth(reader, inputPin)
 
-            Log.d(logTag, "myNumberCardAuth owata")
-
             nfcAdapter?.disableReaderMode(activity)
 
             try {
@@ -188,9 +186,7 @@ fun CertReadScreen(
         viewModel.setState(KeycloakState.Loading)
     } else if (receivedState.keycloakState is KeycloakState.Loading) {
         // 何もしない
-        Log.d(logTag, "receivedState.keycloakState is KeycloakState.Loading")
     } else {
-        Log.d(logTag, "receivedState.keycloakState:${receivedState.keycloakState}")
         // ViewModelの値でエラーメッセージを表示
         val errorDialogDetail = createErrorDialogDetail(
             receivedState.keycloakState,
