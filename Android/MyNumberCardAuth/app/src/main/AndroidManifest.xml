@@ -31,7 +31,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="https"
-                    android:host="native-app.mynumber.abelsoft.co.jp" />
+                    android:host="native-app.example.com" />
             </intent-filter>
         </activity>
     </application>
