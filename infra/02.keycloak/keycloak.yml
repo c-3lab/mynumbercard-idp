@@ -1,0 +1,53 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: keycloak
+spec:
+  instances: 3
+  image: dkr.mynumbercardidp.example.com/keycloak:latest
+  db:
+    vendor: postgres
+    host: keycloak.postgresql.mynumbercardidp.example.com
+    usernameSecret:
+      name: keycloak-db-secret
+      key: username
+    passwordSecret:
+      name: keycloak-db-secret
+      key: password
+  http:
+    httpEnabled: true
+  ingress:
+    enabled: false
+  hostname:
+    hostname: keycloak.mynumbercardidp.example.com
+  unsupported:
+    podTemplate:
+      spec:
+        containers:
+        - resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          env:
+          - name: TZ
+            value: Asia/Tokyo
+          readinessProbe:
+            failureThreshold: 250
+            httpGet:
+              path: /realms/master
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            failureThreshold: 150
+            httpGet:
+              path: /realms/master
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1

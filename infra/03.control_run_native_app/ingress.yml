@@ -1,0 +1,67 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "web-service"
+  namespace: "default"
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-northeast-1:123456789000:certificate/00000000-0000-0000-0000-000000000000,arn:aws:acm:ap-northeast-1:123456789000:certificate/12345678-90ab-cdef-1234-567890abcdef
+    alb.ingress.kubernetes.io/actions.admin-path: >
+      {"type":"forward","forwardConfig":{"targetGroups":[{"serviceName":"kc-service","servicePort":"80"}]}}
+    alb.ingress.kubernetes.io/conditions.admin-path: >
+      [{"field":"source-ip","sourceIpConfig":{"values":["Keycloak管理コンソールへのアクセスを許可するIPアドレス1", "IPアドレス2"]}}]
+  labels:
+    app: keycloak
+spec:
+  rules:
+  - host: native-app.mynumbercardidp.example.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: app-link
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  - host: keycloak.mynumbercardidp.example.com
+    http:
+      paths:
+      - path: /js/
+        pathType: Prefix
+        backend:
+          service:
+            name: kc-service
+            port:
+              number: 80
+      - path: /realms/
+        pathType: Prefix
+        backend:
+          service:
+            name: kc-service
+            port:
+              number: 80
+      - path: /resources/
+        pathType: Prefix
+        backend:
+          service:
+            name: kc-service
+            port:
+              number: 80
+      - path: /robots.txt
+        pathType: Exact
+        backend:
+          service:
+            name: kc-service
+            port:
+              number: 80
+      - path: /admin
+        pathType: Prefix
+        backend:
+          service:
+            name: admin-path
+            port:
+              name: use-annotation
