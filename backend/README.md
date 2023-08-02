@@ -46,12 +46,12 @@
    ```
 7. コンテナイメージをビルドします。  
    ```
-   docker compose build
+   docker compose -f docker-compose.yml -f docker-compose-examples.yml build
    ```
 8. Dockerコンテナを起動し、コンテナのログを確認します。  
    ```
-   docker compose up -d
-   docker compose logs -f
+   docker compose -f docker-compose.yml -f docker-compose-examples.yml up -d
+   docker compose -f docker-compose.yml -f docker-compose-examples.yml logs -f
    ```
 9. 以下のログが表示されるまで待機します。  
    `WARN [org.keycloak.quarkus.runtime.KeycloakMain] (main) Running the server in development mode. DO NOT use this configuration in production.`
@@ -172,7 +172,7 @@
    ```
 3. Docker コンテナを停止します。  
    ```
-   docker compose down
+   docker compose -f docker-compose.yml -f docker-compose-examples.yml down
    ```
 
 ## Keycloak データの初期化（root権限が必要）

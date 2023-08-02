@@ -1,0 +1,640 @@
+openapi: 3.0.0
+info:
+  version: 0.0.1
+  title: プラットフォームAPIリスト
+  description: プラットフォーム事業者が提供するAPIリスト
+servers:
+- url: /
+tags:
+  - name: Authentication
+    description: 本人確認に利用されるプラットフォーム事業者が提供するAPI
+paths:
+  /verify/registration:
+    post:
+      summary: マイナンバーカードの情報を元に本人確認及び登録を行う
+      description: |-
+        ### 検証処理  
+        マイナンバーカードの署名用電子証明書の秘密鍵によって署名された文字列がnonceと一致するか署名用電子証明書の公開鍵で検証処理をする
+
+        ### 処理が成功した場合  
+        ユーザーのユニークIDを発行し基本4情報を返す
+
+        ### 検証処理が失敗、または署名用電子証明書が失効している場合  
+        401エラーを返す
+
+        ### ユーザー重複登録の場合  
+        409エラーを返す
+      operationId: registration
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignVerificationRequestByDigitalSignature'
+            example:
+              requestInfo:
+                transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                recipient: JPKI
+                sender: ID123
+                ts: 2023-06-16 17:30:00.123
+              encryptedDigitalSignatureCertificate: eyJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAtMjU2In0.O01BFr_XxGzKEUb_Z9vQOW3DX2cQFxojrRy2JyM5_nqKnrpAa0rvcPI_ViT2PdPRogBwjHGRDM2uNLd1BberKQlaZYuqPGXnpzDQjosF0tQlgdtY3uEZUMT-9WPP8jCxxQg0AGIm4abkp1cgzAWBQzm1QYL8fwaz16MS48ExRz41dLhA0aEWE4e7TYzjrfaK8M4wIUlQCFIl-wS1N3U8W2XeUc9MLYGmHft_Rd9KJs1c-9KKdUQf6tEzJ92TGEC7TRZX4hGdtszIq3GGGBQaW8P9jPozqaDdrikF18D0btRHNf3_57sR_CPEGYX0O4mY775CLWqB4Y1adNn-fZ0xoA.ln7IYZDF9TdBIK6i.ZhQ3Q5TY827KFQw8DdRRzQVJVFdIE03B6AxMNZ1sQIjlUB4QUxg-UYqjPJESPUmFsODeshGWLa5t4tUri5j6uC4mFDbkbemPmNKIQiY5m8yc.5KKhrggMRm7ydVRQKJaT0g
+              applicantData: c7fdd0dc199fd75a790a1f74183a2b34906f1efae4a0419333daa729f5358f5c
+              sign: YzdmZGQwZGMxOTlmZDc1YTc5MGExZjc0MTgzYTJiMzQ5MDZmMWVmYWU0YTA0MTkzMzNkYWE3MjlmNTM1OGY1Yw==
+      responses:
+        '200':
+          description: 検証処理が成功した
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: SUCCESS
+                applicantId: JPKI202306169f03fb0acb9a4cc2971c9fa144586ba3
+                identityInfo:
+                  uniqueId: 7910ae5f-a6c1-4117-b890-fc2df2db63f1
+                  name: 佐藤 太郎
+                  dateOfBirth: 1970-01-31
+                  gender: "0"
+                  address: 東京都千代田区千代田1-1
+        '400':
+          description: |-
+            リクエストに問題が発生した  
+            原因：リクエスト内容が正しくない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: FAILED
+                  errorInfo:
+                    reason: 400 Bad Request
+                    message: リクエスト失敗
+        '401':
+          description: |-
+            署名の検証に失敗した  
+            原因：本人確認ができない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: FAILED
+                  errorInfo:
+                    reason: 401 Unauthorized
+                    message: クライアント認証失敗
+        '409':
+          description: |-
+            重複登録で問題が発生した  
+            原因：登録済みのユーザーの登録処理が再度実行される
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: FAILED
+                  errorInfo:
+                    reason: 409 Conflict
+                    message: ユーザーの重複登録
+        '500':
+          description: |-
+            予期せぬエラーが発生した  
+            原因：サーバーに問題がある
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: FAILED
+                  errorInfo:
+                    reason: 500 Internal Server Error
+                    message: システム異常
+        '503':
+          description: |-
+            サービス利用不可エラーが発生した  
+            原因：サーバーが混んでいるまたはメンテナンス中等
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: FAILED
+                  errorInfo:
+                    reason: 503 Service Unavailable
+                    message: システム利用不可
+      deprecated: false
+  /verify/login:
+    post:
+      summary: マイナンバーカードの情報を元に本人確認及び失効確認を行う
+      description: |-
+        ### 検証処理  
+        マイナンバーカードの利用者証明用電子証明書の秘密鍵によって署名された文字列がnonceと一致するか利用者証明用電子証明書の公開鍵で検証処理をする
+
+        ### 処理が成功した場合  
+        ユーザーのユニークIDと基本4情報を返す
+
+        ### 検証処理が失敗、または利用者証明用電子証明書が失効している場合  
+        401エラーを返す
+
+        ### ユーザー未登録の場合  
+        404エラーを返す
+
+        ### プラットフォームが保持している署名用電子証明書が失効している場合  
+        410エラーを返す
+      operationId: verifyLogin
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignVerificationRequestByUserAuthentication'
+            example:
+              requestInfo:
+                transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                recipient: JPKI
+                sender: ID123
+                ts: 2023-06-16 17:30:00.123
+              userAuthenticationCertificate: -----BEGIN CERTIFICATE----\nMIIljhalaHJakkSifksSSDlsnskDkJLlj....\n-----END CERTIFICATE----
+              applicantData: c7fdd0dc199fd75a790a1f74183a2b34906f1efae4a0419333daa729f5358f5c
+              sign: YzdmZGQwZGMxOTlmZDc1YTc5MGExZjc0MTgzYTJiMzQ5MDZmMWVmYWU0YTA0MTkzMzNkYWE3MjlmNTM1OGY1Yw==
+      responses:
+        '200':
+          description: 検証処理が成功した
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: SUCCESS
+                applicantId: JPKI202306169f03fb0acb9a4cc2971c9fa144586ba3
+                identityInfo:
+                  uniqueId: 7910ae5f-a6c1-4117-b890-fc2df2db63f1
+                  name: 佐藤 太郎
+                  dateOfBirth: 1970-01-31
+                  gender: "0"
+                  address: 東京都千代田区千代田1-1
+        '400':
+          description: |-
+            リクエストに問題が発生した  
+            原因：リクエスト内容が正しくない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: FAILED
+                  errorInfo:
+                    reason: 400 Bad Request
+                    message: リクエスト失敗
+        '401':
+          description: |-
+            署名の検証に失敗した  
+            原因：本人確認ができない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: FAILED
+                  errorInfo:
+                    reason: 401 Unauthorized
+                    message: クライアント認証失敗
+        '404':
+          description: |-
+            本人確認に失敗した  
+            原因：ユーザー未登録
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: FAILED
+                  errorInfo:
+                    reason: 404 Not Found
+                    message: ユーザ未登録
+        '410':
+          description: |-
+            署名用電子証明書が失効している  
+            （署名用電子証明書を追加して再リクエストが必要）  
+            原因：個人情報の変更またはマイナンバーカードの紛失
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: FAILED
+                  errorInfo:
+                    reason: 410 Gone
+                    message: 署名用電子証明書が失効している
+        '500':
+          description: |-
+            予期せぬエラーが発生した  
+            原因：サーバーに問題がある
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: FAILED
+                  errorInfo:
+                    reason: 500 Internal Server Error
+                    message: システム異常
+        '503':
+          description: |-
+            サービス利用不可エラーが発生した  
+            原因：サーバーが混んでいるまたはメンテナンス中等
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: FAILED
+                  errorInfo:
+                    reason: 503 Service Unavailable
+                    message: システム利用不可
+      deprecated: false
+  /verify/replacement:
+    post:
+      summary: マイナンバーカードの情報を元にマイナンバーカードの再発行確認と個人情報更新を行う
+      description: |-
+        ### 検証処理  
+        マイナンバーカードの署名用電子証明書の秘密鍵によって署名された文字列がnonceと一致するか署名用電子証明書の公開鍵で検証処理をする
+
+        ### 処理が成功した場合  
+        個人情報を更新し、ユーザーのユニークIDと基本4情報を返す
+
+        ### 検証処理が失敗した場合  
+        401エラーを返す
+
+        ### 旧シリアル番号を取得できなかった場合  
+        404エラーを返す
+      operationId: verifyReplacement
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignVerificationRequestByDigitalSignature'
+            example:
+              requestInfo:
+                transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                recipient: JPKI
+                sender: ID123
+                ts: 2023-06-16 17:30:00.123
+              encryptedDigitalSignatureCertificate: eyJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAtMjU2In0.O01BFr_XxGzKEUb_Z9vQOW3DX2cQFxojrRy2JyM5_nqKnrpAa0rvcPI_ViT2PdPRogBwjHGRDM2uNLd1BberKQlaZYuqPGXnpzDQjosF0tQlgdtY3uEZUMT-9WPP8jCxxQg0AGIm4abkp1cgzAWBQzm1QYL8fwaz16MS48ExRz41dLhA0aEWE4e7TYzjrfaK8M4wIUlQCFIl-wS1N3U8W2XeUc9MLYGmHft_Rd9KJs1c-9KKdUQf6tEzJ92TGEC7TRZX4hGdtszIq3GGGBQaW8P9jPozqaDdrikF18D0btRHNf3_57sR_CPEGYX0O4mY775CLWqB4Y1adNn-fZ0xoA.ln7IYZDF9TdBIK6i.ZhQ3Q5TY827KFQw8DdRRzQVJVFdIE03B6AxMNZ1sQIjlUB4QUxg-UYqjPJESPUmFsODeshGWLa5t4tUri5j6uC4mFDbkbemPmNKIQiY5m8yc.5KKhrggMRm7ydVRQKJaT0g
+              applicantData: c7fdd0dc199fd75a790a1f74183a2b34906f1efae4a0419333daa729f5358f5c
+              sign: YzdmZGQwZGMxOTlmZDc1YTc5MGExZjc0MTgzYTJiMzQ5MDZmMWVmYWU0YTA0MTkzMzNkYWE3MjlmNTM1OGY1Yw==
+      responses:
+        '200':
+          description: 検証処理が成功した
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: SUCCESS
+                applicantId: JPKI202306169f03fb0acb9a4cc2971c9fa144586ba3
+                identityInfo:
+                  uniqueId: 7910ae5f-a6c1-4117-b890-fc2df2db63f1
+                  name: 佐藤 太郎
+                  dateOfBirth: 1970-01-31
+                  gender: "0"
+                  address: 東京都千代田区千代田1-1
+        '400':
+          description: |-
+            リクエストに問題が発生した  
+            原因：リクエスト内容が正しくない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: FAILED
+                  errorInfo:
+                    reason: 400 Bad Request
+                    message: リクエスト失敗
+        '401':
+          description: |-
+            署名の検証に失敗した  
+            原因：本人確認ができない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: FAILED
+                  errorInfo:
+                    reason: 401 Unauthorized
+                    message: クライアント認証失敗
+        '404':
+          description: |-
+            データの取得に失敗した  
+            原因：旧シリアル番号がない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: FAILED
+                  errorInfo:
+                    reason: 404 Not Found
+                    message: 旧シリアル番号取得失敗
+        '500':
+          description: |-
+            予期せぬエラーが発生した  
+            原因：サーバーに問題がある
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: FAILED
+                  errorInfo:
+                    reason: 500 Internal Server Error
+                    message: システム異常
+        '503':
+          description: |-
+            サービス利用不可エラーが発生した  
+            原因：サーバーが混んでいるまたはメンテナンス中等
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignVerificationResponse'
+              example:
+                responseInfo:
+                  transactionId: 87e46dbe-9ce7-4bab-97a6-bb0d53e61db5
+                  recipient: ID123
+                  sender: JPKI
+                  ts: 2023-06-16 17:31:00.123
+                status:
+                  status: FAILED
+                  errorInfo:
+                    reason: 503 Service Unavailable
+                    message: システム利用不可
+      deprecated: false
+components:
+  schemas:
+    SignVerificationRequestByDigitalSignature:
+      type: object
+      description: 署名用電子証明書を利用するリクエスト時に送る情報
+      required:
+        - requestInfo
+        - encryptedDigitalSignatureCertificate
+        - applicantData
+        - sign
+      properties:
+        requestInfo:
+          type: object
+          description: リクエスト情報
+          required:
+            - transactionId
+            - recipient
+            - sender
+            - ts
+          properties:
+            transactionId:
+              type: string
+              description: トランザクションをー意に特定可能なUUID
+            recipient:
+              type: string
+              description: 受信先を示す識別子。(固定値 「JPKI」)
+            sender:
+              type: string
+              description: 送信元のサービスプロバイダ契約ID
+            ts:
+              type: string
+              description: 送信時のシステム日時
+        encryptedDigitalSignatureCertificate:
+          type: string
+          description: 署名用電子証明書のJWE
+        applicantData:
+          type: string
+          description: nonceをSHA256でハッシュ化した文字列データ
+        sign:
+          type: string
+          description: applicantDataを署名用電子証明書の秘密鍵で暗号化した署名データのbase64文字列データ
+    SignVerificationRequestByUserAuthentication:
+      type: object
+      description: 利用者証明用電子証明書を利用するリクエスト時に送る情報
+      required:
+        - requestInfo
+        - userAuthenticationCertificate
+        - applicantData
+        - sign
+      properties:
+        requestInfo:
+          type: object
+          description: リクエスト情報
+          required:
+            - transactionId
+            - recipient
+            - sender
+            - ts
+          properties:
+            transactionId:
+              type: string
+              description: トランザクションをー意に特定可能なUUID
+            recipient:
+              type: string
+              description: 受信先を示す識別子。(固定値 「JPKI」)
+            sender:
+              type: string
+              description: 送信元のサービスプロバイダ契約ID
+            ts:
+              type: string
+              description: 送信時のシステム日時
+        userAuthenticationCertificate:
+          type: string
+          description: 利用者証明用電子証明書
+        applicantData:
+          type: string
+          description: nonceをSHA256でハッシュ化した文字列データ
+        sign:
+          type: string
+          description: applicantDataを利用者証明用電子証明書の秘密鍵で暗号化した署名データのbase64文字列データ
+    SignVerificationResponse:
+      type: object
+      description: レスポンスと発生したエラー情報
+      required:
+        - responseInfo
+        - status
+      properties:
+        responseInfo:
+          type: object
+          description: レスポンス情報
+          required:
+            - sender
+            - ts
+          properties:
+            transactionId:
+              type: string
+              description: requestInfoに設定されたUUID
+            recipient:
+              type: string
+              description: 受信先のサービスプロバイダ契約ID
+            sender:
+              type: string
+              description: 送信元を示す識別子。(固定値 「JPKI」)
+            ts:
+              type: string
+              description: 送信時のシステム日時
+        status:
+          type: object
+          description: レスポンスの結果と発生したエラーコード・エラーメッセージの内容
+          required:
+            - status
+          properties:
+            status:
+              type: string
+              enum: [SUCCESS, FAILED]
+              description: 処理結果
+            errorInfo:
+              type: object
+              description: エラー情報
+              required:
+                - reason
+              properties:
+                reason:
+                  type: string
+                  description: エラー発生時の理由を示すコード
+                message:
+                  type: string
+                  description: エラー発生時のログメッセージの内容を出力
+        applicantId:
+          type: string
+          description: プラットフォームで採番した申請ID
+        identityInfo:
+          type: object
+          description: ユーザー情報
+          required:
+            - uniqueId
+            - name
+            - dateOfBirth
+            - gender
+            - address
+          properties:
+            uniqueId:
+              type: string
+              description: シリアル番号に対応したユニークID
+            name:
+              type: string
+              description: 氏名
+            dateOfBirth:
+              type: string
+              description: 生年月日
+            gender:
+              type: string
+              description: 性別
+            address:
+              type: string
+              description: 住所
