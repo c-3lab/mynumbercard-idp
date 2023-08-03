@@ -3,12 +3,14 @@ const express  = require("express");
 const session  = require("express-session");
 const Keycloak = require("keycloak-connect");
 const request  = require("request");
+const jwt = require("jsonwebtoken");
 
 const sessionStore = new session.MemoryStore();
 const keycloak     = new Keycloak({ store: sessionStore });
 
 const app = express();
 app.set('trust proxy', 'uniquelocal');
+app.set("view engine", "ejs");
 
 app.use(session({
     secret: "secret-sign",
@@ -17,10 +19,9 @@ app.use(session({
 }));
 
 app.use(keycloak.middleware());
-app.set("view engine", "ejs");
 app.use(express.static('public'));
 
-function get_user_info (req) {
+function getUserInfo (req) {
     let keycloak_username         = "";
     let keycloak_id_token_content = "";
     let keycloak_token_content    = "";
@@ -33,7 +34,7 @@ function get_user_info (req) {
     let keycloak_unique_id        = "";
     let keycloak_access_token     = "";
 
-    if (typeof req.kauth.grant == 'object') {
+    if (typeof req.kauth.grant === 'object') {
         keycloak_id_token_content = req.kauth.grant.id_token.content;
 
         keycloak_username         = keycloak_id_token_content.preferred_username;
@@ -48,76 +49,62 @@ function get_user_info (req) {
         keycloak_token_content = JSON.parse(req.session['keycloak-token']);
         keycloak_access_token  = keycloak_token_content.access_token;
     }
-    
-    let view_args = {
-      username:         keycloak_username,
-      token_content:    keycloak_token_content,
-      id_token_content: keycloak_id_token_content,
-      name:             keycloak_name,
-      address:          keycloak_address,
-      gender:           keycloak_gender,
-      date_of_birth:    keycloak_date_of_birth,
-      sub:              keycloak_sub,
-      nickname:         keycloak_nickname,
-      unique_id:        keycloak_unique_id,
-      access_token:     keycloak_access_token,
+
+    const user = {
+        username:         keycloak_username,
+        token_content:    keycloak_token_content,
+        id_token_content: keycloak_id_token_content,
+        name:             keycloak_name,
+        address:          keycloak_address,
+        gender:           keycloak_gender,
+        date_of_birth:    keycloak_date_of_birth,
+        sub:              keycloak_sub,
+        nickname:         keycloak_nickname,
+        unique_id:        keycloak_unique_id,
+        access_token:     keycloak_access_token,
     }
 
-    return view_args;
+    return user;
 }
 
-function get_assign_api (data) {
-	let assign_args = {
-		access_token:		data.access_token,
-		expires_in:		data.expires_in,
-		refresh_expires_in:	data.refresh_expires_in,
-		refresh_token:		data.refresh_token,
-		token_type:		data.token_type,
-		id_token:		data.id_token,
-		notBeforePolicy:	data['not-before-policy'],
-		session_state:		data.session_state,
-		scope:			data.scope,
-		refresh_id_token:	parseJwt(data.id_token),
-	}
+function getAssignApi (data) {
+    const assign = {
+        access_token:        data.access_token,
+        expires_in:        data.expires_in,
+        refresh_expires_in:    data.refresh_expires_in,
+        refresh_token:        data.refresh_token,
+        token_type:        data.token_type,
+        id_token:        data.id_token,
+        notBeforePolicy:    data['not-before-policy'],
+        session_state:        data.session_state,
+        scope:            data.scope,
+        refresh_id_token:    jwt.decode(data.id_token),
+    }
 
 
-	return assign_args;
+    return assign;
 }
 
-function get_assign_api_empty (){
-        let assign_args = {
-                access_token:           '',
-                expires_in:             '',
-                refresh_expires_in:     '',
-                refresh_token:          '',
-                token_type:             '',
-                id_token:               '',
-                notBeforePolicy:        '',
-                session_state:          '',
-                scope:                  '',
-		refresh_id_token:	'',
-        }
+function getAssignApiEmpty (){
+        const assign = {
+        access_token:           '',
+        expires_in:             '',
+        refresh_expires_in:     '',
+        refresh_token:          '',
+        token_type:             '',
+        id_token:               '',
+        notBeforePolicy:        '',
+        session_state:          '',
+        scope:                  '',
+        refresh_id_token:    '',
+    }
 
-
-        return assign_args;
-}
-
-function parseJwt (token) 
-{    
-	return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+        return assign;
 }
 
 // public url
 app.get("/", (req, res) => {
-    let args = get_user_info(req)
-   
-    if(!(args.username == ''))
-    {
-	 console.log ('AccessToken');
-    }
-
-    res.render("index", { vars: get_user_info(req)  ,vars_assign:get_assign_api_empty()})
-	
+    res.render("index", { user: getUserInfo(req)  ,vars_assign:getAssignApiEmpty()})
 });
 
 // protecte url
@@ -129,43 +116,30 @@ app.get("/login", keycloak.protect(), (req, res) => {
 const serviceIdValue = "example@example.com";
 const noteValue = "RP1";
 const assignAPIURL = 'https://keycloak.example.com/realms/OIdp/custom-attribute/assign';
-app.get("/assign", keycloak.protect(), (req, res) => {
-	console.log('assign');
-
-	// RP側のユーザーに関連した情報をIdP側のユーザーに紐づけるAPIを呼び出す
-        console.log ('API call');
-	let args = get_user_info(req)
-	console.log (args.access_token);
-        let assign_args;
+app.get("/assign", keycloak.protect(), async (req, res, next) => {
+    try { 
+        // RP側のユーザーに関連した情報をIdP側のユーザーに紐づけるAPIを呼び出す
+        let user = getUserInfo(req)
         request.post({
-		uri: assignAPIURL,
-                headers: { "Content-type": "application/json" },
-                headers: { "Authorization": "Bearer " + args.access_token },
-                json: {"userAttributes":
-			{
-				//サービスの独自ID
-                                "serviceId": serviceIdValue ,
-                                "notes": noteValue
-                        }
+            uri: assignAPIURL,
+            headers: { "Content-type": "application/json" },
+            headers: { "Authorization": "Bearer " + user.access_token },
+            json: {"userAttributes":
+                {
+                    //サービスの独自ID
+                    "serviceId": serviceIdValue ,
+                    "notes": noteValue
                 }
-	}, (err, response, data) => {
-		console.log('response');
-                console.log(err);
-                console.log(data);
+            }
+        }, async (err, response, data) => {
+            const grant = await keycloak.grantManager.createGrant(JSON.stringify(data))
+            keycloak.storeGrant(grant, req, res)
 
-		// 再発行したIDトークンを設定
-		if (typeof req.kauth.grant == 'object') {
-        		req.kauth.grant.id_token.content = parseJwt(data.id_token);
-		}
-		
-		// 再発行したアクセストークンをセッションに設定
-		let keycloak_token_content = JSON.parse(req.session['keycloak-token']);
-		keycloak_token_content.access_token = data.access_token;
-		req.session['keycloak-token'] = JSON.stringify(keycloak_token_content);
-
-                res.render("index", { vars: get_user_info(req) ,vars_assign:get_assign_api(data)})
+            res.redirect(303, "/")
         });
+    } catch (error) {
+        next(error)
+    }
 });
 
-app.listen(3000, () => console.log(`[${new Date()}] server, startup`));
-
+app.listen(3000, () => console.log(`[${new Date()}] server, startup`))

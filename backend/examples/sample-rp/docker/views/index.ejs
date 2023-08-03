@@ -10,126 +10,119 @@
 <body>
 <div id="content">
   <header>
-    <p>ようこそ、<%= vars.name !== '' ? vars.name : 'ゲスト'  %>さん</p>
-  <%_
-    switch (vars.username) {
+    <p>ようこそ、<%= user.name !== '' ? user.name : 'ゲスト'  %>さん</p>
+    <%_
+    switch (user.username) {
       case '':
-  _%>
+    _%>
     <p><a href="/login">ログイン</a></p>
-  <%_
-    break;
-    default:
-  _%>
+    <%_
+       break;
+          default:
+    _%>
     <p><a href="/assign">RPアサイン</a></p>
     <p><a href="/logout">ログアウト</a></p>
-  <%_ } _%>
-  </header>
+    <%_ } _%>
+    </header>
   <%_
-    switch (vars.username) {
-      case '': // Displays detailed user information only while logged in.
-        break;
-      default:
+  if (user.username == '') {
+  } else {
   _%>
-    <table id="user-info">
-      <tr>
-        <td>名前:</td>
-        <td><%= vars.name %></td>
-      </tr>
-      <tr>
-        <td>住所:</td>
-        <td><%= vars.address %></td>
-      </tr>
-      <tr>
-        <td>性別:</td>
-        <td><%= vars.gender %></td>
-      </tr>
-      <tr>
-        <td>生年月日:</td>
-        <td><%= vars.date_of_birth %></td>
-      </tr>
-      <tr>
-	<td>プラットフォーム ユニークID:</td>
-        <td><%= vars.unique_id %></td>
-      </tr>
-      <tr>
-        <td>User ID:</td>
-        <td><%= vars.sub %></td>
-      </tr>
-      <tr>
-        <td>Access Token:</td>
-        <td><div class="word-break-all"><%= vars.access_token %></div></td>
-     </tr>
-   </table>
+  <table id="user-info">
+    <tr>
+            <td>名前:</td>
+            <td><%= user.name %></td>
+    </tr>
+    <tr>
+      <td>住所:</td>
+      <td><%= user.address %></td>
+    </tr>
+    <tr>
+      <td>性別:</td>
+      <td><%= user.gender %></td>
+    </tr>
+    <tr>
+            <td>生年月日:</td>
+            <td><%= user.date_of_birth %></td>
+    </tr>
+    <tr>
+      <td>プラットフォーム ユニークID:</td>
+      <td><%= user.unique_id %></td>
+    </tr>
+    <tr>
+      <td>User ID:</td>
+      <td><%= user.sub %></td>
+    </tr>
+    <tr>
+      <td>Access Token:</td>
+      <td><div class="word-break-all"><%= user.access_token %></div></td>
+    </tr>
+  </table>
  
-   <%_
-    switch (vars_assign.access_token) {
-      case '': // Displays detailed user information only while logged in.
-        break;
-      default:
+  <%_
+  if (vars_assign.access_token == '') {
+  } else {
   _%>
-    <table id="user-info">
-      <tr>
-        <td>再発行されたアクセストークン:</td>
-        <td><div class="word-break-all"><%= vars_assign.access_token %></div></td>
-      </tr>
-      <tr>
-        <td>access_tokenの有効期限:</td>
-        <td><%= vars_assign.expires_in %></td>
-      </tr>
-      <tr>
-        <td>refresh_tokenの有効期限:</td>
-        <td><%= vars_assign.refresh_expires_in %></td>
-      </tr>
-      <tr>
-        <td>再発行されたリフレッシュトークン:</td>
-        <td><div class="word-break-all"><%= vars_assign.refresh_token %></div></td>
-      </tr>
-      <tr>
-        <td>トークンの種類:</td>
-        <td><%= vars_assign.token_type %></td>
-      </tr>
-      <tr>
-        <td>再発行されたIDトークン:</td>
-        <td><div class="word-break-all"><%= vars_assign.id_token %></div></td>
-      </tr>
-      <tr>
-        <td>適用されているnot-beforeポリシー:</td>
-        <td><%= vars_assign.notBeforePolicy %></td>
-      </tr>
-      <tr>
-        <td>セッションのID:</td>
-        <td><%= vars_assign.session_state %></td>
-      </tr>
-      <tr>
-        <td>対象スコープ:</td>
-        <td><%= vars_assign.scope %></td>
-      </tr>
-   </table>
-   <%_ } _%>
+
+  <table id="user-info">
+    <tr>
+      <td>再発行されたアクセストークン:</td>
+      <td><div class="word-break-all"><%= vars_assign.access_token %></div></td>
+    </tr>
+    <tr>
+      <td>access_tokenの有効期限:</td>
+      <td><%= vars_assign.expires_in %></td>
+    </tr>
+    <tr>
+      <td>refresh_tokenの有効期限:</td>
+      <td><%= vars_assign.refresh_expires_in %></td>
+    </tr>
+    <tr>
+      <td>再発行されたリフレッシュトークン:</td>
+      <td><div class="word-break-all"><%= vars_assign.refresh_token %></div></td>
+    </tr>
+    <tr>
+      <td>トークンの種類:</td>
+      <td><%= vars_assign.token_type %></td>
+    </tr>
+    <tr>
+      <td>再発行されたIDトークン:</td>
+      <td><div class="word-break-all"><%= vars_assign.id_token %></div></td>
+    </tr>
+    <tr>
+      <td>適用されているnot-beforeポリシー:</td>
+      <td><%= vars_assign.notBeforePolicy %></td>
+    </tr>
+    <tr>
+      <td>セッションのID:</td>
+      <td><%= vars_assign.session_state %></td>
+    </tr>
+    <tr>
+      <td>対象スコープ:</td>
+      <td><%= vars_assign.scope %></td>
+    </tr>
+  </table>
+  <%_ } _%>
   <%_ } _%>
 
-   <%_
-    switch (vars_assign.access_token) {
-      case '': // Displays detailed user information only while logged in.
+  <%_
+  if (vars_assign.access_token == '') {
   _%>
 
   <div id="token-info">
-    <p>keycloak-id-token: <br><%= JSON.stringify(vars.id_token_content) %></p>
-    <p>keycloak-token: <br><%= JSON.stringify(vars.token_content) %></p>
+    <p>keycloak-id-token: <br><%= JSON.stringify(user.id_token_content) %></p>
+    <p>keycloak-token: <br><%= JSON.stringify(user.token_content) %></p>
   </div>
 
   <%_
-    break;
-    default:
+  } else {
   _%>
 
   <div id="token-info">
-    <p>(content)keycloak-id-token: <br><%= JSON.stringify(vars.id_token_content) %></p>
-    <p>(SESSION)keycloak-token: <br><%= JSON.stringify(vars.token_content) %></p>
+    <p>(content)keycloak-id-token: <br><%= JSON.stringify(user.id_token_content) %></p>
+    <p>(SESSION)keycloak-token: <br><%= JSON.stringify(user.token_content) %></p>
   </div>
-
   <%_ } _%>
-
 </div>
 </body>
 </html>
