@@ -17,6 +17,8 @@ import com.example.mynumbercardidp.ui.ScreenModeState
 import com.example.mynumbercardidp.ui.UriParameters
 import com.example.mynumbercardidp.ui.theme.MyNumberCardAuthTheme
 import com.example.mynumbercardidp.ui.viewmodel.StateViewModel
+import java.net.URLDecoder
+import java.net.URLEncoder
 
 class MainActivity : ComponentActivity() {
     var nfcAdapter: NfcAdapter? = null

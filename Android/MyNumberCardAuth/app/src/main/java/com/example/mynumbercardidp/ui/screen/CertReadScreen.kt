@@ -168,8 +168,7 @@ fun CertReadScreen(
                     null
                 )
             },
-            enabled = isReadingButtonEnabled(receivedState.screenMode, inputPin)
-            ,
+            enabled = isReadingButtonEnabled(receivedState.screenMode, inputPin),
             modifier = Modifier.padding(10.dp)
         ) {
             Text(stringResource(R.string.start_reading))
@@ -263,7 +262,6 @@ private fun createErrorDialogDetail(
             title = stringResource(R.string.registration_failure)
             message = stringResource(R.string.registration_failure_description)
             url = uriParameters?.error_url?.replace("&amp;", "&")
-
         }
         is KeycloakState.InfoChangeError -> {
             title = stringResource(R.string.my_number_card_reload)

@@ -19,7 +19,7 @@ enum class URLTypes() {
     Inquiry {override fun toString(): String { return "https://www.kojinbango-card.go.jp/contact/" }},
     PrivacyPolicy {override fun toString(): String { return "https://native-app.abelsoft.in-private.dev/open-id/privacy-policy.html" }},
     ProtectionPolicy {override fun toString(): String { return "https://native-app.abelsoft.in-private.dev/open-id/personal-data-protection-policy.html" }},
-    TermsOfService {override fun toString(): String { return "https://native-app.abelsoft.in-private.dev/open-id/terms-of-use.html" }},
+    TermsOfUse {override fun toString(): String { return "https://native-app.abelsoft.in-private.dev/open-id/terms-of-use.html" }},
 }
 
 enum class ValidInputText(val length: Int) {

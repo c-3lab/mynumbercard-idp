@@ -117,7 +117,15 @@ class StateViewModel(
                         HttPStatusCode.NotFound.value -> KeycloakState.UnRegisterError
                         HttPStatusCode.Unauthorized.value -> KeycloakState.LapseError
                         HttPStatusCode.Conflict.value -> KeycloakState.UserDuplicateError
-                        HttPStatusCode.Gone.value -> KeycloakState.InfoChangeError
+                        HttPStatusCode.Gone.value -> {
+                            setUriParameters(
+                                _uiState.value.uriParameters?.nonce!!,
+                                "replacement",
+                                _uiState.value.uriParameters?.action_url!!,
+                                _uiState.value.uriParameters?.error_url!!
+                            )
+                            KeycloakState.InfoChangeError
+                        }
                         else -> KeycloakState.Error
                     }
                 }
@@ -133,6 +141,13 @@ class StateViewModel(
             _uiState.update { _uiState.value.copy(keycloakState = keycloakState) }
         }
 
+    }
+
+    private fun setUriParameters(nonce: String, mode: String, actionUrl: String, errorUrl: String){
+        var uriParameters = UriParameters(nonce, mode, actionUrl, errorUrl)
+        viewModelScope.launch {
+            _uiState.update { _uiState.value.copy(uriParameters = uriParameters) }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -184,14 +199,12 @@ class StateViewModel(
     }
 
     fun onChangeProgressViewState(isView: Boolean) {
-        Log.d(logTag, "isView: $isView")
         viewModelScope.launch {
             _uiState.update { _uiState.value.copy(isNfcReading = isView) }
         }
     }
 
     fun setState(keycloakState: KeycloakState, nfcState: NfcState? = NfcState.None){
-        Log.d(logTag, "KeycloakState: $keycloakState nfcState: $nfcState")
         viewModelScope.launch {
             _uiState.update {
                 _uiState.value.copy(keycloakState = keycloakState, nfcState = nfcState)

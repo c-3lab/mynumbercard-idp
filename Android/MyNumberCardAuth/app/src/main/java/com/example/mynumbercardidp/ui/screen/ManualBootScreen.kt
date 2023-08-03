@@ -1,6 +1,5 @@
 package com.example.mynumbercardidp.ui.screen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -20,47 +19,45 @@ import com.example.mynumbercardidp.ui.theme.MyNumberCardAuthTheme
 @Composable
 fun ManualBootScreen(
 ) {
-    val uriHandler = LocalUriHandler.current
-    val logTag = "ManualBootScreen"
-
-    Log.d(logTag, "ManualBootScreen is View.")
-
     Column (
         modifier = Modifier.padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-
         ){
         Text(stringResource(R.string.about_this_app),modifier = Modifier.padding(50.dp))
 
         Text(stringResource(R.string.about_this_app_detail))
 
-        Button(
-            onClick = {
-                uriHandler.openUri(URLTypes.TermsOfService.toString())
-            },
-            modifier = Modifier.padding(10.dp)
-        ) {
-            Text(stringResource(R.string.terms_of_use))
-        }
+        // 利用規約
+        OpenUrlButton(
+            URLTypes.TermsOfUse.toString(),
+            stringResource(R.string.person_Info_protection_policy)
+        )
 
-        Button(
-            onClick = {
-                uriHandler.openUri(URLTypes.PrivacyPolicy.toString())
-            },
-            modifier = Modifier.padding(10.dp)
-        ) {
-            Text(stringResource(R.string.privacy_policy))
-        }
+        // プライバシーポリシー
+        OpenUrlButton(
+            URLTypes.PrivacyPolicy.toString(),
+            stringResource(R.string.privacy_policy)
+        )
 
-        Button(
-            onClick = {
-                uriHandler.openUri(URLTypes.ProtectionPolicy.toString())
-            },
-            modifier = Modifier.padding(10.dp)
-        ) {
-            Text(stringResource(R.string.person_Info_protection_policy))
-        }
+        // 個人情報保護方針
+        OpenUrlButton(
+            URLTypes.ProtectionPolicy.toString(),
+            stringResource(R.string.person_Info_protection_policy)
+        )
+    }
+}
+
+@Composable
+private fun OpenUrlButton(url: String, buttonText:String){
+    val uriHandler = LocalUriHandler.current
+    Button(
+        onClick = {
+            uriHandler.openUri(url)
+        },
+        modifier = Modifier.padding(10.dp)
+    ) {
+        Text(buttonText)
     }
 }
 
