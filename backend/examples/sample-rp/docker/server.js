@@ -84,8 +84,8 @@ function get_assign_api (data) {
 	return assign_args;
 }
 
-function get_assign_api_empty(){
-          let assign_args = {
+function get_assign_api_empty (){
+        let assign_args = {
                 access_token:           '',
                 expires_in:             '',
                 refresh_expires_in:     '',
