@@ -3,7 +3,6 @@ const express = require("express");
 const session = require("express-session");
 const Keycloak = require("keycloak-connect");
 const request = require("request");
-const jwt = require("jsonwebtoken");
 
 const sessionStore = new session.MemoryStore();
 const keycloak = new Keycloak({ store: sessionStore });
