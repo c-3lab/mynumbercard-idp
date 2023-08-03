@@ -20,3 +20,25 @@ services:
     ports:
       - '4010:80'
     restart: unless-stopped
+  app:
+    build: examples/sample-rp/docker
+    container_name: sample-web-app
+    hostname: app
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:3000:3000"
+    #expose:
+    #  - "3000"
+  app02:
+    build: examples/sample-rp/docker02
+    container_name: sample-web-app02
+    hostname: app02
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:3001:3000"
+    #expose:
+    #   - "3000"
+networks:
+  default:
+    external: true
+    name: service_network

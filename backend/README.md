@@ -31,7 +31,7 @@
    ```
    chmod 777 data
    ```
-5. ファイル `examples/sample-web-service/docker/keycloak.json` 内の `auth-server-url` を以下のように変更します。  
+5. ファイル `examples/sample-rp/docker/keycloak.json` と`examples/sample-rp/docker02/keycloak.json`内の `auth-server-url` を以下のように変更します。   
    Dockerホストの外側から接続する場合、  
    `http://[DockerホストのIPアドレス または DockerホストのDNS名]:8080/` へ変更します。  
    接続元の端末から見た、DockerホストのIPアドレス または DNS名を期待しています。  

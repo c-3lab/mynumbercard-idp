@@ -1,0 +1,8 @@
+{
+  "realm": "OIdp",
+  "auth-server-url": "https://keycloak.example.com/",
+  "ssl-required": "external",
+  "resource": "sample-client",
+  "public-client": true,
+  "confidential-port": 0
+}
