@@ -84,7 +84,7 @@ const assignAPIURL = 'https://keycloak.example.com/realms/OIdp/custom-attribute/
 app.get("/assign", keycloak.protect(), async (req, res, next) => {
   try {
     // RP側のユーザーに関連した情報をIdP側のユーザーに紐づけるAPIを呼び出す
-    let user = getUserInfo(req)
+    const user = getUserInfo(req)
     request.post({
       uri: assignAPIURL,
       headers: { "Content-type": "application/json" },
