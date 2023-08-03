@@ -67,43 +67,9 @@ function getUserInfo (req) {
   return user;
 }
 
-function getAssignApi (data) {
-  const assign = {
-    access_token: data.access_token,
-    expires_in: data.expires_in,
-    refresh_expires_in: data.refresh_expires_in,
-    refresh_token: data.refresh_token,
-    token_type: data.token_type,
-    id_token: data.id_token,
-    notBeforePolicy: data['not-before-policy'],
-    session_state: data.session_state,
-    scope: data.scope,
-    refresh_id_token: jwt.decode(data.id_token),
-  }
-
-  return assign;
-}
-
-function getAssignApiEmpty (){
-  const assign = {
-    access_token: '',
-    expires_in: '',
-    refresh_expires_in: '',
-    refresh_token: '',
-    token_type: '',
-    id_token: '',
-    notBeforePolicy: '',
-    session_state: '',
-    scope: '',
-    refresh_id_token: '',
-  }
-
-  return assign;
-}
-
 // public url
 app.get("/", (req, res) => {
-  res.render("index", { user: getUserInfo(req), vars_assign:getAssignApiEmpty() })
+  res.render("index", { user: getUserInfo(req) })
 });
 
 // protecte url

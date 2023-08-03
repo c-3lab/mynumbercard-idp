@@ -58,71 +58,12 @@
             <td><div class="word-break-all"><%= user.access_token %></div></td>
           </tr>
         </table>
-       
-        <%_
-        if (vars_assign.access_token == '') {
-        } else {
-        _%>
-
-          <table id="user-info">
-            <tr>
-              <td>再発行されたアクセストークン:</td>
-              <td><div class="word-break-all"><%= vars_assign.access_token %></div></td>
-            </tr>
-            <tr>
-              <td>access_tokenの有効期限:</td>
-              <td><%= vars_assign.expires_in %></td>
-            </tr>
-            <tr>
-              <td>refresh_tokenの有効期限:</td>
-              <td><%= vars_assign.refresh_expires_in %></td>
-            </tr>
-            <tr>
-              <td>再発行されたリフレッシュトークン:</td>
-              <td><div class="word-break-all"><%= vars_assign.refresh_token %></div></td>
-            </tr>
-            <tr>
-              <td>トークンの種類:</td>
-              <td><%= vars_assign.token_type %></td>
-            </tr>
-            <tr>
-              <td>再発行されたIDトークン:</td>
-              <td><div class="word-break-all"><%= vars_assign.id_token %></div></td>
-            </tr>
-            <tr>
-              <td>適用されているnot-beforeポリシー:</td>
-              <td><%= vars_assign.notBeforePolicy %></td>
-            </tr>
-            <tr>
-              <td>セッションのID:</td>
-              <td><%= vars_assign.session_state %></td>
-            </tr>
-            <tr>
-              <td>対象スコープ:</td>
-              <td><%= vars_assign.scope %></td>
-            </tr>
-          </table>
-        <%_ } _%>
       <%_ } _%>
 
-      <%_
-      if (vars_assign.access_token == '') {
-      _%>
-
-        <div id="token-info">
-          <p>keycloak-id-token: <br><%= JSON.stringify(user.id_token_content) %></p>
-          <p>keycloak-token: <br><%= JSON.stringify(user.token_content) %></p>
-        </div>
-
-      <%_
-      } else {
-      _%>
-
-        <div id="token-info">
-          <p>(content)keycloak-id-token: <br><%= JSON.stringify(user.id_token_content) %></p>
-          <p>(SESSION)keycloak-token: <br><%= JSON.stringify(user.token_content) %></p>
-        </div>
-      <%_ } _%>
+      <div id="token-info">
+        <p>keycloak-id-token: <br><%= JSON.stringify(user.id_token_content) %></p>
+        <p>keycloak-token: <br><%= JSON.stringify(user.token_content) %></p>
+      </div>
     </div>
   </body>
 </html>
