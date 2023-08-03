@@ -43,11 +43,11 @@
           </tr>
           <tr>
             <td>生年月日:</td>
-            <td><%= user.date_of_birth %></td>
+            <td><%= user.dateOfBirth %></td>
           </tr>
           <tr>
             <td>プラットフォーム ユニークID:</td>
-            <td><%= user.unique_id %></td>
+            <td><%= user.uniqueId %></td>
           </tr>
           <tr>
             <td>User ID:</td>
@@ -55,14 +55,14 @@
           </tr>
           <tr>
             <td>Access Token:</td>
-            <td><div class="word-break-all"><%= user.access_token %></div></td>
+            <td><div class="word-break-all"><%= user.accessToken %></div></td>
           </tr>
         </table>
       <%_ } _%>
 
       <div id="token-info">
-        <p>keycloak-id-token: <br><%= JSON.stringify(user.id_token_content) %></p>
-        <p>keycloak-token: <br><%= JSON.stringify(user.token_content) %></p>
+        <p>keycloak-id-token: <br><%= JSON.stringify(user.idTokenContent) %></p>
+        <p>keycloak-token: <br><%= JSON.stringify(user.tokenContent) %></p>
       </div>
     </div>
   </body>

@@ -22,46 +22,47 @@ app.use(keycloak.middleware());
 app.use(express.static('public'));
 
 function getUserInfo (req) {
-  let keycloak_username = "";
-  let keycloak_id_token_content = "";
-  let keycloak_token_content = "";
-  let keycloak_name = "";
-  let keycloak_address = "";
-  let keycloak_gender = "";
-  let keycloak_date_of_birth = "";
-  let keycloak_sub = "";
-  let keycloak_nickname = "";
-  let keycloak_unique_id = "";
-  let keycloak_access_token = "";
+  let idTokenContent = "";
+  let tokenContent = "";
+
+  let username = "";
+  let name = "";
+  let address = "";
+  let gender = "";
+  let dateOfBirth = "";
+  let sub = "";
+  let nickname = "";
+  let uniqueId = "";
+  let accessToken = "";
 
   if (typeof req.kauth.grant === 'object') {
-    keycloak_id_token_content = req.kauth.grant.id_token.content;
+    idTokenContent = req.kauth.grant.id_token.content;
 
-    keycloak_username = keycloak_id_token_content.preferred_username;
-    keycloak_name = keycloak_id_token_content.name;
-    keycloak_address = keycloak_id_token_content.userAddress;
-    keycloak_gender = keycloak_id_token_content.gender;
-    keycloak_date_of_birth = keycloak_id_token_content.birthDate;
-    keycloak_sub = keycloak_id_token_content.sub;
-    keycloak_nickname = keycloak_id_token_content.nickname;
-    keycloak_unique_id = keycloak_id_token_content.unique_id;
+    username = idTokenContent.preferred_username;
+    name = idTokenContent.name;
+    address = idTokenContent.userAddress;
+    gender = idTokenContent.gender;
+    dateOfBirth = idTokenContent.birthDate;
+    sub = idTokenContent.sub;
+    nickname = idTokenContent.nickname;
+    uniqueId = idTokenContent.unique_id;
 
-    keycloak_token_content = JSON.parse(req.session['keycloak-token']);
-    keycloak_access_token = keycloak_token_content.access_token;
+    tokenContent = JSON.parse(req.session['keycloak-token']);
+    accessToken = tokenContent.access_token;
   }
 
   const user = {
-    username: keycloak_username,
-    token_content: keycloak_token_content,
-    id_token_content: keycloak_id_token_content,
-    name: keycloak_name,
-    address: keycloak_address,
-    gender: keycloak_gender,
-    date_of_birth: keycloak_date_of_birth,
-    sub: keycloak_sub,
-    nickname: keycloak_nickname,
-    unique_id: keycloak_unique_id,
-    access_token: keycloak_access_token,
+    username: username,
+    tokenContent: tokenContent,
+    idTokenContent: idTokenContent,
+    name: name,
+    address: address,
+    gender: gender,
+    dateOfBirth: dateOfBirth,
+    sub: sub,
+    nickname: nickname,
+    uniqueId: uniqueId,
+    accessToken: accessToken,
   }
 
   return user;
