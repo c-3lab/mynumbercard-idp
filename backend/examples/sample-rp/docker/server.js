@@ -38,7 +38,7 @@ function get_user_info (req) {
 
         keycloak_username         = keycloak_id_token_content.preferred_username;
         keycloak_name             = keycloak_id_token_content.name;
-        keycloak_address          = keycloak_id_token_content.user_address;
+        keycloak_address          = keycloak_id_token_content.userAddress;
         keycloak_gender           = keycloak_id_token_content.gender;
         keycloak_date_of_birth    = keycloak_id_token_content.birthDate;
         keycloak_sub              = keycloak_id_token_content.sub;
