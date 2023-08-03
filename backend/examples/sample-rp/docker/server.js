@@ -128,17 +128,17 @@ app.get("/login", keycloak.protect(), (req, res) => {
 
 const serviceIdValue = "example@example.com";
 const noteValue = "RP1";
+const assignAPIURL = 'https://keycloak.example.com/realms/OIdp/custom-attribute/assign';
 app.get("/assign", keycloak.protect(), (req, res) => {
-    console.log('assign');
+	console.log('assign');
 
 	// RP側のユーザーに関連した情報をIdP側のユーザーに紐づけるAPIを呼び出す
         console.log ('API call');
 	let args = get_user_info(req)
 	console.log (args.access_token);
-        var URL = 'https://keycloak.example.com/realms/OIdp/custom-attribute/assign';
         let assign_args;
         request.post({
-		uri: URL,
+		uri: assignAPIURL,
                 headers: { "Content-type": "application/json" },
                 headers: { "Authorization": "Bearer " + args.access_token },
                 json: {"userAttributes":
@@ -152,6 +152,16 @@ app.get("/assign", keycloak.protect(), (req, res) => {
 		console.log('response');
                 console.log(err);
                 console.log(data);
+
+		// 再発行したIDトークンを設定
+		if (typeof req.kauth.grant == 'object') {
+        		req.kauth.grant.id_token.content = parseJwt(data.id_token);
+		}
+		
+		// 再発行したアクセストークンをセッションに設定
+		let keycloak_token_content = JSON.parse(req.session['keycloak-token']);
+		keycloak_token_content.access_token = data.access_token;
+		req.session['keycloak-token'] = JSON.stringify(keycloak_token_content);
 
                 res.render("index", { vars: get_user_info(req) ,vars_assign:get_assign_api(data)})
         });

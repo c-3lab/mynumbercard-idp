@@ -105,9 +105,6 @@
         <td><%= vars_assign.scope %></td>
       </tr>
    </table>
-   <div id="token-info">
-     <p>再発行したkeycloak-id-token: <br><%= JSON.stringify(vars_assign.refresh_id_token) %></p>
-   </div>
    <%_ } _%>
   <%_ } _%>
 
@@ -127,8 +124,8 @@
   _%>
 
   <div id="token-info">
-    <p>(再発行前)keycloak-id-token: <br><%= JSON.stringify(vars.id_token_content) %></p>
-    <p>keycloak-token: <br><%= JSON.stringify(vars.token_content) %></p>
+    <p>(content)keycloak-id-token: <br><%= JSON.stringify(vars.id_token_content) %></p>
+    <p>(SESSION)keycloak-token: <br><%= JSON.stringify(vars.token_content) %></p>
   </div>
 
   <%_ } _%>
