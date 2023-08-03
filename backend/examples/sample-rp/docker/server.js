@@ -13,7 +13,7 @@ app.set('trust proxy', 'uniquelocal');
 app.set("view engine", "ejs");
 
 app.use(session({
-  secret: "secret-sign",
+  secret: "45b7bd88-4432-4df5-9ace-abd80c36b2ad",
   resave: false,
   saveUninitialized: false
 }));
