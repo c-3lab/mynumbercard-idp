@@ -80,7 +80,7 @@ app.get("/login", keycloak.protect(), (req, res) => {
 const serviceIdValue = "example@example.com";
 const noteValue = "RP1";
 const assignAPIURL = 'https://keycloak.example.com/realms/OIdp/custom-attribute/assign';
-app.get("/assign", keycloak.protect(), async (req, res, next) => {
+app.post("/assign", keycloak.protect(), async (req, res, next) => {
   try {
     // RP側のユーザーに関連した情報をIdP側のユーザーに紐づけるAPIを呼び出す
     const user = getUser(req)

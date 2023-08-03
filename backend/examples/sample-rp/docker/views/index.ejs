@@ -20,7 +20,11 @@
            break;
               default:
         _%>
-          <p><a href="/assign">RPアサイン</a></p>
+          <div class="assign">
+            <form action="/assign" method="post">
+              <input type="submit" value="RPアサイン">
+            </form>
+          </div>
           <p><a href="/logout">ログアウト</a></p>
         <%_ } _%>
         </header>
