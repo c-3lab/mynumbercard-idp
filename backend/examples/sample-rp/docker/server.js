@@ -20,7 +20,7 @@ app.use(session({
 app.use(keycloak.middleware());
 app.use(express.static('public'));
 
-function getUserInfo (req) {
+function getUser(req) {
   let idTokenContent = "";
   let tokenContent = "";
 
@@ -69,7 +69,7 @@ function getUserInfo (req) {
 
 // public url
 app.get("/", (req, res) => {
-  res.render("index", { user: getUserInfo(req) })
+  res.render("index", { user: getUser(req) })
 });
 
 // protecte url
@@ -83,7 +83,7 @@ const assignAPIURL = 'https://keycloak.example.com/realms/OIdp/custom-attribute/
 app.get("/assign", keycloak.protect(), async (req, res, next) => {
   try {
     // RP側のユーザーに関連した情報をIdP側のユーザーに紐づけるAPIを呼び出す
-    const user = getUserInfo(req)
+    const user = getUser(req)
     request.post({
       uri: assignAPIURL,
       headers: { "Content-type": "application/json" },
