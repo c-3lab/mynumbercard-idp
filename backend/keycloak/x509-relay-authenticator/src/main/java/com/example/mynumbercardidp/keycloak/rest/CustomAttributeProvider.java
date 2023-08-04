@@ -115,7 +115,6 @@ public class CustomAttributeProvider implements RealmResourceProvider {
                     .generateAccessToken().generateIDToken().generateRefreshToken().build();
 
         String newTokens = null;
-
         try {
             String[] strRemoveKeys = {
                 "error",
@@ -125,7 +124,6 @@ public class CustomAttributeProvider implements RealmResourceProvider {
             Collection<String> removeKeys = Arrays.asList(strRemoveKeys);
 
             ObjectNode tokens = (ObjectNode)objectMapper.readTree(objectMapper.writeValueAsString(accessTokenResponseBuilder));
-
             newTokens = objectMapper.writeValueAsString(tokens.remove(removeKeys));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
