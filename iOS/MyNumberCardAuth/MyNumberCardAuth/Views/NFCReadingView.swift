@@ -2,7 +2,7 @@
 //  NFCReadingView.swift
 //  MyNumberCardAuth
 //
-//  Created by abelstaff on 2023/04/20.
+//  Created by c3lab on 2023/04/20.
 //
 
 import SwiftUI
@@ -16,19 +16,19 @@ struct NFCReadingView: View {
     
     var body: some View {
         VStack{
-            Text(NSLocalizedString("common01-001", comment: "マイナンバーカード認証"))
+            Text(NSLocalizedString("my number card authentication", comment: "マイナンバーカード認証"))
                 .font(.title)
                 .multilineTextAlignment(.center)
                 .bold()
                 .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
             
-            (Text(NSLocalizedString("m01-001", comment: "マイナンバーカードの")) + Text(NSLocalizedString("m01-002", comment: "利用者証明用電子証明書")).fontWeight(.bold) + Text(NSLocalizedString("m01-003", comment: "のパスワード（4桁の数字）を入力し、読み取り開始ボタンを押す"))
+            (Text(NSLocalizedString("for my namber", comment: "マイナンバーカードの")) + Text(NSLocalizedString("certificate for user verification", comment: "利用者証明用電子証明書")).fontWeight(.bold) + Text(NSLocalizedString("press the start", comment: "のパスワード（4桁の数字）を入力し、読み取り開始ボタンを押す"))
                 ).font(.title3)
                 .multilineTextAlignment(.center)
                 .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
                 .frame(height: 140.0)
             
-            SecureField(NSLocalizedString("common01-003", comment: "暗証番号"), text: $controller.inputPIN)
+            SecureField(NSLocalizedString("password", comment: "暗証番号"), text: $controller.inputPIN)
                 .padding(.all)
                 .frame( height: 80.0)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -38,7 +38,7 @@ struct NFCReadingView: View {
                 .toolbar {
                     ToolbarItemGroup(placement: .keyboard) {
                         Spacer()
-                        Button(NSLocalizedString("common01-004", comment: "閉じる")) {
+                        Button(NSLocalizedString("close", comment: "閉じる")) {
                             isActive = false
                         }
                     }
@@ -61,13 +61,13 @@ struct NFCReadingView: View {
                         }))
                     }
             
-            Button(NSLocalizedString("common01-002", comment: "読み取り開始")) {
+            Button(NSLocalizedString("start reading", comment: "読み取り開始")) {
                 if controller.isEnableButton() {
-                    self.authenticationController.readStart(pin: controller.inputPIN, nonce: controller.nonce ,actionURL: controller.actionURL)
+                    self.authenticationController.startReading(pin: controller.inputPIN, nonce: controller.nonce ,actionURL: controller.actionURL)
                 }
-            }.modifier(SmallButtonModifier(color: controller.toggleColor()))
+            }.modifier(SmallButtonModifier(color: controller.getButtonColor()))
             .alert(isPresented:self.$authenticationController.isLinkAlert){
-                    Alert(title:Text(self.authenticationController.messageTitle),message:Text(self.authenticationController.messageString),primaryButton: .default(Text(NSLocalizedString("e03-005", comment: "問い合わせページ")),action: {
+                    Alert(title:Text(self.authenticationController.messageTitle),message:Text(self.authenticationController.messageString),primaryButton: .default(Text(NSLocalizedString("contact page", comment: "問い合わせページ")),action: {
                         if (self.authenticationController.inquiryURL.isEmpty == false)
                         {
                             if let openURL = URL(string:self.authenticationController.inquiryURL){

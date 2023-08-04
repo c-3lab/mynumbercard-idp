@@ -2,7 +2,7 @@
 //  AuthenticationManager.swift
 //  MyNumberCardAuth
 //
-//  Created by abelstaff on 2023/04/24.
+//  Created by c3lab on 2023/04/24.
 //
 
 import Foundation
@@ -19,14 +19,14 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
         self.authenticationController = authenticationController
     }
     
-    public func authenticate(pin: String, nonce: String, actionURL: String){
+    public func authenticateForUserVerification(pin: String, nonce: String, actionURL: String){
         self.actionURL = actionURL
-        self.computeDigitalSignatureForUserAuthentication(userAuthenticationPIN: pin, dataToSign: nonce)
+        self.conputeDigitalSignatureForUserVerification(userAuthenticationPIN: pin, dataToSign: nonce)
     }
     
     public func authenticateForSignature(pin: String, nonce: String, actionURL: String){
         self.actionURL = actionURL
-        self.computeDigitalSignatureForSignature(SignaturePIN: pin, dataToSign: nonce)
+        self.computeDigitalCertificateForSignature(SignaturePIN: pin, dataToSign: nonce)
     }
     
     public func getDigitalCertificate(){
@@ -61,7 +61,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
         
     }
     
-    private func computeDigitalSignatureForUserAuthentication(userAuthenticationPIN: String, dataToSign: String) {
+    private func conputeDigitalSignatureForUserVerification(userAuthenticationPIN: String, dataToSign: String) {
         self.individualNumberCardExecuteType = .computeDigitalSignature
 
         let data = dataToSign.data(using: .utf8)
@@ -75,7 +75,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
         self.reader.computeDigitalSignatureForUserAuthentication(userAuthenticationPIN: userAuthenticationPIN,dataToSign: dataToSignByteArray)
     }
     
-    private func computeDigitalSignatureForSignature(SignaturePIN: String, dataToSign: String) {
+    private func computeDigitalCertificateForSignature(SignaturePIN: String, dataToSign: String) {
         self.individualNumberCardExecuteType = .computeDigitalSignatureForSignature
         
         let data = dataToSign.data(using: .utf8)

@@ -2,39 +2,38 @@
   Localizable.strings
   MyNumberCardAuth
 
-  Created by abelstaff on 2023/07/07.
+  Created by c3lab on 2023/07/07.
   
 */
 
-"common01-001" = "My number card \n authentication";
-"common01-002" = "start reading";
-"common01-003" = "password";
-"common01-004" = "close";
+"my number card authentication" = "My number card \n authentication";
+"start reading" = "start reading";
+"password" = "password";
+"close" = "close";
 
-"m01-001" = "Enter the password (4-digit number) of the electronic ";
-"m01-002" = "certificate for user verification ";
-"m01-003" = "of My Number Card and press the start reading button ";
+"for my namber" = "Enter the password (4-digit number) of the electronic ";
+"certificate for user verification" = "certificate for user verification ";
+"press the start" = "of My Number Card and press the start reading button ";
 
-"m02-001" = "Enter the password (6 to 16 alphanumeric characters) of the electronic ";
-"m02-002" = "certificate for signature ";
-"m02-003" = "of My Number Card and press the start reading button ";
+"signature for my namber" = "Enter the password (6 to 16 alphanumeric characters) of the electronic ";
+"certificate for signature" = "certificate for signature ";
+"press the start signature" = "of My Number Card and press the start reading button ";
 
-"m03-001" = "About this app";
-"m03-002" = "It is an application for logging in using a browser. Start it from your browser and use it.";
-"m03-003" = "Terms Of Service";
-"m03-004" = "Privacy Policy";
-"m03-005" = "Personal Data Protection Policy";
+"app about" = "About this app";
+"use browser" = "It is an application for logging in using a browser. Start it from your browser and use it.";
+"terms of service" = "Terms Of Service";
+"privacy policy" = "Privacy Policy";
+"personal data protection policy" = "Personal Data Protection Policy";
 
-"e01-001" = "Failure";
-"e01-002" = "An unexpected error has occurred.";
-"e02-001" = "Authentication failure";
-"e02-002" = "Since you have not registered as a user, please register as a user.";
-"e03-001" = "Authentication failure";
-"e03-002" = "The electronic certificate for user certification has been revoked.";
-"e03-003" = "The electronic signature certificate has expired.";
-"e03-004" = "Please contact the window of your municipality, or contact the window of the My Number Card Comprehensive Site from the link below.";
-"e03-005" = "Contact page";
-"e04-001" = "Registration failed";
-"e04-002" = "Since the user is already registered, please log in.";
-"e05-001" = "Reloading My Number Card";
-"e05-002" = "I need to change my registration information. Please read the signature digital certificate to make changes.";
+"failure" = "Failure";
+"unexpected" = "An unexpected error has occurred.";
+"authentication failure" = "Authentication failure";
+"no user" = "Since you have not registered as a user, please register as a user.";
+"certificate revoked" = "The electronic certificate for user certification has been revoked.";
+"certificate revoked for signature" = "The electronic signature certificate has expired.";
+"link below" = "Please contact the window of your municipality, or contact the window of the My Number Card Comprehensive Site from the link below.";
+"contact page" = "Contact page";
+"registration failed" = "Registration failed";
+"already registered" = "Since the user is already registered, please log in.";
+"reloading" = "Reloading My Number Card";
+"change my registration" = "I need to change my registration information. Please read the signature digital certificate to make changes.";

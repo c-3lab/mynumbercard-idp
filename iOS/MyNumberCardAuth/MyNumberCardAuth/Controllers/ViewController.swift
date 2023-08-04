@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  MyNumberCardAuth
 //
-//  Created by abelstaff on 2023/04/26.
+//  Created by c3lab on 2023/04/26.
 //
 
 import Foundation
@@ -16,7 +16,7 @@ public class ViewController: ObservableObject {
     public func isEnableButton() -> Bool{
         return !nonce.isEmpty && !actionURL.isEmpty && isValidPin()
     }
-    public func toggleColor() -> Color{
+    public func getButtonColor() -> Color{
         if isEnableButton() {
             return Color(UIColor.blue)
         }else{

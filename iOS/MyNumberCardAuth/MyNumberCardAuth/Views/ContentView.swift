@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  MyNumberCardAuth
 //
-//  Created by abelstaff on 2023/03/24.
+//  Created by c3lab on 2023/03/24.
 //
 
 import SwiftUI

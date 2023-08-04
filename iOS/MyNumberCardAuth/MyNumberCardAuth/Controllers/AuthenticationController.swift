@@ -2,7 +2,7 @@
 //  AuthenticationController.swift
 //  MyNumberCardAuth
 //
-//  Created by abelstaff on 2023/07/05.
+//  Created by c3lab on 2023/07/05.
 //
 
 import Foundation
@@ -35,14 +35,22 @@ class AuthenticationController: ObservableObject {
         self.isErrorOpenURL = false
     }
     
-    public func readStart(pin: String, nonce: String, actionURL: String){
+    func openURLButton(url: String){
+        if (url.isEmpty == false) {
+            if let openURL = URL(string: url){
+                UIApplication.shared.open(openURL)
+            }
+        }
+    }
+    
+    public func startReading(pin: String, nonce: String, actionURL: String){
         let authenticationManager = AuthenticationManager(authenticationController: self)
         switch(self.viewState){
         case .SignatureView:
             authenticationManager.authenticateForSignature(pin: pin, nonce: nonce, actionURL: actionURL)
             break;
         case .UserVerificationView:
-            authenticationManager.authenticate(pin: pin, nonce: nonce, actionURL: actionURL)
+            authenticationManager.authenticateForUserVerification(pin: pin, nonce: nonce, actionURL: actionURL)
             break
         case.ExplanationView:
             break
@@ -50,8 +58,8 @@ class AuthenticationController: ObservableObject {
         
     }
     
-    public func toggleColor(url: String) -> Color{
-        if (url.isEmpty == false) {
+    public func getButtonColor(checkStr: String) -> Color{
+        if (checkStr.isEmpty == false) {
             return Color(UIColor.blue)
         }else{
             return Color(UIColor.lightGray)
@@ -59,7 +67,7 @@ class AuthenticationController: ObservableObject {
     }
     
     public func
-    setOpenURL(queryDict: [String : String]){
+    setErrorPageURL(queryDict: [String : String]){
         if(((queryDict["error_url"]) != nil)){
             if let url = queryDict["error_url"]{
                 let replaceUrl = url.replacingOccurrences(of: "&amp;", with: "&")

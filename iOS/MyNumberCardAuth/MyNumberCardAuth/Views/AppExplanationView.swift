@@ -2,7 +2,7 @@
 //  AppExplanationView.swift
 //  MyNumberCardAuth
 //
-//  Created by abelstaff on 2023/07/10.
+//  Created by c3lab on 2023/07/10.
 //
 
 import SwiftUI
@@ -12,44 +12,33 @@ struct AppExplanationView: View {
     
     var body: some View {
         VStack{
-            Text(NSLocalizedString("m03-001", comment: "このアプリについて"))
+            Text(NSLocalizedString("app about", comment: "このアプリについて"))
                 .font(.title)
                 .multilineTextAlignment(.center)
                 .bold()
                 .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
             
-            Text(NSLocalizedString("m03-002", comment: "ブラウザを使用してログインするためのアプリです。ブラウザから起動して使用してください。"))
+            Text(NSLocalizedString("use browser", comment: "ブラウザを使用してログインするためのアプリです。ブラウザから起動して使用してください。"))
                 .font(.title3)
                 .multilineTextAlignment(.center)
                 .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
                 .frame(height: 120.0)
             
-            Button(NSLocalizedString("m03-003", comment: "利用規約")) {
-                if self.authenticationController.termsOfUseURL.isEmpty == false {
-                    if let openURL = URL(string:self.authenticationController.termsOfUseURL)
-                    {
-                        UIApplication.shared.open(openURL)
-                    }
-                }
-            }.modifier(SmallButtonModifier(color: self.authenticationController.toggleColor(url: self.authenticationController.termsOfUseURL)))
-            
-            Button(NSLocalizedString("m03-004", comment: "プライバシーポリシー")) {
-                if self.authenticationController.privacyPolicyURL.isEmpty == false {
-                    if let openURL = URL(string:self.authenticationController.privacyPolicyURL)
-                    {
-                        UIApplication.shared.open(openURL)
-                    }
-                }
-            }.modifier(SmallButtonModifier(color: self.authenticationController.toggleColor(url: self.authenticationController.privacyPolicyURL)))
+            Button(NSLocalizedString("terms of service", comment: "利用規約")) {
+                self.authenticationController.openURLButton(url: authenticationController.termsOfUseURL)
 
-            Button(NSLocalizedString("m03-005", comment: "個人情報保護方針")) {
-                if self.authenticationController.protectionPolicyURL.isEmpty == false {
-                    if let openURL = URL(string:self.authenticationController.protectionPolicyURL)
-                    {
-                        UIApplication.shared.open(openURL)
-                    }
-                }
-            }.modifier(SmallButtonModifier(color: self.authenticationController.toggleColor(url: self.authenticationController.protectionPolicyURL)))
+            }.modifier(SmallButtonModifier(color: self.authenticationController.getButtonColor(checkStr: self.authenticationController.termsOfUseURL)))
+            
+            Button(NSLocalizedString("privacy policy", comment: "プライバシーポリシー")) {
+                self.authenticationController.openURLButton(url:self.authenticationController.privacyPolicyURL)
+                
+            }.modifier(SmallButtonModifier(color: self.authenticationController.getButtonColor(checkStr: self.authenticationController.privacyPolicyURL)))
+
+            Button(NSLocalizedString("personal data protection policy", comment: "個人情報保護方針")) {
+                
+                self.authenticationController.openURLButton(url:self.authenticationController.protectionPolicyURL)
+                
+            }.modifier(SmallButtonModifier(color: self.authenticationController.getButtonColor(checkStr: self.authenticationController.protectionPolicyURL)))
         }
     }
 }

@@ -2,7 +2,7 @@
 //  SmallButtonModifier.swift
 //  MyNumberCardAuth
 //
-//  Created by abelstaff on 2023/03/29.
+//  Created by c3lab on 2023/03/29.
 //
 
 import SwiftUI

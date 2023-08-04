@@ -2,7 +2,7 @@
 //  MyNumberCardAuthApp.swift
 //  MyNumberCardAuth
 //
-//  Created by abelstaff on 2023/04/20.
+//  Created by c3lab on 2023/04/20.
 //
 
 import SwiftUI
@@ -70,7 +70,7 @@ struct MyNumberCardAuthApp: App {
                         self.authenticationController.runMode = authenticationController.runMode.isMode(queryDict: query)
                         self.authenticationController.queryDict = query;
                         self.authenticationController.clear()
-                        self.authenticationController.setOpenURL(queryDict: query)
+                        self.authenticationController.setErrorPageURL(queryDict: query)
                         
                         if let actionURL = query["action_url"], let nonse = query["nonce"]
                         {
