@@ -6,6 +6,8 @@ services:
     volumes:
       -  './examples/dummy-platform/platform-api.yaml:/usr/src/prism/platform-api.yaml'
     command: mock -h 0.0.0.0 /usr/src/prism/platform-api.yaml
+    ports:
+      - '4010:4010'
     expose:
       - '4010'
     restart: unless-stopped
