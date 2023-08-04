@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:native-app.mynumber.abelsoft.co.jp?mode=developer</string>
+		<string>applinks:example.com?mode=developer</string>
 	</array>
 	<key>com.apple.developer.nfc.readersession.formats</key>
 	<array>

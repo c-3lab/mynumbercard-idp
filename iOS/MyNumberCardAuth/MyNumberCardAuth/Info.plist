@@ -16,11 +16,11 @@
 	<key>InquiryURL</key>
 	<string>https://www.kojinbango-card.go.jp/contact/</string>
 	<key>PrivacyPolicyURL</key>
-	<string>https://native-app.abelsoft.in-private.dev/open-id/privacy-policy.html</string>
+	<string>https://example.com/open-id/privacy-policy.html</string>
 	<key>ProtectionPolicyURL</key>
-	<string>https://native-app.abelsoft.in-private.dev/open-id/personal-data-protection-policy.html</string>
+	<string>https://example.com/open-id/personal-data-protection-policy.html</string>
 	<key>TermsOfServiceURL</key>
-	<string>https://native-app.abelsoft.in-private.dev/open-id/terms-of-use.html</string>
+	<string>https://example.com/open-id/terms-of-use.html</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UISceneConfigurations</key>
