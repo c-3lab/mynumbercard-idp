@@ -3,7 +3,6 @@ package com.example.mynumbercardidp.keycloak.authentication.utils;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.example.mynumbercardidp.keycloak.authentication.authenticators.browser.RelayResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.mime.HttpMultipartMode;
@@ -30,11 +29,10 @@ import javax.ws.rs.core.MediaType;
 
 public final class X509AuthenticatorUtil {
     protected static final String HTML_HEADER_ENCODING_TYPE = "enctype";
-    public static final String RELAY_DEST_FILE_ATTR_NAME = "x509File";
+    public static final String RELAY_DEST_FILE_ATTR_NAME_SIGN = "encryptedDigitalSignatureCertificate";
+    public static final String RELAY_DEST_FILE_ATTR_NAME_USER = "userAuthenticationCertificate";
     public static final String USER_IDENTITY_ATTR_NAME = "uniqueId";
-    public static final String SIGNATURE_ATTR_NAME = "signature";
-
-    private static Logger consoleLogger = Logger.getLogger(X509AuthenticatorUtil.class);
+    public static final String SIGNATURE_ATTR_NAME = "sign";
 
     public static boolean checkCertificateFormat(String contents) {
         boolean result = false;
@@ -42,13 +40,11 @@ public final class X509AuthenticatorUtil {
             InputStream inputStream =
                 new ByteArrayInputStream(Base64.getDecoder().decode(contents.getBytes("utf-8")));
             try {
-            // Accept PEM (X.509 Certificate) file only.
+            // PEM（X.509証明書）のみを受け入れる
                 CertificateFactory cf = CertificateFactory.getInstance("X.509");
                 Certificate cert = cf.generateCertificate(inputStream);
-                consoleLogger.debug("Certificate type: " + cert.getType());
                 result = true;
             } catch (CertificateException pem_e) {
-                consoleLogger.warn("CertificateException: Not certificate file format.");
                 result = false;
             } finally {
                 try {
@@ -58,9 +54,6 @@ public final class X509AuthenticatorUtil {
                 }
             }
         } catch (UnsupportedEncodingException stream_e) {
-            consoleLogger.warn(
-                "UnsupportedEncodingException: Expect a Base64 encoded PEM file contents without newlines."
-            );
             stream_e.printStackTrace();
             result = false;
         }
@@ -78,7 +71,6 @@ public final class X509AuthenticatorUtil {
             engine.initVerify(x509);
             engine.update(nonce.getBytes("utf-8"));
             boolean result = engine.verify(Base64.getDecoder().decode(signature.getBytes("utf-8")));
-            consoleLogger.debug("Signature verify result: " + (result ? "success" : "failed"));
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,7 +82,7 @@ public final class X509AuthenticatorUtil {
                                              String fileAttributeName,
                                              String certificateBase64Content)
             throws NullPointerException {
-        // Create post data.
+        // POSTデータを作成する
         HttpPost httpPost = new HttpPost(verifyDestUrl);
         httpPost.setHeader(HTML_HEADER_ENCODING_TYPE, MediaType.MULTIPART_FORM_DATA);
 
@@ -104,7 +96,7 @@ public final class X509AuthenticatorUtil {
 
         httpPost.setEntity(multiPartEntityBuilder.build());
 
-        // Send certificate file.
+        // 証明書ファイルを送付する
         JsonNode responseData = null;
         try {
             CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -112,21 +104,17 @@ public final class X509AuthenticatorUtil {
 
             final HttpEntity responseEntity = httpResponse.getEntity();
             if (responseEntity == null) {
-                consoleLogger.error("responceEntity is empty.");
-                consoleLogger.error("Please check certificate verify server status.");
                 return null;
             }
             try (InputStream inputStream = responseEntity.getContent()) {
                 ObjectMapper objectMapper = new ObjectMapper();
 
-                consoleLogger.trace("HTTP Response:");
                 String contentsBody = IOUtils.toString(inputStream, "UTF-8");
-                consoleLogger.trace(contentsBody);
 
                 responseData = objectMapper.readTree(contentsBody);
             } catch (Exception e) {
-                 // [Note] This block is reserved to catch certain errors related to InputStream.
-                 throw e;
+                // InputStream用のエラーをcatchする
+                throw e;
             }
 
         } catch (Exception e) {
@@ -138,24 +126,4 @@ public final class X509AuthenticatorUtil {
 
     }
 
-    public static RelayResponse convertRelayResponse(JsonNode responseData) {
-       // Parse the JSON format and assign it to the RelayResponse type.
-       // Return a RelayResponse type to the caller.
-       ObjectMapper mapper = new ObjectMapper();
-       try {
-           RelayResponse responce =
-               new RelayResponse(
-                   responseData.get("uniqueId").textValue(),
-                   responseData.get("verifyResultCode").intValue(),
-                   responseData.get("name").textValue(),
-                   responseData.get("gender").textValue(),
-                   responseData.get("address").textValue(),
-                   responseData.get("birthDate").textValue());
-           consoleLogger.trace("convert result: " + responce.toString());
-           return responce;
-       } catch (Exception e) {
-           e.printStackTrace();
-           return new RelayResponse("", RelayResponse.VERIFY_RESULT_INTERNAL_ERROR);
-       }
-    }
 }

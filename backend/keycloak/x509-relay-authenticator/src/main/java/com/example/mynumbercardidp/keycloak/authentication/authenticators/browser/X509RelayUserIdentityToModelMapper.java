@@ -22,13 +22,9 @@ public abstract class X509RelayUserIdentityToModelMapper {
         throws Exception;
 
     static class UserIdentityToCustomAttributeMapper extends X509RelayUserIdentityToModelMapper {
-        private static Logger consoleLogger = Logger.getLogger(
-                                                  UserIdentityToCustomAttributeMapper.class
-                                              );
 
         private List<String> _customAttributes;
         UserIdentityToCustomAttributeMapper(String customAttributes) {
-            consoleLogger.debug("customAttributes: " + customAttributes);
             _customAttributes = Arrays.asList(
                                     Constants.CFG_DELIMITER_PATTERN.split(customAttributes)
                                 );
@@ -38,16 +34,13 @@ public abstract class X509RelayUserIdentityToModelMapper {
         public UserModel find(AuthenticationFlowContext context, Object userIdentity)
             throws Exception {
 
-            consoleLogger.debug("Process: find");
             KeycloakSession session = context.getSession();
             List<String> userIdentityValues =
                 Arrays.asList(Constants.CFG_DELIMITER_PATTERN.split(userIdentity.toString()));
 
-            consoleLogger.trace("userIdentity: " + userIdentity.toString());
             if (_customAttributes.isEmpty() ||
                 userIdentityValues.isEmpty() ||
                 (_customAttributes.size() != userIdentityValues.size())) {
-                consoleLogger.info("getUserIdentityToModelMapper is Empty.");
                 return null;
             }
             Stream<UserModel> usersStream =
@@ -57,14 +50,9 @@ public abstract class X509RelayUserIdentityToModelMapper {
                     userIdentityValues.get(0)
                 );
 
-            consoleLogger.trace("_customAttributes.get(0): " + _customAttributes.get(0));
-            consoleLogger.trace("userIdentityValues.get(0): " + userIdentityValues.get(0));
-            consoleLogger.trace("_customAttributes.size(): " + _customAttributes.size());
             for (int i = 0; i <_customAttributes.size(); ++i) {
                 String customAttribute = _customAttributes.get(i);
-                consoleLogger.trace("customAttribute: " + customAttribute);
                 String userIdentityValue = userIdentityValues.get(i);
-                consoleLogger.trace("userIdentityValue: " + userIdentityValue);
                 usersStream = usersStream.filter(
                                   user -> Objects.equals(
                                               user.getFirstAttribute(customAttribute),
@@ -74,7 +62,6 @@ public abstract class X509RelayUserIdentityToModelMapper {
             if (users.size() > 1) {
                 throw new ModelDuplicateException();
             }
-            consoleLogger.debug("users.size(): " + users.size());
             return users.size() == 1 ? users.get(0) : null;
         }
     }
