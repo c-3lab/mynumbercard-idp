@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-store">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="css/style.css">
+  <title>Sample web service</title>
+</head>
+<body>
+<div id="content">
+  <header>
+    <p>ようこそ、<%= vars.family_name !== '' ? vars.family_name : 'ゲスト'  %>さん</p>
+  <%_
+    switch (vars.username) {
+      case '':
+  _%>
+    <p><a href="/login">ログイン</a></p>
+  <%_
+    break;
+    default:
+  _%>
+    <p><a href="/logout">ログアウト</a></p>
+  <%_ } _%>
+  </header>
+  <%_
+    switch (vars.username) {
+      case '': // Displays detailed user information only while logged in.
+        break;
+      default:
+  _%>
+    <table id="user-info">
+      <tr>
+        <td>名前:</td>
+        <td><%= vars.family_name %>&nbsp;<%= vars.given_name %></td>
+      </tr>
+      <tr>
+        <td>住所:</td>
+        <td><%= vars.address.postal_code %> <%= vars.address.region %><%= vars.address.locality %><%= vars.address.street_address %></td>
+      </tr>
+      <tr>
+        <td>性別:</td>
+        <td><%= vars.gender %></td>
+      </tr>
+      <tr>
+        <td>生年月日:</td>
+        <td><%= vars.date_of_birth %></td>
+      </tr>
+      <tr>
+	<td>プラットフォーム ユニークID:</td>
+        <td><%= vars.unique_id %></td>
+      </tr>
+      <tr>
+        <td>User ID:</td>
+        <td><%= vars.sub %></td>
+      </tr>
+      <tr>
+        <td>Access Token:</td>
+        <td><div class="word-break-all"><%= vars.access_token %></div></td>
+     </tr>
+   </table>
+  <%_ } _%>
+  <div id="token-info">
+    <p>keycloak-id-token: <br><%= JSON.stringify(vars.id_token_content) %></p>
+    <p>keycloak-token: <br><%= JSON.stringify(vars.token_content) %></p>
+  </div>
+</div>
+</body>
+</html>
