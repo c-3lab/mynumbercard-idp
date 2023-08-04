@@ -49,8 +49,8 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate{
                    httpResponse.statusCode == 503){
                     DispatchQueue.main.async {
                         self.authenticationController.isAlert = true
-                        self.authenticationController.messageTitle = NSLocalizedString("failure", comment: "失敗")
-                        self.authenticationController.messageString = NSLocalizedString("unexpected", comment: "予期せぬエラーが発生しました。")
+                        self.authenticationController.messageTitle = NSLocalizedString("Failure", comment: "失敗")
+                        self.authenticationController.messageString = NSLocalizedString("An unexpected error has occurred.", comment: "予期せぬエラーが発生しました。")
                     }
                 }
                 
@@ -58,19 +58,19 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate{
                     DispatchQueue.main.async {
                         self.authenticationController.isAlert = true
                         self.authenticationController.isErrorOpenURL = true
-                        self.authenticationController.messageTitle = NSLocalizedString("authentication failure", comment: "認証失敗")
-                        self.authenticationController.messageString = NSLocalizedString("no user", comment: "ユーザー未登録のため、利用者登録を行ってください。")
+                        self.authenticationController.messageTitle = NSLocalizedString("Authentication failure", comment: "認証失敗")
+                        self.authenticationController.messageString = NSLocalizedString("Since you have not registered as a user, please register as a user.", comment: "ユーザー未登録のため、利用者登録を行ってください。")
                     }
                 }
 
                 if(httpResponse.statusCode == 401){
                     DispatchQueue.main.async {
                         self.authenticationController.isLinkAlert = true
-                        self.authenticationController.messageTitle = NSLocalizedString("authentication failure", comment: "認証失敗")
+                        self.authenticationController.messageTitle = NSLocalizedString("Authentication failure", comment: "認証失敗")
                         if(self.authenticationController.runMode == .Login){
-                            self.authenticationController.messageString = NSLocalizedString("certificate revoked", comment: "利用者証明用電子証明書が失効しています。") + NSLocalizedString("link below", comment: "お住まいの市区町村の窓口へお問い合わせください。")
+                            self.authenticationController.messageString = NSLocalizedString("The electronic certificate for user certification has been revoked.", comment: "利用者証明用電子証明書が失効しています。") + NSLocalizedString("Please contact the window of your municipality, or contact the window of the My Number Card Comprehensive Site from the link below.", comment: "お住まいの市区町村の窓口へお問い合わせください。")
                         }else{
-                            self.authenticationController.messageString = NSLocalizedString("certificate revoked for signature", comment: "署名用電子証明書が失効しています。") + NSLocalizedString("link below", comment: "お住まいの市区町村の窓口へお問い合わせください。")
+                            self.authenticationController.messageString = NSLocalizedString("The electronic signature certificate has expired.", comment: "署名用電子証明書が失効しています。") + NSLocalizedString("Please contact the window of your municipality, or contact the window of the My Number Card Comprehensive Site from the link below.", comment: "お住まいの市区町村の窓口へお問い合わせください。")
                         }
                     }
                 }
@@ -80,8 +80,8 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate{
                     DispatchQueue.main.async {
                         self.authenticationController.isAlert = true
                         self.authenticationController.isErrorOpenURL = true
-                        self.authenticationController.messageTitle = NSLocalizedString("registration failed", comment: "登録失敗")
-                        self.authenticationController.messageString = NSLocalizedString("already registered", comment: "既にユーザーが登録されているため、ログインを行ってください。")
+                        self.authenticationController.messageTitle = NSLocalizedString("Registration failed", comment: "登録失敗")
+                        self.authenticationController.messageString = NSLocalizedString("Since the user is already registered, please log in.", comment: "既にユーザーが登録されているため、ログインを行ってください。")
                     }
                 }
                 
@@ -91,8 +91,8 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate{
                         self.authenticationController.viewState = .SignatureView
                         self.authenticationController.runMode = .Replacement
                         self.authenticationController.isAlert = true
-                        self.authenticationController.messageTitle = NSLocalizedString("reloading", comment: "マイナンバーカードの再読み込み")
-                        self.authenticationController.messageString = NSLocalizedString("change my registration", comment: "登録情報の変更が必要です。変更を行うため署名用電子証明書の読み取りを行ってください。")
+                        self.authenticationController.messageTitle = NSLocalizedString("Reloading My Number Card", comment: "マイナンバーカードの再読み込み")
+                        self.authenticationController.messageString = NSLocalizedString("I need to change my registration information. Please read the signature digital certificate to make changes.", comment: "登録情報の変更が必要です。変更を行うため署名用電子証明書の読み取りを行ってください。")
                     }
                 }
                 

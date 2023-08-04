@@ -22,7 +22,7 @@ struct NFCReadingForSignatureView: View {
                 .bold()
                 .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
             
-            (Text(NSLocalizedString("signature for my namber", comment: "マイナンバーカードの")) + Text(NSLocalizedString("certificate for signature", comment: "署名用電子証明書")).fontWeight(.bold) + Text(NSLocalizedString("press the start signature", comment: "のパスワード（6～16桁の英数字）を入力し、読み取り開始ボタンを押す")))
+            (Text(NSLocalizedString("Enter the password (6 to 16 alphanumeric characters) of the electronic ", comment: "マイナンバーカードの")) + Text(NSLocalizedString("certificate for signature ", comment: "署名用電子証明書")).fontWeight(.bold) + Text(NSLocalizedString("of My Number Card and press the start reading button ", comment: "のパスワード（6～16桁の英数字）を入力し、読み取り開始ボタンを押す")))
                 .font(.title3)
                 .multilineTextAlignment(.center)
                 .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
@@ -66,7 +66,7 @@ struct NFCReadingForSignatureView: View {
                 }
             }.modifier(SmallButtonModifier(color: controller.getButtonColor()))
             .alert(isPresented:self.$authenticationController.isLinkAlert){
-                    Alert(title:Text(self.authenticationController.messageTitle),message:Text(self.authenticationController.messageString),primaryButton: .default(Text(NSLocalizedString("contact page", comment: "問い合わせページ")),action: {
+                    Alert(title:Text(self.authenticationController.messageTitle),message:Text(self.authenticationController.messageString),primaryButton: .default(Text(NSLocalizedString("Contact page", comment: "問い合わせページ")),action: {
                         if (self.authenticationController.inquiryURL.isEmpty == false)
                         {
                             if let openURL = URL(string:self.authenticationController.inquiryURL){

@@ -12,29 +12,29 @@ struct AppExplanationView: View {
     
     var body: some View {
         VStack{
-            Text(NSLocalizedString("app about", comment: "このアプリについて"))
+            Text(NSLocalizedString("About this app", comment: "このアプリについて"))
                 .font(.title)
                 .multilineTextAlignment(.center)
                 .bold()
                 .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
             
-            Text(NSLocalizedString("use browser", comment: "ブラウザを使用してログインするためのアプリです。ブラウザから起動して使用してください。"))
+            Text(NSLocalizedString("It is an application for logging in using a browser. Start it from your browser and use it.", comment: "ブラウザを使用してログインするためのアプリです。ブラウザから起動して使用してください。"))
                 .font(.title3)
                 .multilineTextAlignment(.center)
                 .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
                 .frame(height: 120.0)
             
-            Button(NSLocalizedString("terms of service", comment: "利用規約")) {
+            Button(NSLocalizedString("Terms Of Service", comment: "利用規約")) {
                 self.authenticationController.openURLButton(url: authenticationController.termsOfUseURL)
 
             }.modifier(SmallButtonModifier(color: self.authenticationController.getButtonColor(checkStr: self.authenticationController.termsOfUseURL)))
             
-            Button(NSLocalizedString("privacy policy", comment: "プライバシーポリシー")) {
+            Button(NSLocalizedString("Privacy Policy", comment: "プライバシーポリシー")) {
                 self.authenticationController.openURLButton(url:self.authenticationController.privacyPolicyURL)
                 
             }.modifier(SmallButtonModifier(color: self.authenticationController.getButtonColor(checkStr: self.authenticationController.privacyPolicyURL)))
 
-            Button(NSLocalizedString("personal data protection policy", comment: "個人情報保護方針")) {
+            Button(NSLocalizedString("Personal Data Protection Policy", comment: "個人情報保護方針")) {
                 
                 self.authenticationController.openURLButton(url:self.authenticationController.protectionPolicyURL)
                 

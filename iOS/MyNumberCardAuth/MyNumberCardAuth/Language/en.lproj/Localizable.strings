@@ -11,29 +11,29 @@
 "password" = "password";
 "close" = "close";
 
-"for my namber" = "Enter the password (4-digit number) of the electronic ";
-"certificate for user verification" = "certificate for user verification ";
-"press the start" = "of My Number Card and press the start reading button ";
+"Enter the password (4-digit number) of the electronic " = "Enter the password (4-digit number) of the electronic ";
+"certificate for user verification " = "certificate for user verification ";
+"of My Number Card and press the start reading button. " = "of My Number Card and press the start reading button ";
 
-"signature for my namber" = "Enter the password (6 to 16 alphanumeric characters) of the electronic ";
-"certificate for signature" = "certificate for signature ";
-"press the start signature" = "of My Number Card and press the start reading button ";
+"Enter the password (6 to 16 alphanumeric characters) of the electronic " = "Enter the password (6 to 16 alphanumeric characters) of the electronic ";
+"certificate for signature " = "certificate for signature ";
+"of My Number Card and press the start reading button " = "of My Number Card and press the start reading button ";
 
-"app about" = "About this app";
-"use browser" = "It is an application for logging in using a browser. Start it from your browser and use it.";
-"terms of service" = "Terms Of Service";
-"privacy policy" = "Privacy Policy";
-"personal data protection policy" = "Personal Data Protection Policy";
+"About this app" = "About this app";
+"It is an application for logging in using a browser. Start it from your browser and use it." = "It is an application for logging in using a browser. Start it from your browser and use it.";
+"Terms Of Service" = "Terms Of Service";
+"Privacy Policy" = "Privacy Policy";
+"Personal Data Protection Policy" = "Personal Data Protection Policy";
 
-"failure" = "Failure";
-"unexpected" = "An unexpected error has occurred.";
-"authentication failure" = "Authentication failure";
-"no user" = "Since you have not registered as a user, please register as a user.";
-"certificate revoked" = "The electronic certificate for user certification has been revoked.";
-"certificate revoked for signature" = "The electronic signature certificate has expired.";
-"link below" = "Please contact the window of your municipality, or contact the window of the My Number Card Comprehensive Site from the link below.";
-"contact page" = "Contact page";
-"registration failed" = "Registration failed";
-"already registered" = "Since the user is already registered, please log in.";
-"reloading" = "Reloading My Number Card";
-"change my registration" = "I need to change my registration information. Please read the signature digital certificate to make changes.";
+"Failure" = "Failure";
+"An unexpected error has occurred." = "An unexpected error has occurred.";
+"Authentication failure" = "Authentication failure";
+"Since you have not registered as a user, please register as a user." = "Since you have not registered as a user, please register as a user.";
+"The electronic certificate for user certification has been revoked." = "The electronic certificate for user certification has been revoked.";
+"The electronic signature certificate has expired." = "The electronic signature certificate has expired.";
+"Please contact the window of your municipality, or contact the window of the My Number Card Comprehensive Site from the link below." = "Please contact the window of your municipality, or contact the window of the My Number Card Comprehensive Site from the link below.";
+"Contact page" = "Contact page";
+"Registration failed" = "Registration failed";
+"Since the user is already registered, please log in." = "Since the user is already registered, please log in.";
+"Reloading My Number Card" = "Reloading My Number Card";
+"I need to change my registration information. Please read the signature digital certificate to make changes." = "I need to change my registration information. Please read the signature digital certificate to make changes.";
