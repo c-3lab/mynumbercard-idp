@@ -56,6 +56,7 @@ public class CustomAttributeProvider implements RealmResourceProvider {
 
     public CustomAttributeProvider(KeycloakSession session) {
         this.session = session;
+        this.token = null;
         this.user = null;
         this.client = null;
         this.sessionId = null;
@@ -76,7 +77,7 @@ public class CustomAttributeProvider implements RealmResourceProvider {
         KeycloakContext context = session.getContext();
 
         // ユーザー認証を実施する
-        user = authorization(context.getRequestHeaders());
+        this.user = authorization(context.getRequestHeaders());
         if (user == null) {
             return ResponseMessage.getErrorResponse(ResponseMessage.ERROR_TYPE.UNAUTHORIZED);
         }
@@ -159,7 +160,7 @@ public class CustomAttributeProvider implements RealmResourceProvider {
         
         try {
             JWSInput input = new JWSInput(tokenString);
-            token = input.readJsonContent(AccessToken.class);
+            this.token = input.readJsonContent(AccessToken.class);
         } catch (JWSInputException e) {
             e.printStackTrace();
         }
@@ -187,8 +188,8 @@ public class CustomAttributeProvider implements RealmResourceProvider {
             return null;
         }
 
-        client = realm.getClientByClientId(token.getIssuedFor());
-        sessionId = token.getSessionId();
+        this.client = realm.getClientByClientId(token.getIssuedFor());
+        this.sessionId = token.getSessionId();
 
         return authResult.getUser();
     }
