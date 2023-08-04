@@ -87,7 +87,7 @@ app.post("/assign", keycloak.protect(), async (req, res, next) => {
     request.post({
       uri: assignAPIURL,
       headers: { "Content-type": "application/json" },
-      headers: { "Authorization": "Bearer " + user.access_token },
+      headers: { "Authorization": "Bearer " + user.accessToken },
       json: {
         "userAttributes": {
           //サービスの独自ID
