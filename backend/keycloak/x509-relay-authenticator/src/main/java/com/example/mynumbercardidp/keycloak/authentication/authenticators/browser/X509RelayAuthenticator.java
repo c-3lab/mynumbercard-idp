@@ -176,7 +176,6 @@ public class X509RelayAuthenticator extends UsernamePasswordForm {
                 return;
             } 
             JsonNode responseData = null;
-            consoleLogger.error("TRY GETTING RESPONSE DATA");
             try {
                 // POST用のデータを作成する
                 responseData = postDataToPlatform(context, thisMethodName, "encryptedDigitalSignatureCertificate", encryptedDigitalSignatureCertificate, applicantData, sign);
