@@ -21,8 +21,8 @@ app.use(keycloak.middleware());
 app.use(express.static('public'));
 
 function getUser(req) {
-  let idTokenContent = "";
-  let tokenContent = "";
+  let idTokenContent = {};
+  let tokenContent = {};
 
   let username = "";
   let name = "";
