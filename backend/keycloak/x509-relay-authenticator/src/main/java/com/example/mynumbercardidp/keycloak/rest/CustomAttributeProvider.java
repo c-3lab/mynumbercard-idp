@@ -91,8 +91,8 @@ public class CustomAttributeProvider implements RealmResourceProvider {
             return ResponseMessage.getErrorResponse(ResponseMessage.ERROR_TYPE.BAD_REQUEST);
         }
 
-        // userAttributesの値がJSONオブジェクトであるかを確認する
-        String jsonValue = requestData.get("userAttributes").toString();
+        // user_attributesの値がJSONオブジェクトであるかを確認する
+        String jsonValue = requestData.get("user_attributes").toString();
         if (!verifyJsonFormat(jsonValue)) {
             return ResponseMessage.getErrorResponse(ResponseMessage.ERROR_TYPE.BAD_REQUEST);
         }
