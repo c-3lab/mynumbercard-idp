@@ -79,7 +79,7 @@
 22. 以下のように設定し、 `Save` ボタンをクリックします。
     - Alias: (任意の文字列。 例えば `x509-auth` など。)
     - Enable debug mode: On
-    - Certificate Vaildator URI: http://dummy-platform
+    - Certificate Vaildator URI: http://platform-gateway
     - Run URI of Android application: (Android アプリ リンクのURL または 入力しない)
     - Run URI of iOS application: (iOS ユニバーサルリンクのURL または 入力しない)
     - Installation URI of Android/iOS application: (アプリインストール案内ページのURL または 入力しない)
