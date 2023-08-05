@@ -199,7 +199,11 @@
 10. 下の `ログイン` ボタンをクリックします。
 11. エラーや警告が表示されないことを確認します。
 12. 画面右上部にある `ログアウト` リンクをクリックします。
-13. ユーザー情報変更を試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し基本4情報を修正し `Save` ボタンをクリックします。
+13. ユーザー情報変更を試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し `Attributes` タブで以下の基本4情報を修正し `Save` ボタンをクリックします。
+    - user_address 
+    - birth_date
+    - name
+    - gender_code
 14. Webサービスの画面右上部にある `ログイン` リンクをクリックします。
 15. `登録情報の変更` ボタンをクリックします。
 16. エラーや警告が表示されないことを確認します。
@@ -230,7 +234,11 @@
 15. 上の `ログイン` ボタンをクリックします。
 16. エラーや警告が表示されないことを確認します。
 17. 画面右上部にある `ログアウト` リンクをクリックします。
-18. ユーザー情報変更を試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し基本4情報を修正し `Save` ボタンをクリックします。
+18. ユーザー情報変更を試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し `Attributes` タブで以下の基本4情報を修正し `Save` ボタンをクリックします。
+    - user_address 
+    - birth_date
+    - name
+    - gender_code
 19. Webサービスの画面右上部にある `ログイン` リンクをクリックします。
 20. `Mode change` セレクトボックスで `replacement` を選択します。
 21. `X509 privkey file` の `ファイル選択` をクリックし、次のステップで選択する公開鍵（証明書）に対応する秘密鍵を選択します。
