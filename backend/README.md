@@ -39,11 +39,12 @@
      - `http://192.0.2.100:8080/`  
      - `http://docker-server:8080/`  
 
-   Dockerホスト自身やSSHポート転送で接続する場合、 `http://127.0.0.1:8080/` へ変更します。
+   (※)コンテナ外やコンテナの中からアクセスするため、127.0.0.1は使用出来ません
 
    assign_setting.jsonは以下の箇所となります
    例：
-     "URL": "https://docker-server/realms/OIdp/custom-attribute/assign"
+     - `http://192.0.2.100:8080/realms/OIdp/custom-attribute/assign`
+     - `http://docker-server:8080/realms/OIdp/custom-attribute/assign`
 
 6. ファイル `keycloak/x509-relay-authenticator/src/main/resources/theme/call-native-app/login/login.ftl` 内の330、334、372~374行目のファイル参照先を以下のように変更します。
    - 修正前： `https://nginx.example.com/open-id/ファイル名`
