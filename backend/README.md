@@ -31,7 +31,7 @@
    ```
    chmod 777 data
    ```
-5. ファイル `examples/sample-rp/docker/keycloak.json` と`examples/sample-rp/docker02/keycloak.json`内の `auth-server-url` を以下のように変更します。   
+5. ファイル `examples/sample-rp/docker01/keycloak.json` と`examples/sample-rp/docker02/keycloak.json`内の `auth-server-url` と`examples/sample-rp/docker01/assign_setting.json` と`examples/sample-rp/docker02/assign_setting.json`内の`URL`を以下のように変更します。
    Dockerホストの外側から接続する場合、  
    `http://[DockerホストのIPアドレス または DockerホストのDNS名]:8080/` へ変更します。  
    接続元の端末から見た、DockerホストのIPアドレス または DNS名を期待しています。  
@@ -40,6 +40,11 @@
      - `http://docker-server:8080/`  
 
    Dockerホスト自身やSSHポート転送で接続する場合、 `http://127.0.0.1:8080/` へ変更します。
+
+   assign_setting.jsonは以下の箇所となります
+   例：
+     "URL": "https://docker-server/realms/OIdp/custom-attribute/assign"
+
 6. ファイル `keycloak/x509-relay-authenticator/src/main/resources/theme/call-native-app/login/login.ftl` 内の330、334、372~374行目のファイル参照先を以下のように変更します。
    - 修正前： `https://nginx.example.com/open-id/ファイル名`
    - 修正後： `https://[DockerホストのIPアドレス または DockerホストのDNS名]/open-id/ファイル名`
