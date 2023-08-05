@@ -47,7 +47,7 @@ function getUser(req) {
     uniqueId = idTokenContent.unique_id;
 
     tokenContent = JSON.parse(req.session['keycloak-token']);
-    accessToken = tokenContent.access_token;
+    accessToken = req.kauth.grant.access_token.token;
   }
 
   const user = {
