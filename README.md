@@ -23,6 +23,17 @@ Andoidでマイナンバーカードを読み取り、公的個人認証を行�
         </activity>
 
 ```
+
+## 利用規約/プライバシーポリシー/個人情報保護方針の表示URLを設定
+[MyNumberCardAuth/app/src/main/java/com/example/mynumbercardidp/data/Constants.kt]ファイルの以下を表示したいURLに変更する
+・プライバシーポリシー
+  PrivacyPolicy {override fun toString(): String { return "https://example.com/open-id/privacy-policy.html" }
+・個人情報保護方針
+  ProtectionPolicy {override fun toString(): String { return "https://example.com/open-id/personal-data-protection-policy.html" }
+・利用規約
+　TermsOfUse {override fun toString(): String { return "https://example.com/open-id/terms-of-use.html" }
+
+
 ## デフォルトアプリの設定
 
 Android 端末で [設定] > [アプリ] > [My Number Auth] > [デフォルトで開く] > [+ リンクを追加] を選択します。
