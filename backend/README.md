@@ -132,7 +132,7 @@
 39. 画面上部にある `Advanced` タブをクリックします。
 40. `Authentication flow overrides` セクションの `Browser Flow` を `my number card` へ変更し、 `Save` ボタンをクリックします。
 41. ナビゲーションエリアにある `Manage` セクションの `Client scopes` をクリックし、`profile`リンクをクリックします。
-42. 画面上部にある `Mappers` をクリックし、`Add mapper` 、 `By configuration` の順でクリックします。
+42. 画面上部にある `Mappers` タブをクリックし、`Add mapper` 、 `By configuration` の順でクリックします。
 43. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。
     - Name: user address
     - User Attribute: userAddress
