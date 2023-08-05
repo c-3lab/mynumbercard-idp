@@ -15,13 +15,8 @@ services:
     hostname: platform-gateway
     volumes:
       - ./examples/platform-gateway/conf.d:/etc/nginx/conf.d
-      - ./examples/platform-gateway/html:/srv/html
     environment:
       - TZ=Asia/Tokyo
     ports:
       - '4010:80'
     restart: unless-stopped
-networks:
-  default:
-    external: false
-    name: service_network
