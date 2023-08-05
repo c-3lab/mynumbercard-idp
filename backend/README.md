@@ -79,7 +79,7 @@
 22. 以下のように設定し、 `Save` ボタンをクリックします。
     - Alias: (任意の文字列。 例えば `x509-auth` など。)
     - Enable debug mode: On
-    - Certificate Vaildator URI: http://platform-gateway
+    - Certificate Validator URI: http://platform-gateway
     - Run URI of Android application: (Android アプリ リンクのURL または 入力しない)
     - Run URI of iOS application: (iOS ユニバーサルリンクのURL または 入力しない)
     - Installation URI of Android/iOS application: (アプリインストール案内ページのURL または 入力しない)
@@ -131,8 +131,8 @@
 38. 画面上部にある `Client details` リンクをクリックし、 `address` の `Assigned type` 列の値を `Optional` から `Default` へ変更します。
 39. 画面上部にある `Advanced` タブをクリックします。
 40. `Authentication flow overrides` セクションの `Browser Flow` を `my number card` へ変更し、 `Save` ボタンをクリックします。
-41. ナビゲーションエリアにある `Manage` セクションの `Client scopes` をクリックし、`Profile`リンクをクリックします。
-42. 画面上部にある `Client scope details` をクリックし、`Add mapper` 、 `By configuration` の順でクリックします。
+41. ナビゲーションエリアにある `Manage` セクションの `Client scopes` をクリックし、`profile`リンクをクリックします。
+42. 画面上部にある `Mappers` をクリックし、`Add mapper` 、 `By configuration` の順でクリックします。
 43. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。
     - Name: user address
     - User Attribute: userAddress
