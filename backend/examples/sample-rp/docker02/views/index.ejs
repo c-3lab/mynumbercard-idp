@@ -12,13 +12,11 @@
       <header>
         <p>ようこそ、<%= user.name !== '' ? user.name : 'ゲスト'  %>さん</p>
         <%_
-        switch (user.username) {
-          case '':
+         if (user.username === '') {
         _%>
           <p><a href="/login">ログイン</a></p>
         <%_
-           break;
-              default:
+         } else {
         _%>
           <div class="assign">
             <form action="/assign" method="post">
