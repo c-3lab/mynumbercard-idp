@@ -3,6 +3,7 @@ const express = require("express");
 const session = require("express-session");
 const Keycloak = require("keycloak-connect");
 const request = require("request");
+const fs = require('fs');
 
 const sessionStore = new session.MemoryStore();
 const keycloak = new Keycloak({ store: sessionStore });
@@ -77,11 +78,13 @@ app.get("/login", keycloak.protect(), (req, res) => {
   res.redirect(303, "/")
 });
 
-const serviceIdValue = "Axvc01_3";
-const noteValue = "RP2";
-const assignAPIURL = 'https://keycloak.example.com/realms/OIdp/custom-attribute/assign';
 app.post("/assign", keycloak.protect(), async (req, res, next) => {
   try {
+    const setting = JSON.parse(fs.readFileSync('./assign_setting.json', 'utf8'));
+    const serviceIdValue = setting.serviceId
+    const noteValue = setting.note
+    const assignAPIURL = setting.URL
+
     // RP側のユーザーに関連した情報をIdP側のユーザーに紐づけるAPIを呼び出す
     const user = getUser(req)
     request.post({
