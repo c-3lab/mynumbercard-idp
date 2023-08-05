@@ -23,7 +23,6 @@ app.use(express.static('public'));
 
 function getUser(req) {
   let idTokenContent = {};
-  let tokenContent = {};
 
   let username = "";
   let name = "";
@@ -47,13 +46,11 @@ function getUser(req) {
     nickname = idTokenContent.nickname;
     uniqueId = idTokenContent.unique_id;
 
-    tokenContent = JSON.parse(req.session['keycloak-token']);
     accessToken = req.kauth.grant.access_token.token;
   }
 
   const user = {
     username: username,
-    tokenContent: tokenContent,
     idTokenContent: idTokenContent,
     name: name,
     address: address,
