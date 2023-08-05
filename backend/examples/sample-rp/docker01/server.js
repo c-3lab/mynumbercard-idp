@@ -39,9 +39,9 @@ function getUser(req) {
 
     username = idTokenContent.preferred_username;
     name = idTokenContent.name;
-    address = idTokenContent.userAddress;
-    gender = idTokenContent.gender;
-    dateOfBirth = idTokenContent.birthDate;
+    address = idTokenContent.user_address;
+    gender = idTokenContent.gender_code;
+    dateOfBirth = idTokenContent.birth_date;
     sub = idTokenContent.sub;
     nickname = idTokenContent.nickname;
     uniqueId = idTokenContent.unique_id;
@@ -89,9 +89,9 @@ app.post("/assign", keycloak.protect(), async (req, res, next) => {
       headers: { "Content-type": "application/json" },
       headers: { "Authorization": "Bearer " + user.accessToken },
       json: {
-        "userAttributes": {
+        "user_attributes": {
           //サービスの独自ID
-          "serviceId": serviceIdValue,
+          "service_id": serviceIdValue,
           "notes": noteValue
         }
       }
