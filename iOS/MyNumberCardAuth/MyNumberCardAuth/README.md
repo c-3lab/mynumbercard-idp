@@ -44,6 +44,14 @@ Info.plistに以下を追加。
         valueにNFC読み取りを行う旨の内容を入力してください。  
         例：マイナンバーカードを読み取ります。
 
+Info.plistに以下を修正。
+    - ProtectionPolicyURL
+　　　　　個人情報保護方針の表示先URL
+    - TermsOfServiceURL
+　　　　　利用規約の表示先URL
+    - PrivacyPolicyURL
+　　　　　プライバシーポリシーの表示先URL
+
 ### Signing & Capabilities
 プロジェクトTARGETS > Signing & Capabilities  
 に以下を追加。
@@ -54,8 +62,7 @@ Info.plistに以下を追加。
 - Universal Linksを使うために  
     - Associated Domeins  
     Domains  
-    applinks:native-app.abelsoft.in-private.dev?mode=developer
-
+    applinks:example.com?mode=developer
     ※apple-app-site-associationの配置先ドメインと一致させること  
     ※ビルドするアプリのTeamID.Bundle Identifierをapple-app-site-associationのappleIdsに記載すること
 
@@ -74,7 +81,7 @@ Universal Linkを実装する際のAASAファイルを作成し、対応ドメ�
   "applinks": {
       "details": [
            {
-             "appIDs": ["8WFPCA36MV.com.abelsoft.MyNumberCardAuth","8WFPCA36MV.com.abelsoft.TestApp"],
+             "appIDs": ["XXXXXXXXXX.example.MyNumberCardAuth"],
              "components": [
                {
                   "/": "/realms/OIdp/login-actions/authenticate",
@@ -85,12 +92,14 @@ Universal Linkを実装する際のAASAファイルを作成し、対応ドメ�
        ]
    },
    "webcredentials": {
-      "apps": [ "8WFPCA36MV.com.abelsoft.MyNumberCardAuth" ]
+      "apps": [ "XXXXXXXXXX.example.MyNumberCardAuth" ]
    }
 }
 ```  
 - appIDs
   [チームID].[Bundle Identifier] を記載。
+　　※実行時の環境にあわせて修正を行う
+　　
 - components
   アプリを起動させるパスを記載
 
