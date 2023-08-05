@@ -50,8 +50,8 @@ function getUser(req) {
   }
 
   const user = {
-    username: username,
     idTokenContent: idTokenContent,
+    username: username,
     name: name,
     address: address,
     gender: gender,
