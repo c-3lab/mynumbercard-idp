@@ -16,7 +16,7 @@ struct NFCReadingView: View {
     
     var body: some View {
         VStack{
-            Text(NSLocalizedString("my number card authentication", comment: "マイナンバーカード認証"))
+            Text(NSLocalizedString("My number card \n authentication", comment: "マイナンバーカード認証"))
                 .font(.title)
                 .multilineTextAlignment(.center)
                 .bold()
