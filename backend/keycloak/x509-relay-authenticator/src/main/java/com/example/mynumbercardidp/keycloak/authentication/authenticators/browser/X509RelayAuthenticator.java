@@ -208,14 +208,14 @@ public class X509RelayAuthenticator extends UsernamePasswordForm {
                 // ユーザー属性を設定する
                 String[] attributeName = {
                     "uniqueId",
-                    "name",
-                    "gender"
+                    "name"
                 };
                 for (String key : attributeName) {
                     user.setSingleAttribute(key, responseData.get("identityInfo").get(key).toString().replace("\"", "")); 
                 }
-                user.setSingleAttribute("userAddress", responseData.get("identityInfo").get("address").toString().replace("\"", "")); 
-                user.setSingleAttribute("birthDate", responseData.get("identityInfo").get("dateOfBirth").toString().replace("\"", "")); 
+                user.setSingleAttribute("gender_code", responseData.get("identityInfo").get("gender").toString().replace("\"", "")); 
+                user.setSingleAttribute("user_address", responseData.get("identityInfo").get("address").toString().replace("\"", "")); 
+                user.setSingleAttribute("birth_date", responseData.get("identityInfo").get("dateOfBirth").toString().replace("\"", "")); 
                 user.setEnabled(true);
                 context.setUser(user);
                 context.success();
@@ -272,9 +272,9 @@ public class X509RelayAuthenticator extends UsernamePasswordForm {
             // ユーザー属性を変更する
             if (context.getUser() != null) {
                 context.getUser().setSingleAttribute("name", responseData.get("identityInfo").get("name").toString().replace("\"", ""));
-                context.getUser().setSingleAttribute("gender", responseData.get("identityInfo").get("gender").toString().replace("\"", ""));
-                context.getUser().setSingleAttribute("userAddress", responseData.get("identityInfo").get("address").toString().replace("\"", ""));
-                context.getUser().setSingleAttribute("birthDate", responseData.get("identityInfo").get("dateOfBirth").toString().replace("\"", ""));
+                context.getUser().setSingleAttribute("gender_code", responseData.get("identityInfo").get("gender").toString().replace("\"", ""));
+                context.getUser().setSingleAttribute("user_address", responseData.get("identityInfo").get("address").toString().replace("\"", ""));
+                context.getUser().setSingleAttribute("birth_date", responseData.get("identityInfo").get("dateOfBirth").toString().replace("\"", ""));
                 context.success();
                 return;
             }
