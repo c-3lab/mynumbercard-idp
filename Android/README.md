@@ -117,8 +117,11 @@ Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:8080
 ポート80の`https://XXXXXXXXXX.XXXXX.XXX` が、AndroidがWebサービスからアプリを起動する時のホスト名となりますのでAndroidManifest.xmlに設定してください。  
 
 ・Keycloak管理コンソールを開き、以下の設定を行います。  
-realm Oidp＞realm-settings＞General>Frontend URL   
+realm Oidp＞Realm settings＞General>Frontend URL   
 ポート8080の`https://XXXXXXXXXX.XXXXX.XXX`
+
+realm Oidp＞Authentication＞my number card>X509 Relay Authenticatorの右にあるSettings（歯車のアイコン）＞Run URI of Android application  
+ポート80の`https://XXXXXXXXXX.XXXXX.XXX`
 
 ・keycloak.jsonを設定します。  
 backend/examples/sample-rp/docker01/keycloak.json  
@@ -137,10 +140,11 @@ backend/examples/sample-rp/docker02/assign_setting.json
 を開き、URLにポート8080の`https://XXXXXXXXXX.XXXXX.XXX` を設定します。
 
 ```json
-  "URL": "https://XXXXXXXXXX.XXXXX.XXX",
+  "URL": "https://XXXXXXXXXX.XXXXX.XXX/realms/OIdp/custom-attribute/assign",
 ```
 
-※各ポートの`https://XXXXXXXXXX.XXXXX.XXX`はngrok startを行うごとに切り替わりますので、都度、AndroidManifest.xmlと、上記手順の設定値(keycloak.json、assign_setting.json、Keycloak管理コンソールのFrontend URL)を書き換えてください。
+※各ポートの`https://XXXXXXXXXX.XXXXX.XXX`はngrok startを行うごとに切り替わりますので、都度、AndroidManifest.xmlと、  
+上記手順の設定値(keycloak.json、assign_setting.json、Keycloak管理コンソールのFrontend URL、Run URI of Android application)を書き換えてください。
 
 ## 動作確認
 Webサービスからログイン処理を行い、認証成功画面を開くまでの動作確認手順です。
