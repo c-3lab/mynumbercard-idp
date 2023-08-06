@@ -1,9 +1,0 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "com.example.mynumberauth",
-    "sha256_cert_fingerprints":
-    ["95:4C:82:8F:D8:9D:29:E0:63:DA:6E:E7:6F:FE:32:09:EC:55:05:93:52:5D:DE:A5:25:78:9E:52:93:1F:84:6B"]
-  }
-}]
