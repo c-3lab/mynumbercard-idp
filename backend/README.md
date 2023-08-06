@@ -181,6 +181,11 @@
 54. `Default locale` を `English` から `日本語` へ変更し、 `Save` をクリックします。  
 
 ## 動作確認（マイナンバーカード用）
+> note  
+ローカル環境で実施する場合、以下を実施してください。  
+・デジタルアセットリンクファイル及びapple-app-site-asociationファイルを以下のディレクトリへ配置します。  
+　配置先ディレクトリ： `(リポジトリの配置ディレクトリ)/backend/native-app-settings/nginx/html/.well-known`
+
 1. ブラウザでWebサービスへ接続します。  
    Dockerホストの外側から接続する場合、  
    ブラウザで `http://[DockerホストのIPアドレス または DockerホストのDNS名]:3000` へ接続します。  
