@@ -20,7 +20,6 @@
 		AD8022A129F0BB68009EA409 /* SmallButtonModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8022A029F0BB68009EA409 /* SmallButtonModifier.swift */; };
 		AD8022A329F0BBBF009EA409 /* NFCReadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8022A229F0BBBF009EA409 /* NFCReadingView.swift */; };
 		AD8022A729F0BC65009EA409 /* HTTPSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8022A629F0BC65009EA409 /* HTTPSession.swift */; };
-		ADA2BEC129FB7E230037D16F /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = ADA2BEC029FB7E230037D16F /* README.md */; };
 		ADE94AA629F66CB700A98728 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE94AA529F66CB700A98728 /* AuthenticationManager.swift */; };
 		ADE94AA829F914CB00A98728 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE94AA729F914CB00A98728 /* ViewController.swift */; };
 /* End PBXBuildFile section */
@@ -43,7 +42,6 @@
 		AD8022A229F0BBBF009EA409 /* NFCReadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReadingView.swift; sourceTree = "<group>"; };
 		AD8022A629F0BC65009EA409 /* HTTPSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPSession.swift; sourceTree = "<group>"; };
 		AD8022AD29F0C47A009EA409 /* MyNumberCardAuth.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyNumberCardAuth.entitlements; sourceTree = "<group>"; };
-		ADA2BEC029FB7E230037D16F /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		ADE94AA529F66CB700A98728 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		ADE94AA729F914CB00A98728 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -89,7 +87,6 @@
 		AD80228B29F0B402009EA409 /* MyNumberCardAuth */ = {
 			isa = PBXGroup;
 			children = (
-				ADA2BEC029FB7E230037D16F /* README.md */,
 				AD8022AD29F0C47A009EA409 /* MyNumberCardAuth.entitlements */,
 				AD80229C29F0B560009EA409 /* Info.plist */,
 				AD80228C29F0B402009EA409 /* MyNumberCardAuthApp.swift */,
@@ -219,7 +216,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ADA2BEC129FB7E230037D16F /* README.md in Resources */,
 				9FE5928D2A57E91B000C3569 /* Localizable.strings in Resources */,
 				AD80229429F0B403009EA409 /* Preview Assets.xcassets in Resources */,
 				AD80229129F0B403009EA409 /* Assets.xcassets in Resources */,
