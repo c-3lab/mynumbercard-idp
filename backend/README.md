@@ -84,7 +84,7 @@
 23. ナビゲーションエリアにある `Configure` セクションの `Realm settings` をクリックします。  
 24. `Login` タブをクリックし、 `User registration` を `On` へ変更します。  
 25. `Themes` タブをクリックし、`Login theme` を `call-native-app` へ変更、 `Save` ボタンをクリックします。  
-26. ナビゲーションエリアにある `Manager` セクションの `Clients` をクリックします。  
+26. ナビゲーションエリアにある `Manage` セクションの `Clients` をクリックします。  
 27. `Create client` をクリック、以下のように設定し、 `Next` ボタンをクリックします。  
     - Client type: OpenID Connect
     - Client ID: sample-client
