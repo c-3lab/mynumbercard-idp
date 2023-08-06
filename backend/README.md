@@ -133,7 +133,7 @@
 42. 画面上部にある `Mappers` タブをクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
 43. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
     - Name: user address  
-    - User Attribute: userAddress  
+    - User Attribute: user_address
     - Token Claim Name: user_address
     - Claim JSON Type: String
     - Add to ID token: On
@@ -155,7 +155,7 @@
 46. 画面上部にある `Client scope details` をクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
 47. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。
     - Name: gender code
-    - User Attribute: genderCode
+    - User Attribute: gender_code
     - Token Claim Name: gender_code
     - Claim JSON Type: String
     - Add to ID token: On
@@ -166,7 +166,7 @@
 48. 画面上部にある `Client scope details` をクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
 49. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
     - Name: birth date
-    - User Attribute: birthDate
+    - User Attribute: birth_date
     - Token Claim Name: birth_date
     - Claim JSON Type: String
     - Add to ID token: On
