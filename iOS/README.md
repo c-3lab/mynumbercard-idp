@@ -150,6 +150,7 @@ lighteningケーブルでiPhoneとMacを接続。
 ### Universal Linkとapple-app-site-asociation(AASA)
 https://developer.apple.com/documentation/xcode/supporting-associated-domains  
 Universal Linkを実装する際のAASAファイルを作成し、対応ドメインサーバに配置する。  
+ローカル環境で動作確認する場合は、backendのREADME.mdを参照ください。
 
 ```json:apple-app-site-asociation
 {
