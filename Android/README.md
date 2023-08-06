@@ -73,14 +73,17 @@ Android アプリリンクを用いてアプリを起動できるようにする
 #### 前提条件
 1. http://[DockerホストのIPアドレス]:8080/より、Keycloak管理コンソールが開ける状態であること。
 1. [ngrok公式](https://ngrok.com/)より、ダウンロードを行い、ngrok.exeを任意のフォルダに配置。
-1. サインアップを行っていること。(アカウント登録無しでも実行できますが、セッション時間が制限される場合があります。) 
+1. サインアップを行っていること。  
+**※有料アカウントの登録が必要になります。**  
+(Android アプリリンクを用いてアプリを起動しますが、  
+無料アカウントの場合、Webサービスがassetlinks.jsonをダウンロードする際に確認画面が出てしまい、jsonがダウンロードできないため。)  
 1. Authtokenを取得済みであること。([ngrok公式](https://ngrok.com/)よりログイン後、左側のメニューに「Your Authtoken」という項目があるのでクリックすると、Authtokenが表示されるのでコピーできます。)
 1. コマンドプロンプトでngrok.exeを配置したディレクトリに移動し、`ngrok authtoken xxxxxxxxxxxxxxxxxxxxxxxxx`を実行。以下のファイルが作成されていること。
 1. `上記コマンド実行後に表示されたディレクトリ/ngrok.yml`
 
 #### 設定
 ・sample-rpを使用するため、使用可能なlocalhostのIPアドレスを取得します。  
-（※ Dockerホストの外からのアクセスとコンテナ間のアクセス、両方で使用されるため、前提条件記載の[DockerホストのIPアドレス]以外のIPアドレスが必要です。）
+（※ [DockerホストのIPアドレス]を指定してください。ただし、）
 
 ・前提条件で作成したngrok.ymlに以下の設定を行います
 ```yml
@@ -91,13 +94,13 @@ authtoken: XXXXXXXXX
 tunnels:
   samplerp:
     proto: http
-    addr: [sample-rpのIPアドレス]:3000
+    addr: [DockerホストのIPアドレス]:3000
   keycloak:	
     proto: http	
-    addr: [sample-rpのIPアドレス]:8080	
+    addr: [DockerホストのIPアドレス]:8080	
   nativeapp:	
     proto: http	
-    addr: [sample-rpのIPアドレス]:80
+    addr: [DockerホストのIPアドレス]:80
 ```
 
 ・コマンドプロンプトを開き、ngrok.exeを配置したディレクトリに移動し、以下を実行します。  
@@ -110,7 +113,6 @@ Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:80
 Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:3000
 Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:8080
 ```
-`https://XXXXXXXXXX.XXXXX.XXX` で、localhostのポート(上記だと80、3000、8080)上にあるサイトを表示できるようになります。  
 ポート80の`https://XXXXXXXXXX.XXXXX.XXX` が、AndroidがWebサービスからアプリを起動する時のホスト名となりますのでAndroidManifest.xmlに設定してください。  
 
 ・Keycloak管理コンソールを開き、以下の設定を行います。  
