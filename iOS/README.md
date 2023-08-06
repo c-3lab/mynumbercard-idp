@@ -18,7 +18,7 @@ iOS 16.4ではユニバーサルリンクが動作しないことを確認しま
 
 ## 構築手順
 以下クローン後の手順になります。
-ß
+
 ### Xcodeプロジェクトを開く
 クローン後は、Xcodeで「mynumbercard-idp/iOS/MyNumberCardAuth」を開く
 
