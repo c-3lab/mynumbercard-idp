@@ -31,7 +31,8 @@ AndroidManifest.xmlを編集し、インテントフィルタの設定値を変�
 ```
 
 ## 利用規約/プライバシーポリシー/個人情報保護方針の表示URLを設定
-[Constants.kt](Android/MyNumberCardAuth/app/src/main/java/com/example/mynumbercardidp/data/Constants.kt)ファイルの以下を表示したいURLに変更してください。
+Constants.ktファイルの以下を表示したいURLに変更してください。  
+Android/MyNumberCardAuth/app/src/main/java/com/example/mynumbercardidp/data/Constants.kt
 
 ```kotlin
 　//プライバシーポリシー
@@ -65,7 +66,7 @@ Android アプリリンクを用いてアプリを起動できるようにする
 以上でデジタルアセットリンクファイルの作成は完了です。
 
 保存したファイル、 `assetlinks.json` を対応ドメインサーバーに配置します。  
-ローカル環境で動作確認する場合は、backendの[README.md](../backend/README.md)を参照ください。
+ローカル環境で動作確認する場合は、backendのREADME.mdを参照ください。
 
 ## ngrokの設定(ローカルで動作確認をする場合)
 ローカルで動作確認をする場合、Android端末からlocalhost環境にアクセスする方法としてngrokを使用することを想定しています。
@@ -82,8 +83,8 @@ Android アプリリンクを用いてアプリを起動できるようにする
 1. `上記コマンド実行後に表示されたディレクトリ/ngrok.yml`
 
 #### 設定
-・sample-rpを使用するため、使用可能なlocalhostのIPアドレスを取得します。  
-（※ [DockerホストのIPアドレス]を指定してください。ただし、）
+・sample-rpを使用するため、使用可能なIPアドレスを取得します。  
+（※ [DockerホストのIPアドレス]を指定してください。ただし、127.0.0.1は使用できません。）
 
 ・前提条件で作成したngrok.ymlに以下の設定を行います
 ```yml
@@ -120,9 +121,9 @@ realm Oidp＞realm-settings＞General>Frontend URL
 ポート8080の`https://XXXXXXXXXX.XXXXX.XXX`
 
 ・keycloak.jsonを設定します。  
-[docker01のkeycloak.json](../backend/examples/sample-rp/docker01/keycloak.json)  
+backend/examples/sample-rp/docker01/keycloak.json  
 または  
-[docker02のkeycloak.json](../backend/examples/sample-rp/docker02/keycloak.json)  
+backend/examples/sample-rp/docker02/keycloak.json  
 を開き、auth-server-urlにポート8080の`https://XXXXXXXXXX.XXXXX.XXX` を設定します。
 
 ```json
@@ -130,9 +131,9 @@ realm Oidp＞realm-settings＞General>Frontend URL
 ```
 
 ・assign_setting.jsonを設定します。  
-[docker01のassign_setting.json](../backend/examples/sample-rp/docker01/assign_setting.json)  
+backend/examples/sample-rp/docker01/assign_setting.json  
 または  
-[docker02のassign_setting.json](../backend/examples/sample-rp/docker02/assign_setting.json)  
+backend/examples/sample-rp/docker02/assign_setting.json  
 を開き、URLにポート8080の`https://XXXXXXXXXX.XXXXX.XXX` を設定します。
 
 ```json
