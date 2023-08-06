@@ -76,7 +76,7 @@ Android アプリリンクを用いてアプリを起動できるようにする
 1. サインアップを行っていること。(アカウント登録無しでも実行できますが、セッション時間が制限される場合があります。) 
 1. Authtokenを取得済みであること。([ngrok公式](https://ngrok.com/)よりログイン後、左側のメニューに「Your Authtoken」という項目があるのでクリックすると、Authtokenが表示されるのでコピーできます。)
 1. コマンドプロンプトでngrok.exeを配置したディレクトリに移動し、`ngrok authtoken xxxxxxxxxxxxxxxxxxxxxxxxx`を実行。以下のファイルが作成されていること。
-1. `上記コマンド実行後に表示されたディレクトリ\ngrok.yml`
+1. `上記コマンド実行後に表示されたディレクトリ/ngrok.yml`
 
 #### 設定
 sample-rpを使用するため、使用可能なlocalhostのIPアドレスを取得します。  
@@ -114,7 +114,7 @@ Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:8080
 ポート80の`https://XXXXXXXXXX.XXXXX.XXX` が、AndroidがWebサービスからアプリを起動する時のホスト名となります。  
 
 次に、Keycloak管理コンソールを開き、以下の設定を行います。  
-realm Oidp＞realm-settings＞General>Frontend URL　　
+realm Oidp＞realm-settings＞General>Frontend URL
 ポート8080の`https://XXXXXXXXXX.XXXXX.XXX`
 
 keycloak.jsonの設定  
