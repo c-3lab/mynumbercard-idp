@@ -9,7 +9,7 @@ Androidでマイナンバーカードを読み取り、公的個人認証を行�
 - Android バージョン 13
 
 ## アプリ起動時のホスト名の変更
-[app/src/main/AndroidManifest.xml](Android/MyNumberCardAuth/app/src/main/AndroidManifest.xml) のファイルを編集し、インテントフィルタの設定値を変更します。
+AndroidManifest.xmlを編集し、インテントフィルタの設定値を変更します。
 
 `native-app.example.com` の部分をアプリの起動に使用したいホスト名に変更します。  
 (ローカル環境で動作確認する場合は、本READMEの「ngrokの設定(ローカルで動作確認をする場合)」で取得したホスト名を記載ください。)
@@ -79,10 +79,10 @@ Android アプリリンクを用いてアプリを起動できるようにする
 1. `上記コマンド実行後に表示されたディレクトリ/ngrok.yml`
 
 #### 設定
-sample-rpを使用するため、使用可能なlocalhostのIPアドレスを取得します。  
+・sample-rpを使用するため、使用可能なlocalhostのIPアドレスを取得します。  
 （※ Dockerホストの外からのアクセスとコンテナ間のアクセス、両方で使用されるため、前提条件記載の[DockerホストのIPアドレス]以外のIPアドレスが必要です。）
 
-前提条件で作成したngrok.ymlに以下の設定を行います
+・前提条件で作成したngrok.ymlに以下の設定を行います
 ```yml
 version: "2"
 authtoken: XXXXXXXXX
@@ -100,24 +100,24 @@ tunnels:
     addr: [sample-rpのIPアドレス]:80
 ```
 
-コマンドプロンプトを開き、ngrok.exeを配置したディレクトリに移動し、以下を実行します。  
+・コマンドプロンプトを開き、ngrok.exeを配置したディレクトリに移動し、以下を実行します。  
 `ngrok start --all`  または  
 `ngrok start samplerp keycloak nativeapp`  (samplerp/keycloak/nativeapp以外にもポートを記載している場合は明示的に指定する必要があります。)  
 
-以下のような実行結果が表示されます。  
+・以下のような実行結果が表示されます。  
 ```shell
 Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:80
 Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:3000
 Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:8080
 ```
 `https://XXXXXXXXXX.XXXXX.XXX` で、localhostのポート(上記だと80、3000、8080)上にあるサイトを表示できるようになります。  
-ポート80の`https://XXXXXXXXXX.XXXXX.XXX` が、AndroidがWebサービスからアプリを起動する時のホスト名となります。  
+ポート80の`https://XXXXXXXXXX.XXXXX.XXX` が、AndroidがWebサービスからアプリを起動する時のホスト名となりますのでAndroidManifest.xmlに設定してください。  
 
-次に、Keycloak管理コンソールを開き、以下の設定を行います。  
-realm Oidp＞realm-settings＞General>Frontend URL
+・Keycloak管理コンソールを開き、以下の設定を行います。  
+realm Oidp＞realm-settings＞General>Frontend URL   
 ポート8080の`https://XXXXXXXXXX.XXXXX.XXX`
 
-keycloak.jsonの設定  
+・keycloak.jsonを設定します。  
 [docker01のkeycloak.json](../backend/examples/sample-rp/docker01/keycloak.json)  
 または  
 [docker02のkeycloak.json](../backend/examples/sample-rp/docker02/keycloak.json)  
@@ -127,10 +127,22 @@ keycloak.jsonの設定
   "auth-server-url": "https://XXXXXXXXXX.XXXXX.XXX",
 ```
 
+・assign_setting.jsonを設定します。  
+[docker01のassign_setting.json](../backend/examples/sample-rp/docker01/assign_setting.json)  
+または  
+[docker02のassign_setting.json](../backend/examples/sample-rp/docker02/assign_setting.json)  
+を開き、URLにポート8080の`https://XXXXXXXXXX.XXXXX.XXX` を設定します。
+
+```json
+  "URL": "https://XXXXXXXXXX.XXXXX.XXX",
+```
+
+※各ポートの`https://XXXXXXXXXX.XXXXX.XXX`はngrok startを行うごとに切り替わりますので、都度、AndroidManifest.xmlと、上記手順の設定値(keycloak.json、assign_setting.json、Keycloak管理コンソールのFrontend URL)を書き換えてください。
+
 ## 動作確認
 Webサービスからログイン処理を行い、認証成功画面を開くまでの動作確認手順です。
 
-> note 
+> note  
 以下手順は、認証基盤としている「Keycloak 認証SPIとForm SPI」（Keycloak）の環境構築が事前に完了していることを前提としています。  
 認証基盤については、[backend] を参照ください。  
 本Androidアプリやブラウザのキャッシュにより、ログイン画面に遷移しない場合があります。  
@@ -140,7 +152,7 @@ Webサービスからログイン処理を行い、認証成功画面を開く�
 1. 画面右上部にある `ログイン` リンクをタップします。
 1. 画面中央にある `ログイン` ボタンor`利用者登録` ボタンor`登録情報の変更` ボタンをタップします。
 1. 本Androidアプリが起動し、トップ画面が表示されます。
-1.  `ログイン` ボタンをタップした場合、`パスワード` ボックスへ、4桁の利用者証明用パスワードを入力します。
+1.  `ログイン` ボタンをタップした場合、`パスワード` ボックスへ、4桁の利用者証明用パスワードを入力します。  
 `利用者登録` ボタンor`登録情報の変更` ボタンをタップした場合、`パスワード` ボックスへ、6～16桁の署名用暗証番号を入力します。
 1. `読み取り開始` ボタンをタップします。
 1. Androidデバイスにマイナンバーカードをかざします。
@@ -152,7 +164,7 @@ Webサービスからログイン処理を行い、認証成功画面を開く�
 `java.net.UnknownServiceException: CLEARTEXT communication to`  
 ※この事象は、http環境特有です。発生した場合は以下を実施してください。  
 
-[app/src/main/AndroidManifest.xml](Android/MyNumberCardAuth/app/src/main/AndroidManifest.xml) のファイルを編集し、以下を追加。  
+AndroidManifest.xml を編集し、以下を追加。  
 ```xml
 <application
         android:usesCleartextTraffic="true"
