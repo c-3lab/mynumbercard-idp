@@ -60,7 +60,7 @@ Info.plistの以下を修正。
     - Near Field Communication Tag Reading
 
 - Universal Linksを使うために  
-    - Associated Domeins  
+    - Associated Domains  
     Domains  
     applinks:example.com?mode=developer
     ※apple-app-site-associationの配置先ドメインと一致させること  
@@ -111,11 +111,14 @@ Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:80
 Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:3000
 Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:8080
 ```
-ポート80の`https://XXXXXXXXXX.XXXXX.XXX` が、iOSがWebサービスからアプリを起動する時のホスト名となりますのでAssociated DomeinsのDomainsに設定してください。  
+ポート80の`https://XXXXXXXXXX.XXXXX.XXX` が、iOSがWebサービスからアプリを起動する時のホスト名となりますのでAssociated DomainsのDomainsに設定してください。  
 
 ・Keycloak管理コンソールを開き、以下の設定を行います。  
 realm Oidp＞realm-settings＞General>Frontend URL   
 ポート8080の`https://XXXXXXXXXX.XXXXX.XXX`
+
+realm Oidp＞Authentication＞my number card>X509 Relay Authenticatorの右にあるSettings（歯車のアイコン）＞Run URI of Android application  
+ポート80の`https://XXXXXXXXXX.XXXXX.XXX`
 
 ・keycloak.jsonを設定します。  
 ../backend/examples/sample-rp/docker01/keycloak.json  
@@ -137,7 +140,7 @@ realm Oidp＞realm-settings＞General>Frontend URL
   "URL": "https://XXXXXXXXXX.XXXXX.XXX/realms/OIdp/custom-attribute/assign",
 ```
 
-※各ポートの`https://XXXXXXXXXX.XXXXX.XXX`はngrok startを行うごとに切り替わりますので、都度、Associated DomeinsのDomainsと、上記手順の設定値(keycloak.json、assign_setting.json、Keycloak管理コンソールのFrontend URL、Run URI of iOS application)を書き換えてください。
+※各ポートの`https://XXXXXXXXXX.XXXXX.XXX`はngrok startを行うごとに切り替わりますので、都度、Associated DomainsのDomainsと、上記手順の設定値(keycloak.json、assign_setting.json、Keycloak管理コンソールのFrontend URL、Run URI of iOS application)を書き換えてください。
 
 ### 実機にアプリを転送
 lighteningケーブルでiPhoneとMacを接続。  
