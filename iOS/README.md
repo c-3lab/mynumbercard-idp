@@ -117,7 +117,7 @@ Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:8080
 realm Oidp＞realm-settings＞General>Frontend URL   
 ポート8080の`https://XXXXXXXXXX.XXXXX.XXX`
 
-realm Oidp＞Authentication＞my number card>X509 Relay Authenticatorの右にあるSettings（歯車のアイコン）＞Run URI of Android application  
+realm Oidp＞Authentication＞my number card>X509 Relay Authenticatorの右にあるSettings（歯車のアイコン）＞Run URI of iOS application  
 ポート80の`https://XXXXXXXXXX.XXXXX.XXX`
 
 ・keycloak.jsonを設定します。  
@@ -144,7 +144,7 @@ realm Oidp＞Authentication＞my number card>X509 Relay Authenticatorの右に�
 
 ### 実機にアプリを転送
 lighteningケーブルでiPhoneとMacを接続。  
-実機iPhoneの設定から「デベロッパ」を開き、UNIVERSAL LINKSの「Associated Domeins Development」をオンにする。
+実機iPhoneの設定から「デベロッパ」を開き、UNIVERSAL LINKSの「Associated Domains Development」をオンにする。
 
 
 ### Universal Linkとapple-app-site-asociation(AASA)
