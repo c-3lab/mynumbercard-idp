@@ -91,11 +91,11 @@ public class X509RelayAuthenticatorFactory implements AuthenticatorFactory {
         debugModeProperty.setDefaultValue(false);
         configProperties.add(debugModeProperty);
 
-        ProviderConfigProperty CertVaildatorUriProperty = new ProviderConfigProperty();
-        CertVaildatorUriProperty.setName("x509-relay-auth.certificate-validator-uri");
-        CertVaildatorUriProperty.setLabel("Certificate Vaildator URI");
-        CertVaildatorUriProperty.setType(ProviderConfigProperty.STRING_TYPE);
-        configProperties.add(CertVaildatorUriProperty);
+        ProviderConfigProperty CertValidatorUriProperty = new ProviderConfigProperty();
+        CertValidatorUriProperty.setName("x509-relay-auth.certificate-validator-uri");
+        CertValidatorUriProperty.setLabel("Certificate Validator URI");
+        CertValidatorUriProperty.setType(ProviderConfigProperty.STRING_TYPE);
+        configProperties.add(CertValidatorUriProperty);
 
         ProviderConfigProperty androidAppUriProperty = new ProviderConfigProperty();
         androidAppUriProperty.setName("x509-relay-auth.android-app-uri");

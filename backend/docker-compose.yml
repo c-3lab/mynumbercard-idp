@@ -14,18 +14,6 @@ services:
       - TZ=Asia/Tokyo
     command:
       - "start-dev"
-  web-service:
-    build: examples/sample-web-service/docker
-    hostname: web-service
-    restart: unless-stopped
-    environment:
-      - TZ=Asia/Tokyo
-    ports:
-      - "3000:3000"
-    networks:
-      default:
-        aliases:
-          - web-app
   native-app-settings:
     image: nginx:1.23.3
     hostname: native-app-settings

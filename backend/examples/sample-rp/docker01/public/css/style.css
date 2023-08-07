@@ -29,6 +29,10 @@ header p:first-child {
     margin-bottom: 0;
 }
 
+header .assign {
+    text-align: right;
+}
+
 #token-info,
 #user-info {
     max-width: 100%;
