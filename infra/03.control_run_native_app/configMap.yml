@@ -1,0 +1,116 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: native-app-config
+data:
+  default.conf: |
+    server {
+      listen       8080;
+      listen  [::]:8080;
+      server_name  localhost;
+      server_tokens off;
+
+      location / {
+          root   /usr/share/nginx/html;
+          index  index.html index.htm;
+      }
+
+      location /.well-known {
+          root   /usr/share/nginx/html;
+          default_type application/json;
+      }
+
+      location /realms/OIdp/login-actions {
+          root   /usr/share/nginx/html;
+          default_type text/html;
+      }
+
+      error_page   500 502 503 504  /50x.html;
+      location = /50x.html {
+          root   /usr/share/nginx/html;
+      }
+
+    }
+  assetlinks.json: |
+    [{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.example.mynumberauth",
+        "sha256_cert_fingerprints":
+        ["00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00"]
+      }
+    }]
+  apple-app-site-association: |
+    {
+      "applinks": {
+          "details": [
+              {
+                "appIDs": [ "XXXXXXXXXX.com.example.MyNumberCardIdp" ],
+                "components": [
+                  {
+                      "/": "realms/OIdp/login-actions/authenticate",
+                      "comment": "login on iOS App."
+                  }
+                ]
+              }
+          ]
+      },
+      "webcredentials": {
+          "apps": [ "XXXXXXXXXX.com.example.MyNumberCardIdp" ]
+      }
+    }
+  index.html: |
+    <html lang="ja">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport"
+          content="
+              width=320,
+              height=480,
+              initial-scale=1.0,
+              minimum-scale=1.0,
+              maximum-scale=1.0,
+              user-scalable=no" />
+        <title>Androidアプリ起動用テストページ</title>
+        <style>
+          body > div {
+              width: 300px;
+              margin-left: auto;
+              margin-right: auto;
+          }
+        </style>
+      </head>
+      <body>
+        <div>
+            <p><a href="#">Android アプリのインストール</a>が必要です。</p>
+        </div>
+      </body>
+    </html>
+  authenticate: |
+    <html lang="ja">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport"
+          content="
+              width=320,
+              height=480,
+              initial-scale=1.0,
+              minimum-scale=1.0,
+              maximum-scale=1.0,
+              user-scalable=no" />
+        <title>iPhoneアプリ起動用テストページ</title>
+        <style>
+          body > div {
+              width: 300px;
+              margin-left: auto;
+              margin-right: auto;
+          }
+        </style>
+      </head>
+      <body>
+        <div>
+            <p><a href="#">iPhone アプリのインストール</a>が必要です。</p>
+        </div>
+      </body>
+    </html>

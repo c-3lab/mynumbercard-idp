@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.25.1
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /etc/nginx/conf.d
+          name: nginx-conf
+        - mountPath: /usr/share/nginx/html/.well-known/assetlinks.json
+          subPath: assetlinks.json
+          name: android-well-known
+        - mountPath: /usr/share/nginx/html/.well-known/apple-app-site-association
+          subPath: apple-app-site-association
+          name: ios-well-known
+        - mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
+          name: android-app-introduce
+        - mountPath: /usr/share/nginx/html/realms/OIdp/login-actions/authenticate
+          subPath: authenticate
+          name: ios-app-introduce
+      volumes:
+      - name: nginx-conf
+        configMap:
+          name: native-app-config
+          items:
+          - key: default.conf
+            path: default.conf
+      - name: android-well-known
+        configMap:
+          name: native-app-config
+          items:
+          - key: assetlinks.json
+            path: assetlinks.json
+      - name: ios-well-known
+        configMap:
+          name: native-app-config
+          items:
+          - key: apple-app-site-association
+            path: apple-app-site-association
+      - name: android-app-introduce
+        configMap:
+          name: native-app-config
+          items:
+          - key: index.html
+            path: index.html
+      - name: ios-app-introduce
+        configMap:
+          name: native-app-config
+          items:
+          - key: authenticate
+            path: authenticate
