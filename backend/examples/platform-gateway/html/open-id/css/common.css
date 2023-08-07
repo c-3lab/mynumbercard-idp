@@ -1,0 +1,20 @@
+#container {
+    max-width: 1000px;
+}
+
+.block-align-center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.text-align-center {
+    text-align: center;
+}
+
+.text-align-right {
+    text-align: right;
+}
+
+.indent-level-down {
+    padding-left: 1em;
+}

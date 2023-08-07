@@ -14,28 +14,6 @@ services:
       - TZ=Asia/Tokyo
     command:
       - "start-dev"
-  dummy-platform:
-    image: nginx:1.23.3
-    hostname: dummy-platform
-    restart: unless-stopped
-    environment:
-      - TZ=Asia/Tokyo
-    volumes:
-      # If you want to ssl port enable, modify ssl.conf file and tls directory comment out to enable.
-      # And, you need certificate and private key put on tls/certs, tls/private directory.
-      - ./examples/dummy-platform/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
-      #- ./dummy-platform/nginx/conf.d/ssl.conf:/etc/nginx/conf.d/ssl.conf
-      #- ./nginx/tls/certs:/etc/pki/tls/certs:ro
-      #- ./nginx/tls/private:/etc/pki/tls/private:ro
-      - ./examples/dummy-platform/nginx/verify:/usr/share/nginx/html/verify
-    expose:
-      # If you want to ssl port enable, modify "443" comment out to enable.
-      - "80"
-      #- "443"
-    networks:
-      default:
-        aliases:
-          - dummy-platform
   web-service:
     build: examples/sample-web-service/docker
     hostname: web-service

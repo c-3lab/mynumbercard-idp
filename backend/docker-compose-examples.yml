@@ -1,0 +1,22 @@
+version: '3'
+services:
+  platform:
+    image: stoplight/prism:5
+    container_name: dummy-platform
+    volumes:
+      -  './examples/dummy-platform/platform-api.yaml:/usr/src/prism/platform-api.yaml'
+    command: mock -h 0.0.0.0 /usr/src/prism/platform-api.yaml
+    expose:
+      - '4010'
+    restart: unless-stopped
+  platform-gateway:
+    image: nginx:1.23.3
+    container_name: platform-gateway
+    hostname: platform-gateway
+    volumes:
+      - ./examples/platform-gateway/conf.d:/etc/nginx/conf.d
+    environment:
+      - TZ=Asia/Tokyo
+    ports:
+      - '4010:80'
+    restart: unless-stopped

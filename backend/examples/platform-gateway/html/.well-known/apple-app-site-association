@@ -1,0 +1,18 @@
+{
+  "applinks": {
+      "details": [
+           {
+             "appIDs": [ "8WFPCA36MV.com.example.MyNumberCardAuth" ],
+             "components": [
+               {
+                  "/": "/realms/OIdp/login-actions/authenticate",
+                  "comment": "login on iOS App."
+               }
+             ]
+           }
+       ]
+   },
+   "webcredentials": {
+      "apps": [ "8WFPCA36MV.com.example.MyNumberCardAuth" ]
+   }
+}
