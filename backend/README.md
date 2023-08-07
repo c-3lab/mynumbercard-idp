@@ -42,7 +42,7 @@
    Dockerホスト自身やSSHポート転送で接続する場合、 `http://127.0.0.1:8080/` へ変更します。
 6. ファイル `keycloak/x509-relay-authenticator/src/main/resources/theme/call-native-app/login/login.ftl` 内の330、334、372~374行目のファイル参照先を以下のように変更します。
    - 修正前： `https://nginx.example.com/open-id/ファイル名`
-   - 修正後： `https://[DockerホストのIPアドレス または DockerホストのDNS名]/open-id/ファイル名`
+   - 修正後： `http://[DockerホストのIPアドレス または DockerホストのDNS名]/open-id/ファイル名`
 7. ディレクトリ `backend` へ移動します。  
    ```
    cd ..
