@@ -51,7 +51,7 @@
 
 7. ファイル `keycloak/x509-relay-authenticator/src/main/resources/theme/call-native-app/login/login.ftl` 内の330、334、372~374行目のファイル参照先を以下のように変更します。
    - 修正前： `https://nginx.example.com/open-id/ファイル名`
-   - 修正後： `https://[DockerホストのIPアドレス または DockerホストのDNS名]/open-id/ファイル名`
+   - 修正後： `http://[DockerホストのIPアドレス または DockerホストのDNS名]/open-id/ファイル名`
 
 8. コンテナイメージをビルドします。  
    ```
