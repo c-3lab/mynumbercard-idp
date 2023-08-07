@@ -1,0 +1,39 @@
+/* 
+  Localizable.strings
+  MyNumberCardAuth
+
+  Created by c3lab on 2023/07/07.
+  
+*/
+
+"My number card \n authentication" = "マイナンバーカード\n認証";
+"start reading" = "読み取り開始";
+"password" = "暗証番号";
+"close" = "閉じる";
+
+"Enter the password (4-digit number) of the electronic " = "マイナンバーカードの";
+"certificate for user verification " = "利用者証明用電子証明書";
+"of My Number Card and press the start reading button. " = "のパスワード（4桁の数字）を入力し、読み取り開始ボタンを押してください";
+
+"Enter the password (6 to 16 alphanumeric characters) of the electronic " = "マイナンバーカードの";
+"certificate for signature " = "署名用電子証明書";
+"of My Number Card and press the start reading button " = "のパスワード（6～16桁の英数字）を入力し、読み取り開始ボタンを押してください";
+
+"About this app" = "このアプリについて";
+"It is an application for logging in using a browser. Start it from your browser and use it." = "ブラウザを使用してログインするためのアプリです。ブラウザから起動して使用してください。";
+"Terms Of Service" = "利用規約";
+"Privacy Policy" = "プライバシーポリシー";
+"Personal Data Protection Policy" = "個人情報保護方針";
+
+"Failure" = "失敗";
+"An unexpected error has occurred." = "予期せぬエラーが発生しました。";
+"Authentication failure" = "認証失敗";
+"Since you have not registered as a user, please register as a user." = "ユーザー未登録のため、利用者登録を行ってください。";
+"The electronic certificate for user certification has been revoked." = "利用者証明用電子証明書が失効しています。";
+"The electronic signature certificate has expired." = "署名用電子証明書が失効しています。";
+"Please contact the window of your municipality, or contact the window of the My Number Card Comprehensive Site from the link below." = "お住まいの市区町村の窓口へお問い合わせいただくか、以下のリンクからマイナンバーカード総合サイトの窓口へお問い合わせください。";
+"Contact page" = "問い合わせページ";
+"Registration failed" = "登録失敗";
+"Since the user is already registered, please log in." = "既にユーザーが登録されているため、ログインを行ってください。";
+"Reloading My Number Card" = "マイナンバーカードの再読み込み";
+"I need to change my registration information. Please read the signature digital certificate to make changes." = "登録情報の変更が必要です。変更を行うため署名用電子証明書の読み取りを行ってください。";

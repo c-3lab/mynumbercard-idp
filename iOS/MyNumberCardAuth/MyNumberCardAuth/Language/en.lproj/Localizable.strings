@@ -1,0 +1,39 @@
+/* 
+  Localizable.strings
+  MyNumberCardAuth
+
+  Created by c3lab on 2023/07/07.
+  
+*/
+
+"My number card \n authentication" = "My number card \n authentication";
+"start reading" = "start reading";
+"password" = "password";
+"close" = "close";
+
+"Enter the password (4-digit number) of the electronic " = "Enter the password (4-digit number) of the electronic ";
+"certificate for user verification " = "certificate for user verification ";
+"of My Number Card and press the start reading button. " = "of My Number Card and press the start reading button ";
+
+"Enter the password (6 to 16 alphanumeric characters) of the electronic " = "Enter the password (6 to 16 alphanumeric characters) of the electronic ";
+"certificate for signature " = "certificate for signature ";
+"of My Number Card and press the start reading button " = "of My Number Card and press the start reading button ";
+
+"About this app" = "About this app";
+"It is an application for logging in using a browser. Start it from your browser and use it." = "It is an application for logging in using a browser. Start it from your browser and use it.";
+"Terms Of Service" = "Terms Of Service";
+"Privacy Policy" = "Privacy Policy";
+"Personal Data Protection Policy" = "Personal Data Protection Policy";
+
+"Failure" = "Failure";
+"An unexpected error has occurred." = "An unexpected error has occurred.";
+"Authentication failure" = "Authentication failure";
+"Since you have not registered as a user, please register as a user." = "Since you have not registered as a user, please register as a user.";
+"The electronic certificate for user certification has been revoked." = "The electronic certificate for user certification has been revoked.";
+"The electronic signature certificate has expired." = "The electronic signature certificate has expired.";
+"Please contact the window of your municipality, or contact the window of the My Number Card Comprehensive Site from the link below." = "Please contact the window of your municipality, or contact the window of the My Number Card Comprehensive Site from the link below.";
+"Contact page" = "Contact page";
+"Registration failed" = "Registration failed";
+"Since the user is already registered, please log in." = "Since the user is already registered, please log in.";
+"Reloading My Number Card" = "Reloading My Number Card";
+"I need to change my registration information. Please read the signature digital certificate to make changes." = "I need to change my registration information. Please read the signature digital certificate to make changes.";

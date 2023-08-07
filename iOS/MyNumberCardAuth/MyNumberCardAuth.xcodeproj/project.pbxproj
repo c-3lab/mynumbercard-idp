@@ -1,0 +1,472 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9F3D97972A5BCE2400FAF526 /* AppExplanationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3D97962A5BCE2400FAF526 /* AppExplanationView.swift */; };
+		9F41DCD12A550C7F0078FD7C /* AuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F41DCD02A550C7F0078FD7C /* AuthenticationController.swift */; };
+		9F5BCA092A52658E004E95E6 /* SignatureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5BCA082A52658E004E95E6 /* SignatureViewController.swift */; };
+		9FCA69B32A4BEE24008AC285 /* NFCReadingForSignatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCA69B22A4BEE24008AC285 /* NFCReadingForSignatureView.swift */; };
+		9FE5928D2A57E91B000C3569 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9FE5928F2A57E91B000C3569 /* Localizable.strings */; };
+		AD80228D29F0B402009EA409 /* MyNumberCardAuthApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD80228C29F0B402009EA409 /* MyNumberCardAuthApp.swift */; };
+		AD80228F29F0B402009EA409 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD80228E29F0B402009EA409 /* ContentView.swift */; };
+		AD80229129F0B403009EA409 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD80229029F0B403009EA409 /* Assets.xcassets */; };
+		AD80229429F0B403009EA409 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD80229329F0B403009EA409 /* Preview Assets.xcassets */; };
+		AD80229F29F0B666009EA409 /* TRETJapanNFCReader-MIFARE-IndividualNumber in Frameworks */ = {isa = PBXBuildFile; productRef = AD80229E29F0B666009EA409 /* TRETJapanNFCReader-MIFARE-IndividualNumber */; };
+		AD8022A129F0BB68009EA409 /* SmallButtonModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8022A029F0BB68009EA409 /* SmallButtonModifier.swift */; };
+		AD8022A329F0BBBF009EA409 /* NFCReadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8022A229F0BBBF009EA409 /* NFCReadingView.swift */; };
+		AD8022A729F0BC65009EA409 /* HTTPSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8022A629F0BC65009EA409 /* HTTPSession.swift */; };
+		ADE94AA629F66CB700A98728 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE94AA529F66CB700A98728 /* AuthenticationManager.swift */; };
+		ADE94AA829F914CB00A98728 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE94AA729F914CB00A98728 /* ViewController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		9F3D97962A5BCE2400FAF526 /* AppExplanationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppExplanationView.swift; sourceTree = "<group>"; };
+		9F41DCD02A550C7F0078FD7C /* AuthenticationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationController.swift; sourceTree = "<group>"; };
+		9F5BCA082A52658E004E95E6 /* SignatureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureViewController.swift; sourceTree = "<group>"; };
+		9FCA69B22A4BEE24008AC285 /* NFCReadingForSignatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReadingForSignatureView.swift; sourceTree = "<group>"; };
+		9FE5928E2A57E91B000C3569 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		9FE592902A57E91F000C3569 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AD80228929F0B402009EA409 /* MyNumberCardAuth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyNumberCardAuth.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD80228C29F0B402009EA409 /* MyNumberCardAuthApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNumberCardAuthApp.swift; sourceTree = "<group>"; };
+		AD80228E29F0B402009EA409 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; wrapsLines = 1; };
+		AD80229029F0B403009EA409 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AD80229329F0B403009EA409 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		AD80229B29F0B42E009EA409 /* TRETJapanNFCReader */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = TRETJapanNFCReader; path = ../TRETJapanNFCReader; sourceTree = "<group>"; };
+		AD80229C29F0B560009EA409 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		AD8022A029F0BB68009EA409 /* SmallButtonModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallButtonModifier.swift; sourceTree = "<group>"; };
+		AD8022A229F0BBBF009EA409 /* NFCReadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReadingView.swift; sourceTree = "<group>"; };
+		AD8022A629F0BC65009EA409 /* HTTPSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPSession.swift; sourceTree = "<group>"; };
+		AD8022AD29F0C47A009EA409 /* MyNumberCardAuth.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyNumberCardAuth.entitlements; sourceTree = "<group>"; };
+		ADE94AA529F66CB700A98728 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
+		ADE94AA729F914CB00A98728 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AD80228629F0B402009EA409 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD80229F29F0B666009EA409 /* TRETJapanNFCReader-MIFARE-IndividualNumber in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9FE592852A57E81D000C3569 /* Language */ = {
+			isa = PBXGroup;
+			children = (
+				9FE5928F2A57E91B000C3569 /* Localizable.strings */,
+			);
+			path = Language;
+			sourceTree = "<group>";
+		};
+		AD80228029F0B402009EA409 = {
+			isa = PBXGroup;
+			children = (
+				AD80229A29F0B42E009EA409 /* Packages */,
+				AD80228B29F0B402009EA409 /* MyNumberCardAuth */,
+				AD80228A29F0B402009EA409 /* Products */,
+				AD80229D29F0B666009EA409 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		AD80228A29F0B402009EA409 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AD80228929F0B402009EA409 /* MyNumberCardAuth.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AD80228B29F0B402009EA409 /* MyNumberCardAuth */ = {
+			isa = PBXGroup;
+			children = (
+				AD8022AD29F0C47A009EA409 /* MyNumberCardAuth.entitlements */,
+				AD80229C29F0B560009EA409 /* Info.plist */,
+				AD80228C29F0B402009EA409 /* MyNumberCardAuthApp.swift */,
+				AD8022AA29F0BF46009EA409 /* Controllers */,
+				AD8022A829F0BEB6009EA409 /* Views */,
+				AD8022A929F0BEF7009EA409 /* Models */,
+				AD8022A029F0BB68009EA409 /* SmallButtonModifier.swift */,
+				AD80229029F0B403009EA409 /* Assets.xcassets */,
+				9FE592852A57E81D000C3569 /* Language */,
+				AD80229229F0B403009EA409 /* Preview Content */,
+			);
+			path = MyNumberCardAuth;
+			sourceTree = "<group>";
+		};
+		AD80229229F0B403009EA409 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				AD80229329F0B403009EA409 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		AD80229A29F0B42E009EA409 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				AD80229B29F0B42E009EA409 /* TRETJapanNFCReader */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		AD80229D29F0B666009EA409 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AD8022A829F0BEB6009EA409 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				AD80228E29F0B402009EA409 /* ContentView.swift */,
+				AD8022A229F0BBBF009EA409 /* NFCReadingView.swift */,
+				9FCA69B22A4BEE24008AC285 /* NFCReadingForSignatureView.swift */,
+				9F3D97962A5BCE2400FAF526 /* AppExplanationView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		AD8022A929F0BEF7009EA409 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				AD8022A629F0BC65009EA409 /* HTTPSession.swift */,
+				ADE94AA529F66CB700A98728 /* AuthenticationManager.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		AD8022AA29F0BF46009EA409 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				ADE94AA729F914CB00A98728 /* ViewController.swift */,
+				9F5BCA082A52658E004E95E6 /* SignatureViewController.swift */,
+				9F41DCD02A550C7F0078FD7C /* AuthenticationController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AD80228829F0B402009EA409 /* MyNumberCardAuth */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AD80229729F0B403009EA409 /* Build configuration list for PBXNativeTarget "MyNumberCardAuth" */;
+			buildPhases = (
+				AD80228529F0B402009EA409 /* Sources */,
+				AD80228629F0B402009EA409 /* Frameworks */,
+				AD80228729F0B402009EA409 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MyNumberCardAuth;
+			packageProductDependencies = (
+				AD80229E29F0B666009EA409 /* TRETJapanNFCReader-MIFARE-IndividualNumber */,
+			);
+			productName = MyNumberCardAuth;
+			productReference = AD80228929F0B402009EA409 /* MyNumberCardAuth.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AD80228129F0B402009EA409 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1420;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					AD80228829F0B402009EA409 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+				};
+			};
+			buildConfigurationList = AD80228429F0B402009EA409 /* Build configuration list for PBXProject "MyNumberCardAuth" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				ja,
+			);
+			mainGroup = AD80228029F0B402009EA409;
+			productRefGroup = AD80228A29F0B402009EA409 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AD80228829F0B402009EA409 /* MyNumberCardAuth */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AD80228729F0B402009EA409 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9FE5928D2A57E91B000C3569 /* Localizable.strings in Resources */,
+				AD80229429F0B403009EA409 /* Preview Assets.xcassets in Resources */,
+				AD80229129F0B403009EA409 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AD80228529F0B402009EA409 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9FCA69B32A4BEE24008AC285 /* NFCReadingForSignatureView.swift in Sources */,
+				AD8022A729F0BC65009EA409 /* HTTPSession.swift in Sources */,
+				AD80228F29F0B402009EA409 /* ContentView.swift in Sources */,
+				9F5BCA092A52658E004E95E6 /* SignatureViewController.swift in Sources */,
+				ADE94AA629F66CB700A98728 /* AuthenticationManager.swift in Sources */,
+				9F41DCD12A550C7F0078FD7C /* AuthenticationController.swift in Sources */,
+				AD8022A129F0BB68009EA409 /* SmallButtonModifier.swift in Sources */,
+				AD80228D29F0B402009EA409 /* MyNumberCardAuthApp.swift in Sources */,
+				ADE94AA829F914CB00A98728 /* ViewController.swift in Sources */,
+				9F3D97972A5BCE2400FAF526 /* AppExplanationView.swift in Sources */,
+				AD8022A329F0BBBF009EA409 /* NFCReadingView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		9FE5928F2A57E91B000C3569 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9FE5928E2A57E91B000C3569 /* ja */,
+				9FE592902A57E91F000C3569 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		AD80229529F0B403009EA409 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AD80229629F0B403009EA409 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AD80229829F0B403009EA409 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MyNumberCardAuth/MyNumberCardAuth.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"MyNumberCardAuth/Preview Content\"";
+				DEVELOPMENT_TEAM = 8WFPCA36MV;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MyNumberCardAuth/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "";
+				INFOPLIST_KEY_NFCReaderUsageDescription = "マイナンバーカードの読み取り";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.MyNumberCardAuth;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AD80229929F0B403009EA409 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MyNumberCardAuth/MyNumberCardAuth.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"MyNumberCardAuth/Preview Content\"";
+				DEVELOPMENT_TEAM = 8WFPCA36MV;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MyNumberCardAuth/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "";
+				INFOPLIST_KEY_NFCReaderUsageDescription = "マイナンバーカードの読み取り";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.MyNumberCardAuth;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AD80228429F0B402009EA409 /* Build configuration list for PBXProject "MyNumberCardAuth" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD80229529F0B403009EA409 /* Debug */,
+				AD80229629F0B403009EA409 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AD80229729F0B403009EA409 /* Build configuration list for PBXNativeTarget "MyNumberCardAuth" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD80229829F0B403009EA409 /* Debug */,
+				AD80229929F0B403009EA409 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AD80229E29F0B666009EA409 /* TRETJapanNFCReader-MIFARE-IndividualNumber */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = "TRETJapanNFCReader-MIFARE-IndividualNumber";
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = AD80228129F0B402009EA409 /* Project object */;
+}
