@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name" translatable="false">MyNumberCardAuth</string>
+    <string name="ok" translatable="false">OK</string>
+    <string name="about_this_app">このアプリについて</string>
+    <string name="terms_of_use">利用規約</string>
+    <string name="privacy_policy">プライバシーポリシー</string>
+    <string name="person_Info_protection_policy">個人情報保護方針</string>
+    <string name="about_this_app_detail">ブラウザを使用してログインするためのアプリです。ブラウザから起動して使用してください。</string>
+    <string name="password">パスワード</string>
+    <string name="start_reading">読み取り開始</string>
+    <string name="screen_title">マイナンバーカード\n認証</string>
+    <string name="description_first_user_verification">マイナンバーカードの</string>
+    <string name="digital_cert_for_user_verification">利用者証明用電子証明書</string>
+    <string name="password_input_for_user_verification">のパスワード(4桁の数字)を入力し、読み取り開始ボタンを押してください</string>
+    <string name="description_first_sign">マイナンバーカードの</string>
+    <string name="digital_cert_for_sign">署名用電子証明書</string>
+    <string name="password_input_for_sign">のパスワード（6～16桁の英数字）を入力し、読み取り開始ボタンを押してください</string>
+    <string name="failure">失敗</string>
+    <string name="failure_description">予期せぬエラーが発生しました。</string>
+    <string name="auth_failure">認証失敗</string>
+    <string name="auth_failure_description">ユーザー未登録のため、利用者登録を行ってください。</string>
+    <string name="user_cert_lapse">利用者証明用電子証明書が失効しています。</string>
+    <string name="sign_cert_lapse">署名用電子証明書が失効しています。</string>
+    <string name="contact_page">問い合わせページ</string>
+    <string name="lapse_description">お住まいの市区町村の窓口へお問い合わせいただくか、以下のリンクからマイナンバーカード総合サイトの窓口へお問い合わせください。</string>
+    <string name="registration_failure">登録失敗</string>
+    <string name="registration_failure_description">既にユーザーが登録されているため、ログインを行ってください。</string>
+    <string name="my_number_card_reload">マイナンバーカードの再読み込み</string>
+    <string name="my_number_card_reload_description">登録情報の変更が必要です。変更を行うため署名用電子証明書の読み取りを行ってください。</string>
+    <string name="in_correct_pin">マイナンバーカードのパスワードが不正です。</string>
+    <string name="try_count_Is_not_left">マイナンバーカードのパスワード試行回数が上限を超えました。</string>
+    <string name="my_number_card_read_failure">マイナンバーカードの読み取りに失敗しました。</string>
+</resources>
