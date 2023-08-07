@@ -174,12 +174,8 @@ div.kc-logo-text span {
     color: #72767b;
 }
 
-#kc-terms-text {
-    margin-bottom: 20px;
-}
-
-#kc-registration {
-    margin-bottom: 0;
+.kc-terms-text {
+    margin-bottom: 25px;
 }
 
 /* TOTP */
@@ -538,19 +534,15 @@ ul#kc-totp-supported-apps {
     width: 100%;
 }
 
-#kc-form-login div.form-group:last-of-type,
 #kc-register-form div.form-group:last-of-type,
 #kc-update-profile-form div.form-group:last-of-type,
 #kc-update-email-form div.form-group:last-of-type{
     margin-bottom: 0px;
 }
 
-.no-bottom-margin {
-    margin-bottom: 0;
-}
-
-#kc-back {
-    margin-top: 5px;
+.pf-c-form__label {
+    display: block;
+    text-align: center;
 }
 
 /* Recovery codes */
