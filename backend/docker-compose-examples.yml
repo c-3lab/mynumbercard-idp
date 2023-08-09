@@ -19,17 +19,29 @@ services:
     ports:
       - '4010:80'
     restart: unless-stopped
-  app01:
-    build: examples/sample-rp/docker01
+  sample-rp01:
+    build:
+      context: examples/sample-rp/docker
+      args:
+        SERVICE_ID: "${RP1_SERVICE_ID}"
+        NOTE: "${RP1_NOTE}"
+        KEYCLOAK_AUTH_URL: "${AUTH_URL}"
+        KEYCLOAK_REALM: "${REALM}"
     container_name: sample-web-app01
-    hostname: app01
+    hostname: sample-rp01
     restart: unless-stopped
     ports:
       - "0.0.0.0:3000:3000"
-  app02:
-    build: examples/sample-rp/docker02
+  sample-rp02:
+    build:
+      context: examples/sample-rp/docker
+      args:
+        SERVICE_ID: "${RP2_SERVICE_ID}"
+        NOTE: "${RP2_NOTE}"
+        KEYCLOAK_AUTH_URL: "${AUTH_URL}"
+        KEYCLOAK_REALM: "${REALM}"
     container_name: sample-web-app02
-    hostname: app02
+    hostname: sample-rp02
     restart: unless-stopped
     ports:
       - "0.0.0.0:3001:3000"
