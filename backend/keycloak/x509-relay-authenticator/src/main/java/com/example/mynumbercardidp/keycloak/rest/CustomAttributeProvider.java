@@ -143,10 +143,9 @@ public class CustomAttributeProvider implements RealmResourceProvider {
 
     // 送られてきたデータが正しいJSON形式になっているか確認
     private boolean verifyJsonFormat(String content) {
-        JsonNode jsonNode = null;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            jsonNode = objectMapper.readTree(content);
+            JsonNode jsonNode = objectMapper.readTree(content);
 
             return jsonNode.isObject();
         } catch (Exception e) {
