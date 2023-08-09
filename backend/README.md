@@ -276,7 +276,7 @@
 10. 下の `ログイン` ボタンをクリックします。  
 11. エラーや警告が表示されないことを確認します。  
 12. 画面右上部にある `ログアウト` リンクをクリックします。  
-13. ユーザー情報変更を試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し `Attributes` タブで以下の基本4情報を修正し `Save` ボタンをクリックします。  
+13. ユーザー情報変更を試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `Manage` - `Users` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し `Attributes` タブで以下の基本4情報を修正し `Save` ボタンをクリックします。  
     - user_address
     - birth_date
     - name
@@ -284,8 +284,8 @@
 14. Webサービスの画面右上部にある `ログイン` リンクをクリックします。  
 15. `登録情報の変更` ボタンをクリックします。  
 16. エラーや警告が表示されないことを確認します。  
-17. ユーザー情報変更の結果を確認したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し修正した基本4情報が初期状態に戻されたことを確認してください。  
-18. ユーザー登録をもう一度試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を削除してください。  
+17. ユーザー情報変更の結果を確認したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `Manage` - `Users` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し修正した基本4情報が初期状態に戻されたことを確認してください。  
+18. ユーザー登録をもう一度試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `Manage` - `Users` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を削除してください。  
 
 ## 動作確認（デバッグ用）
 1. ブラウザでWebサービスへ接続します。  
@@ -312,7 +312,7 @@
 15. 上の `ログイン` ボタンをクリックします。  
 16. エラーや警告が表示されないことを確認します。  
 17. 画面右上部にある `ログアウト` リンクをクリックします。  
-18. ユーザー情報変更を試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し `Attributes` タブで以下の基本4情報を修正し `Save` ボタンをクリックします。  
+18. ユーザー情報変更を試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `Manage` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し `Attributes` タブで以下の基本4情報を修正し `Save` ボタンをクリックします。  
     - user_address
     - birth_date
     - name
@@ -323,8 +323,8 @@
 22. `X509 Certificate File` の `ファイル選択` をクリックし、前のステップで選択した秘密鍵に対応する公開鍵（証明書）を選択します。  
 23. 上の `ログイン` ボタンをクリックします。  
 24. エラーや警告が表示されないことを確認します。  
-25. ユーザー情報変更の結果を確認したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し修正した基本4情報が初期状態に戻されたことを確認してください。  
-26. ユーザー登録をもう一度試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を削除してください。  
+25. ユーザー情報変更の結果を確認したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `Manage` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し修正した基本4情報が初期状態に戻されたことを確認してください。  
+26. ユーザー登録をもう一度試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `Manage` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を削除してください。  
 
 ## Docker コンテナの停止
 1. Docker ホストにて、このリポジトリをダウンロードし、配置したディレクトリへ移動します。  
