@@ -424,7 +424,7 @@ public class X509RelayAuthenticator extends UsernamePasswordForm {
     }
 
     // プラットフォームへPOSTリクエストを送る
-    private JsonNode postDataToPlatform(AuthenticationFlowContext context, String thisMethodName, String certificateType, String certificate, String applicantData, String sign) {
+    private JsonNode postDataToPlatform(AuthenticationFlowContext context, String thisMethodName, String certificateType, String certificate, String applicantData, String sign) throws Exception {
         try {
             HttpPost httpPost = new HttpPost(context.getAuthenticatorConfig().getConfig().get("x509-relay-auth.certificate-validator-uri") + "/verify/" + thisMethodName);
             httpPost.setHeader("Content-type", "application/json");
@@ -451,10 +451,11 @@ public class X509RelayAuthenticator extends UsernamePasswordForm {
             JsonNode responseData = null;
             //CloseableHttpClient httpClient = HttpClients.createDefault();
             // プラットフォームから指定時間内に応答が無ければタイムアウトと判断する。
-            long connectTimeout = 5;
+            int connectTimeout = 5;
             RequestConfig config = RequestConfig.custom()
                                                 .setConnectTimeout(connectTimeout, TimeUnit.SECONDS)
                                                 .setConnectionRequestTimeout(connectTimeout, TimeUnit.SECONDS)
+                                                .setResponseTimeout(connectTimeout, TimeUnit.SECONDS)
                                                 .build();
             CloseableHttpClient httpClient = HttpClientBuilder.create()
                                                             .setDefaultRequestConfig(config)
@@ -463,31 +464,18 @@ public class X509RelayAuthenticator extends UsernamePasswordForm {
             try {
                 httpResponse = httpClient.execute(httpPost);
             }
-            catch (HttpConnectTimeoutException e) {
+            catch (Exception e) {
                 context.form().setStatus(Response.Status.INTERNAL_SERVER_ERROR);
-                try {
-                    consoleLogger.error("接続がタイムアウトしました。プラットフォーム URL: " + httpPost.getUri().toString());
-                }
-                catch (java.net.URISyntaxException uriException) {
-                    consoleLogger.error(PLATFORM_URL_ERROR_MESSAGE);
-                }
+                consoleLogger.error("タイムアウトしました。プラットフォーム URL: " + httpPost.getUri().toString());
                 e.printStackTrace();
-            }
-            catch (HttpTimeoutException e) {
-                context.form().setStatus(Response.Status.INTERNAL_SERVER_ERROR);
-                try {
-                    consoleLogger.error("リクエストがタイムアウトしました。プラットフォーム URL: " + httpPost.getUri().toString());
-                }
-                catch (java.net.URISyntaxException uriException) {
-                    consoleLogger.error(PLATFORM_URL_ERROR_MESSAGE);
-                }
-                e.printStackTrace();
+                throw e;
             }
 
             final HttpEntity responseEntity = httpResponse.getEntity();
             if (responseEntity == null) {
                 context.form().setStatus(Response.Status.INTERNAL_SERVER_ERROR);
                 consoleLogger.error("プラットフォームのレスポンスが空でした。");
+                throw new Exception();
             }
             try (InputStream inputStream = responseEntity.getContent()) {
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -495,12 +483,11 @@ public class X509RelayAuthenticator extends UsernamePasswordForm {
                 String contentsBody = IOUtils.toString(inputStream, "UTF-8");
 
                 responseData = objectMapper.readTree(contentsBody);
-            } catch (com.fasterxml.jackson.core.JsonParseException e) {
-                consoleLogger.error("プラットフォームのレスポンスをJSONへの変換にエラーが発生しました。");
             } catch (java.io.IOException e) {
+                consoleLogger.error("プラットフォームのレスポンスをJSONへの変換にエラーが発生しました。");
                 e.printStackTrace();
+                throw e;
             }
-
             context.getAuthenticationSession().setAuthNote("platformStatusCode", String.valueOf(httpResponse.getCode()));
 
             return responseData;
@@ -509,7 +496,7 @@ public class X509RelayAuthenticator extends UsernamePasswordForm {
             context.form().setStatus(Response.Status.INTERNAL_SERVER_ERROR);
             consoleLogger.error(INTERNAL_SERVER_ERROR_MESSAGE);
             e.printStackTrace();
-            return null;
+            throw e;
         }
         catch (Exception e) {
             context.form().setStatus(Response.Status.INTERNAL_SERVER_ERROR);
