@@ -157,7 +157,7 @@ public class CustomAttributeProvider implements RealmResourceProvider {
     }
 
     // アクセストークン認証
-    private UserModel authorization(HttpHeaders headers) throws Exception, JWSInputException {
+    private UserModel authorization(HttpHeaders headers) throws Exception {
         String tokenString = AppAuthManager.extractAuthorizationHeaderToken(headers);
         
         try {
@@ -165,7 +165,7 @@ public class CustomAttributeProvider implements RealmResourceProvider {
             this.token = input.readJsonContent(AccessToken.class);
         } catch (JWSInputException e) {
             e.printStackTrace();
-            throw new JWSInputException();
+            throw e;
         }
 
         String realmName = this.token.getIssuer().substring(this.token.getIssuer().lastIndexOf('/') + 1);
