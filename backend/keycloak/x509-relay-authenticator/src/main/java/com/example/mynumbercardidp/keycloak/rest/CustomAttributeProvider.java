@@ -77,8 +77,11 @@ public class CustomAttributeProvider implements RealmResourceProvider {
         KeycloakContext context = session.getContext();
 
         // ユーザー認証を実施する
-        this.user = authorization(context.getRequestHeaders());
-        if (user == null) {
+        try {
+            this.user = authorization(context.getRequestHeaders());
+        } catch (JWSInputException e) {
+            return ResponseMessage.getErrorResponse(ResponseMessage.ERROR_TYPE.BAD_REQUEST);
+        } catch (Exception e) {
             return ResponseMessage.getErrorResponse(ResponseMessage.ERROR_TYPE.UNAUTHORIZED);
         }
 
@@ -154,7 +157,7 @@ public class CustomAttributeProvider implements RealmResourceProvider {
     }
 
     // アクセストークン認証
-    private UserModel authorization(HttpHeaders headers) {
+    private UserModel authorization(HttpHeaders headers) throws Exception, JWSInputException {
         String tokenString = AppAuthManager.extractAuthorizationHeaderToken(headers);
         
         try {
@@ -162,6 +165,7 @@ public class CustomAttributeProvider implements RealmResourceProvider {
             this.token = input.readJsonContent(AccessToken.class);
         } catch (JWSInputException e) {
             e.printStackTrace();
+            throw new JWSInputException();
         }
 
         String realmName = token.getIssuer().substring(token.getIssuer().lastIndexOf('/') + 1);
@@ -169,7 +173,7 @@ public class CustomAttributeProvider implements RealmResourceProvider {
         RealmModel realm = realmManager.getRealmByName(realmName);
 
         if (realm == null) {
-            return null;
+            throw new Exception();
         }
 
         ClientConnection connection = session.getContext().getConnection();
@@ -184,7 +188,7 @@ public class CustomAttributeProvider implements RealmResourceProvider {
            );
 
         if (authResult == null) {
-            return null;
+            throw new Exception();
         }
 
         this.client = realm.getClientByClientId(token.getIssuedFor());
