@@ -74,7 +74,7 @@ public class CustomAttributeProvider implements RealmResourceProvider {
     @NoCache
     // RP側のユーザーに関連した情報をIdP側のユーザーに紐づける
     public Response setAttributes(String requestBody) {
-        KeycloakContext context = session.getContext();
+        KeycloakContext context = this.session.getContext();
 
         // ユーザー認証を実施する
         try {
@@ -101,21 +101,21 @@ public class CustomAttributeProvider implements RealmResourceProvider {
         }
 
         // クライアント名はアクセストークンから取得する。
-        String clientId = client.getClientId();
+        String clientId = this.client.getClientId();
 
         // ユーザー属性へ値を書き込む
-        user.setSingleAttribute(clientId + ATTRIBUTE_SUFFIX, jsonValue);
+        this.user.setSingleAttribute(clientId + ATTRIBUTE_SUFFIX, jsonValue);
 
         // アクセストークンの再発行
-        UserSessionModel userSession = session.sessions().getUserSession(context.getRealm(), sessionId);
-        AuthenticatedClientSessionModel clientSession = userSession.getAuthenticatedClientSessionByClient(client.getId());
-        ClientSessionContext clientSessionCtx = DefaultClientSessionContext.fromClientSessionScopeParameter(clientSession, session);
+        UserSessionModel userSession = this.session.sessions().getUserSession(context.getRealm(), this.sessionId);
+        AuthenticatedClientSessionModel clientSession = userSession.getAuthenticatedClientSessionByClient(this.client.getId());
+        ClientSessionContext clientSessionCtx = DefaultClientSessionContext.fromClientSessionScopeParameter(clientSession, this.session);
 
-        ClientConnection connection = session.getContext().getConnection();
-        EventBuilder event = new EventBuilder(context.getRealm(), session, connection);
+        ClientConnection connection = this.session.getContext().getConnection();
+        EventBuilder event = new EventBuilder(context.getRealm(), this.session, connection);
 
         TokenManager tokenManager = new TokenManager();
-        AccessTokenResponse accessTokenResponseBuilder = tokenManager.responseBuilder(context.getRealm(), client, event, session, userSession, clientSessionCtx)
+        AccessTokenResponse accessTokenResponseBuilder = tokenManager.responseBuilder(context.getRealm(), this.client, event, this.session, userSession, clientSessionCtx)
                     .generateAccessToken().generateIDToken().generateRefreshToken().build();
 
         String newTokens = null;
@@ -135,7 +135,7 @@ public class CustomAttributeProvider implements RealmResourceProvider {
         }
 
         // 古いアクセストークンを失効させる
-        revokeAccessToken(token);
+        revokeAccessToken(this.token);
 
         return Response.ok(newTokens, MediaType.APPLICATION_JSON_TYPE).build();
     }
@@ -168,21 +168,21 @@ public class CustomAttributeProvider implements RealmResourceProvider {
             throw new JWSInputException();
         }
 
-        String realmName = token.getIssuer().substring(token.getIssuer().lastIndexOf('/') + 1);
-        RealmManager realmManager = new RealmManager(session);
+        String realmName = this.token.getIssuer().substring(this.token.getIssuer().lastIndexOf('/') + 1);
+        RealmManager realmManager = new RealmManager(this.session);
         RealmModel realm = realmManager.getRealmByName(realmName);
 
         if (realm == null) {
             throw new Exception();
         }
 
-        ClientConnection connection = session.getContext().getConnection();
+        ClientConnection connection = this.session.getContext().getConnection();
         AuthenticationManager.AuthResult authResult =
             authenticateBearerToken(
                 tokenString,
-                session,
+                this.session,
                 realm,
-                session.getContext().getUri(),
+                this.session.getContext().getUri(),
                 connection,
                 headers
            );
@@ -191,8 +191,8 @@ public class CustomAttributeProvider implements RealmResourceProvider {
             throw new Exception();
         }
 
-        this.client = realm.getClientByClientId(token.getIssuedFor());
-        this.sessionId = token.getSessionId();
+        this.client = realm.getClientByClientId(this.token.getIssuedFor());
+        this.sessionId = this.token.getSessionId();
 
         return authResult.getUser();
     }
@@ -204,7 +204,7 @@ public class CustomAttributeProvider implements RealmResourceProvider {
         UriInfo uriInfo,
         ClientConnection connection,
         HttpHeaders headers) {
-      return new AppAuthManager.BearerTokenAuthenticator(session)
+      return new AppAuthManager.BearerTokenAuthenticator(this.session)
           .setRealm(realm)
           .setUriInfo(uriInfo)
           .setTokenString(tokenString)
@@ -215,10 +215,10 @@ public class CustomAttributeProvider implements RealmResourceProvider {
 
     // 古いアクセストークンを失効させる
     private void revokeAccessToken(AccessToken token) {
-        SingleUseObjectProvider singleUseStore = session.getProvider(SingleUseObjectProvider.class);
+        SingleUseObjectProvider singleUseStore = this.session.getProvider(SingleUseObjectProvider.class);
         int currentTime = Time.currentTime();
-        long lifespanInSecs = Math.max(token.getExp() - currentTime, MAX_SECONDS);
-        singleUseStore.put(token.getId() + SingleUseObjectProvider.REVOKED_KEY, lifespanInSecs, Collections.emptyMap());
+        long lifespanInSecs = Math.max(this.token.getExp() - currentTime, MAX_SECONDS);
+        singleUseStore.put(this.token.getId() + SingleUseObjectProvider.REVOKED_KEY, lifespanInSecs, Collections.emptyMap());
     }
 
     // エラー情報定義
