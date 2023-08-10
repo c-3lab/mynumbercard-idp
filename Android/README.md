@@ -8,8 +8,16 @@ Androidでマイナンバーカードを読み取り、公的個人認証を行�
 - Pixel 6a
 - Android バージョン 13
 
+## リポジトリクローン後の操作
+以下、本リポジトリをクローン後の手順になります。  
+1. AndroidStudioを開き、「Open」を選択します。  
+(Welcome to Android Studio画面の場合は、画面上部の「Open」、すでにプロジェクトを開いている場合はFileタブ＞Open)
+1. リポジトリ＞Android＞MynumberCardAuthを選択して「OK」を選択します。
+1. プロジェクトウインドウ上部のプルダウンに「Android」が表示されていることを確認します。
+1. 画面上部の`Run 'app'` が選択可能になっていれば完了です。
+
 ## アプリ起動時のホスト名の変更
-AndroidManifest.xmlを編集し、インテントフィルタの設定値を変更します。
+Android/MyNumberCardAuth/app/src/main/AndroidManifest.xmlを編集し、インテントフィルタの設定値を変更します。
 
 `native-app.example.com` の部分をアプリの起動に使用したいホスト名に変更します。  
 (ローカル環境で動作確認する場合は、本READMEの「ngrokの設定(ローカルで動作確認をする場合)」で取得したホスト名を記載ください。)
@@ -36,24 +44,28 @@ Android/MyNumberCardAuth/app/src/main/java/com/example/mynumbercardidp/data/Cons
 
 ```kotlin
 　//プライバシーポリシー
-  PrivacyPolicy {override fun toString(): String { return "https://example.com/open-id/privacy-policy.html" }
+  PrivacyPolicy {override fun toString(): String { return "https://example.com/open-id/privacy-policy.html" }}
 
 　//個人情報保護方針
-  ProtectionPolicy {override fun toString(): String { return "https://example.com/open-id/personal-data-protection-policy.html" }
+  ProtectionPolicy {override fun toString(): String { return "https://example.com/open-id/personal-data-protection-policy.html" }}
 
 　//利用規約
-  TermsOfUse {override fun toString(): String { return "https://example.com/open-id/terms-of-use.html" }
+  TermsOfUse {override fun toString(): String { return "https://example.com/open-id/terms-of-use.html" }}
 ```
 
 ## 起動手順
-
 1. Android 端末と Android Studio を起動しているマシンを USB ケーブルで接続します。  
 1. 接続後、Android Studio 画面上部のデバイス選択ボックスに使用している Android 端末が表示されていることを確認します。  
 1. `Run 'app'` を選択します。
 
+## Android端末のNFC設定の有効化
+1. Android端末の設定アプリをタップします。 
+1. 検索欄に「NFC」と入力します。
+1. 「NFCを使用」をONにします。
+
 ## デフォルトアプリの設定
-Android 端末で [設定] > [アプリ] > [My Number Auth] > [デフォルトで開く] > [+ リンクを追加] を選択します。  
-使用するリンクのチェックボックスにチェックを入れ [追加] を選択します。  
+1. Android 端末で [設定] > [アプリ] > [My Number Auth] > [デフォルトで開く] > [+ リンクを追加] を選択します。  
+1. 使用するリンクのチェックボックスにチェックを入れ [追加] を選択します。  
 
 ## デジタルアセットリンクファイルの作成
 Android アプリリンクを用いてアプリを起動できるようにするため、デジタルアセットリンクファイルを作成します。
@@ -96,11 +108,11 @@ tunnels:
   samplerp:
     proto: http
     addr: [DockerホストのIPアドレス]:3000
-  keycloak:	
-    proto: http	
-    addr: [DockerホストのIPアドレス]:8080	
-  nativeapp:	
-    proto: http	
+  keycloak:
+    proto: http
+    addr: [DockerホストのIPアドレス]:8080
+  nativeapp:
+    proto: http
     addr: [DockerホストのIPアドレス]:80
 ```
 
@@ -117,10 +129,10 @@ Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:8080
 ポート80の`https://XXXXXXXXXX.XXXXX.XXX` が、AndroidがWebサービスからアプリを起動する時のホスト名となりますのでAndroidManifest.xmlに設定してください。  
 
 ・Keycloak管理コンソールを開き、以下の設定を行います。  
-realm Oidp＞Realm settings＞General>Frontend URL   
+realm Oidp＞Configure＞Realm settings＞General>Frontend URL   
 ポート8080の`https://XXXXXXXXXX.XXXXX.XXX`
 
-realm Oidp＞Authentication＞my number card>X509 Relay Authenticatorの右にあるSettings（歯車のアイコン）＞Run URI of Android application  
+realm Oidp＞Configure＞Authentication＞my number card>X509 Relay Authenticatorの右にあるSettings（歯車のアイコン）＞Run URI of Android application  
 ポート80の`https://XXXXXXXXXX.XXXXX.XXX`
 
 ・keycloak.jsonを設定します。  
@@ -163,7 +175,6 @@ Webサービスからログイン処理を行い、認証成功画面を開く�
 `利用者登録` ボタンor`登録情報の変更` ボタンをタップした場合、`パスワード` ボックスへ、6～16桁の署名用暗証番号を入力します。
 1. `読み取り開始` ボタンをタップします。
 1. Androidデバイスにマイナンバーカードをかざします。
-1. `OK` ボタンをタップします。
 1. 認証が成功すると、自動的にブラウザで認証成功画面を開きます。
 
 ### ローカル環境で動作確認時の注意点
@@ -171,9 +182,7 @@ Webサービスからログイン処理を行い、認証成功画面を開く�
 `java.net.UnknownServiceException: CLEARTEXT communication to`  
 ※この事象は、http環境特有です。発生した場合は以下を実施してください。  
 
-AndroidManifest.xml を編集し、以下を追加。  
+Android/MyNumberCardAuth/app/src/main/AndroidManifest.xmlを編集し、applicationタグ内に以下を追加。  
 ```xml
-<application
-        android:usesCleartextTraffic="true"
+android:usesCleartextTraffic="true"
 ```
-
