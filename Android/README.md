@@ -39,18 +39,18 @@ Android/MyNumberCardAuth/app/src/main/AndroidManifest.xmlを編集し、イン�
 ```
 
 ## 利用規約/プライバシーポリシー/個人情報保護方針の表示URLを設定
-Constants.ktファイルの以下を表示したいURLに変更してください。  
-Android/MyNumberCardAuth/app/src/main/java/com/example/mynumbercardidp/data/Constants.kt
+以下ファイルの`=`以降を、表示したいURLに変更してください。  
+Android/MyNumberCardAuth/app/src/main/assets/external_urls.properties
 
-```kotlin
+```properties
 　//プライバシーポリシー
-  PrivacyPolicy {override fun toString(): String { return "https://example.com/open-id/privacy-policy.html" }}
+  privacy_policy_url=https://example.com/open-id/privacy-policy.html
 
 　//個人情報保護方針
-  ProtectionPolicy {override fun toString(): String { return "https://example.com/open-id/personal-data-protection-policy.html" }}
+  protection_policy_url=https://example.com/open-id/personal-data-protection-policy.html
 
 　//利用規約
-  TermsOfUse {override fun toString(): String { return "https://example.com/open-id/terms-of-use.html" }}
+  terms_of_use_url=https://example.com/open-id/terms-of-use.html
 ```
 
 ## 起動手順

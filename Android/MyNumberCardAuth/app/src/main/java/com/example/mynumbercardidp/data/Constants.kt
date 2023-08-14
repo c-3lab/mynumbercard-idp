@@ -15,13 +15,6 @@ enum class Rfc3447HashPrefix() {
     SHA512 { override fun toString(): String { return "3051300d060960864801650304020305000440" } },
 }
 
-enum class URLTypes() {
-    Inquiry {override fun toString(): String { return "https://www.kojinbango-card.go.jp/contact/" }},
-    PrivacyPolicy {override fun toString(): String { return "https://example.com/open-id/privacy-policy.html" }},
-    ProtectionPolicy {override fun toString(): String { return "https://example.com/open-id/personal-data-protection-policy.html" }},
-    TermsOfUse {override fun toString(): String { return "https://example.com/open-id/terms-of-use.html" }},
-}
-
 enum class ValidInputText(val length: Int) {
     CertForUserVerification(4),
     CertForSign(6),

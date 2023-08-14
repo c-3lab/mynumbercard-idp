@@ -47,7 +47,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.platform.LocalUriHandler
 import com.example.mynumbercardidp.data.MaxInputText
-import com.example.mynumbercardidp.data.URLTypes
 import com.example.mynumbercardidp.data.ValidInputText
 import com.example.mynumbercardidp.ui.NfcState
 import com.example.mynumbercardidp.ui.KeycloakState
@@ -199,7 +198,7 @@ fun CertReadScreen(
                 if (!errorDialogDetail.linqText.isNullOrEmpty()){
                     TextButton(
                         onClick = {
-                            uriHandler.openUri(URLTypes.Inquiry.toString())
+                            uriHandler.openUri(receivedState.externalUrls?.inquiry!!)
                             viewModel.setState(KeycloakState.Loading)
                         }
                     ) {
@@ -234,7 +233,10 @@ fun CertReadScreen(
 
 @Composable
 private fun createErrorDialogDetail(
-    keycloakState: KeycloakState, nfcState: NfcState, screenMode: ScreenModeState, uriParameters: UriParameters): ErrorDialogDetail {
+    keycloakState: KeycloakState,
+    nfcState: NfcState,
+    screenMode: ScreenModeState,
+    uriParameters: UriParameters): ErrorDialogDetail {
     var title = ""
     var message = ""
     var url : String? = null
@@ -256,7 +258,6 @@ private fun createErrorDialogDetail(
             }
             message = String.format("%s%s", lapseCert, stringResource(R.string.lapse_description))
             linqText = stringResource(R.string.contact_page)
-            url = URLTypes.Inquiry.toString()
         }
         is KeycloakState.UserDuplicateError -> {
             title = stringResource(R.string.registration_failure)

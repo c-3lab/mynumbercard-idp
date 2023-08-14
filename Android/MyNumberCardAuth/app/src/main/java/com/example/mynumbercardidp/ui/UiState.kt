@@ -5,7 +5,8 @@ data class UiState(
     var keycloakState: KeycloakState = KeycloakState.Loading,
     var screenMode: ScreenModeState = ScreenModeState.ManualBoot,
     var uriParameters: UriParameters? = null,
-    var nfcState: NfcState? = NfcState.None
+    var nfcState: NfcState? = NfcState.None,
+    var externalUrls: ExternalUrls? = null
 ) {
     companion object
     {
@@ -43,3 +44,10 @@ enum class ScreenModeState {
     UserCertRead,
     ManualBoot,
 }
+
+data class ExternalUrls(
+    var inquiry: String? = "",
+    val privacyPolicy: String? = "",
+    val protectionPolicy: String? = "",
+    val termsOfUse: String? = "",
+)
