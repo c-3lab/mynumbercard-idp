@@ -1,6 +1,5 @@
 package com.example.mynumbercardidp.keycloak.network.platform;
 
-import com.example.mynumbercardidp.keycloak.network.CommonRequestModel;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;

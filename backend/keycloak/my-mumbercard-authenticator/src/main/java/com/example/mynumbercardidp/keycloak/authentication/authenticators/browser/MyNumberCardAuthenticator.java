@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.AbstractActionHandler;
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ActionHandler;
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ResponseCreater;
-import com.example.mynumbercardidp.keycloak.network.RequestBuilder;
+import com.example.mynumbercardidp.keycloak.network.platform.RequestBuilder;
 import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClient;
 import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientLoader;
 import org.apache.commons.io.IOUtils;

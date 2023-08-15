@@ -1,6 +1,5 @@
 package com.example.mynumbercardidp.keycloak.network.platform;
 
-import com.example.mynumbercardidp.keycloak.network.CommonResponseModel;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

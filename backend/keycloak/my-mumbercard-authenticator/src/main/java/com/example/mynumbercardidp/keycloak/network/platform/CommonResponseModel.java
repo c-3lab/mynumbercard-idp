@@ -1,4 +1,4 @@
-package com.example.mynumbercardidp.keycloak.network;
+package com.example.mynumbercardidp.keycloak.network.platform;
 
 import org.keycloak.forms.login.LoginFormsProvider;
 

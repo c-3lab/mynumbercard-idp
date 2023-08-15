@@ -2,7 +2,7 @@ package com.example.mynumbercardidp.keycloak.authentication.application.procedur
 
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.AbstractUserAction;
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ResponseCreater;
-import com.example.mynumbercardidp.keycloak.network.CommonResponseModel;
+import com.example.mynumbercardidp.keycloak.network.platform.CommonResponseModel;
 import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClient;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;

@@ -1,4 +1,4 @@
-package com.example.mynumbercardidp.keycloak.network;
+package com.example.mynumbercardidp.keycloak.network.platform;
 
 /**
  * Keycloakを利用してログインするユーザーが送信したHTTPリクエスト内容とプラットフォームへ送信するHTTPリクエスト内容で共通する構造体を表すクラスです。

@@ -1,4 +1,4 @@
-package com.example.mynumbercardidp.keycloak.network;
+package com.example.mynumbercardidp.keycloak.network.platform;
 
 /**
  * 個人番号カード内にある公的証明書の種類を表します。

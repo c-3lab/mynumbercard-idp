@@ -1,8 +1,5 @@
 package com.example.mynumbercardidp.keycloak.network.platform;
 
-import com.example.mynumbercardidp.keycloak.network.CommonResponseModel;
-import com.example.mynumbercardidp.keycloak.network.CommonRequestModelImpl;
-
 import java.net.http.HttpTimeoutException;
 import java.net.URISyntaxException;
 import javax.ws.rs.core.MultivaluedMap;
