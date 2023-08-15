@@ -9,83 +9,6 @@
     <div id="kc-form">
       <div id="kc-form-wrapper">
         <script>
-            function enableDebugMode() {
-                let applicantData = document.querySelector('input[name="applicantData"][type="hidden"]');
-                let nonceHashMd = forge.md.sha256.create();
-                nonceHashMd.update('${(nonce!'')}', 'utf8');
-                applicantData.value = nonceHashMd.digest().toHex();
-
-                let x509PrivFile = document.querySelector('#x509PrivFileName');
-                x509PrivFile.addEventListener('change', (event) => {
-                    let signature = document.querySelector('input[name="sign"][type="hidden"]');
-                    signatureNonce(event.currentTarget, signature, applicantData.value);
-                });
-
-                let x509PublicFile = document.querySelector('#x509_upload');
-                x509PublicFile.addEventListener('change', (event) => {
-                    let certificate = document.querySelector('#certificate');
-                    convertFileToBase64(event.currentTarget, certificate);
-                });
-
-            }
-
-            function switchEnableActionRegistrationButtons() {
-              if(!document.querySelector('input[name="agree-tos"]').checked ||
-                !document.querySelector('input[name="agree-pp"]').checked) {
-                document.querySelector('input[name="registration"]').setAttribute('disabled', true);
-                return;
-              }
-              document.querySelector("input[name=registration]").removeAttribute('disabled');
-            }
-
-            function onOpenRegistrationButton() {
-                document.querySelector('input[name="agree-tos"]').checked = false;
-                document.querySelector('input[name="agree-pp"]').checked = false;
-                document.querySelector('input[name="registration"]').setAttribute('disabled', true);
-                document.querySelector('#userLogin').style.display = 'none';
-                document.querySelector('#userRegistration').style.display = 'block';
-                document.querySelector('div[name="debug-form-block"]');
-                let dstElement = document.querySelector('#privacy-policy');
-                let srcElement = document.querySelector('div[name="debug-form-block"]');
-                dstElement.appendChild(srcElement);
-                srcElement.classList.add("margin-top-20px");
-            }
-
-            function addEventListeners() {
-                let form = document.querySelector('form#kc-form-login');
-                form.addEventListener('formdata', (event) => {
-                    let formData = event.formData;
-                    clearX509Files(formData);
-                });
-
-                let openRegistrationButton = document.querySelector('input[name="openRegistration"][type="button"]');
-                openRegistrationButton.addEventListener('click', (event) => { onOpenRegistrationButton(); });
-
-                let goBackLink = document.querySelector('a[name="go-back"]');
-                goBackLink.addEventListener('click', (event) => {
-                    document.querySelector('#userLogin').style.display = 'block';
-                    document.querySelector('#userRegistration').style.display = 'none';
-                    let dstElement = document.querySelector('#userLogin');
-                    let srcElement = document.querySelector('div[name="debug-form-block"]');
-                    dstElement.insertAdjacentElement('afterbegin', srcElement);
-                    srcElement.classList.remove("margin-top-20px");
-                });
-
-                let loginButton = document.querySelector('input[name="login"][type="button"]');
-                loginButton.addEventListener('click', (event) => { onClickActionButton(event); });
-
-                let replacementButton = document.querySelector('input[name="replacement"][type="button"]');
-                replacementButton.addEventListener('click', (event) => { onClickActionButton(event); });
-
-                let agreeTosButton = document.querySelector('input[name="agree-tos"]');
-                agreeTosButton.addEventListener('input', (event) => { switchEnableActionRegistrationButtons(); });
-                let agreePpButton = document.querySelector('input[name="agree-pp"]');
-                agreePpButton.addEventListener('input', (event) => { switchEnableActionRegistrationButtons(); });
-
-                let registrationButton = document.querySelector('input[name="registration"][type="button"]');
-                registrationButton.addEventListener('click', (event) => { onClickActionButton(event); });
-            }
-
             function onClickActionButton(event) {
                 <#if (debug!'false') == 'true'>
                    submitWhenDebugMode(event);
@@ -125,10 +48,12 @@
 
             window.addEventListener('DOMContentLoaded', (event) => {
                 <#if (debug!'false') == 'true'>
-                enableDebugMode();
+                enableDebugMode("${nonce!''}");
                 </#if>
                 addEventListeners();
-                if ('${(initialView!'')}' == 'registration') document.querySelector('input[name="openRegistration"][type="button"]').click();
+                if ('${(initialView!'')}' == 'registration') {
+                    document.querySelector('input[name="openRegistration"][type="button"]').click();
+                }
             });
         </script>
         <form id="kc-form-login" onsubmit="login.disabled = true; return true;" action="${url.loginAction}" method="post">

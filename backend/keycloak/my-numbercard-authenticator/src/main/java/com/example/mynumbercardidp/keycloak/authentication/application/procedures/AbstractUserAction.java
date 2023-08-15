@@ -142,7 +142,7 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
             return;
         }
 
-        consoleMessage = "Failed validate signature. The signed value was not a applicant data.";
+        consoleMessage = "Failed validate signature. The signed value was not a nonce.";
         consoleLogger.info(consoleMessage);
         if (validateSignature(signature, certificateBase64Content, applicantData)) {
             return;
