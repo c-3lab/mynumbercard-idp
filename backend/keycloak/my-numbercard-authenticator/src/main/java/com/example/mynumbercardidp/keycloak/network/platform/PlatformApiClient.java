@@ -4,15 +4,20 @@ import com.example.mynumbercardidp.keycloak.core.network.platform.AbstractPlatfo
 import com.example.mynumbercardidp.keycloak.core.network.platform.CertificateType;
 import com.example.mynumbercardidp.keycloak.core.network.platform.UserRequestModelImpl;
 import com.example.mynumbercardidp.keycloak.util.StringUtil;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.IOUtils;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.core5.http.message.BasicHeader;
-import org.apache.hc.core5.http.ContentType;
-import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.Header;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.entity.ContentType;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.jboss.logging.Logger;
 import org.keycloak.models.UserModel;
 
@@ -29,31 +34,33 @@ import javax.ws.rs.core.MultivaluedMap;
 
 public class PlatformApiClient extends AbstractPlatformApiClient {
     private final static ContentType REQUEST_CONTENT_TYPE = ContentType.APPLICATION_JSON;
-    private final static long HTTP_TIMEOUT = 15;
     private final static String API_URI_PATH = "/verify/";
     private static ObjectMapper objectMapper = new ObjectMapper();
+    private static JsonFactory jsonFactory = new JsonFactory();
     private static Logger consoleLogger = Logger.getLogger(PlatformApiClient.class);
     private String platformRequestSender = "";
 
     {
-        setHttpConnectTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS);
-        setHttpRequestTimeout(HTTP_TIMEOUT, TimeUnit.SECONDS);
-        setHttpRequestContentType(REQUEST_CONTENT_TYPE);
+        httpRequestContentType = REQUEST_CONTENT_TYPE;
     }
 
     @Override
     public void action() {
         try {
             UserRequestModel userRequest = (UserRequestModel) this.userRequest;
-            URI apiUri = new URI(getApiRootUri().toString() + API_URI_PATH + userRequest.getActionMode());
-            Header[] headers = { new BasicHeader("Content-type", REQUEST_CONTENT_TYPE) };
-            this.platformRequest = (Object) toPlatformRequest((UserRequestModelImpl) userRequest);
-
-            PlatformRequestModel platformRequest = (PlatformRequestModel) this.platformRequest;
-            HttpEntity requsetEntity = createHttpEntity(platformRequest.toJsonObject().toString());
+            URI apiUri = new URI(apiRootUri.toString() + API_URI_PATH + userRequest.getActionMode());
+            Header[] headers = {};
+            platformRequest = (Object) toPlatformRequest((UserRequestModelImpl) userRequest);
+            PlatformRequestModel request = (PlatformRequestModel) platformRequest;
+            ObjectWriter objectWriter = objectMapper.writerFor(PlatformRequestModel.class);
+            ObjectReader objectReader = objectMapper.readerFor(PlatformRequestModel.class);
+            ObjectNode objectNode = objectReader.readTree(objectWriter.writeValueAsString(request)).deepCopy();
+            objectNode.put(request.getCertificateType().getName(), request.getCertificate());
+            objectWriter = objectMapper.writer();
+            HttpEntity requsetEntity = createHttpEntity(objectWriter.writeValueAsString(objectNode));
             consoleLogger.debug("Platform API URI: " + apiUri);
             post(apiUri, headers, requsetEntity);
-        } catch (URISyntaxException e) {
+        } catch (URISyntaxException | JsonProcessingException e) {
             throw new IllegalArgumentException(e);
         }
     }
@@ -84,13 +91,12 @@ public class PlatformApiClient extends AbstractPlatformApiClient {
 
     @Override
     protected Object toPlatformRequest(UserRequestModelImpl user) {
-        PlatformRequestModel platform = new PlatformRequestModel();
+        PlatformRequestModel platform = new PlatformRequestModel(platformRequestSender);
         UserRequestModel userReq = (UserRequestModel) user;
         platform.setCertificateType(userReq.getCertificateType())
             .setCertificate(userReq.getCertificate())
             .setApplicantData(userReq.getApplicantData())
             .setSign(userReq.getSign());
-        platform.getRequestInfo().setSender(platformRequestSender);
         return (Object) platform;
     }
 
@@ -98,13 +104,17 @@ public class PlatformApiClient extends AbstractPlatformApiClient {
     protected Object toPlatformResponse(CloseableHttpResponse httpResponse) {
         PlatformResponseModel response = new PlatformResponseModel();
         try (InputStream inputStream = httpResponse.getEntity().getContent()) {
-            ObjectReader objectReader = objectMapper.reader();
-            String contentsBody = IOUtils.toString(inputStream, getDefaultCharset());
-            response = objectMapper.readValue(contentsBody, PlatformResponseModel.class);
+            String contentsBody = IOUtils.toString(inputStream, defaultCharset);
+            ObjectReader objectReader = objectMapper.readerFor(PlatformResponseModel.class);
+            try (JsonParser parser = jsonFactory.createParser(contentsBody)) {
+                response = objectReader.readValue(parser);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-        response.setHttpStatusCode(httpResponse.getCode());
+        response.setHttpStatusCode(httpResponse.getStatusLine().getStatusCode());
         return (Object) response;
     }
 

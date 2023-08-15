@@ -3,6 +3,7 @@ package com.example.mynumbercardidp.keycloak.authentication.application.procedur
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ResponseCreater;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
+import org.keycloak.services.messages.Messages;
 import org.jboss.logging.Logger;
 
 import javax.ws.rs.core.Response;
@@ -31,6 +32,7 @@ public abstract class CommonFlowTransition {
             return true;
         }
         if (status == Response.Status.BAD_REQUEST.getStatusCode()) {
+            context.form().setError(Messages.INVALID_REQUEST, "");
             Response response = ResponseCreater.createChallengePage(context, status);
             ResponseCreater.setFlowStepChallenge(context, response);
             return false;
@@ -63,6 +65,7 @@ public abstract class CommonFlowTransition {
      * @param status プラットフォームのHTTPステータスコード
      */
     protected void actionUnauthorized(AuthenticationFlowContext context) {
+        context.form().setError(Messages.INVALID_REQUEST, "");
         context.failure(AuthenticationFlowError.INVALID_CREDENTIALS,
                         context.form().createErrorPage(Response.Status.UNAUTHORIZED));
     }

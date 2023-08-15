@@ -1,6 +1,7 @@
 package com.example.mynumbercardidp.keycloak.network.platform;
 
 import com.example.mynumbercardidp.keycloak.core.network.platform.CertificateType;
+import com.example.mynumbercardidp.keycloak.core.network.platform.UserRequestModelImpl;
 import com.example.mynumbercardidp.keycloak.util.StringUtil;
 
 import java.util.Objects;
@@ -8,7 +9,7 @@ import java.util.Objects;
 /**
  * Keycloakを利用してログインするユーザーが送信したHTTPリクエスト内容の構造体を表すクラスです。
  */
-public class UserRequestModel extends CommonRequestModel {
+public class UserRequestModel extends CommonRequestModel implements UserRequestModelImpl {
     public static enum Filed {
         ACTION_MODE("mode"),
         USER_AUTHENTICATION_CERTIFICATE(CertificateType.USER_AUTHENTICATION.getName()),
@@ -27,13 +28,13 @@ public class UserRequestModel extends CommonRequestModel {
         }
     }
 
-    public String actionMode;
+    protected String actionMode;
 
     public String getActionMode() {
         return actionMode;
     }
 
-    public UserRequestModel setActionMode(String mode) {
+    protected UserRequestModel setActionMode(String mode) {
         actionMode = mode;
         return this;
     }

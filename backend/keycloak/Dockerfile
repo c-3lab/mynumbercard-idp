@@ -32,6 +32,6 @@ RUN mvn package
 FROM quay.io/keycloak/keycloak:21.0.1 as development-stage
 
 COPY --from=spi-build-stage /opt/target/x509-relay-authenticator-jar-with-dependencies.jar /opt/keycloak/providers
-COPY --from=replace-spi-build-stage /opt/target/my-numbercard-authenticator-jar-with-dependencies.jar /opt/keycloak/providers
+COPY --from=replace-spi-build-stage /opt/target/my-numbercard-authenticator.jar /opt/keycloak/providers
 
 ONBUILD /opt/keycloak/bin/kc.sh build

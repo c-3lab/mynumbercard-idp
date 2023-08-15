@@ -22,7 +22,7 @@ public class PlatformApiClientLoader implements PlatformApiClientLoaderImpl {
                  .getDeclaredConstructor()
                  .newInstance();
 
-             MultivaluedMap formData = extractFormData(context);
+             MultivaluedMap<String, String> formData = extractFormData(context);
              formData.forEach((k, v) -> consoleLogger.debug("Key " + k + " -> " + v));
              platform.init(apiRootUri, formData, idpSender); 
              return platform;

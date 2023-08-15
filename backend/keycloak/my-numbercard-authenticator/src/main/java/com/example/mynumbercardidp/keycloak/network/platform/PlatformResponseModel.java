@@ -1,5 +1,7 @@
 package com.example.mynumbercardidp.keycloak.network.platform;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,40 +11,60 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * Jacksonによるオブジェクト、JSON間の相互変換することができるデータ定義です。
  */
+@JsonAutoDetect(fieldVisibility = Visibility.PROTECTED_AND_PUBLIC)
 public class PlatformResponseModel {
 
-    private int httpStatusCode;
+    @JsonIgnore
+    protected int httpStatusCode;
 
     public int getHttpStatusCode() {
         return httpStatusCode;
     }
 
-    @JsonIgnore
-    public void setHttpStatusCode(int status) {
+    protected void setHttpStatusCode(int status) {
         httpStatusCode = status;
     }
 
-    static class ResponseInfo {
-        public String transactionId;
-        public String recipient;
-        public String sender;
+    @JsonAutoDetect(fieldVisibility = Visibility.PROTECTED_AND_PUBLIC)
+    public static class ResponseInfo {
+        protected String transactionId;
+        protected String recipient;
+        protected String sender;
         @JsonProperty("ts")
-        public String timeStamp;
+        protected String timeStamp;
     }
 
+    @JsonAutoDetect(fieldVisibility = Visibility.PROTECTED_AND_PUBLIC)
     @JsonIgnoreProperties(ignoreUnknown = true)
-    static class Status {
-        public String status;
-        public String errorInfoReason;
-        public String message;
+    public static class Status {
+        protected String status;
+        protected String errorInfoReason;
+        protected String message;
     }
 
-    static class IdentityInfo {
-        public String uniqueId;
-        public String name;
-        public String dateOfBirth;
-        public String gender;
-        public String address;
+    @JsonAutoDetect(fieldVisibility = Visibility.PROTECTED_AND_PUBLIC)
+    public static class IdentityInfo {
+        protected String uniqueId;
+        protected String name;
+        protected String dateOfBirth;
+        protected String gender;
+        protected String address;
+
+        public String getName() {
+            return name;
+        }
+
+        public String getDateOfBirth() {
+            return dateOfBirth;
+        }
+
+        public String getGender() {
+            return dateOfBirth;
+        }
+
+        public String getAddress() {
+            return address;
+        }
     }
 
     public ResponseInfo responseInfo = new ResponseInfo();

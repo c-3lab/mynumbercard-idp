@@ -1,16 +1,15 @@
 package com.example.mynumbercardidp.keycloak.core.network.platform;
 
-import org.apache.hc.core5.http.message.BasicHeader;
-import org.apache.hc.core5.http.ContentType;
-import org.apache.hc.core5.http.Header;
-import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
-import org.apache.hc.core5.util.Timeout;
-import org.apache.hc.client5.http.config.RequestConfig;
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
+import org.keycloak.connections.httpclient.HttpClientBuilder;
 import org.keycloak.models.UserModel;
 
 import java.io.IOException;
@@ -21,7 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.ws.rs.core.MultivaluedMap;
@@ -33,18 +32,21 @@ import javax.ws.rs.core.MultivaluedMap;
  */
 public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl {
 
-    /** プラットフォームと通信するときのリクエスト設定 */
-    protected RequestConfig httpRequestConfig;
-    protected Timeout httpConnectTimeout;
-    protected Timeout httpRequestTimeout;
+    /* プラットフォームと通信するときのリクエスト設定 */
+    protected long establishConnectionTimeout = 10000L;
+    protected TimeUnit establishConnectionTimeoutUnit = TimeUnit.MILLISECONDS;
+    protected long maxConnectionIdleTime = 30000L;
+    protected TimeUnit maxConnectionIdleTimeUnit = TimeUnit.MILLISECONDS;
+    protected long socketTimeout = 30000L;
+    protected TimeUnit socketTimeoutUnit = TimeUnit.MILLISECONDS;
     /** プラットフォームに送信するHTTP Body構造 */
     protected HttpEntity httpEntity;
     /** プラットフォームに送信するコンテンツタイプ */
-    protected ContentType httpRequestContentType;
+    protected ContentType httpRequestContentType = ContentType.TEXT_PLAIN;
     /** プラットフォームのAPIルートURI */
     protected URI apiRootUri;
     /** プラットフォームに送信するHTTP Bodyの文字セット */
-    protected Charset defaultCharset;
+    protected Charset defaultCharset = Charset.forName("UTF-8");
     /** ユーザーリクエストのデータ構造 */
     protected UserRequestModelImpl userRequest;
     /** プラットフォームリクエストのデータ構造 */
@@ -52,87 +54,11 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
     /** プラットフォームレスポンスのデータ構造 */
     protected Object platformResponse;
     /** プラットフォームへ送るIDP識別送信者符号 */
-    protected String platformRequestSender;
-
-    {
-        defaultCharset = Charset.forName("UTF-8");
-    }
-
-    @Nullable 
-    protected RequestConfig getHttpRequestConfig() {
-        return httpRequestConfig;
-    }
-
-    protected void setHttpRequestConfig(RequestConfig config) {
-        httpRequestConfig = config;
-    }
-
-    @Nullable 
-    protected Timeout getHttpConnectTimeout() {
-        return httpConnectTimeout;
-    }
-
-    protected void setHttpConnectTimeout(Timeout timeout) {
-        httpConnectTimeout = timeout;
-    }
-
-    protected void setHttpConnectTimeout(long timeout, TimeUnit timeUnit) {
-        httpConnectTimeout = Timeout.of(timeout, timeUnit);
-    }
-
-    @Nullable
-    protected Timeout getHttpRequestTimeout() {
-        return httpRequestTimeout;
-    }
-
-    protected void setHttpRequestTimeout(Timeout timeout) {
-        httpRequestTimeout = timeout;
-    }
-
-    protected void setHttpRequestTimeout(long timeout, TimeUnit timeUnit) {
-        httpRequestTimeout = Timeout.of(timeout, timeUnit);
-    }
-
-    @Nullable 
-    protected HttpEntity getHttpEntity() {
-        return httpEntity;
-    }
-
-    protected void setHttpEntity(HttpEntity httpEntity) {
-       this.httpEntity = httpEntity;
-    }
-
-    protected ContentType getHttpRequestContentType() {
-        return httpRequestContentType;
-    }
-
-    protected void setHttpRequestContentType(ContentType contentType) {
-       httpRequestContentType = contentType;
-    }
-
-    protected URI getApiRootUri() {
-        return apiRootUri;
-    }
-
-    protected void setApiRootUri(URI uri) {
-       apiRootUri = uri;
-    }
-
-    protected Charset getDefaultCharset() {
-        return defaultCharset;
-    }
-
-    protected void setDefaultCharset(Charset charset) {
-       defaultCharset = charset;
-    }
+    protected String platformRequestSender = "";
 
     @Override
     public UserRequestModelImpl getUserRequest() {
         return userRequest;
-    }
-
-    protected void setUserRequest(UserRequestModelImpl request) {
-        userRequest = request;
     }
 
     @Override
@@ -140,26 +66,10 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
         return platformRequest;
     }
 
-    protected void setPlatformRequest(Object request) {
-        platformRequest = request;
-    }
-
     @Nullable
     @Override
     public Object getPlatformResponse() {
         return platformResponse;
-    }
-
-    protected void setPlatformResponse(Object response) {
-       platformResponse = response;
-    }
-
-    protected String getPlatformRequestSender() {
-        return platformRequestSender;
-    }
-
-    protected void setPlatformRequestSender(String idpSender) {
-       platformRequestSender = idpSender;
     }
 
     /**
@@ -172,69 +82,30 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      */
     protected void post(URI apiUri, Header[] headers, HttpEntity entity) {
         HttpPost httpPost = new HttpPost(apiUri);
-        httpPost.setHeaders(headers);
+        if (Objects.nonNull(headers) && headers.length > 0) {
+            httpPost.setHeader(HttpHeaders.CONTENT_TYPE, httpRequestContentType.toString());
+            httpPost.setHeaders(headers);
+        } else if (!Arrays.asList(headers).contains(HttpHeaders.CONTENT_TYPE)) {
+            httpPost.setHeader(HttpHeaders.CONTENT_TYPE, httpRequestContentType.toString());
+        }
         httpPost.setEntity(entity);
 
-        CloseableHttpClient httpClient = HttpClientBuilder.create()
-            .setDefaultRequestConfig(buildRequestConfig())
-            .build();
-        try (CloseableHttpResponse httpResponse = httpClient.execute(httpPost)) {
-            platformResponse = toPlatformResponse(httpResponse);
-        } catch (HttpTimeoutException e) {
-            String message = "Connect timeout. Platform URL: " + apiUri.toString();
-            throw new IllegalArgumentException(message, e);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    /**
-     * プラットフォームのAPIへデータを送信します。
-     *
-     * プラットフォームのAPIへ送信するリクエストヘッダーはMapから作成します。
-     *
-     * @param apiUri プラットフォームのAPI URI
-     * @param headersMap HTTP リクエストのヘッダー
-     * @param entity HTTP リクエストのボディ
-     * @return プラットフォームのレスポンス
-     */
-    protected void post(URI apiUri, MultivaluedMap<String, Object> headersMap, HttpEntity entity) {
-        ArrayList<Header> headers = new ArrayList<>();
-        headersMap.forEach((key, value) -> headers.add(new BasicHeader(key, value)));
-        post(apiUri, headers.toArray(new Header[headers.size()]), entity);
-    }
-
-    private boolean isNonNullHttpConnectTimeout() {
-        return Objects.nonNull(httpConnectTimeout); 
-    }
-
-    private boolean isNonNullHttpRequestTimeout() {
-        return Objects.nonNull(httpRequestTimeout); 
-    }
-
-    private boolean isNullHttpTimeout() {
-        return Objects.isNull(httpConnectTimeout) &&
-               Objects.isNull(httpRequestTimeout); 
-    }
-
-    /**
-     * コネクションタイムアウトの設定を含むHTTPリクエスト設定の構成を作成します。
-     *
-     * @return HTTPリクエスト設定の構成
-     */
-    protected RequestConfig buildRequestConfig() {
-        if (isNullHttpTimeout()) {
-            return RequestConfig.DEFAULT;
-        }
-
-        RequestConfig.Builder config = RequestConfig.custom();
-        if (isNonNullHttpConnectTimeout()) {
-            config.setConnectTimeout(httpConnectTimeout);
-        }
-        if (isNonNullHttpRequestTimeout()) {
-            config.setResponseTimeout(httpRequestTimeout);
-        }
-        return config.build();
+        try (CloseableHttpClient httpClient = new HttpClientBuilder().disableTrustManager()
+            .establishConnectionTimeout(establishConnectionTimeout, establishConnectionTimeoutUnit)
+            .maxConnectionIdleTime(maxConnectionIdleTime, maxConnectionIdleTimeUnit)
+            .socketTimeout(socketTimeout, socketTimeoutUnit)
+            .build()) {
+            try (CloseableHttpResponse httpResponse = httpClient.execute(httpPost)) {
+                platformResponse = toPlatformResponse(httpResponse);
+            } catch (HttpTimeoutException e) {
+                String message = "Connect timeout. Platform URL: " + apiUri.toString();
+                throw new IllegalArgumentException(message, e);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+       } catch (IOException e) {
+           throw new UncheckedIOException(e);
+       }
     }
 
     /**
