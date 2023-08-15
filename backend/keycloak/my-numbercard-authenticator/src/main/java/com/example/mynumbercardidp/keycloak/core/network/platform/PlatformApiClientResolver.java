@@ -9,11 +9,8 @@ import javax.ws.rs.core.MultivaluedMap;
 /**
  * 個人番号カードの公的個人認証部分を受け付けるプラットフォームと通信するためのクラスインスタンスを作成します。
  */
-public class PlatformApiClientLoader implements PlatformApiClientLoaderImpl {
-     private static Logger consoleLogger = Logger.getLogger(PlatformApiClientLoader.class);
-     private PlatformApiClientImpl platformClass;
-
-     public PlatformApiClientLoader() {}
+public class PlatformApiClientResolver implements PlatformApiClientResolverImpl {
+     private static Logger consoleLogger = Logger.getLogger(PlatformApiClientResolver.class);
 
      @Override
      public PlatformApiClientImpl load(final String platformClassFqdn, final AuthenticationFlowContext context, final String apiRootUri, String idpSender) {
@@ -22,7 +19,7 @@ public class PlatformApiClientLoader implements PlatformApiClientLoaderImpl {
                  .getDeclaredConstructor()
                  .newInstance();
 
-             MultivaluedMap<String, String> formData = PlatformApiClientLoader.extractFormData(context);
+             MultivaluedMap<String, String> formData = PlatformApiClientResolver.extractFormData(context);
              formData.forEach((k, v) -> consoleLogger.debug("Key " + k + " -> " + v));
              platform.init(apiRootUri, formData, idpSender); 
              return platform;

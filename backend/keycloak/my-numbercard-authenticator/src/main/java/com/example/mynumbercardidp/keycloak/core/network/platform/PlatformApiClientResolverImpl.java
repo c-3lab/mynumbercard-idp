@@ -8,7 +8,7 @@ import java.net.URISyntaxException;
 /**
  * 個人番号カードの公的個人認証部分を受け付けるプラットフォームと通信するクラスローダーの定義です。
  */
-interface PlatformApiClientLoaderImpl {
+interface PlatformApiClientResolverImpl {
     /**
      * クラスのFQDNからプラットフォームと通信するためのクラスインスタンスを返します。
      *
@@ -18,7 +18,7 @@ interface PlatformApiClientLoaderImpl {
      * @return プラットフォームAPIクライアントインスタンス
      */
     default PlatformApiClientImpl load(String platformClassFqdn, AuthenticationFlowContext context, String apiRootUri) {
-        return load(platformClassFqdn, context, apiRootUri, null);
+        return load(platformClassFqdn, context, apiRootUri, "");
     }
 
     /**
