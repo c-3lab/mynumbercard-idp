@@ -30,13 +30,11 @@ public class RegistrationAction extends AbstractUserAction {
             return;
         }
 
-        /*
-         * Keycloak内にユーザーが存在する場合は認証画面を表示する。
-         */
+        // Keycloak内にユーザーが存在する場合は認証画面を表示する。
         String uniqueId = super.tryExtractUniqueId(response);
         UserModel user = super.findUser(context, uniqueId);
         if (Objects.nonNull(user)) {
-            ResponseCreater.actionLoginChallenge(context);
+            ResponseCreater.actionReChallenge(context, ActionType.LOGIN.getName(), Response.Status.CONFLICT.getStatusCode());
             return;
         }
 
