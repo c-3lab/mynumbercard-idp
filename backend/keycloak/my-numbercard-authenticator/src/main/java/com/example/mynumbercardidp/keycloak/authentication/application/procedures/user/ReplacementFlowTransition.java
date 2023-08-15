@@ -17,14 +17,15 @@ public class ReplacementFlowTransition extends CommonFlowTransition {
             return true;
         }
         switch (status) {
-        case UNAUTHORIZED:
-            ResponseCreater.actionUnauthorized(context);
-            return false;
-        case CONFLICT:
-            // [TODO] この画面遷移、本当に合っている？
-            String loginActionName = ActionType.LOGIN.getName();
-            ResponseCreater.actionReChallenge(context, loginActionName, status.getStatusCode());
-            return false;
+            case UNAUTHORIZED:
+                ResponseCreater.actionUnauthorized(context);
+                return false;
+            case GONE:
+                // 登録情報の変更で証明書が失効しているのにもう一度登録情報の変更を呼び出す...？
+                // String replacementActionName = ActionType.REPLACEMENT.getName();
+                // ResponseCreater.actionReChallenge(context, replacementActionName, status.getStatusCode());
+                // return false;
+                break;
         }
         super.actionUndefinedFlow(ACTION_NAME, status.getStatusCode());
         return false;
