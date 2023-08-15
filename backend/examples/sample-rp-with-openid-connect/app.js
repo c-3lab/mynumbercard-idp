@@ -3,9 +3,15 @@ const express = require('express')
 const app = express()
 
 const config = {
+  authorizationParams: {
+    response_type: 'code',
+    scope: 'openid',
+  },
   authRequired: false,
   baseURL: 'http://172.24.208.100:3002',
   clientID: 'sample-client',
+  //  clientSecret is not used but MUST be specified with any value due to validation in express-openid-connect
+  clientSecret: 'dummy',
   issuerBaseURL: 'http://172.24.208.100:8080/realms/OIdp',
   secret: 'long text to encrypt session'
 }
