@@ -27,6 +27,5 @@ RUN mvn -B -s $MAVEN_CACHE_SETTINGS_PATH clean package
 # -----
 FROM quay.io/keycloak/keycloak:21.0.1 as development-stage
 
-COPY --from=spi-build-stage /opt/target/my-numbercard-authenticator.jar /opt/keycloak/providers
-
-ONBUILD RUN /opt/keycloak/bin/kc.sh build
+WORKDIR /opt/keycloak
+COPY --from=spi-build-stage /opt/target/my-numbercard-authenticator.jar providers
