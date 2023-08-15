@@ -134,6 +134,18 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${apache.httpcomponents.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>${apache.httpcomponents.httpcore.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- Keycloak Extension -->
         <dependency>
             <groupId>org.keycloak</groupId>
@@ -219,11 +231,6 @@
             <artifactId>log4j-slf4j18-impl</artifactId>
             <version>2.18.0</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20230227</version>
         </dependency>
     </dependencies>
 

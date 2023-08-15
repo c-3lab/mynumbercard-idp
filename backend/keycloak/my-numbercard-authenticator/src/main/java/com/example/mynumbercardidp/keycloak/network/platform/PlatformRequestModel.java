@@ -10,39 +10,34 @@ import java.util.UUID;
 /**
  * プラットフォームAPIへ送信するリクエスト内容の構造体を表すクラスです。
  */
-@JsonAutoDetect(fieldVisibility = Visibility.PROTECTED_AND_PUBLIC)
+@JsonAutoDetect(fieldVisibility = Visibility.ANY)
 public class PlatformRequestModel extends CommonRequestModel {
 
     @JsonProperty("requestInfo")
-    protected RequestInfo requestInfo;
-
-    protected PlatformRequestModel(String sender) {
-        requestInfo = new RequestInfo(sender);
-    }
+    private RequestInfo requestInfo;
 
     public RequestInfo getRequestInfo() {
         return requestInfo;
     }
 
-    protected PlatformRequestModel setRequestInfo(RequestInfo requestInfo) {
+    protected PlatformRequestModel(final String sender) {
+        requestInfo = new RequestInfo(sender);
+    }
+
+    protected PlatformRequestModel setRequestInfo(final RequestInfo requestInfo) {
         this.requestInfo = requestInfo;
         return this;
     }
 
+    @JsonAutoDetect(fieldVisibility = Visibility.ANY)
     public static class RequestInfo {
-        protected String transactionId;
-        protected String recipient;
-        protected String sender;
+        private String transactionId = UUID.randomUUID().toString();
+        private String recipient = "JPKI";
+        private String sender;
         @JsonProperty("ts")
-        protected String timeStamp;
+        private String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss.SSS").toString();
 
-        {
-            transactionId = UUID.randomUUID().toString();
-            recipient = "JPKI";
-            timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss.SSS").toString();
-        }
-
-        protected RequestInfo(String sender) {
+        protected RequestInfo(final String sender) {
             this.sender = sender;
         }
 
@@ -58,13 +53,13 @@ public class PlatformRequestModel extends CommonRequestModel {
             return sender;
         }
 
-        protected RequestInfo setSender(String sender) {
-            this.sender = sender;
-            return this;
-        }
-
         public String getTimeStamp() {
             return timeStamp;
+        }
+
+        protected RequestInfo setSender(final String sender) {
+            this.sender = sender;
+            return this;
         }
     }
 }

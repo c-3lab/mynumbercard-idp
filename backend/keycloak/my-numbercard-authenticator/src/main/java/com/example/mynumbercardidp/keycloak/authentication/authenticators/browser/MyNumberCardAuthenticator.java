@@ -1,24 +1,15 @@
 package com.example.mynumbercardidp.keycloak.authentication.authenticators.browser;
 
-import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ActionHandler;
+import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ActionResolver;
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ResponseCreater;
 import com.example.mynumbercardidp.keycloak.core.authentication.authenticators.browser.AbstractMyNumberCardAuthenticator;
-import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformApiClientImpl;
-import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformApiClientLoader;
 import com.example.mynumbercardidp.keycloak.util.authentication.CurrentConfig;
 import com.example.mynumbercardidp.keycloak.util.StringUtil;
 import org.jboss.resteasy.specimpl.MultivaluedMapImpl;
-import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
-import org.keycloak.authentication.AuthenticationFlowError;
-import org.keycloak.authentication.FlowStatus;
 import org.keycloak.forms.login.LoginFormsProvider;
-import org.keycloak.services.ServicesLogger;
 
-import java.util.Map;
-import java.util.LinkedHashMap;
-import java.util.UUID;
-import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
 /**
  * このクラスは個人番号カードの公的個人認証部分を利用する認証SPIです。
@@ -28,9 +19,6 @@ import javax.ws.rs.core.MultivaluedMap;
  * @see <a href="https://www.keycloak.org/server/logging">ロギングの構成</a>
  */
 public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator {
-    /** Keycloakイベントロガー */
-    protected static ServicesLogger logger = ServicesLogger.LOGGER;
-
     /**
      * プラットフォームへ公的個人認証部分を送信し、その結果からログインや登録、登録情報の変更処理を呼び出します。
      *
@@ -39,43 +27,21 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
      * @param context 認証フローのコンテキスト
      */
     @Override
-    public void action(AuthenticationFlowContext context) {
-        // プラットフォームAPIクライアントの読み込み
-        PlatformApiClientImpl platform = loadPlatform(context);
+    public void action(final AuthenticationFlowContext context) {
+        SpiConfigProperty.initFreeMarkerJavaTemplateVariablesIfNeeded(context);
 
         /*
          * 認証を試行するユーザーが希望している動作で処理をします。
-         *
          * ActionHandlerクラスが持つメソッドの戻り値はvoid型かつ、
          * publicアクセス修飾子のメソッドはexecuteのみであるため、インスタンスを変数へ格納しません。
          */
-        String verifyNonce = context.getAuthenticationSession().getAuthNote("nonce");
-        context.getAuthenticationSession().setAuthNote("verifyNonce", verifyNonce);
-        setLoginFormAttributes(context);
-        new ActionHandler().execute(context, platform);
+        new ActionResolver().action(context);
 
         /*
          * 認証試行ユーザーのセッション情報から認証フローの結果を取得します。
          * 認証フローの結果が存在している場合はAuthenticatorの処理を終了し、ユーザーへHTTPレスポンスを返します。
          */
-        ensureHasAuthFlowStatus(context);
-    }
-
-    /**
-     * プラットフォームAPIクライアントのインスタンスを読み込みます。
-     *
-     * @param context 認証フローのコンテキスト
-     * @exception IllegalStateException プラットフォームAPIのURLが空値の場合
-     */
-    protected PlatformApiClientImpl loadPlatform(AuthenticationFlowContext context) {
-        String platformApiClassFqdn = CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiClientClassFqdn.CONFIG.getName());
-        if (StringUtil.isStringEmpty(platformApiClassFqdn)) {
-            throw new IllegalStateException(SpiConfigProperty.PlatformApiClientClassFqdn.LABEL + " is empty.");
-        }
-        String platformRootApiUri = CurrentConfig.getValue(context, SpiConfigProperty.CertificateValidatorRootUri.CONFIG.getName());
-        String idpSender = CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiIdpSender.CONFIG.getName());
-        PlatformApiClientLoader platformLoader = new PlatformApiClientLoader();
-        return platformLoader.load(platformApiClassFqdn, context, platformRootApiUri, idpSender);
+        super.ensureHasAuthFlowStatus(context);
     }
 
     /**
@@ -84,68 +50,16 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
      * @param context 認証フローのコンテキスト
      */
     @Override
-    public void authenticate(AuthenticationFlowContext context) {
-        setLoginFormAttributes(context);
+    public void authenticate(final AuthenticationFlowContext context) {
+        SpiConfigProperty.initFreeMarkerJavaTemplateVariablesIfNeeded(context);
+
+        ResponseCreater.setLoginFormAttributes(context);
 
         String initialView = context.getAuthenticationSession().getAuthNote("initialView");
-        if (StringUtil.isStringEmpty(initialView)) {
+        if (StringUtil.isEmpty(initialView)) {
             initialView = "";
         }
-        javax.ws.rs.core.Response response = ResponseCreater.createChallengePage(context, initialView);
+        Response response = ResponseCreater.createChallengePage(context, initialView);
         ResponseCreater.setFlowStepChallenge(context, response);
-    }
-
-    /**
-     * 共通で使うテンプレート変数をユーザーに表示する画面のテンプレートへ設定します。
-     *
-     * Nonceを生成します。
-     *
-     * @param context 認証フローのコンテキスト
-     */
-    protected void setLoginFormAttributes(AuthenticationFlowContext context) {
-        setLoginFormAttributes(context, true);
-    }
-
-    /**
-     * 共通で使うテンプレート変数をユーザーに表示する画面のテンプレートへ設定します。
-     *
-     * Nonceの再生成をするか選択することができます。
-     *
-     * @param context 認証フローのコンテキスト
-     * @param createNonceFlag Nonce文字列生成の有効化フラグ
-     */
-    protected void setLoginFormAttributes(AuthenticationFlowContext context, boolean createNonceFlag) {
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl<>();
-        LoginFormsProvider form = context.form();
-
-        if (createNonceFlag) {
-            String nonce = createNonce();
-            context.getAuthenticationSession().setAuthNote("nonce", nonce);
-            form.setAttribute("nonce", nonce);
-        }
-
-        Map<String, String> spiConfig = new LinkedHashMap<>();
-        spiConfig.put("androidAppUri", CurrentConfig.getValue(context, SpiConfigProperty.RunUriOfAndroidApplication.CONFIG.getName()));
-        spiConfig.put("iosAppUri", CurrentConfig.getValue(context, SpiConfigProperty.RunUriOfiOSApplication.CONFIG.getName()));
-        spiConfig.put("otherAppUri", CurrentConfig.getValue(context, SpiConfigProperty.InstallationUriOfSmartPhoneApplication.CONFIG.getName()));
-        spiConfig.put("termsOfUseDirUrl", CurrentConfig.getValue(context, SpiConfigProperty.TermsOfUseDirURL.CONFIG.getName()));
-        spiConfig.put("privacyPolicyDirUrl", CurrentConfig.getValue(context, SpiConfigProperty.PrivacyPolicyDirURL.CONFIG.getName()));
-        spiConfig.put("personalDataProtectionPolicyDirUrl", CurrentConfig.getValue(context, SpiConfigProperty.PersonalDataProtectionPolicyDirURL.CONFIG.getName()));
-
-        String debugMode = SpiConfigProperty.DebugMode.CONFIG.getName();
-        String debugModeValue = CurrentConfig.getValue(context, debugMode).toLowerCase();
-        debugModeValue = StringUtil.isStringEmpty(debugModeValue) ? "false" : debugModeValue.toLowerCase();
-        spiConfig.put("debug", debugModeValue);
-
-        spiConfig.forEach((k, v) -> form.setAttribute(k, v));
-    }
-
-    /**
-     * Nonceを生成します。
-     *
-     * @return nonce UUIDの文字列
-     */
-    protected String createNonce() {
-        return UUID.randomUUID().toString();
     }
 }

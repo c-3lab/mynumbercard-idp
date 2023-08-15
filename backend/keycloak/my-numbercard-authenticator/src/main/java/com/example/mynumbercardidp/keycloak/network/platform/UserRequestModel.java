@@ -10,33 +10,10 @@ import java.util.Objects;
  * Keycloakを利用してログインするユーザーが送信したHTTPリクエスト内容の構造体を表すクラスです。
  */
 public class UserRequestModel extends CommonRequestModel implements UserRequestModelImpl {
-    public static enum Filed {
-        ACTION_MODE("mode"),
-        USER_AUTHENTICATION_CERTIFICATE(CertificateType.USER_AUTHENTICATION.getName()),
-        ENCRYPTED_DIGITAL_SIGNATURE_CERTIFICATE(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE.getName()),
-        APPLICANT_DATA("applicantData"),
-        SIGN("sign");
+    private String actionMode;
 
-        private String name;
-
-        private Filed(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
-
-    protected String actionMode;
-
-    public String getActionMode() {
+    public final String getActionMode() {
         return actionMode;
-    }
-
-    protected UserRequestModel setActionMode(String mode) {
-        actionMode = mode;
-        return this;
     }
 
     /**
@@ -46,13 +23,35 @@ public class UserRequestModel extends CommonRequestModel implements UserRequestM
      * @exception IllegalStateException 1つ以上のフィールドでNullまたは空値があった場合
      */
     public void ensureHasValues() {
-        if (Objects.isNull(certificateType) ||
-            StringUtil.isStringEmpty(actionMode) ||
-            StringUtil.isStringEmpty(certificate) ||
-            StringUtil.isStringEmpty(applicantData) ||
-            StringUtil.isStringEmpty(sign)) {
+        if (Objects.isNull(super.getCertificateType()) ||
+            StringUtil.isEmpty(actionMode) ||
+            StringUtil.isEmpty(super.getCertificate()) ||
+            StringUtil.isEmpty(super.getApplicantData()) ||
+            StringUtil.isEmpty(super.getSign())) {
             throw new IllegalStateException("One or more values is not set.");
         }
     }
-}
 
+    protected final UserRequestModel setActionMode(final String mode) {
+        actionMode = mode;
+        return this;
+    }
+
+    public static enum Filed {
+        ACTION_MODE("mode"),
+        USER_AUTHENTICATION_CERTIFICATE(CertificateType.USER_AUTHENTICATION.getName()),
+        ENCRYPTED_DIGITAL_SIGNATURE_CERTIFICATE(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE.getName()),
+        APPLICANT_DATA("applicantData"),
+        SIGN("sign");
+
+        private String name;
+
+        private Filed(final String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+}

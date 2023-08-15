@@ -121,7 +121,7 @@ function onOpenRegistrationButton() {
     document.querySelector('#userLogin').style.display = 'none';
     document.querySelector('#userRegistration').style.display = 'block';
     document.querySelector('div[name="debug-form-block"]');
-    let dstElement = document.querySelector('#privacy-policy');
+    let dstElement = document.querySelector('#kc-form-options + div');
     let srcElement = document.querySelector('div[name="debug-form-block"]');
     dstElement.appendChild(srcElement);
     srcElement.classList.add("margin-top-20px");

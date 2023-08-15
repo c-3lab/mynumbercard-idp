@@ -11,6 +11,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.keycloak.connections.httpclient.HttpClientBuilder;
 import org.keycloak.models.UserModel;
+import org.jboss.logging.Logger;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -33,43 +34,111 @@ import javax.ws.rs.core.MultivaluedMap;
 public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl {
 
     /* プラットフォームと通信するときのリクエスト設定 */
-    protected long establishConnectionTimeout = 10000L;
-    protected TimeUnit establishConnectionTimeoutUnit = TimeUnit.MILLISECONDS;
-    protected long maxConnectionIdleTime = 30000L;
-    protected TimeUnit maxConnectionIdleTimeUnit = TimeUnit.MILLISECONDS;
-    protected long socketTimeout = 30000L;
-    protected TimeUnit socketTimeoutUnit = TimeUnit.MILLISECONDS;
+    private long establishConnectionTimeout = 10000L;
+    private TimeUnit establishConnectionTimeoutUnit = TimeUnit.MILLISECONDS;
+    private long maxConnectionIdleTime = 30000L;
+    private TimeUnit maxConnectionIdleTimeUnit = TimeUnit.MILLISECONDS;
+    private long socketTimeout = 30000L;
+    private TimeUnit socketTimeoutUnit = TimeUnit.MILLISECONDS;
     /** プラットフォームに送信するHTTP Body構造 */
-    protected HttpEntity httpEntity;
+    private HttpEntity httpEntity;
     /** プラットフォームに送信するコンテンツタイプ */
-    protected ContentType httpRequestContentType = ContentType.TEXT_PLAIN;
+    private ContentType httpRequestContentType = ContentType.TEXT_PLAIN;
     /** プラットフォームのAPIルートURI */
-    protected URI apiRootUri;
+    private URI apiRootUri;
     /** プラットフォームに送信するHTTP Bodyの文字セット */
-    protected Charset defaultCharset = Charset.forName("UTF-8");
-    /** ユーザーリクエストのデータ構造 */
-    protected UserRequestModelImpl userRequest;
-    /** プラットフォームリクエストのデータ構造 */
-    protected Object platformRequest;
-    /** プラットフォームレスポンスのデータ構造 */
-    protected Object platformResponse;
+    private Charset defaultCharset = Charset.forName("UTF-8");
+    /** ユーザーリクエスト、プラットフォームリクエスト、レスポンス管理クラス */
+    private DataModelManagerImpl dataManager;
     /** プラットフォームへ送るIDP識別送信者符号 */
-    protected String platformRequestSender = "";
+    private String platformRequestSender = "";
 
     @Override
     public UserRequestModelImpl getUserRequest() {
-        return userRequest;
+        return dataManager.getUserRequest();
     }
 
     @Override
     public Object getPlatformRequest() {
-        return platformRequest;
+        return dataManager.getPlatformRequest();
     }
 
-    @Nullable
     @Override
     public Object getPlatformResponse() {
-        return platformResponse;
+        return dataManager.getPlatformResponse();
+    }
+
+    @Override
+    public String getUserActionMode() {
+        return dataManager.getUserRequest().getActionMode();
+    }
+
+    @Override
+    public void init(final String apiRootUri, final MultivaluedMap<String, String> formData, final String idpSender){
+        try {
+            this.apiRootUri = new URI(apiRootUri);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
+        dataManager = createDataManager(formData);
+        platformRequestSender = Objects.isNull(idpSender) ? "" : idpSender;
+        dataManager.setPlatformRequestSender(platformRequestSender);
+        dataManager.setRequestCharset(defaultCharset);
+    }
+
+    @Override
+    public abstract void action();
+
+    protected long getEstablishConnectionTimeout() {
+        return establishConnectionTimeout;
+    }
+
+    protected void setEstablishConnectionTimeout(final long timeout) {
+        establishConnectionTimeout = timeout;
+    }
+
+    protected long getMaxConnectionIdleTime() {
+        return maxConnectionIdleTime;
+    }
+
+    protected void setMaxConnectionIdleTime(final long timeout) {
+        maxConnectionIdleTime = timeout;
+    }
+
+    protected long getSocketTimeout() {
+        return socketTimeout;
+    }
+
+    protected void setSocketTimeoutUnit(final long timeout) {
+        socketTimeout = timeout;
+    }
+
+    protected URI getApiRootUri() {
+        return apiRootUri;
+    }
+
+    protected void setApiRootUri(final URI uri) {
+        apiRootUri = uri;
+    }
+
+    protected Charset getDefaultCharset() {
+        return defaultCharset;
+    }
+
+    protected void setDefaultCharset(final Charset charset) {
+        defaultCharset = charset;
+    }
+
+    protected ContentType getHttpRequestContentType() {
+        return httpRequestContentType;
+    }
+
+    protected void setHttpRequestContentType(final ContentType contentType) {
+        httpRequestContentType = contentType;
+    }
+
+    protected DataModelManagerImpl getDataModelManager() {
+        return dataManager;
     }
 
     /**
@@ -80,7 +149,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      * @param entity HTTP リクエストのボディ
      * @return プラットフォームのレスポンス
      */
-    protected void post(URI apiUri, Header[] headers, HttpEntity entity) {
+    protected void post(final URI apiUri, final Header[] headers, final HttpEntity entity) {
         HttpPost httpPost = new HttpPost(apiUri);
         if (Objects.nonNull(headers) && headers.length > 0) {
             httpPost.setHeader(HttpHeaders.CONTENT_TYPE, httpRequestContentType.toString());
@@ -96,7 +165,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
             .socketTimeout(socketTimeout, socketTimeoutUnit)
             .build()) {
             try (CloseableHttpResponse httpResponse = httpClient.execute(httpPost)) {
-                platformResponse = toPlatformResponse(httpResponse);
+                dataManager.getPlatformResponse(httpResponse);
             } catch (HttpTimeoutException e) {
                 String message = "Connect timeout. Platform URL: " + apiUri.toString();
                 throw new IllegalArgumentException(message, e);
@@ -114,7 +183,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      * @param s HTTPリクエストボディの文字列
      * @return HTTPリクエストボディ
      */
-    protected final HttpEntity createHttpEntity(String s) {
+    protected final HttpEntity createHttpEntity(final String s) {
         return createHttpEntity(s.getBytes(defaultCharset), httpRequestContentType);
     }
 
@@ -125,7 +194,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      * @param charset HTTPリクエストボディの文字セット
      * @return HTTPリクエストボディ
      */
-    protected final HttpEntity createHttpEntity(String s, String charset) {
+    protected final HttpEntity createHttpEntity(final String s, String charset) {
         try {
             return createHttpEntity(s.getBytes(charset), httpRequestContentType);
         } catch (UnsupportedEncodingException e) {
@@ -141,7 +210,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      * @param contentType HTTPリクエストボディのコンテンツタイプ
      * @return HTTPリクエストボディ
      */
-    protected final HttpEntity createHttpEntity(String s, String charset, ContentType contentType) {
+    protected final HttpEntity createHttpEntity(final String s, final String charset, final ContentType contentType) {
         try {
             return createHttpEntity(s.getBytes(charset), contentType);
         } catch (UnsupportedEncodingException e) {
@@ -156,7 +225,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      * @param charset HTTPリクエストボディの文字セット
      * @return HTTPリクエストボディ
      */
-    protected final HttpEntity createHttpEntity(String s, Charset charset) {
+    protected final HttpEntity createHttpEntity(final String s, final Charset charset) {
         return createHttpEntity(s.getBytes(charset), httpRequestContentType);
     }
 
@@ -168,7 +237,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      * @param contentType HTTPリクエストボディのコンテンツタイプ
      * @return HTTPリクエストボディ
      */
-    protected final HttpEntity createHttpEntity(String s, Charset charset, ContentType contentType) {
+    protected final HttpEntity createHttpEntity(final String s, final Charset charset, final ContentType contentType) {
         return createHttpEntity(s.getBytes(charset), contentType);
     }
 
@@ -179,7 +248,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      * @param contentType HTTPリクエストボディのコンテンツタイプ
      * @return HTTPリクエストボディ
      */
-    protected final HttpEntity createHttpEntity(String s, ContentType contentType) {
+    protected final HttpEntity createHttpEntity(final String s, final ContentType contentType) {
         return createHttpEntity(s.getBytes(defaultCharset), contentType);
     }
 
@@ -189,7 +258,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      * @param b HTTPリクエストボディのバイト配列
      * @return HTTPリクエストボディ
      */
-    protected final HttpEntity createHttpEntity(byte[] b) {
+    protected final HttpEntity createHttpEntity(final byte[] b) {
         return createHttpEntity(b, httpRequestContentType);
     }
 
@@ -200,56 +269,15 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      * @param contentType HTTPリクエストボディのコンテンツタイプ
      * @return HTTPリクエストボディ
      */
-    protected final HttpEntity createHttpEntity(byte[] b, ContentType contentType) {
+    protected final HttpEntity createHttpEntity(final byte[] b, final ContentType contentType) {
         return new ByteArrayEntity(b,  contentType);
     }
 
     /**
-     * プラットフォーム APIのレスポンスデータ構造を表すインスタンスへ変換します。
+     * ユーザーリクエスト、プラットフォームリクエスト、レスポンス管理クラスのインスタンスを生成します。
      *
-     * @param httpResponse プラットフォームのHTTPレスポンス
-     * @return プラットフォームレスポンスのデータ構造インスタンス
+     * @param formData ユーザーが送信したHTMLフォームパラメータの配列
+     * @return ユーザーリクエスト、プラットフォームリクエスト、レスポンス管理クラスのインスタンス
      */
-    protected abstract Object toPlatformResponse(CloseableHttpResponse httpResponse);
-
-    /**
-     * HTMLフォームデータをユーザーリクエスト構造へ変換します。
-     *
-     * @param formData HTMLフォームデータ
-     * @return ユーザーリクエストの構造
-     */
-    protected abstract UserRequestModelImpl toUserRequest(MultivaluedMap<String, String> formData);
-
-    /**
-     * ユーザーリクエスト構造をプラットフォームリクエスト構造へ変換します。
-     *
-     * @param user ユーザーリクエスト構造のインスタンス
-     * @return プラットフォームリクエストの構造
-     */
-    protected abstract Object toPlatformRequest(UserRequestModelImpl user);
-
-    @Override
-    public void init(String apiRootUri, MultivaluedMap<String, String> formData, String idpSender){
-        try {
-            this.apiRootUri = new URI(apiRootUri);
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
-        userRequest = toUserRequest(formData);
-        platformRequestSender = Objects.isNull(idpSender) ? "" : idpSender;
-    }
-
-    @Override
-    public abstract void action();
-
-    @Override
-    public String getUserActionMode() {
-        return userRequest.getActionMode();
-    }
-
-    @Override
-    public abstract void ensureHasUniqueId();
-
-    @Override
-    public abstract UserModel addUserModelAttributes(UserModel user);
+    protected abstract DataModelManagerImpl createDataManager(final MultivaluedMap<String, String> formData);
 }

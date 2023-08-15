@@ -2,6 +2,7 @@ package com.example.mynumbercardidp.keycloak.authentication.application.procedur
 
 import com.example.mynumbercardidp.keycloak.authentication.authenticators.browser.SpiConfigProperty;
 import com.example.mynumbercardidp.keycloak.network.platform.UserRequestModel;
+import com.example.mynumbercardidp.keycloak.network.platform.PlatformResponseModel;
 import com.example.mynumbercardidp.keycloak.core.authentication.application.procedures.ApplicationProcedure;
 import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformApiClientImpl;
 import com.example.mynumbercardidp.keycloak.util.authentication.CurrentConfig;
@@ -34,11 +35,30 @@ import javax.ws.rs.core.Response;
  */
 public abstract class AbstractUserAction implements ApplicationProcedure {
 
-    private static Logger consoleLogger = Logger.getLogger(AbstractUserAction.class);
+    private static final String MESSAGE_DEBUG_MODE_ENABLED = "Debug mode is enabled. ";
+    private final Logger consoleLogger = Logger.getLogger(AbstractUserAction.class);
 
-    @Override
-    public void execute(AuthenticationFlowContext context, PlatformApiClientImpl platform) {
+    /**
+     * 認証ユーザーのセッション情報からNonce文字列を取得します。
+     *
+     * AuthNote名のnonceはActionHandler呼び出し前に上書きされるため、
+     * AuthNoteからverifyNonceを取得します。
+     * @param constext 認証フローのコンテキスト
+     * @return Nonce文字列
+     */
+    private static String getNonce(AuthenticationFlowContext context) {
+       String authNoteName = "nonce";
+       return context.getAuthenticationSession().getAuthNote(authNoteName);
+    }
 
+    /**
+     * 指定された文字列をSHA256アルゴリズムでハッシュ化し、その文字列を返します。
+     *
+     * @param str SHA256アルゴリズムでハッシュ化する文字列
+     * @return SHA256アルゴリズムでハッシュ化された文字列
+     */
+    private static String toHashString(final String str) {
+        return DigestUtils.sha256Hex(str);
     }
 
     /**
@@ -48,17 +68,110 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
      * @param platform プラットフォーム APIクライアントのインスタンス
      */
     @Override
-    public void preExecute(AuthenticationFlowContext context, PlatformApiClientImpl platform) {
+    public void preAction(final AuthenticationFlowContext context, final PlatformApiClientImpl platform) {
         UserRequestModel user = (UserRequestModel) platform.getUserRequest();
         user.ensureHasValues();
+        tryValidateSignature(context, platform);
+        platform.action();
+    }
 
-        // ユーザーが送ってきたNonceをハッシュ化した値は信用しない。
-        String nonce = getNonce(context);
+    @Override
+    public void onAction(final AuthenticationFlowContext context, final PlatformApiClientImpl platform) {
+
+    }
+
+    @Override
+    public void postAction(final AuthenticationFlowContext context, final PlatformApiClientImpl platform) {
+
+    }
+
+    /**
+     * プラットフォームが返したユニークIDからKeycloak内のユーザーを返します。
+     * 
+     * @param constext 認証フローのコンテキスト
+     * @param uniqueId プラットフォームが識別したユーザーを特定する一意の文字列
+     * @param str 署名された文字列
+     * @return ユーザーのデータ構造 Keycloak内のユーザーが見つかった場合はユーザーデータ構造、そうでない場合はNull
+     */
+    protected UserModel findUser(final AuthenticationFlowContext context, final String uniqueId) {
+        String userAttributeUniqueIdName = "uniqueId";
+        try {
+            return UserIdentityToModelMapperBuilder.fromString(userAttributeUniqueIdName).find(context, uniqueId);
+        } catch (Exception e) {
+            // 報告された例外はExceptionクラスで詳細な判別がつかない。
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    /**
+     * デバッグモードの状態を返します。
+     *
+     * @param constext 認証フローのコンテキスト
+     * @return 有効の場合はtrue、そうでない場合はfalse
+     */ 
+    protected boolean isDebugMode(final AuthenticationFlowContext context) {
+        String debugMode = SpiConfigProperty.DebugMode.CONFIG.getName();
+        String debugModeValue = CurrentConfig.getValue(context, debugMode).toLowerCase();
+        debugModeValue = StringUtil.isEmpty(debugModeValue) ? "false" : debugModeValue.toLowerCase();
+        return Boolean.valueOf(debugModeValue);
+    }
+
+    /**
+     * プラットフォームのレスポンスデータからユーザーのユニークIDを抽出します。
+     *
+     * 空の場合は IllegalStateException を送出します。
+     * @param response プラットフォームのレスポンス
+     * @return ユーザーの一意のID
+     */
+    protected String tryExtractUniqueId(final PlatformResponseModel response) {
+        response.ensureHasUniqueId();
+        return response.getUniqueId();
+    }
+
+    /**
+     * ユーザーリクエストからnonceをハッシュ化した値を抽出します。
+     *
+     * @param request ユーザーリクエストのデータ構造
+     */
+    private String extractApplicantData(final PlatformApiClientImpl platform) {
+        UserRequestModel user = (UserRequestModel) platform.getUserRequest();
+        return user.getApplicantData();
+    }
+
+    /**
+     * ユーザーリクエストから公開鍵を抽出します。
+     *
+     * @param request ユーザーリクエストのデータ構造
+     */
+    private String extractCertificate(final PlatformApiClientImpl platform) {
+        UserRequestModel user = (UserRequestModel) platform.getUserRequest();
+        return user.getCertificate();
+    }
+
+    /**
+     * ユーザーリクエストから署名した値を抽出します。
+     *
+     * @param request ユーザーリクエストのデータ構造
+     */
+    private String extractSign(final PlatformApiClientImpl platform) {
+        UserRequestModel user = (UserRequestModel) platform.getUserRequest();
+        return user.getSign();
+    }
+
+    /**
+     * ユーザーリクエストから公開鍵とnonceを利用して、署名した値が文字列と一致するかを検証します。
+     *
+     * @param constext 認証フローのコンテキスト
+     */
+     // Keycloakが発行したnonceをハッシュ化した値とユーザーが自己申告したnonceをハッシュ化した値は異なる可能性がある。
+     // デバッグモードが無効の場合、ユーザーが送ってきたnonceをハッシュ化した値は信用しない。
+    private void tryValidateSignature(final AuthenticationFlowContext context, final PlatformApiClientImpl platform) {
+        String nonce = AbstractUserAction.getNonce(context);
         consoleLogger.debug("Nonce: " + nonce);
-        String nonceHash = toHashString(nonce);
+        String nonceHash = AbstractUserAction.toHashString(nonce);
         consoleLogger.debug("Nonce hash: " + nonceHash);
 
-        String applicantData = user.getApplicantData();
+        String applicantData = extractApplicantData(platform);
         consoleLogger.debug("Applicant data: " + applicantData);
         String applicantDataLower = applicantData.toLowerCase();
         String applicantDataUpper = applicantData.toUpperCase();
@@ -68,15 +181,16 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
             if (!isDebugMode(context)) {
                 throw new IllegalArgumentException(message);
             }
-            consoleLogger.info("Debug mode is enabled. " + message);
+            consoleLogger.info(MESSAGE_DEBUG_MODE_ENABLED + message);
         }
 
-        String certificate = user.getCertificate();
-        String sign = user.getSign();
+        String certificate = extractCertificate(platform);
+        String sign = extractSign(platform);
         if (!isDebugMode(context)) {
             if (!validateSignature(sign, certificate, nonceHash.toLowerCase()) ||
                 !validateSignature(sign, certificate, nonceHash.toUpperCase())) {
-                    throw new IllegalArgumentException("The signature is not equals a nonce hash.");
+                    String message = "The signature is not equals a nonce hash.";
+                    throw new IllegalArgumentException(message);
             }
         }
         validateSignature(sign, certificate, nonceHash, nonce, applicantData);
@@ -85,7 +199,7 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
     /**
      * 公開鍵とnonceを利用して、署名した値が文字列と一致するかを検証します。
      *
-     * 検査例外が発生した場合、非検査例外にラップし送出します。
+     * 検査例外が発生した場合、非検査例外でラップし送出します。
      *
      * @param signature X.509に準拠する鍵で文字列に署名した結果
      * @param certificateBase64Content 公開鍵を基本型Base64でエンコードした値
@@ -94,7 +208,7 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
      * @exception UncheckedIOException 公開鍵の値が空値の場合
      * @exception IllegalArgumentException 署名の検証中に例外が発生した場合
      */
-    private boolean validateSignature(String signature, String certificateBase64Content, String str) {
+    private boolean validateSignature(final String signature, final String certificateBase64Content, final String str) {
         String charset = "utf-8";
         String certType = "X.509";
         try {
@@ -110,8 +224,6 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
             Signature engine = Signature.getInstance(signAlgorithm);
             engine.initVerify(certificate);
             engine.update(str.getBytes(charset));
-
-
             return engine.verify(Base64.getDecoder().decode(signature.getBytes(charset)));
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException | CertificateException |
                  InvalidKeyException | SignatureException e) {
@@ -137,7 +249,7 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
         }
 
         String consoleMessage = "Failed validate signature. The signed value was not a nonce hash. Retry, verifies that the signed value is a nonce.";
-        consoleLogger.info("Debug mode is enabled. " + consoleMessage);
+        consoleLogger.info(MESSAGE_DEBUG_MODE_ENABLED + consoleMessage);
         if (validateSignature(signature, certificateBase64Content, nonce)) {
             return;
         }
@@ -147,105 +259,31 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
         if (validateSignature(signature, certificateBase64Content, applicantData)) {
             return;
         }
-        throw new IllegalArgumentException("The signature is not equals a applicant data.");
+        String message = "The signature is not equals a applicant data.";
+        throw new IllegalArgumentException(message);
     }
 
-    /**
-     * 認証ユーザーのセッション情報からNonce文字列を取得します。
-     * 
-     * AuthNote名のnonceはActionHandler呼び出し前に上書きされるため、
-     * AuthNoteからverifyNonceを取得します。
-     * @param constext 認証フローのコンテキスト
-     * @return Nonce文字列
-     */
-    private String getNonce(AuthenticationFlowContext context) {
-       return context.getAuthenticationSession().getAuthNote("verifyNonce");
-    }
-
-    /**
-     * 指定された文字列をSHA256アルゴリズムでハッシュ化し、その文字列を返します。
-     * 
-     * @param str SHA256アルゴリズムでハッシュ化する文字列
-     * @return SHA256アルゴリズムでハッシュ化された文字列
-     */
-    private String toHashString(String str) {
-        return DigestUtils.sha256Hex(str);
-    }
-
-    /**
-     * プラットフォームが返したユニークIDからKeycloak内のユーザーを返します。
-     * 
-     * @param constext 認証フローのコンテキスト
-     * @param uniqueId プラットフォームが識別したユーザーを特定する一意の文字列
-     * @param str 署名された文字列
-     * @return ユーザーのデータ構造 Keycloak内のユーザーが見つかった場合はユーザーデータ構造、そうでない場合はNull
-     */
-    protected UserModel findUser(AuthenticationFlowContext context, String uniqueId) {
-        try {
-            return UserIdentityToModelMapperBuilder.fromString("uniqueId").find(context, uniqueId);
-        } catch (Exception e) {
-            /*
-             * 報告された例外はExceptionクラスで詳細な判別がつかない。
-             * IllegalArgumentExceptionでラップする。
-             */
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * デバッグモードの状態を返します。
-     *
-     * @param constext 認証フローのコンテキスト
-     * @return 有効の場合はtrue、そうでない場合はfalse
-     */ 
-    protected boolean isDebugMode(AuthenticationFlowContext context) {
-        String debugMode = SpiConfigProperty.DebugMode.CONFIG.getName();
-        String debugModeValue = CurrentConfig.getValue(context, debugMode).toLowerCase();
-        debugModeValue = StringUtil.isStringEmpty(debugModeValue) ? "false" : debugModeValue.toLowerCase();
-        return Boolean.valueOf(debugModeValue);
-    }
-
-    /**
-     *  登録画面を初期表示とした画面のレスポンスを返します。
-     *
-     * @param context 認証フローのコンテキスト
-     */
-    protected void actionRegistrationChallenge(AuthenticationFlowContext context) {
-        actionReChallenge(context, "registration", Response.Status.NOT_FOUND.getStatusCode());
-    }
-
-    /**
-     *  認証画面を初期表示とした画面のレスポンスを返します。
-     *
-     * @param context 認証フローのコンテキスト
-     */
-    protected void actionLoginChallenge(AuthenticationFlowContext context) {
-        actionReChallenge(context, "login", Response.Status.NOT_FOUND.getStatusCode());
-    }
-
-    /**
-     *  指定された処理の画面を初期表示とした画面のレスポンスを返します。
-     *
-     * @param context 認証フローのコンテキスト
-     * @param actionName 遷移先処理の種類
-     * @param status プラットフォームのHTTPステータスコード
-     */
-    protected void actionReChallenge(AuthenticationFlowContext context, String actionName, int status) {
-        Response response = ResponseCreater.createChallengePage(context, actionName, status);
-        ResponseCreater.setFlowStepChallenge(context, response);
-    }
+    // /**
+    //  * 公的個人認証部分をプラットフォームへ送信し、その結果を返します。
+    //  *
+    //  * @param platform プラットフォーム APIクライアントのインスタンス
+    //  */
+    // private PlatformResponseModel platformPost(final PlatformApiClientImpl platform) {
+    //     platform.action();
+    //     return (PlatformResponseModel) platform.getPlatformResponse();
+    // }
 
     /**
      *  ユーザー属性項目と値の組み合わせからユーザーを返す処理の定義です。
      */
     private static class UserIdentityToModelMapperBuilder {
 
-        static UserIdentityToModelMapper fromUniqueId() {
-            return fromString("uniqueId");
+        private static UserIdentityToModelMapper fromUniqueId() {
+            String attributeName = "uniqueId";
+            return fromString(attributeName);
         }
 
-        static UserIdentityToModelMapper fromString(String attributeName) {
-
+        private static UserIdentityToModelMapper fromString(final String attributeName) {
             UserIdentityToModelMapper mapper = UserIdentityToModelMapper.getUserIdentityToCustomAttributeMapper(attributeName);
             return mapper;
         }

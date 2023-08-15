@@ -55,20 +55,4 @@ public interface PlatformApiClientImpl {
      * @return プラットフォームレスポンスのデータ構造体インスタンス
      */
     Object getPlatformResponse();
-
-    /**
-     * プラットフォームレスポンスにユーザーの一意なIDが存在することを保証します。
-     *
-     * 存在しない場合は IllegalStateException を送出します。
-     *
-     * @exception IllegalStateException プラットフォームレスポンスにユーザーの一意のIDが存在しない場合
-     */
-    void ensureHasUniqueId();
-
-    /**
-     * プラットフォームのレスポンスからKeycloakのユーザー属性を追加、更新します。
-     *
-     * @param user Keycloak ユーザーのデータ構造体インスタンス
-     */
-    UserModel addUserModelAttributes(UserModel user);
 }

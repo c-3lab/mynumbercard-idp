@@ -8,48 +8,48 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * Keycloakを利用してログインするユーザーが送信したHTTPリクエスト内容とプラットフォームへ送信するHTTPリクエスト内容で共通する構造体を表すクラスです。
  */
-@JsonAutoDetect(fieldVisibility = Visibility.PROTECTED_AND_PUBLIC)
+@JsonAutoDetect(fieldVisibility = Visibility.ANY)
 public class CommonRequestModel {
 
     @JsonIgnore
-    protected CertificateType certificateType;
+    private CertificateType certificateType;
     @JsonIgnore
-    protected String certificate;
-    protected String applicantData;
-    protected String sign;
+    private String certificate;
+    private String applicantData;
+    private String sign;
 
     public CertificateType getCertificateType() {
         return certificateType;
-    }
-
-    protected CommonRequestModel setCertificateType(CertificateType certificateType) {
-        this.certificateType = certificateType;
-        return this;
     }
 
     public String getCertificate() {
         return certificate;
     }
 
-    protected CommonRequestModel setCertificate(String certificate) {
-        this.certificate = certificate;
-        return this;
-    }
-
     public String getApplicantData() {
         return applicantData;
-    }
-
-    protected CommonRequestModel setApplicantData(String applicantData) {
-        this.applicantData = applicantData;
-        return this;
     }
 
     public String getSign() {
         return sign;
     }
 
-    protected CommonRequestModel setSign(String sign) {
+    protected CommonRequestModel setCertificateType(final CertificateType certificateType) {
+        this.certificateType = certificateType;
+        return this;
+    }
+
+    protected CommonRequestModel setCertificate(final String certificate) {
+        this.certificate = certificate;
+        return this;
+    }
+
+    protected CommonRequestModel setApplicantData(final String applicantData) {
+        this.applicantData = applicantData;
+        return this;
+    }
+
+    protected CommonRequestModel setSign(final String sign) {
         this.sign = sign;
         return this;
     }

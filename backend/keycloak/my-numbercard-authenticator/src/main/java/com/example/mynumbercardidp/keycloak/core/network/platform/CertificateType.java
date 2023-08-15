@@ -13,7 +13,7 @@ public enum CertificateType {
    /** HTMLフォームデータのパラメータ名 */
    private String name;
 
-   private CertificateType(String formName) {
+   private CertificateType(final String formName) {
        name = formName;
    }
 

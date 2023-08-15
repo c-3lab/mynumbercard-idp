@@ -1,20 +1,75 @@
 package com.example.mynumbercardidp.keycloak.authentication.authenticators.browser;
 
+import com.example.mynumbercardidp.keycloak.util.authentication.CurrentConfig;
+import com.example.mynumbercardidp.keycloak.util.StringUtil;
+import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.provider.ProviderConfigProperty;
 
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
  * このクラスは認証SPIの設定情報定義を構造体として表現したものです。
  */
 public class SpiConfigProperty {
-    private static final List<ProviderConfigProperty> configProperties = new ArrayList<ProviderConfigProperty>();
+    private static final List<ProviderConfigProperty> CONFIG_PROPERTIES = new ArrayList<ProviderConfigProperty>();
+    private static final String NAME_PREFIX = "my-num-cd-auth."; // Config名に文字数制限があるため省略形で表記する
+    private static final Map<String, String> FREE_MARKER_JAVA_TEMPLATE_VARIABLES = new LinkedHashMap<>();
 
-    private static final String NAME_PREFIX = "my-num-cd-auth."; // Config名に文字数制限があるため短くすること
+    private SpiConfigProperty() {}
 
-    public SpiConfigProperty() {}
+    static {
+        CONFIG_PROPERTIES.add(DebugMode.CONFIG);
+        CONFIG_PROPERTIES.add(CertificateValidatorRootUri.CONFIG);
+        CONFIG_PROPERTIES.add(RunUriOfAndroidApplication.CONFIG);
+        CONFIG_PROPERTIES.add(RunUriOfiOSApplication.CONFIG);
+        CONFIG_PROPERTIES.add(InstallationUriOfSmartPhoneApplication.CONFIG);
+        CONFIG_PROPERTIES.add(PlatformApiClientClassFqdn.CONFIG);
+        CONFIG_PROPERTIES.add(PlatformApiIdpSender.CONFIG);
+        CONFIG_PROPERTIES.add(TermsOfUseDirURL.CONFIG);
+        CONFIG_PROPERTIES.add(PrivacyPolicyDirURL.CONFIG);
+        CONFIG_PROPERTIES.add(PersonalDataProtectionPolicyDirURL.CONFIG);
+    }
+
+    /**
+    * ProviderConfigPropertyクラスの配列を返します。
+    *
+    * @return SPI設定項目の配列
+    */
+    public static final List<ProviderConfigProperty> getPropertis() {
+       return CONFIG_PROPERTIES;
+    }
+
+    /**
+     * FTLファイルへ注入する変数を返します。
+     *
+     * @return FTL変数名とSPI設定値の組み合わせ
+     */
+    public static Map<String, String> getFreeMarkerJavaTemplateVariables() {
+        return FREE_MARKER_JAVA_TEMPLATE_VARIABLES;
+    }
+
+    // Authenticatorから実行され、FTLファイルへ注入する定数を作成する。
+    static void initFreeMarkerJavaTemplateVariablesIfNeeded(AuthenticationFlowContext context) {
+        if (FREE_MARKER_JAVA_TEMPLATE_VARIABLES.size() != 0) {
+            return;
+        }
+
+        FREE_MARKER_JAVA_TEMPLATE_VARIABLES.put("androidAppUri", CurrentConfig.getValue(context, SpiConfigProperty.RunUriOfAndroidApplication.CONFIG.getName()));
+        FREE_MARKER_JAVA_TEMPLATE_VARIABLES.put("iosAppUri", CurrentConfig.getValue(context, SpiConfigProperty.RunUriOfiOSApplication.CONFIG.getName()));
+        FREE_MARKER_JAVA_TEMPLATE_VARIABLES.put("otherAppUri", CurrentConfig.getValue(context, SpiConfigProperty.InstallationUriOfSmartPhoneApplication.CONFIG.getName()));
+        FREE_MARKER_JAVA_TEMPLATE_VARIABLES.put("termsOfUseDirUrl", CurrentConfig.getValue(context, SpiConfigProperty.TermsOfUseDirURL.CONFIG.getName()));
+        FREE_MARKER_JAVA_TEMPLATE_VARIABLES.put("privacyPolicyDirUrl", CurrentConfig.getValue(context, SpiConfigProperty.PrivacyPolicyDirURL.CONFIG.getName()));
+        FREE_MARKER_JAVA_TEMPLATE_VARIABLES.put("personalDataProtectionPolicyDirUrl", CurrentConfig.getValue(context, SpiConfigProperty.PersonalDataProtectionPolicyDirURL.CONFIG.getName()));
+
+        String debugMode = SpiConfigProperty.DebugMode.CONFIG.getName();
+        String debugModeValue = CurrentConfig.getValue(context, debugMode).toLowerCase();
+        debugModeValue = StringUtil.isEmpty(debugModeValue) ? "false" : debugModeValue.toLowerCase();
+        FREE_MARKER_JAVA_TEMPLATE_VARIABLES.put("debug", debugModeValue);
+    }
 
     public static class DebugMode extends SpiConfigProperty {
         public static final ProviderConfigProperty CONFIG;
@@ -144,56 +199,5 @@ public class SpiConfigProperty {
         static {
             CONFIG = new ProviderConfigProperty(NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
         }
-    }
-
-    static {
-        configProperties.add(DebugMode.CONFIG);
-        configProperties.add(CertificateValidatorRootUri.CONFIG);
-        configProperties.add(RunUriOfAndroidApplication.CONFIG);
-        configProperties.add(RunUriOfiOSApplication.CONFIG);
-        configProperties.add(InstallationUriOfSmartPhoneApplication.CONFIG);
-        configProperties.add(PlatformApiClientClassFqdn.CONFIG);
-        configProperties.add(PlatformApiIdpSender.CONFIG);
-        configProperties.add(TermsOfUseDirURL.CONFIG);
-        configProperties.add(PrivacyPolicyDirURL.CONFIG);
-        configProperties.add(PersonalDataProtectionPolicyDirURL.CONFIG);
-    }
-
-    public static ProviderConfigProperty getDebugMode() {
-        return DebugMode.CONFIG;
-    }
-
-    public static ProviderConfigProperty getCertificateValidatorRootUri() {
-        return CertificateValidatorRootUri.CONFIG;
-    }
-
-    public static ProviderConfigProperty getRunUriOfAndroidApplication() {
-        return RunUriOfAndroidApplication.CONFIG;
-    }
-
-    public static ProviderConfigProperty getRunUriOfiOSApplication() {
-        return RunUriOfiOSApplication.CONFIG;
-    }
-
-    public static ProviderConfigProperty getInstallationUriOfSmartPhoneApplication() {
-        return InstallationUriOfSmartPhoneApplication.CONFIG;
-    }
-
-    /**
-     * プラットフォームへ送るIDP送信者符号の設定名を返します。
-     *
-     * @return プラットフォームへ送るIDP送信者符号の設定名
-     */
-    public static String getIdpSender() {
-       return PlatformApiIdpSender.CONFIG.getName();
-    }
-
-    /**
-    * ProviderConfigPropertyクラスの配列を返します。
-    *
-    * @return SPI設定項目の配列
-    */
-    public static List<ProviderConfigProperty> getPropertis() {
-       return configProperties;
     }
 }

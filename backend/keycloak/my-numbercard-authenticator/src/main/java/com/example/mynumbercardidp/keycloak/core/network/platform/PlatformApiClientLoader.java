@@ -16,13 +16,13 @@ public class PlatformApiClientLoader implements PlatformApiClientLoaderImpl {
      public PlatformApiClientLoader() {}
 
      @Override
-     public PlatformApiClientImpl load(String platformClassFqdn, AuthenticationFlowContext context, String apiRootUri, String idpSender) {
+     public PlatformApiClientImpl load(final String platformClassFqdn, final AuthenticationFlowContext context, final String apiRootUri, String idpSender) {
          try {
-             AbstractPlatformApiClient platform = (AbstractPlatformApiClient) Class.forName(platformClassFqdn)
+             PlatformApiClientImpl platform = (PlatformApiClientImpl) Class.forName(platformClassFqdn)
                  .getDeclaredConstructor()
                  .newInstance();
 
-             MultivaluedMap<String, String> formData = extractFormData(context);
+             MultivaluedMap<String, String> formData = PlatformApiClientLoader.extractFormData(context);
              formData.forEach((k, v) -> consoleLogger.debug("Key " + k + " -> " + v));
              platform.init(apiRootUri, formData, idpSender); 
              return platform;
@@ -38,7 +38,7 @@ public class PlatformApiClientLoader implements PlatformApiClientLoaderImpl {
      * @param context 認証フローのコンテキスト
      * @return ユーザーが送ったHTMLフォームデータのマップ
      */
-    private static MultivaluedMap<String, String> extractFormData(AuthenticationFlowContext context) {
+    private static MultivaluedMap<String, String> extractFormData(final AuthenticationFlowContext context) {
          return context.getHttpRequest().getDecodedFormParameters();
     }
 }

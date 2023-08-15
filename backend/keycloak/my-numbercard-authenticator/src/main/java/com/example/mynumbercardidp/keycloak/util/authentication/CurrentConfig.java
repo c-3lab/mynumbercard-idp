@@ -16,7 +16,7 @@ public class CurrentConfig {
      * @param SPI設定名
      * @return SPI設定の値
      */
-    public static String getValue(AuthenticationFlowContext context, String configName) {
+    public static String getValue(final AuthenticationFlowContext context, final String configName) {
         String config = context.getAuthenticatorConfig()
             .getConfig()
             .get(configName);

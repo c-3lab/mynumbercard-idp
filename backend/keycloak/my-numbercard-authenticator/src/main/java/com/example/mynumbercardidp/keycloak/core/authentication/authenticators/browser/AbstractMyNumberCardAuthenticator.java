@@ -15,12 +15,12 @@ import javax.ws.rs.core.MultivaluedMap;
 public abstract class AbstractMyNumberCardAuthenticator extends AbstractFormAuthenticator {
 
     @Override
-    public void authenticate(AuthenticationFlowContext context) {
+    public void authenticate(final AuthenticationFlowContext context) {
 
     }
 
     @Override
-    public void action(AuthenticationFlowContext context) {
+    public void action(final AuthenticationFlowContext context) {
 
     }
 
@@ -30,13 +30,13 @@ public abstract class AbstractMyNumberCardAuthenticator extends AbstractFormAuth
     }
 
     @Override
-    public boolean configuredFor(KeycloakSession session, RealmModel realm, UserModel user) {
+    public boolean configuredFor(final KeycloakSession session, final RealmModel realm, final UserModel user) {
         // 一度も呼ばれない
         return true;
     }
 
     @Override
-    public void setRequiredActions(KeycloakSession session, RealmModel realm, UserModel user) {
+    public void setRequiredActions(final KeycloakSession session, final RealmModel realm, final UserModel user) {
         // 一度も呼ばれない
     }
 
@@ -51,7 +51,7 @@ public abstract class AbstractMyNumberCardAuthenticator extends AbstractFormAuth
      * @param context 認証フローのコンテキスト
      * @return デコード済みのHTTPフォームデータ配列
      */
-    protected MultivaluedMap<String, String> getFormData(AuthenticationFlowContext context) {
+    protected final MultivaluedMap<String, String> getFormData(final AuthenticationFlowContext context) {
         return context.getHttpRequest().getDecodedFormParameters();
     }
 
@@ -62,7 +62,7 @@ public abstract class AbstractMyNumberCardAuthenticator extends AbstractFormAuth
      * @param context 認証フローのコンテキスト
      * @exception IllegalStateException Auth noteに認証フローの結果が存在しない場合
      */
-    protected void ensureHasAuthFlowStatus(AuthenticationFlowContext context) {
+    protected final void ensureHasAuthFlowStatus(final AuthenticationFlowContext context) {
         if (Objects.isNull(context.getStatus())) {
             throw new IllegalStateException("The Flow status in authentication flow context is not set.");
         }
