@@ -8,10 +8,10 @@ public enum ActionType {
     private String name;
 
     private ActionType(String actionName) {
-        name = actionName;
+        this.name = actionName;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 }

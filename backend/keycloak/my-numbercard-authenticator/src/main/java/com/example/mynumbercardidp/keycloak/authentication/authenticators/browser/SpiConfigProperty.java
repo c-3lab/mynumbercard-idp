@@ -16,22 +16,22 @@ import java.util.List;
  */
 public class SpiConfigProperty {
     private static final List<ProviderConfigProperty> CONFIG_PROPERTIES = new ArrayList<ProviderConfigProperty>();
-    private static final String NAME_PREFIX = "my-num-cd-auth."; // Config名に文字数制限があるため省略形で表記する
+    private static final String NAME_PREFIX = "my-num-cd-auth."; // [NOTE] Config名に文字数制限があるため省略形で表記する
     private static final Map<String, String> FREE_MARKER_JAVA_TEMPLATE_VARIABLES = new LinkedHashMap<>();
 
     private SpiConfigProperty() {}
 
     static {
-        CONFIG_PROPERTIES.add(DebugMode.CONFIG);
-        CONFIG_PROPERTIES.add(CertificateValidatorRootUri.CONFIG);
-        CONFIG_PROPERTIES.add(RunUriOfAndroidApplication.CONFIG);
-        CONFIG_PROPERTIES.add(RunUriOfiOSApplication.CONFIG);
-        CONFIG_PROPERTIES.add(InstallationUriOfSmartPhoneApplication.CONFIG);
-        CONFIG_PROPERTIES.add(PlatformApiClientClassFqdn.CONFIG);
-        CONFIG_PROPERTIES.add(PlatformApiIdpSender.CONFIG);
-        CONFIG_PROPERTIES.add(TermsOfUseDirURL.CONFIG);
-        CONFIG_PROPERTIES.add(PrivacyPolicyDirURL.CONFIG);
-        CONFIG_PROPERTIES.add(PersonalDataProtectionPolicyDirURL.CONFIG);
+        SpiConfigProperty.CONFIG_PROPERTIES.add(DebugMode.CONFIG);
+        SpiConfigProperty.CONFIG_PROPERTIES.add(CertificateValidatorRootUri.CONFIG);
+        SpiConfigProperty.CONFIG_PROPERTIES.add(RunUriOfAndroidApplication.CONFIG);
+        SpiConfigProperty.CONFIG_PROPERTIES.add(RunUriOfiOSApplication.CONFIG);
+        SpiConfigProperty.CONFIG_PROPERTIES.add(InstallationUriOfSmartPhoneApplication.CONFIG);
+        SpiConfigProperty.CONFIG_PROPERTIES.add(PlatformApiClientClassFqdn.CONFIG);
+        SpiConfigProperty.CONFIG_PROPERTIES.add(PlatformApiIdpSender.CONFIG);
+        SpiConfigProperty.CONFIG_PROPERTIES.add(TermsOfUseDirURL.CONFIG);
+        SpiConfigProperty.CONFIG_PROPERTIES.add(PrivacyPolicyDirURL.CONFIG);
+        SpiConfigProperty.CONFIG_PROPERTIES.add(PersonalDataProtectionPolicyDirURL.CONFIG);
     }
 
     /**
@@ -40,7 +40,7 @@ public class SpiConfigProperty {
     * @return SPI設定項目の配列
     */
     public static final List<ProviderConfigProperty> getPropertis() {
-       return CONFIG_PROPERTIES;
+       return SpiConfigProperty.CONFIG_PROPERTIES;
     }
 
     /**
@@ -68,9 +68,10 @@ public class SpiConfigProperty {
         String debugMode = SpiConfigProperty.DebugMode.CONFIG.getName();
         String debugModeValue = CurrentConfig.getValue(context, debugMode).toLowerCase();
         debugModeValue = StringUtil.isEmpty(debugModeValue) ? "false" : debugModeValue.toLowerCase();
-        FREE_MARKER_JAVA_TEMPLATE_VARIABLES.put("debug", debugModeValue);
+        SpiConfigProperty.FREE_MARKER_JAVA_TEMPLATE_VARIABLES.put("debug", debugModeValue);
     }
 
+    // [NOTE] インナークラス内のクラス変数（定数）はインナークラスを増やす場合の作業量が増えるため、呼び出すときにクラス名をつけない。
     public static class DebugMode extends SpiConfigProperty {
         public static final ProviderConfigProperty CONFIG;
         public static final String NAME = "debug-mode";
@@ -80,7 +81,7 @@ public class SpiConfigProperty {
         public static final boolean DEFAULT_VALUE = false;
 
         static {
-            CONFIG = new ProviderConfigProperty(NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
+            CONFIG = new ProviderConfigProperty(SpiConfigProperty.NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
         }
     }
 
@@ -93,7 +94,7 @@ public class SpiConfigProperty {
         public static final String DEFAULT_VALUE = "";
 
         static {
-            CONFIG = new ProviderConfigProperty(NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
+            CONFIG = new ProviderConfigProperty(SpiConfigProperty.NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
         }
     }
 
@@ -106,7 +107,7 @@ public class SpiConfigProperty {
         public static final String DEFAULT_VALUE = "";
 
         static {
-            CONFIG = new ProviderConfigProperty(NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
+            CONFIG = new ProviderConfigProperty(SpiConfigProperty.NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
         }
     }
 
@@ -119,7 +120,7 @@ public class SpiConfigProperty {
         public static final String DEFAULT_VALUE = "";
 
         static {
-            CONFIG = new ProviderConfigProperty(NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
+            CONFIG = new ProviderConfigProperty(SpiConfigProperty.NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
         }
     }
 
@@ -132,7 +133,7 @@ public class SpiConfigProperty {
         public static final String DEFAULT_VALUE = "";
 
         static {
-            CONFIG = new ProviderConfigProperty(NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
+            CONFIG = new ProviderConfigProperty(SpiConfigProperty.NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
         }
     }
 
@@ -145,7 +146,7 @@ public class SpiConfigProperty {
         public static final String DEFAULT_VALUE = "com.example.mynumbercardidp.keycloak.network.platform.BasicPlatformApiClient";
 
         static {
-            CONFIG = new ProviderConfigProperty(NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
+            CONFIG = new ProviderConfigProperty(SpiConfigProperty.NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
         }
     }
 
@@ -158,7 +159,7 @@ public class SpiConfigProperty {
         public static final String DEFAULT_VALUE = "ID123";
 
         static {
-            CONFIG = new ProviderConfigProperty(NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
+            CONFIG = new ProviderConfigProperty(SpiConfigProperty.NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
         }
     }
 
@@ -171,7 +172,7 @@ public class SpiConfigProperty {
         public static final String DEFAULT_VALUE = "https://idp.example.com/open-id/";
 
         static {
-            CONFIG = new ProviderConfigProperty(NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
+            CONFIG = new ProviderConfigProperty(SpiConfigProperty.NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
         }
     }
 
@@ -184,7 +185,7 @@ public class SpiConfigProperty {
         public static final String DEFAULT_VALUE = "https://idp.example.com/open-id/";
 
         static {
-            CONFIG = new ProviderConfigProperty(NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
+            CONFIG = new ProviderConfigProperty(SpiConfigProperty.NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
         }
     }
 
@@ -197,7 +198,7 @@ public class SpiConfigProperty {
         public static final String DEFAULT_VALUE = "https://idp.example.com/open-id/";
 
         static {
-            CONFIG = new ProviderConfigProperty(NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
+            CONFIG = new ProviderConfigProperty(SpiConfigProperty.NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
         }
     }
 }

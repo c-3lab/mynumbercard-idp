@@ -28,7 +28,7 @@ public class LoginFlowTransition extends CommonFlowTransition {
                 ResponseCreater.actionReChallenge(context, replacementActionName, status.getStatusCode());
                 return false;
         }
-        super.actionUndefinedFlow(ACTION_NAME, status.getStatusCode());
+        super.actionUndefinedFlow(LoginFlowTransition.ACTION_NAME, status.getStatusCode());
         return false;
     }
 }

@@ -14,10 +14,10 @@ public enum CertificateType {
    private String name;
 
    private CertificateType(final String formName) {
-       name = formName;
+       this.name = formName;
    }
 
    public String getName() {
-       return name;
+       return this.name;
    }
 }

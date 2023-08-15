@@ -14,6 +14,7 @@ import org.keycloak.models.UserModel;
  *
  * Jacksonによるオブジェクト、JSON間の相互変換することができるデータ定義です。
  */
+// [NOTE] 参照されないフィールドのゲッターとセッターは書かない。必要になった場合に書く。
 @JsonAutoDetect(fieldVisibility = Visibility.ANY)
 public class PlatformResponseModel implements PlatformResponseModelImpl {
 
@@ -26,13 +27,13 @@ public class PlatformResponseModel implements PlatformResponseModelImpl {
 
     @Override
     public int getHttpStatusCode() {
-        return httpStatusCode;
+        return this.httpStatusCode;
     }
 
     @Override
     @JsonIgnore
     public void ensureHasUniqueId() {
-        String uniqueId = identityInfo.getUniqueId();
+        String uniqueId = this.identityInfo.getUniqueId();
         if (StringUtil.isEmpty(uniqueId)) {
             throw new IllegalStateException("The unique id is empty in platform response.");
         }
@@ -41,26 +42,26 @@ public class PlatformResponseModel implements PlatformResponseModelImpl {
     @Override
     @JsonIgnore
     public UserModel toUserModelAttributes(final UserModel user) {
-        user.setSingleAttribute("uniqueId", identityInfo.getUniqueId());
-        user.setSingleAttribute("name", identityInfo.getName());
-        user.setSingleAttribute("gender_code", identityInfo.getGender());
-        user.setSingleAttribute("user_address", identityInfo.getAddress());
-        user.setSingleAttribute("birth_date", identityInfo.getDateOfBirth());
+        user.setSingleAttribute("uniqueId", this.identityInfo.getUniqueId());
+        user.setSingleAttribute("name", this.identityInfo.getName());
+        user.setSingleAttribute("gender_code", this.identityInfo.getGender());
+        user.setSingleAttribute("user_address", this.identityInfo.getAddress());
+        user.setSingleAttribute("birth_date", this.identityInfo.getDateOfBirth());
         return user;
     }
 
     protected void setHttpStatusCode(final int status) {
-        httpStatusCode = status;
+        this.httpStatusCode = status;
     }
 
     @Override
     @JsonIgnore
     public String getUniqueId() {
-        return identityInfo.uniqueId;
+        return this.identityInfo.uniqueId;
     }
 
     public PlatformResponseModel.IdentityInfo getIdentityInfo() {
-        return identityInfo;
+        return this.identityInfo;
     }
 
     @JsonAutoDetect(fieldVisibility = Visibility.ANY)
@@ -89,23 +90,23 @@ public class PlatformResponseModel implements PlatformResponseModelImpl {
         private String address;
 
         public String getUniqueId() {
-            return uniqueId;
+            return this.uniqueId;
         }
 
         public String getName() {
-            return name;
+            return this.name;
         }
 
         public String getDateOfBirth() {
-            return dateOfBirth;
+            return this.dateOfBirth;
         }
 
         public String getGender() {
-            return gender;
+            return this.gender;
         }
 
         public String getAddress() {
-            return address;
+            return this.address;
         }
     }
 }

@@ -56,22 +56,22 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
 
     @Override
     public UserRequestModelImpl getUserRequest() {
-        return dataManager.getUserRequest();
+        return this.dataManager.getUserRequest();
     }
 
     @Override
     public Object getPlatformRequest() {
-        return dataManager.getPlatformRequest();
+        return this.dataManager.getPlatformRequest();
     }
 
     @Override
     public PlatformResponseModelImpl getPlatformResponse() {
-        return dataManager.getPlatformResponse();
+        return this.dataManager.getPlatformResponse();
     }
 
     @Override
     public String getUserActionMode() {
-        return dataManager.getUserRequest().getActionMode();
+        return this.dataManager.getUserRequest().getActionMode();
     }
 
     @Override
@@ -81,65 +81,65 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);
         }
-        dataManager = createDataManager(formData);
-        platformRequestSender = Objects.isNull(idpSender) ? "" : idpSender;
-        dataManager.setPlatformRequestSender(platformRequestSender);
-        dataManager.setRequestCharset(defaultCharset);
+        this.dataManager = createDataManager(formData);
+        this.platformRequestSender = Objects.isNull(idpSender) ? "" : idpSender;
+        this.dataManager.setPlatformRequestSender(this.platformRequestSender);
+        this.dataManager.setRequestCharset(this.defaultCharset);
     }
 
     @Override
     public abstract void action();
 
     protected long getEstablishConnectionTimeout() {
-        return establishConnectionTimeout;
+        return this.establishConnectionTimeout;
     }
 
     protected void setEstablishConnectionTimeout(final long timeout) {
-        establishConnectionTimeout = timeout;
+        this.establishConnectionTimeout = timeout;
     }
 
     protected long getMaxConnectionIdleTime() {
-        return maxConnectionIdleTime;
+        return this.maxConnectionIdleTime;
     }
 
     protected void setMaxConnectionIdleTime(final long timeout) {
-        maxConnectionIdleTime = timeout;
+        this.maxConnectionIdleTime = timeout;
     }
 
     protected long getSocketTimeout() {
-        return socketTimeout;
+        return this.socketTimeout;
     }
 
     protected void setSocketTimeoutUnit(final long timeout) {
-        socketTimeout = timeout;
+        this.socketTimeout = timeout;
     }
 
     protected URI getApiRootUri() {
-        return apiRootUri;
+        return this.apiRootUri;
     }
 
     protected void setApiRootUri(final URI uri) {
-        apiRootUri = uri;
+        this.apiRootUri = uri;
     }
 
     protected Charset getDefaultCharset() {
-        return defaultCharset;
+        return this.defaultCharset;
     }
 
     protected void setDefaultCharset(final Charset charset) {
-        defaultCharset = charset;
+        this.defaultCharset = charset;
     }
 
     protected ContentType getHttpRequestContentType() {
-        return httpRequestContentType;
+        return this.httpRequestContentType;
     }
 
     protected void setHttpRequestContentType(final ContentType contentType) {
-        httpRequestContentType = contentType;
+        this.httpRequestContentType = contentType;
     }
 
     protected DataModelManagerImpl getDataModelManager() {
-        return dataManager;
+        return this.dataManager;
     }
 
     /**
@@ -153,20 +153,20 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
     protected void post(final URI apiUri, final Header[] headers, final HttpEntity entity) {
         HttpPost httpPost = new HttpPost(apiUri);
         if (Objects.nonNull(headers) && 0 < headers.length) {
-            httpPost.setHeader(HttpHeaders.CONTENT_TYPE, httpRequestContentType.toString());
+            httpPost.setHeader(HttpHeaders.CONTENT_TYPE, this.httpRequestContentType.toString());
             httpPost.setHeaders(headers);
         } else if (!Arrays.asList(headers).contains(HttpHeaders.CONTENT_TYPE)) {
-            httpPost.setHeader(HttpHeaders.CONTENT_TYPE, httpRequestContentType.toString());
+            httpPost.setHeader(HttpHeaders.CONTENT_TYPE, this.httpRequestContentType.toString());
         }
         httpPost.setEntity(entity);
 
         try (CloseableHttpClient httpClient = new HttpClientBuilder().disableTrustManager()
-            .establishConnectionTimeout(establishConnectionTimeout, establishConnectionTimeoutUnit)
-            .maxConnectionIdleTime(maxConnectionIdleTime, maxConnectionIdleTimeUnit)
-            .socketTimeout(socketTimeout, socketTimeoutUnit)
+            .establishConnectionTimeout(this.establishConnectionTimeout, this.establishConnectionTimeoutUnit)
+            .maxConnectionIdleTime(this.maxConnectionIdleTime, this.maxConnectionIdleTimeUnit)
+            .socketTimeout(this.socketTimeout, this.socketTimeoutUnit)
             .build()) {
             try (CloseableHttpResponse httpResponse = httpClient.execute(httpPost)) {
-                dataManager.getPlatformResponse(httpResponse);
+                this.dataManager.getPlatformResponse(httpResponse);
             } catch (HttpTimeoutException e) {
                 String message = "Connect timeout. Platform URL: " + apiUri.toString();
                 throw new IllegalArgumentException(message, e);
@@ -185,7 +185,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      * @return HTTPリクエストボディ
      */
     protected final HttpEntity createHttpEntity(final String s) {
-        return createHttpEntity(s.getBytes(defaultCharset), httpRequestContentType);
+        return createHttpEntity(s.getBytes(this.defaultCharset), this.httpRequestContentType);
     }
 
     /**
@@ -197,7 +197,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      */
     protected final HttpEntity createHttpEntity(final String s, String charset) {
         try {
-            return createHttpEntity(s.getBytes(charset), httpRequestContentType);
+            return createHttpEntity(s.getBytes(charset), this.httpRequestContentType);
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException(e);
         }
@@ -227,7 +227,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      * @return HTTPリクエストボディ
      */
     protected final HttpEntity createHttpEntity(final String s, final Charset charset) {
-        return createHttpEntity(s.getBytes(charset), httpRequestContentType);
+        return createHttpEntity(s.getBytes(charset), this.httpRequestContentType);
     }
 
     /**
@@ -250,7 +250,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      * @return HTTPリクエストボディ
      */
     protected final HttpEntity createHttpEntity(final String s, final ContentType contentType) {
-        return createHttpEntity(s.getBytes(defaultCharset), contentType);
+        return createHttpEntity(s.getBytes(this.defaultCharset), contentType);
     }
 
     /**
@@ -260,7 +260,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      * @return HTTPリクエストボディ
      */
     protected final HttpEntity createHttpEntity(final byte[] b) {
-        return createHttpEntity(b, httpRequestContentType);
+        return createHttpEntity(b, this.httpRequestContentType);
     }
 
     /**

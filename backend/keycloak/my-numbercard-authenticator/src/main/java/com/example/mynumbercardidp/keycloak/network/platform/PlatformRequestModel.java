@@ -21,7 +21,7 @@ public class PlatformRequestModel extends CommonRequestModel {
     }
 
     protected PlatformRequestModel(final String sender) {
-        requestInfo = new RequestInfo(sender);
+        this.requestInfo = new RequestInfo(sender);
     }
 
     protected PlatformRequestModel setRequestInfo(final RequestInfo requestInfo) {
@@ -42,19 +42,19 @@ public class PlatformRequestModel extends CommonRequestModel {
         }
 
         public String getTransactionId() {
-            return transactionId;
+            return this.transactionId;
         }
 
         public String getRecipient() {
-            return recipient;
+            return this.recipient;
         }
 
         public String getSender() {
-            return sender;
+            return this.sender;
         }
 
         public String getTimeStamp() {
-            return timeStamp;
+            return this.timeStamp;
         }
 
         protected RequestInfo setSender(final String sender) {

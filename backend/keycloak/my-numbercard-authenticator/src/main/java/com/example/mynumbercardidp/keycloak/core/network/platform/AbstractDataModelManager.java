@@ -27,17 +27,17 @@ public abstract class AbstractDataModelManager implements DataModelManagerImpl {
 
     @Override
     public void setPlatformRequestSender(final String requestSender) {
-        platformRequestSender = Objects.requireNonNull(requestSender);
+        this.platformRequestSender = Objects.requireNonNull(requestSender);
     }
 
     @Override
     public void setUserFormData(final MultivaluedMap<String, String> formData) {
-        userFormData = formData;
+        this.userFormData = formData;
     }
 
     @Override
     public void setRequestCharset(final Charset charset) {
-        requestCharset = charset;
+        this.requestCharset = charset;
     }
 
     @Override
@@ -52,33 +52,33 @@ public abstract class AbstractDataModelManager implements DataModelManagerImpl {
 
     @Override
     public PlatformResponseModelImpl getPlatformResponse() {
-        return platformResponse;
+        return this.platformResponse;
     }
 
     @Override
     public Object getPlatformResponse(final CloseableHttpResponse httpResponse) {
-        platformResponse = toPlatformResponse(Objects.requireNonNull(httpResponse));
-        return platformResponse;
+        this.platformResponse = toPlatformResponse(Objects.requireNonNull(httpResponse));
+        return this.platformResponse;
     }
 
     protected Charset getRequestCharset() {
-        return requestCharset;
+        return this.requestCharset;
     }
 
     protected String getPlatformRequestSender() {
-        return platformRequestSender;
+        return this.platformRequestSender;
     }
 
     protected void setUserRequest(final UserRequestModelImpl request) {
-        userRequest = request;
+        this.userRequest = request;
     }
 
     protected void setPlatformRequest(final Object request) {
-        platformRequest = request;
+        this.platformRequest = request;
     }
 
     protected void setPlatformResponse(final PlatformResponseModelImpl response) {
-        platformResponse = response;
+        this.platformResponse = response;
     }
 
     protected abstract UserRequestModelImpl toUserRequest(MultivaluedMap<String, String> formData);
@@ -91,10 +91,10 @@ public abstract class AbstractDataModelManager implements DataModelManagerImpl {
      * @return ユーザーリクエストのデータ構造
      */
     private UserRequestModelImpl toUserRequestIfNeeded() {
-        if (Objects.isNull(userRequest)) {
-            userRequest = toUserRequest(userFormData);
+        if (Objects.isNull(this.userRequest)) {
+            this.userRequest = toUserRequest(this.userFormData);
         }
-        return userRequest;
+        return this.userRequest;
     }
 
     /**
@@ -104,9 +104,9 @@ public abstract class AbstractDataModelManager implements DataModelManagerImpl {
      * @return ユーザーリクエストのデータ構造
      */
     private Object toPlatformRequestIfNeeded() {
-        if (Objects.isNull(platformRequest)) {
-            platformRequest = toPlatformRequest(userRequest);
+        if (Objects.isNull(this.platformRequest)) {
+            this.platformRequest = toPlatformRequest(this.userRequest);
         }
-        return platformRequest;
+        return this.platformRequest;
     }
 }

@@ -18,7 +18,7 @@ public class PlatformApiClient extends AbstractPlatformApiClient {
     private String platformRequestSender = "";
 
     {
-        super.setHttpRequestContentType(REQUEST_CONTENT_TYPE);
+        super.setHttpRequestContentType(PlatformApiClient.REQUEST_CONTENT_TYPE);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class PlatformApiClient extends AbstractPlatformApiClient {
         HttpEntity requsetEntity = super.createHttpEntity(data.convertPlatformRequestToJson());
         URI apiUri = createApiUri();
         Header[] headers = {};
-        consoleLogger.debug("Platform API URI: " + apiUri);
+        PlatformApiClient.consoleLogger.debug("Platform API URI: " + apiUri);
         super.post(apiUri, headers, requsetEntity);
     }
 
@@ -42,7 +42,7 @@ public class PlatformApiClient extends AbstractPlatformApiClient {
         try {
             String rootUri = super.getApiRootUri().toString();
             String action = super.getUserRequest().getActionMode();
-            return new URI(rootUri + API_URI_PATH + action);
+            return new URI(rootUri + PlatformApiClient.API_URI_PATH + action);
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);
         }

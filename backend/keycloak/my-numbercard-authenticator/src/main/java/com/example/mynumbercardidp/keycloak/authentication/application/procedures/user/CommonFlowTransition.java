@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
  */
 public abstract class CommonFlowTransition {
     /** コンソールロガー */
-    private final Logger consoleLogger = Logger.getLogger(CommonFlowTransition.class);
+    private static Logger consoleLogger = Logger.getLogger(CommonFlowTransition.class);
 
     /**
      * ユーザーが希望する処理を実行できるかどうか返します。
@@ -25,7 +25,7 @@ public abstract class CommonFlowTransition {
     protected boolean canAction(final AuthenticationFlowContext context, final Response.Status status) {
         switch (status) {
             case OK:
-                consoleLogger.debug("Platform response status code: " + status);
+                CommonFlowTransition.consoleLogger.debug("Platform response status code: " + status);
                 return true;
             case BAD_REQUEST:
                 context.form().setError(Messages.INVALID_REQUEST, "");
@@ -36,8 +36,8 @@ public abstract class CommonFlowTransition {
                 // フォールスルー
             case SERVICE_UNAVAILABLE:
                 String statusLabel = status.toString() + " (" + status + ")";
-                consoleLogger.error("Platform response status: " + statusLabel);
-                consoleLogger.error("Make sure the platform API server status is running.");
+                CommonFlowTransition.consoleLogger.error("Platform response status: " + statusLabel);
+                CommonFlowTransition.consoleLogger.error("Make sure the platform API server status is running.");
                 throw new IllegalArgumentException("Platform status is " + statusLabel + ".");
         }
         return false;

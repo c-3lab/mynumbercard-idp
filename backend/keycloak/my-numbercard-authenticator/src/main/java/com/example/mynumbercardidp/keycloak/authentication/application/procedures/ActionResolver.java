@@ -12,7 +12,7 @@ public class ActionResolver extends AbstractActionResolver {
     private static final String USER_ACTION_PACKAGE_NAME = "com.example.mynumbercardidp.keycloak.authentication.application.procedures.user";
 
     public ActionResolver() {
-        super(USER_ACTION_PACKAGE_NAME);
+        super(ActionResolver.USER_ACTION_PACKAGE_NAME);
     }
 
     @Override

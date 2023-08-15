@@ -19,19 +19,19 @@ public class CommonRequestModel {
     private String sign;
 
     public CertificateType getCertificateType() {
-        return certificateType;
+        return this.certificateType;
     }
 
     public String getCertificate() {
-        return certificate;
+        return this.certificate;
     }
 
     public String getApplicantData() {
-        return applicantData;
+        return this.applicantData;
     }
 
     public String getSign() {
-        return sign;
+        return this.sign;
     }
 
     protected CommonRequestModel setCertificateType(final CertificateType certificateType) {

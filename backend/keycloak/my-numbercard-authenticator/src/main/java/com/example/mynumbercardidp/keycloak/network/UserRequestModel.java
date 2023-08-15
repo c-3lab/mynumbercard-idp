@@ -18,19 +18,19 @@ public class UserRequestModel implements UserRequestModelWithApplicantDataImpl {
     private String actionMode;
 
     public CertificateType getCertificateType() {
-        return certificateType;
+        return this.certificateType;
     }
 
     public String getCertificate() {
-        return certificate;
+        return this.certificate;
     }
 
     public String getApplicantData() {
-        return applicantData;
+        return this.applicantData;
     }
 
     public String getSign() {
-        return sign;
+        return this.sign;
     }
 
     public UserRequestModel setCertificateType(final CertificateType certificateType) {
@@ -54,21 +54,21 @@ public class UserRequestModel implements UserRequestModelWithApplicantDataImpl {
     }
 
     public final String getActionMode() {
-        return actionMode;
+        return this.actionMode;
     }
 
     public void ensureHasValues() {
-        if (Objects.isNull(certificateType) ||
-            StringUtil.isEmpty(actionMode) ||
-            StringUtil.isEmpty(certificate) ||
-            StringUtil.isEmpty(applicantData) ||
-            StringUtil.isEmpty(sign)) {
+        if (Objects.isNull(this.certificateType) ||
+            StringUtil.isEmpty(this.actionMode) ||
+            StringUtil.isEmpty(this.certificate) ||
+            StringUtil.isEmpty(this.applicantData) ||
+            StringUtil.isEmpty(this.sign)) {
             throw new IllegalStateException("One or more values is not set.");
         }
     }
 
     public final void setActionMode(final String mode) {
-        actionMode = mode;
+        this.actionMode = mode;
     }
 
     public static enum Filed {

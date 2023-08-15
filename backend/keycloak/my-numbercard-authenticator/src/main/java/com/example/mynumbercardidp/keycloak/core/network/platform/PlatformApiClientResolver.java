@@ -20,7 +20,7 @@ public class PlatformApiClientResolver implements PlatformApiClientResolverImpl 
                  .newInstance();
 
              MultivaluedMap<String, String> formData = PlatformApiClientResolver.extractFormData(context);
-             formData.forEach((k, v) -> consoleLogger.debug("Key " + k + " -> " + v));
+             formData.forEach((k, v) -> PlatformApiClientResolver.consoleLogger.debug("Key " + k + " -> " + v));
              platform.init(apiRootUri, formData, idpSender); 
              return platform;
          } catch (ClassNotFoundException | ClassCastException | NoSuchMethodException |

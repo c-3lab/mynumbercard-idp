@@ -32,12 +32,12 @@ public class MyNumberCardAuthenticatorFactory implements AuthenticatorFactory {
 
     @Override
     public Authenticator create(KeycloakSession session) {
-      return SINGLETON;
+      return MyNumberCardAuthenticatorFactory.SINGLETON;
     }
 
     @Override
     public String getId() {
-      return PROVIDER_ID;
+      return MyNumberCardAuthenticatorFactory.PROVIDER_ID;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class MyNumberCardAuthenticatorFactory implements AuthenticatorFactory {
 
     @Override
     public String getDisplayType() {
-      return DISPLAY_TYPE;
+      return MyNumberCardAuthenticatorFactory.DISPLAY_TYPE;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class MyNumberCardAuthenticatorFactory implements AuthenticatorFactory {
 
     @Override
     public Requirement[] getRequirementChoices() {
-      return REQUIREMENT_CHOICES;
+      return MyNumberCardAuthenticatorFactory.REQUIREMENT_CHOICES;
     }
 
     @Override
@@ -77,11 +77,11 @@ public class MyNumberCardAuthenticatorFactory implements AuthenticatorFactory {
 
     @Override
     public List<ProviderConfigProperty> getConfigProperties() {
-        return configProperties;
+        return this.configProperties;
     }
 
     @Override
     public String getHelpText() {
-      return HELP_TEXT;
+      return MyNumberCardAuthenticatorFactory.HELP_TEXT;
     }
 }

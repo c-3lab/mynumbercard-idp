@@ -28,12 +28,12 @@ public abstract class AbstractActionResolver implements ApplicationResolverImpl 
     private ApplicationProcedure action;
 
     protected AbstractActionResolver(final String packageName) {
-        userActionPackageName = packageName;
+        this.userActionPackageName = packageName;
     }
 
     protected AbstractActionResolver(final String packageName, final String actionSuffix) {
-        userActionPackageName = packageName;
-        userActionClassNameSuffix = actionSuffix;
+        this.userActionPackageName = packageName;
+        this.userActionClassNameSuffix = actionSuffix;
     }
 
     /**
@@ -56,8 +56,8 @@ public abstract class AbstractActionResolver implements ApplicationResolverImpl 
      * @param platform プラットフォーム APIクライアントのインスタンス
      */
     protected void preAction(final AuthenticationFlowContext context, final PlatformApiClientImpl platform) {
-        action = resolveActionClass(context, platform);
-        action.preAction(context, platform);
+        this.action = resolveActionClass(context, platform);
+        this.action.preAction(context, platform);
     } 
 
     /**
@@ -67,7 +67,7 @@ public abstract class AbstractActionResolver implements ApplicationResolverImpl 
      * @param platform プラットフォーム APIクライアントのインスタンス
      */
     protected void onAction(final AuthenticationFlowContext context, final PlatformApiClientImpl platform) {
-        action.onAction(context, platform);
+        this.action.onAction(context, platform);
     } 
 
     /**
@@ -77,7 +77,7 @@ public abstract class AbstractActionResolver implements ApplicationResolverImpl 
      * @param platform プラットフォーム APIクライアントのインスタンス
      */
     protected void postAction(final AuthenticationFlowContext context, final PlatformApiClientImpl platform) {
-        action.postAction(context, platform);
+        this.action.postAction(context, platform);
     }
 
     /**
@@ -116,7 +116,7 @@ public abstract class AbstractActionResolver implements ApplicationResolverImpl 
     }
 
     private String getActionClass(final PlatformApiClientImpl platform) {
-        return userActionPackageName + "." +  extractActionMode(platform) + userActionClassNameSuffix;
+        return this.userActionPackageName + "." +  extractActionMode(platform) + this.userActionClassNameSuffix;
     }
 
     private String extractActionMode(final PlatformApiClientImpl platform) {

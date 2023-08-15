@@ -29,9 +29,9 @@ public class DataModelManager extends AbstractDataModelManager {
 
     @Override
     protected UserRequestModelImpl toUserRequest(final MultivaluedMap<String, String> formData) {
-        formData.forEach((k, v) -> consoleLogger.debug("Key " + k + " -> " + v));
+        formData.forEach((k, v) -> DataModelManager.consoleLogger.debug("Key " + k + " -> " + v));
         String actionMode = formData.getFirst(UserRequestModel.Filed.ACTION_MODE.getName());
-        consoleLogger.debug("actionMode: " + actionMode);
+        DataModelManager.consoleLogger.debug("actionMode: " + actionMode);
         UserRequestModel user = new UserRequestModel();
         user.setActionMode(actionMode);
         user.setApplicantData(formData.getFirst(UserRequestModel.Filed.APPLICANT_DATA.getName()))
@@ -69,8 +69,8 @@ public class DataModelManager extends AbstractDataModelManager {
         PlatformResponseModel response = new PlatformResponseModel();
         try (InputStream inputStream = httpResponse.getEntity().getContent()) {
             String contentsBody = IOUtils.toString(inputStream, super.getRequestCharset());
-            ObjectReader objectReader = objectMapper.readerFor(PlatformResponseModel.class);
-            try (JsonParser parser = jsonFactory.createParser(contentsBody)) {
+            ObjectReader objectReader = DataModelManager.objectMapper.readerFor(PlatformResponseModel.class);
+            try (JsonParser parser = DataModelManager.jsonFactory.createParser(contentsBody)) {
                 response = objectReader.readValue(parser);
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
@@ -86,12 +86,12 @@ public class DataModelManager extends AbstractDataModelManager {
         try {
             Object requestObj = super.getPlatformRequest();
             PlatformRequestModel request = (PlatformRequestModel) requestObj;
-            ObjectWriter objectWriter = objectMapper.writerFor(PlatformRequestModel.class);
+            ObjectWriter objectWriter = DataModelManager.objectMapper.writerFor(PlatformRequestModel.class);
             String baseJson = objectWriter.writeValueAsString(request);
-            ObjectReader objectReader = objectMapper.readerFor(PlatformRequestModel.class);
+            ObjectReader objectReader = DataModelManager.objectMapper.readerFor(PlatformRequestModel.class);
             ObjectNode objectNode = objectReader.readTree(baseJson).deepCopy();
             objectNode.put(request.getCertificateType().getName(), request.getCertificate());
-            objectWriter = objectMapper.writer();
+            objectWriter = DataModelManager.objectMapper.writer();
             return objectWriter.writeValueAsString(objectNode);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException(e);

@@ -27,7 +27,7 @@ public class ReplacementFlowTransition extends CommonFlowTransition {
                 // return false;
                 break;
         }
-        super.actionUndefinedFlow(ACTION_NAME, status.getStatusCode());
+        super.actionUndefinedFlow(ReplacementFlowTransition.ACTION_NAME, status.getStatusCode());
         return false;
     }
 }

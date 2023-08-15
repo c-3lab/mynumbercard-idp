@@ -37,7 +37,7 @@ import javax.ws.rs.core.Response;
 public abstract class AbstractUserAction implements ApplicationProcedure {
 
     private static final String MESSAGE_DEBUG_MODE_ENABLED = "Debug mode is enabled. ";
-    private final Logger consoleLogger = Logger.getLogger(AbstractUserAction.class);
+    private static Logger consoleLogger = Logger.getLogger(AbstractUserAction.class);
 
     /**
      * 認証ユーザーのセッション情報からNonce文字列を取得します。
@@ -166,12 +166,12 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
      // デバッグモードが無効の場合、ユーザーが送ってきたnonceをハッシュ化した値は信用しない。
     private void tryValidateSignature(final AuthenticationFlowContext context, final PlatformApiClientImpl platform) {
         String nonce = AbstractUserAction.getNonce(context);
-        consoleLogger.debug("Nonce: " + nonce);
+        AbstractUserAction.consoleLogger.debug("Nonce: " + nonce);
         String nonceHash = AbstractUserAction.toHashString(nonce);
-        consoleLogger.debug("Nonce hash: " + nonceHash);
+        AbstractUserAction.consoleLogger.debug("Nonce hash: " + nonceHash);
 
         String applicantData = extractApplicantData(platform);
-        consoleLogger.debug("Applicant data: " + applicantData);
+        AbstractUserAction.consoleLogger.debug("Applicant data: " + applicantData);
         String applicantDataLower = applicantData.toLowerCase();
         String applicantDataUpper = applicantData.toUpperCase();
 
@@ -180,7 +180,7 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
             if (!isDebugMode(context)) {
                 throw new IllegalArgumentException(message);
             }
-            consoleLogger.info(MESSAGE_DEBUG_MODE_ENABLED + message);
+            AbstractUserAction.consoleLogger.info(MESSAGE_DEBUG_MODE_ENABLED + message);
         }
 
         String certificate = extractCertificate(platform);
@@ -248,13 +248,13 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
         }
 
         String consoleMessage = "Failed validate signature. The signed value was not a nonce hash. Retry, verifies that the signed value is a nonce.";
-        consoleLogger.info(MESSAGE_DEBUG_MODE_ENABLED + consoleMessage);
+        AbstractUserAction.consoleLogger.info(AbstractUserAction.MESSAGE_DEBUG_MODE_ENABLED + consoleMessage);
         if (validateSignature(signature, certificateBase64Content, nonce)) {
             return;
         }
 
         consoleMessage = "Failed validate signature. The signed value was not a nonce.";
-        consoleLogger.info(consoleMessage);
+        AbstractUserAction.consoleLogger.info(consoleMessage);
         if (validateSignature(signature, certificateBase64Content, applicantData)) {
             return;
         }
