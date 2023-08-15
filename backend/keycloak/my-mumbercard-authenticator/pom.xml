@@ -152,14 +152,6 @@
                 <version>5.2.1</version>
                 <type>pom</type>
             </dependency>
-            <!-- Source code before refactoring. -->
-            <dependency>
-              <groupId>com.example.mynumbercardidp.keycloak</groupId>
-              <artifactId>x509-relay-authenticator</artifactId>
-              <version>20.0.1-SNAPSHOT</version>
-              <scope>system</scope>
-              <systemPath>${project.basedir}/lib/x509-relay-authenticator-jar-with-dependencies.jar</systemPath>
-            </dependency>
             <!-- Tests -->
             <dependency>
                 <groupId>org.junit</groupId>
