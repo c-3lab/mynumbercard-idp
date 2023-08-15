@@ -47,21 +47,15 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
      * @param context 認証フローのコンテキスト
      */
     public void action(AuthenticationFlowContext context) {
-        String platformApiClassFqdn = context.getAuthenticatorConfig()
-            .getConfig()
-            .get(SpiConfigProperty.PlatformApiClientClassFqdn.NAME);
-        if (Objects.isNull(platformApiClassFqdn) || platformApiClassFqdn.length() == 0) {
+        String platformApiClassFqdn = CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiClientClassFqdn.NAME);
+        if (isStringEmpty(platformApiClassFqdn)) {
             consoleLogger.error(SpiConfigProperty.PlatformApiClientClassFqdn.LABEL + " is empty.");
             ResponseCreater.createInternalServerErrorPage(context, null, null);
             return;
         }
 
-        String platformRootApiUri = context.getAuthenticatorConfig()
-            .getConfig()
-            .get(SpiConfigProperty.PlatformApiClientUri.NAME);
-        String idpSender = context.getAuthenticatorConfig()
-            .getConfig()
-            .get(SpiConfigProperty.PlatformApiIdpSender.NAME);
+        String platformRootApiUri = CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiClientUri.NAME);
+        String idpSender = CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiIdpSender.NAME);
         PlatformApiClientLoader platformLoader = new PlatformApiClientLoader();
         PlatformApiClientImpl platform = null;
         try {
@@ -97,7 +91,7 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
          */
         String authFlowResult = ResponseCreater.getFlowState(context);
 
-        if (Objects.isNull(authFlowResult) || authFlowResult.length() == 0) {
+        if (isStringEmpty(authFlowResult)) {
             /*
              * [TODO] Exceptionを返したときにユーザーへ内部エラーのレスポンス 500を返さない動作を確認した場合、
              *        Exceptionをスローしない処理へ修正する。
@@ -111,6 +105,23 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
                 authFlowResult.equals(ExecutionStatus.SUCCESS.toString()))) {
             return;
         }
+    }
+
+    /**
+     * 個人番号カードの公的個人認証部分を送信するアプリが起動できるフォームを返します。
+     *
+     * @param context 認証フローのコンテキスト
+     */
+    @Override
+    public void authenticate(AuthenticationFlowContext context) {
+        setLoginFormAttributes(context);
+
+        String initialView = context.getAuthenticationSession().getAuthNote("initialView");
+        if (isStringEmpty(initialView)) {
+            initialView = "";
+        }
+        javax.ws.rs.core.Response response = ResponseCreater.createChallengePage(context, initialView);
+        ResponseCreater.setFlowStepChallenge(context, response);
     }
 
     /**
@@ -160,6 +171,7 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
 
         String debugMode = SpiConfigProperty.DebugMode.CONFIG.getName();
         String debugModeValue = CurrentConfig.getValue(context, debugMode).toLowerCase();
+        debugModeValue = isStringEmpty(debugModeValue) ? "false" : debugModeValue.toLowerCase();
         form.setAttribute("debug", debugModeValue);
     }
 
@@ -168,7 +180,17 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
      *
      * @return nonce UUIDの文字列
      */
-    private String createNonce() {
+    protected String createNonce() {
         return UUID.randomUUID().toString();
+    }
+
+    /**
+     * String型がNullまたは文字列の長さがゼロであるかを判定します。
+     *
+     * @param str Nullまたは長さがゼロであるか判定したい文字列
+     * @return Nullまたは長さがゼロの場合はtrue、そうでない場合はfalse
+     */
+    protected boolean isStringEmpty(String str) {
+        return Objects.isNull(str) || str.length() == 0;
     }
 }
