@@ -6,7 +6,7 @@ import com.example.mynumbercardidp.keycloak.authentication.application.procedure
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ActionHandler;
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ResponseCreater;
 import com.example.mynumbercardidp.keycloak.network.platform.RequestBuilder;
-import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClient;
+import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientImpl;
 import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientLoader;
 import org.apache.commons.io.IOUtils;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -105,7 +105,7 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
             .getConfig()
             .get(SpiConfigProperty.PlatformApiIdpSender.NAME);
         PlatformApiClientLoader platformLoader = new PlatformApiClientLoader();
-        PlatformApiClient platform = null;
+        PlatformApiClientImpl platform = null;
         try {
             platform = platformLoader.load(platformApiClassFqdn, context, platformRootApiUri, idpSender);
 

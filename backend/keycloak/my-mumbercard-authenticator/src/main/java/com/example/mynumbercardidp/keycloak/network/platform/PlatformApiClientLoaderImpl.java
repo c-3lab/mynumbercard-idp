@@ -24,7 +24,7 @@ interface PlatformApiClientLoaderImpl {
      * @exception InstantiationException 配列以外のインスタンス作成、フィールドの設定または取得、メソッドの呼出しを試みた場合
      * @exception InvocationTargetException 呼び出されるメソッドまたはコンストラクタがスローする例外をラップする、チェック例外
      */
-    default PlatformApiClient load(String platformClassFqdn, AuthenticationFlowContext context, String apiRootUri) throws ClassNotFoundException, ClassCastException, NoSuchMethodException, URISyntaxException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    default PlatformApiClientImpl load(String platformClassFqdn, AuthenticationFlowContext context, String apiRootUri) throws ClassNotFoundException, ClassCastException, NoSuchMethodException, URISyntaxException, InstantiationException, IllegalAccessException, InvocationTargetException {
         return load(platformClassFqdn, context, apiRootUri, null);
     }
 
@@ -46,5 +46,5 @@ interface PlatformApiClientLoaderImpl {
      * @exception InstantiationException 配列以外のインスタンス作成、フィールドの設定または取得、メソッドの呼出しを試みた場合
      * @exception InvocationTargetException 呼び出されるメソッドまたはコンストラクタがスローする例外をラップする、チェック例外
      */
-    PlatformApiClient load(String platformClassFqdn, AuthenticationFlowContext context, String apiRootUri, String idpSender) throws ClassNotFoundException, ClassCastException, NoSuchMethodException, URISyntaxException, InstantiationException, IllegalAccessException, InvocationTargetException;
+    PlatformApiClientImpl load(String platformClassFqdn, AuthenticationFlowContext context, String apiRootUri, String idpSender) throws ClassNotFoundException, ClassCastException, NoSuchMethodException, URISyntaxException, InstantiationException, IllegalAccessException, InvocationTargetException;
 }

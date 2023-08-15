@@ -30,7 +30,7 @@ import javax.ws.rs.core.MultivaluedMap;
  *
  * このクラスを継承したサブクラスは、インスタンス生成元で{@link #init(MultivaluedMap<String, String>)}を実行し、プラットフォームへ送信するパラメータを受け取る必要があります。
  */
-public abstract class AbstractPlatformApiClient implements PlatformApiClient {
+public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl {
 
     /** プラットフォームと通信するときのリクエスト設定 */
     private RequestConfig httpRequestConfig;

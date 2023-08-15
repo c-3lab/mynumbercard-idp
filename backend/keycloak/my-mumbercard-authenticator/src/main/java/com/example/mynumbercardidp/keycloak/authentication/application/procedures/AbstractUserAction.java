@@ -1,7 +1,7 @@
 package com.example.mynumbercardidp.keycloak.authentication.application.procedures;
 
 import com.example.mynumbercardidp.keycloak.network.platform.RequestBuilder;
-import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClient;
+import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientImpl;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.authenticators.x509.UserIdentityToModelMapper;
 import org.keycloak.authentication.AuthenticationFlowContext;
@@ -32,7 +32,7 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
     private static Logger consoleLogger = Logger.getLogger(AbstractUserAction.class);
 
     @Override
-    public void execute(AuthenticationFlowContext context, PlatformApiClient platform) {
+    public void execute(AuthenticationFlowContext context, PlatformApiClientImpl platform) {
 
     }
 
@@ -43,7 +43,7 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
      * @param platform プラットフォーム APIクライアントのインスタンス
      */
     @Override
-    public void preExecute(AuthenticationFlowContext context, PlatformApiClient platform) {
+    public void preExecute(AuthenticationFlowContext context, PlatformApiClientImpl platform) {
         // ユーザーが送ってきたNonceをハッシュ化した値は信用しない。
         String nonceHash = toHashString(getNonce(context));
         String certificate = platform.getUserRequest().getCertificate();

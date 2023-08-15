@@ -1,7 +1,7 @@
 package com.example.mynumbercardidp.keycloak.authentication.application.procedures;
 
 import com.example.mynumbercardidp.keycloak.network.platform.RequestBuilder;
-import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClient;
+import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientImpl;
 import org.keycloak.authentication.AuthenticationFlowContext;
 
 /**
@@ -17,7 +17,7 @@ public interface ApplicationProcedure {
      * @param context 認証フローのコンテキスト
      * @param platform プラットフォームのインスタンス
      */
-    void execute(AuthenticationFlowContext context, PlatformApiClient platform); 
+    void execute(AuthenticationFlowContext context, PlatformApiClientImpl platform); 
 
     /**
      * クラス名で表した処理の事前処理を実行します。
@@ -25,5 +25,5 @@ public interface ApplicationProcedure {
      * @param context 認証フローのコンテキスト
      * @param platform プラットフォーム APIクライアントのインスタンス
      */
-    void preExecute(AuthenticationFlowContext context, PlatformApiClient platform);
+    void preExecute(AuthenticationFlowContext context, PlatformApiClientImpl platform);
 }

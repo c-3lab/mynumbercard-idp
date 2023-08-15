@@ -10,12 +10,12 @@ import java.net.URISyntaxException;
  * 個人番号カードの公的個人認証部分を受け付けるプラットフォームと通信するためのクラスインスタンスを作成します。
  */
 public class PlatformApiClientLoader implements PlatformApiClientLoaderImpl {
-     private PlatformApiClient platformClass;
+     private PlatformApiClientImpl platformClass;
 
      public PlatformApiClientLoader() {}
 
      @Override
-     public PlatformApiClient load(String platformClassFqdn, AuthenticationFlowContext context, String apiRootUri, String idpSender) throws ClassNotFoundException, ClassCastException, NoSuchMethodException, URISyntaxException, InstantiationException, IllegalAccessException, InvocationTargetException {
+     public PlatformApiClientImpl load(String platformClassFqdn, AuthenticationFlowContext context, String apiRootUri, String idpSender) throws ClassNotFoundException, ClassCastException, NoSuchMethodException, URISyntaxException, InstantiationException, IllegalAccessException, InvocationTargetException {
          
          AbstractPlatformApiClient platform = (AbstractPlatformApiClient) Class.forName(platformClassFqdn)
              .getDeclaredConstructor()

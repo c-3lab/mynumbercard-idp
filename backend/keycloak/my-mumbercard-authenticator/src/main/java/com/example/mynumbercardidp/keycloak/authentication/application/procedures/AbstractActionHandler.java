@@ -1,6 +1,6 @@
 package com.example.mynumbercardidp.keycloak.authentication.application.procedures;
 
-import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClient;
+import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientImpl;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
@@ -38,7 +38,7 @@ public abstract class AbstractActionHandler implements ApplicationProcedure {
      * @param platform プラットフォーム APIクライアントのインスタンス
      */
     @Override
-    public void execute(AuthenticationFlowContext context, PlatformApiClient platform) {
+    public void execute(AuthenticationFlowContext context, PlatformApiClientImpl platform) {
         try {
             String actionMode = (String) platform.getUserRequest().get("actionMode");
             String actionClass = USER_ACTION_PACKAGE_NAME + "." + actionMode;
@@ -74,7 +74,7 @@ public abstract class AbstractActionHandler implements ApplicationProcedure {
     } 
 
     @Override
-    public void preExecute(AuthenticationFlowContext context, PlatformApiClient platform) {
+    public void preExecute(AuthenticationFlowContext context, PlatformApiClientImpl platform) {
 
     }
 

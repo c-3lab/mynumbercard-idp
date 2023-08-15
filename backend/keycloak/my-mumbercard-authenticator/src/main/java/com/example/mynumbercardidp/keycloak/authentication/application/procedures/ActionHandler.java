@@ -1,6 +1,6 @@
 package com.example.mynumbercardidp.keycloak.authentication.application.procedures;
 
-import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClient;
+import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientImpl;
 import org.keycloak.authentication.AuthenticationFlowContext;
 
 import javax.ws.rs.core.Response;
@@ -33,7 +33,7 @@ public class ActionHandler extends AbstractActionHandler {
      * @exception Exception 何らかの例外が発生した場合（あらゆる例外は認証SPIで補足できない場合、認証フローを正常に終了することができません。）
      */
     @Override
-    public void preExecute(AuthenticationFlowContext context, PlatformApiClient platform) {
+    public void preExecute(AuthenticationFlowContext context, PlatformApiClientImpl platform) {
         action.preExecute(context, platform);
     }
 }

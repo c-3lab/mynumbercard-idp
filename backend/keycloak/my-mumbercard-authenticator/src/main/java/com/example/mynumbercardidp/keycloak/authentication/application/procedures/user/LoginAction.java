@@ -3,7 +3,7 @@ package com.example.mynumbercardidp.keycloak.authentication.application.procedur
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.AbstractUserAction;
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ResponseCreater;
 import com.example.mynumbercardidp.keycloak.network.platform.CommonResponseModel;
-import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClient;
+import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientImpl;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.models.UserModel;
@@ -27,7 +27,7 @@ public class LoginAction extends AbstractUserAction {
      * @param platform プラットフォーム APIクライアントのインスタンス
      */
     @Override
-    public void execute(AuthenticationFlowContext context, PlatformApiClient platform) { 
+    public void execute(AuthenticationFlowContext context, PlatformApiClientImpl platform) { 
         // プラットフォームへデータを送信する。
         CommonResponseModel response = platform.action();
         int platformStatusCode = platform.getPlatformResponse().getHttpStatusCode();
