@@ -1,0 +1,11 @@
+services:
+  development:
+    image: node:18.14.2
+    volumes:
+      - ./examples/sample-rp-with-openid-connect:/opt/sample-rp-with-openid-connect
+    container_name: development
+    hostname: development
+    restart: unless-stopped
+    entrypoint: sleep 100000
+    ports:
+      - "0.0.0.0:3002:3000"
