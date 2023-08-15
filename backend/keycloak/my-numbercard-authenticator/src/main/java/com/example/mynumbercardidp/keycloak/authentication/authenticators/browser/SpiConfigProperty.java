@@ -139,7 +139,7 @@ public class SpiConfigProperty {
         public static final String LABEL = "Platform API Clinet Class FQDN";
         public static final String HELP_TEXT = "Fully qualified class name of the platform API client for authentication using the public personal authentication part of My Number Card.";
         public static final String TYPE = ProviderConfigProperty.STRING_TYPE;
-        public static final String DEFAULT_VALUE = "com.example.mynumbercardidp.keycloak.network.platform.BasicPlatformApiClient";
+        public static final String DEFAULT_VALUE = "com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClient";
 
         static {
             CONFIG = new ProviderConfigProperty(SpiConfigProperty.NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
