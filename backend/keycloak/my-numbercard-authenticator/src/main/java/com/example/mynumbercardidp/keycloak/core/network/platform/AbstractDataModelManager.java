@@ -1,5 +1,6 @@
 package com.example.mynumbercardidp.keycloak.core.network.platform;
 
+import com.example.mynumbercardidp.keycloak.core.network.UserRequestModelImpl;
 import org.apache.http.client.methods.CloseableHttpResponse;
 
 import java.nio.charset.Charset;
@@ -22,7 +23,7 @@ public abstract class AbstractDataModelManager implements DataModelManagerImpl {
     /** プラットフォームリクエストのデータ構造 */
     private Object platformRequest;
     /** プラットフォームレスポンスのデータ構造 */
-    private Object platformResponse;
+    private PlatformResponseModelImpl platformResponse;
 
     @Override
     public void setPlatformRequestSender(final String requestSender) {
@@ -50,7 +51,7 @@ public abstract class AbstractDataModelManager implements DataModelManagerImpl {
     }
 
     @Override
-    public Object getPlatformResponse() {
+    public PlatformResponseModelImpl getPlatformResponse() {
         return platformResponse;
     }
 
@@ -76,13 +77,13 @@ public abstract class AbstractDataModelManager implements DataModelManagerImpl {
         platformRequest = request;
     }
 
-    protected void setPlatformResponse(final Object response) {
+    protected void setPlatformResponse(final PlatformResponseModelImpl response) {
         platformResponse = response;
     }
 
     protected abstract UserRequestModelImpl toUserRequest(MultivaluedMap<String, String> formData);
     protected abstract Object toPlatformRequest(UserRequestModelImpl user);
-    protected abstract Object toPlatformResponse(CloseableHttpResponse httpResponse);
+    protected abstract PlatformResponseModelImpl toPlatformResponse(CloseableHttpResponse httpResponse);
 
     /**
      * ユーザーリクエストのデータ構造を返します。必要に応じて、HTMLフォームパラメータから変換します。

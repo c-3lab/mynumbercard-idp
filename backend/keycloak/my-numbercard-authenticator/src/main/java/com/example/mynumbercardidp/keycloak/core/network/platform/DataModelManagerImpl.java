@@ -1,5 +1,6 @@
 package com.example.mynumbercardidp.keycloak.core.network.platform;
 
+import com.example.mynumbercardidp.keycloak.core.network.UserRequestModelImpl;
 import org.apache.http.client.methods.CloseableHttpResponse;
 
 import java.nio.charset.Charset;
@@ -52,7 +53,7 @@ public interface DataModelManagerImpl {
      *
      * @return プラットフォームレスポンスのデータ
      */
-    Object getPlatformResponse();
+    PlatformResponseModelImpl getPlatformResponse();
 
     /**
      * HTTPレスポンスからプラットフォームレスポンスのデータ構造を返します。

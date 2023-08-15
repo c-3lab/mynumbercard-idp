@@ -4,6 +4,7 @@ import com.example.mynumbercardidp.keycloak.authentication.application.procedure
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ResponseCreater;
 import com.example.mynumbercardidp.keycloak.network.platform.PlatformResponseModel;
 import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformApiClientImpl;
+import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformResponseModelImpl;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.models.UserModel;
@@ -23,7 +24,7 @@ public class ReplacementAction extends AbstractUserAction {
      */
     @Override
     public void onAction(AuthenticationFlowContext context, PlatformApiClientImpl platform) { 
-        PlatformResponseModel response = (PlatformResponseModel) platform.getPlatformResponse();
+        PlatformResponseModelImpl response = platform.getPlatformResponse();
         int platformStatusCode = response.getHttpStatusCode();
         if (! new ReplacementFlowTransition().canAction(context, Response.Status.fromStatusCode(platformStatusCode))) {
             return;

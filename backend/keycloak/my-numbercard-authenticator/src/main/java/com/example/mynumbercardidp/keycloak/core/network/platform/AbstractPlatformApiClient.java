@@ -1,5 +1,6 @@
 package com.example.mynumbercardidp.keycloak.core.network.platform;
 
+import com.example.mynumbercardidp.keycloak.core.network.UserRequestModelImpl;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
@@ -27,7 +28,7 @@ import javax.annotation.Nullable;
 import javax.ws.rs.core.MultivaluedMap;
 
 /**
- * 個人番号カードの公的個人認証部分を受け付けるプラットフォームと通信する処理を定義すべき実装を表しています。
+ * 個人番号カードの公的個人認証部分を受け付けるプラットフォームと通信する処理を定義すべき機能を表しています。
  *
  * このクラスを継承したサブクラスは、インスタンス生成元で{@link #init(MultivaluedMap<String, String>)}を実行し、プラットフォームへ送信するパラメータを受け取る必要があります。
  */
@@ -64,7 +65,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
     }
 
     @Override
-    public Object getPlatformResponse() {
+    public PlatformResponseModelImpl getPlatformResponse() {
         return dataManager.getPlatformResponse();
     }
 
@@ -151,7 +152,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      */
     protected void post(final URI apiUri, final Header[] headers, final HttpEntity entity) {
         HttpPost httpPost = new HttpPost(apiUri);
-        if (Objects.nonNull(headers) && headers.length > 0) {
+        if (Objects.nonNull(headers) && 0 < headers.length) {
             httpPost.setHeader(HttpHeaders.CONTENT_TYPE, httpRequestContentType.toString());
             httpPost.setHeaders(headers);
         } else if (!Arrays.asList(headers).contains(HttpHeaders.CONTENT_TYPE)) {

@@ -1,10 +1,11 @@
 package com.example.mynumbercardidp.keycloak.authentication.application.procedures;
 
 import com.example.mynumbercardidp.keycloak.authentication.authenticators.browser.SpiConfigProperty;
-import com.example.mynumbercardidp.keycloak.network.platform.UserRequestModel;
 import com.example.mynumbercardidp.keycloak.network.platform.PlatformResponseModel;
 import com.example.mynumbercardidp.keycloak.core.authentication.application.procedures.ApplicationProcedure;
+import com.example.mynumbercardidp.keycloak.core.network.UserRequestModelWithApplicantDataImpl;
 import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformApiClientImpl;
+import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformResponseModelImpl;
 import com.example.mynumbercardidp.keycloak.util.authentication.CurrentConfig;
 import com.example.mynumbercardidp.keycloak.util.StringUtil;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -69,7 +70,7 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
      */
     @Override
     public void preAction(final AuthenticationFlowContext context, final PlatformApiClientImpl platform) {
-        UserRequestModel user = (UserRequestModel) platform.getUserRequest();
+        UserRequestModelWithApplicantDataImpl user = (UserRequestModelWithApplicantDataImpl) platform.getUserRequest();
         user.ensureHasValues();
         tryValidateSignature(context, platform);
         platform.action();
@@ -123,7 +124,7 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
      * @param response プラットフォームのレスポンス
      * @return ユーザーの一意のID
      */
-    protected String tryExtractUniqueId(final PlatformResponseModel response) {
+    protected String tryExtractUniqueId(final PlatformResponseModelImpl response) {
         response.ensureHasUniqueId();
         return response.getUniqueId();
     }
@@ -134,7 +135,7 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
      * @param request ユーザーリクエストのデータ構造
      */
     private String extractApplicantData(final PlatformApiClientImpl platform) {
-        UserRequestModel user = (UserRequestModel) platform.getUserRequest();
+        UserRequestModelWithApplicantDataImpl user = (UserRequestModelWithApplicantDataImpl) platform.getUserRequest();
         return user.getApplicantData();
     }
 
@@ -144,8 +145,7 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
      * @param request ユーザーリクエストのデータ構造
      */
     private String extractCertificate(final PlatformApiClientImpl platform) {
-        UserRequestModel user = (UserRequestModel) platform.getUserRequest();
-        return user.getCertificate();
+        return platform.getUserRequest().getCertificate();
     }
 
     /**
@@ -154,8 +154,7 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
      * @param request ユーザーリクエストのデータ構造
      */
     private String extractSign(final PlatformApiClientImpl platform) {
-        UserRequestModel user = (UserRequestModel) platform.getUserRequest();
-        return user.getSign();
+        return platform.getUserRequest().getSign();
     }
 
     /**
@@ -262,16 +261,6 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
         String message = "The signature is not equals a applicant data.";
         throw new IllegalArgumentException(message);
     }
-
-    // /**
-    //  * 公的個人認証部分をプラットフォームへ送信し、その結果を返します。
-    //  *
-    //  * @param platform プラットフォーム APIクライアントのインスタンス
-    //  */
-    // private PlatformResponseModel platformPost(final PlatformApiClientImpl platform) {
-    //     platform.action();
-    //     return (PlatformResponseModel) platform.getPlatformResponse();
-    // }
 
     /**
      *  ユーザー属性項目と値の組み合わせからユーザーを返す処理の定義です。

@@ -1,5 +1,6 @@
 package com.example.mynumbercardidp.keycloak.core.network.platform;
 
+import com.example.mynumbercardidp.keycloak.core.network.UserRequestModelImpl;
 import org.keycloak.models.UserModel;
 
 import java.net.http.HttpTimeoutException;
@@ -54,5 +55,5 @@ public interface PlatformApiClientImpl {
      *
      * @return プラットフォームレスポンスのデータ構造体インスタンス
      */
-    Object getPlatformResponse();
+    PlatformResponseModelImpl getPlatformResponse();
 }

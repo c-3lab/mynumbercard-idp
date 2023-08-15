@@ -1,8 +1,10 @@
 package com.example.mynumbercardidp.keycloak.network.platform;
 
 import com.example.mynumbercardidp.keycloak.core.network.platform.CertificateType;
-import com.example.mynumbercardidp.keycloak.core.network.platform.UserRequestModelImpl;
+import com.example.mynumbercardidp.keycloak.core.network.UserRequestModelImpl;
+import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformResponseModelImpl;
 import com.example.mynumbercardidp.keycloak.core.network.platform.AbstractDataModelManager;
+import com.example.mynumbercardidp.keycloak.network.UserRequestModel;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,8 +33,8 @@ public class DataModelManager extends AbstractDataModelManager {
         String actionMode = formData.getFirst(UserRequestModel.Filed.ACTION_MODE.getName());
         consoleLogger.debug("actionMode: " + actionMode);
         UserRequestModel user = new UserRequestModel();
-        user.setActionMode(actionMode)
-            .setApplicantData(formData.getFirst(UserRequestModel.Filed.APPLICANT_DATA.getName()))
+        user.setActionMode(actionMode);
+        user.setApplicantData(formData.getFirst(UserRequestModel.Filed.APPLICANT_DATA.getName()))
             .setSign(formData.getFirst(UserRequestModel.Filed.SIGN.getName()));
 
         switch (user.getActionMode().toLowerCase()) {
@@ -63,7 +65,7 @@ public class DataModelManager extends AbstractDataModelManager {
     }
 
     @Override
-    protected Object toPlatformResponse(final CloseableHttpResponse httpResponse) {
+    protected PlatformResponseModelImpl toPlatformResponse(final CloseableHttpResponse httpResponse) {
         PlatformResponseModel response = new PlatformResponseModel();
         try (InputStream inputStream = httpResponse.getEntity().getContent()) {
             String contentsBody = IOUtils.toString(inputStream, super.getRequestCharset());
@@ -77,7 +79,7 @@ public class DataModelManager extends AbstractDataModelManager {
             throw new UncheckedIOException(e);
         }
         response.setHttpStatusCode(httpResponse.getStatusLine().getStatusCode());
-        return (Object) response;
+        return (PlatformResponseModelImpl) response;
     }
 
     protected String convertPlatformRequestToJson() {

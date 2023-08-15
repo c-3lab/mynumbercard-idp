@@ -1,5 +1,6 @@
 package com.example.mynumbercardidp.keycloak.network.platform;
 
+import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformResponseModelImpl;
 import com.example.mynumbercardidp.keycloak.util.StringUtil;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -14,7 +15,7 @@ import org.keycloak.models.UserModel;
  * Jacksonによるオブジェクト、JSON間の相互変換することができるデータ定義です。
  */
 @JsonAutoDetect(fieldVisibility = Visibility.ANY)
-public class PlatformResponseModel {
+public class PlatformResponseModel implements PlatformResponseModelImpl {
 
     @JsonIgnore
     private int httpStatusCode;
@@ -23,17 +24,12 @@ public class PlatformResponseModel {
     private PlatformResponseModel.IdentityInfo identityInfo = new IdentityInfo();
     private String applicantId;
 
+    @Override
     public int getHttpStatusCode() {
         return httpStatusCode;
     }
 
-    /**
-     * プラットフォームレスポンスにユーザーの一意なIDが存在することを保証します。
-     *
-     * 存在しない場合は IllegalStateException を送出します。
-     *
-     * @exception IllegalStateException プラットフォームレスポンスにユーザーの一意のIDが存在しない場合
-     */
+    @Override
     @JsonIgnore
     public void ensureHasUniqueId() {
         String uniqueId = identityInfo.getUniqueId();
@@ -42,11 +38,7 @@ public class PlatformResponseModel {
         }
     }
 
-    /**
-     * プラットフォームのレスポンスからKeycloakのユーザー属性を追加、更新します。
-     *
-     * @param user Keycloak ユーザーのデータ構造体インスタンス
-     */
+    @Override
     @JsonIgnore
     public UserModel toUserModelAttributes(final UserModel user) {
         user.setSingleAttribute("uniqueId", identityInfo.getUniqueId());
@@ -61,6 +53,7 @@ public class PlatformResponseModel {
         httpStatusCode = status;
     }
 
+    @Override
     @JsonIgnore
     public String getUniqueId() {
         return identityInfo.uniqueId;
