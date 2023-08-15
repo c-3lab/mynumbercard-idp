@@ -1,4 +1,4 @@
-package com.example.mynumbercardidp.keycloak.authentication.authenticators.browser;
+package com.example.mynumbercardidp.keycloak.core.authentication.authenticators.browser;
 
 import org.keycloak.authentication.AbstractFormAuthenticator;
 import org.keycloak.authentication.AuthenticationFlowContext;
@@ -6,15 +6,13 @@ import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 
+import java.util.Objects;
 import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * 個人番号カードの公的個人認証部分を利用する認証処理で共通して実行する定義を表すクラスです。
  */
 public abstract class AbstractMyNumberCardAuthenticator extends AbstractFormAuthenticator {
-
-    public static final String REGISTRATION_FORM_ACTION = "registration_form"; // テンプレートファイルとの互換性維持
-    public static final String ATTEMPTED_USERNAME = "ATTEMPTED_USERNAME"; // テンプレートファイルとの互換性維持
 
     @Override
     public void authenticate(AuthenticationFlowContext context) {
@@ -56,4 +54,18 @@ public abstract class AbstractMyNumberCardAuthenticator extends AbstractFormAuth
     protected MultivaluedMap<String, String> getFormData(AuthenticationFlowContext context) {
         return context.getHttpRequest().getDecodedFormParameters();
     }
+
+    /**
+     * 認証試行ユーザーのセッション情報に認証フローの状態が存在することを保証します。
+     *
+     * 存在しない場合はIllegalStateExceptionを送出します。ActionHandlerが呼び出したActionクラスに不備があります。
+     * @param context 認証フローのコンテキスト
+     * @exception IllegalStateException Auth noteに認証フローの結果が存在しない場合
+     */
+    protected void ensureHasAuthFlowStatus(AuthenticationFlowContext context) {
+        if (Objects.isNull(context.getStatus())) {
+            throw new IllegalStateException("The Flow status in authentication flow context is not set.");
+        }
+    }
+
 }

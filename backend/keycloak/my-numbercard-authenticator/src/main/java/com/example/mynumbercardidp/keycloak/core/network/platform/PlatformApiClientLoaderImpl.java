@@ -1,4 +1,4 @@
-package com.example.mynumbercardidp.keycloak.network.platform;
+package com.example.mynumbercardidp.keycloak.core.network.platform;
 
 import org.keycloak.authentication.AuthenticationFlowContext;
 

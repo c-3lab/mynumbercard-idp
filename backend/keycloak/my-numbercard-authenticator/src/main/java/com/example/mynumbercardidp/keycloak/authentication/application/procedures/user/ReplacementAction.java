@@ -2,8 +2,8 @@ package com.example.mynumbercardidp.keycloak.authentication.application.procedur
 
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.AbstractUserAction;
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ResponseCreater;
-import com.example.mynumbercardidp.keycloak.network.platform.CommonResponseModel;
-import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientImpl;
+import com.example.mynumbercardidp.keycloak.network.platform.PlatformResponseModel;
+import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformApiClientImpl;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.models.UserModel;
@@ -31,7 +31,8 @@ public class ReplacementAction extends AbstractUserAction {
     public void execute(AuthenticationFlowContext context, PlatformApiClientImpl platform) { 
         // プラットフォームへデータを送信する。
         platform.action();
-        int platformStatusCode = platform.getPlatformResponse().getHttpStatusCode();
+        PlatformResponseModel platformResponse = (PlatformResponseModel) platform.getPlatformResponse();
+        int platformStatusCode = platformResponse.getHttpStatusCode();
         if (! new FlowTransition().canAction(context, platformStatusCode)) {
             return;
         }
@@ -41,7 +42,7 @@ public class ReplacementAction extends AbstractUserAction {
          * Keycloak内にユーザーが存在しない場合は登録画面を表示する。
          */
         platform.ensureHasUniqueId();
-        String uniqueId = platform.getPlatformResponse().getUniqueId();
+        String uniqueId = platformResponse.getUniqueId();
         UserModel user = findUser(context, uniqueId);
         if (Objects.isNull(user)) {
             actionRegistrationChallenge(context);

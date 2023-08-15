@@ -2,19 +2,19 @@ package com.example.mynumbercardidp.keycloak.authentication.authenticators.brows
 
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ActionHandler;
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ResponseCreater;
-import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientImpl;
-import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientLoader;
+import com.example.mynumbercardidp.keycloak.core.authentication.authenticators.browser.AbstractMyNumberCardAuthenticator;
+import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformApiClientImpl;
+import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformApiClientLoader;
 import com.example.mynumbercardidp.keycloak.util.authentication.CurrentConfig;
 import com.example.mynumbercardidp.keycloak.util.StringUtil;
 import org.jboss.resteasy.specimpl.MultivaluedMapImpl;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
+import org.keycloak.authentication.FlowStatus;
 import org.keycloak.forms.login.LoginFormsProvider;
 import org.keycloak.services.ServicesLogger;
-import org.keycloak.sessions.CommonClientSessionModel.ExecutionStatus;
 
-import java.util.Objects;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.UUID;
@@ -28,19 +28,9 @@ import javax.ws.rs.core.MultivaluedMap;
  * @see <a href="https://www.keycloak.org/server/logging">ロギングの構成</a>
  */
 public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator {
-    protected static final String X509_FILE_UPLOAD_ENABLE = "x509Upload"; // 互換性維持
-    private static final String INTERNAL_SERVER_ERROR_MESSAGE = "内部サーバーエラーが発生しました。";
-    private static final String SERVICE_UNAVAILABLE_MESSAGE = "サービスが一時的に利用不可です。";
-    private static final String UNAUTHORIZED_MESSAGE = "クライアント認証に問題が発生しました。";
-    private static final String PLATFORM_URL_ERROR_MESSAGE = "プラットフォームURLに文法エラーがありました。";
-
-    /** コンソール用ロガー */
-    private static Logger consoleLogger = Logger.getLogger(MyNumberCardAuthenticator.class);
-
     /** Keycloakイベントロガー */
     protected static ServicesLogger logger = ServicesLogger.LOGGER;
 
-    @Override
     /**
      * プラットフォームへ公的個人認証部分を送信し、その結果からログインや登録、登録情報の変更処理を呼び出します。
      *
@@ -48,51 +38,44 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
      * プラットフォームAPIクライアント（コネクタ）でユーザーリクエスト構造の解析をします。
      * @param context 認証フローのコンテキスト
      */
+    @Override
     public void action(AuthenticationFlowContext context) {
-        String platformApiClassFqdn = CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiClientClassFqdn.CONFIG.getName());
-        if (StringUtil.isStringEmpty(platformApiClassFqdn)) {
-            consoleLogger.error(SpiConfigProperty.PlatformApiClientClassFqdn.LABEL + " is empty.");
-            ResponseCreater.createInternalServerErrorPage(context, null, null);
-            return;
-        }
+        // プラットフォームAPIクライアントの読み込み
+        PlatformApiClientImpl platform = loadPlatform(context);
 
-        String platformRootApiUri = CurrentConfig.getValue(context, SpiConfigProperty.CertificateValidatorRootUri.CONFIG.getName());
-        String idpSender = CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiIdpSender.CONFIG.getName());
-        PlatformApiClientLoader platformLoader = new PlatformApiClientLoader();
-        String verifyNonce = context.getAuthenticationSession().getAuthNote("nonce");
-        context.getAuthenticationSession().setAuthNote("verifyNonce", verifyNonce);
-        PlatformApiClientImpl platform = platformLoader.load(platformApiClassFqdn, context, platformRootApiUri, idpSender);
         /*
-         * 認証を試行するユーザーが希望している動作で処理をする。
+         * 認証を試行するユーザーが希望している動作で処理をします。
          *
          * ActionHandlerクラスが持つメソッドの戻り値はvoid型かつ、
-         * publicアクセス修飾子のメソッドはexecuteのみであるため、インスタンスを変数へ格納しない。
+         * publicアクセス修飾子のメソッドはexecuteのみであるため、インスタンスを変数へ格納しません。
          */
+        String verifyNonce = context.getAuthenticationSession().getAuthNote("nonce");
+        context.getAuthenticationSession().setAuthNote("verifyNonce", verifyNonce);
         setLoginFormAttributes(context);
         new ActionHandler().execute(context, platform);
 
         /*
-         * [HACK] 認証試行ユーザーのセッション情報から認証フローの結果を取得します。
-         *
+         * 認証試行ユーザーのセッション情報から認証フローの結果を取得します。
          * 認証フローの結果が存在している場合はAuthenticatorの処理を終了し、ユーザーへHTTPレスポンスを返します。
-         * そうでない場合は、ActionHandlerが呼び出したActionクラスに不備があります。
          */
-        String authFlowResult = ResponseCreater.getFlowState(context);
+        ensureHasAuthFlowStatus(context);
+    }
 
-        if (StringUtil.isStringEmpty(authFlowResult)) {
-            /*
-             * [TODO] Exceptionを返したときにユーザーへ内部エラーのレスポンス 500を返さない動作を確認した場合、
-             *        Exceptionをスローしない処理へ修正する。
-             */
-            ResponseCreater.createInternalServerErrorPage(context, null, null);
-            throw new IllegalStateException("Not found AuthFlowResult in auth note for authentication session.");
+    /**
+     * プラットフォームAPIクライアントのインスタンスを読み込みます。
+     *
+     * @param context 認証フローのコンテキスト
+     * @exception IllegalStateException プラットフォームAPIのURLが空値の場合
+     */
+    protected PlatformApiClientImpl loadPlatform(AuthenticationFlowContext context) {
+        String platformApiClassFqdn = CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiClientClassFqdn.CONFIG.getName());
+        if (StringUtil.isStringEmpty(platformApiClassFqdn)) {
+            throw new IllegalStateException(SpiConfigProperty.PlatformApiClientClassFqdn.LABEL + " is empty.");
         }
-
-        if (!(authFlowResult.equals(ExecutionStatus.FAILED.toString()) ||
-                authFlowResult.equals(ExecutionStatus.CHALLENGED.toString()) ||
-                authFlowResult.equals(ExecutionStatus.SUCCESS.toString()))) {
-            return;
-        }
+        String platformRootApiUri = CurrentConfig.getValue(context, SpiConfigProperty.CertificateValidatorRootUri.CONFIG.getName());
+        String idpSender = CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiIdpSender.CONFIG.getName());
+        PlatformApiClientLoader platformLoader = new PlatformApiClientLoader();
+        return platformLoader.load(platformApiClassFqdn, context, platformRootApiUri, idpSender);
     }
 
     /**
@@ -134,7 +117,6 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
     protected void setLoginFormAttributes(AuthenticationFlowContext context, boolean createNonceFlag) {
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl<>();
         LoginFormsProvider form = context.form();
-        form.setAttribute(X509_FILE_UPLOAD_ENABLE, true); // 互換性維持のパラメータ
 
         if (createNonceFlag) {
             String nonce = createNonce();

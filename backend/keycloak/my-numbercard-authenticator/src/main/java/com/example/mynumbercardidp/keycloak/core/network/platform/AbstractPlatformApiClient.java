@@ -1,4 +1,4 @@
-package com.example.mynumbercardidp.keycloak.network.platform;
+package com.example.mynumbercardidp.keycloak.core.network.platform;
 
 import org.apache.hc.core5.http.message.BasicHeader;
 import org.apache.hc.core5.http.ContentType;
@@ -46,11 +46,11 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
     /** プラットフォームに送信するHTTP Bodyの文字セット */
     protected Charset defaultCharset;
     /** ユーザーリクエストのデータ構造 */
-    protected UserRequestModel userRequest;
+    protected UserRequestModelImpl userRequest;
     /** プラットフォームリクエストのデータ構造 */
-    protected PlatformRequestModel platformRequest;
+    protected Object platformRequest;
     /** プラットフォームレスポンスのデータ構造 */
-    protected PlatformResponseModel platformResponse;
+    protected Object platformResponse;
     /** プラットフォームへ送るIDP識別送信者符号 */
     protected String platformRequestSender;
 
@@ -127,30 +127,30 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
     }
 
     @Override
-    public UserRequestModel getUserRequest() {
+    public UserRequestModelImpl getUserRequest() {
         return userRequest;
     }
 
-    protected void setUserRequest(UserRequestModel request) {
+    protected void setUserRequest(UserRequestModelImpl request) {
         userRequest = request;
     }
 
     @Override
-    public PlatformRequestModel getPlatformRequest() {
+    public Object getPlatformRequest() {
         return platformRequest;
     }
 
-    protected void setPlatformRequest(PlatformRequestModel request) {
+    protected void setPlatformRequest(Object request) {
         platformRequest = request;
     }
 
     @Nullable
     @Override
-    public PlatformResponseModel getPlatformResponse() {
+    public Object getPlatformResponse() {
         return platformResponse;
     }
 
-    protected void setPlatformResponse(PlatformResponseModel response) {
+    protected void setPlatformResponse(Object response) {
        platformResponse = response;
     }
 
@@ -339,7 +339,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      * @param httpResponse プラットフォームのHTTPレスポンス
      * @return プラットフォームレスポンスのデータ構造インスタンス
      */
-    protected abstract PlatformResponseModel toPlatformResponse(CloseableHttpResponse httpResponse);
+    protected abstract Object toPlatformResponse(CloseableHttpResponse httpResponse);
 
     /**
      * HTMLフォームデータをユーザーリクエスト構造へ変換します。
@@ -347,7 +347,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      * @param formData HTMLフォームデータ
      * @return ユーザーリクエストの構造
      */
-    protected abstract UserRequestModel toUserRequest(MultivaluedMap<String, String> formData);
+    protected abstract UserRequestModelImpl toUserRequest(MultivaluedMap<String, String> formData);
 
     /**
      * ユーザーリクエスト構造をプラットフォームリクエスト構造へ変換します。
@@ -355,7 +355,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      * @param user ユーザーリクエスト構造のインスタンス
      * @return プラットフォームリクエストの構造
      */
-    protected abstract PlatformRequestModel toPlatformRequest(UserRequestModel user);
+    protected abstract Object toPlatformRequest(UserRequestModelImpl user);
 
     @Override
     public void init(String apiRootUri, MultivaluedMap<String, String> formData, String idpSender){

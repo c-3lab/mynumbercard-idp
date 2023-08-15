@@ -17,40 +17,7 @@ import javax.ws.rs.core.Response;
  * このクラスはユーティリティです。
  */
 public class ResponseCreater {
-    private static final String INTERNAL_SERVER_ERROR_MESSAGE = "サーバーでエラーが発生しました。";
-
-    /** 認証SPIから認証フローの結果を取得できるようにするためのセッション備考名の接頭文字列 */
-    private static final String AUTH_NOTE_KEY_PREFIX = "ResponseCreater";
-
-    /** 認証SPIから認証フローの結果を取得できるようにするためのセッション備考名 */
-    private static final String AUTH_NOTE_NAME_AUTH_FLOW_RESULT = "AuthFlowResult";
-
-    /** 認証SPIから認証フローの結果を取得できるようにするためのセッション備考名のキー */
-    public static final String AUTH_FLOW_RESULT = AUTH_NOTE_KEY_PREFIX + "." + AUTH_NOTE_NAME_AUTH_FLOW_RESULT;
-
     private ResponseCreater() {}
-
-    /**
-     * 内部エラーのレスポンスを返します。認証フローは継続できず、失敗したものとします。
-     *
-     * @param context 認証フローのコンテキスト
-     */
-    public static void createInternalServerErrorPage(AuthenticationFlowContext context) {
-        createInternalServerErrorPage(context, null, null);
-    }
-
-    /**
-     * 内部エラーのレスポンスを返します。認証フローは継続できず、失敗したものとします。
-     *
-     * @param context 認証フローのコンテキスト
-     * @param error 表示するエラーメッセージ
-     * @param filed フィールド名
-     */
-    public static void createInternalServerErrorPage(AuthenticationFlowContext context, String error, String filed) {
-        context.form().setError(INTERNAL_SERVER_ERROR_MESSAGE, "");
-        context.failure(AuthenticationFlowError.INTERNAL_ERROR,
-                        context.form().createErrorPage(Response.Status.INTERNAL_SERVER_ERROR));
-    }
 
     /**
      * 認証フローに認証が必要であることを設定し、ユーザーへ認証画面のレスポンスを返します。
@@ -64,7 +31,7 @@ public class ResponseCreater {
     }
 
     /**
-     * 認証フローに認証が必要であることを設定し、ユーザーへ認証画面のレスポンスを返す。
+     * 認証フローに認証が必要であることを設定し、ユーザーへ認証画面のレスポンスを返します。
      *
      * @param context 認証フローのコンテキスト
      * @param status HTTP ステータスコード
@@ -85,7 +52,6 @@ public class ResponseCreater {
     }
 
     public static Response createChallengePage(AuthenticationFlowContext context, String error, String field, int status) {
-        context.getAuthenticationSession().setAuthNote(AUTH_FLOW_RESULT, ExecutionStatus.CHALLENGED.toString());
         LoginFormsProvider form = context.form()
                 .setExecution(context.getExecution().getId());
         form.setAttribute("refreshUrl", context.getRefreshUrl(true).toString());
@@ -111,11 +77,9 @@ public class ResponseCreater {
      * 認証フローの状態に認証が成功したことを設定し、認証フローを終了します。
      *
      * @param context 認証フローのコンテキスト
-     * @param status HTTP ステータスコード
      */
-    public static void setFlowStepSuccess(AuthenticationFlowContext context, Response response) {
-       context.getAuthenticationSession().setAuthNote(AUTH_FLOW_RESULT, ExecutionStatus.SUCCESS.toString());
-       context.challenge(response);
+    public static void setFlowStepSuccess(AuthenticationFlowContext context) {
+       context.success();
     }
 
     /**
@@ -125,7 +89,6 @@ public class ResponseCreater {
      * @param status HTTP ステータスコード
      */
     public static void setFlowStepChallenge(AuthenticationFlowContext context, Response response) {
-       context.getAuthenticationSession().setAuthNote(AUTH_FLOW_RESULT, ExecutionStatus.CHALLENGED.toString());
        context.challenge(response);
     }
 
@@ -137,40 +100,7 @@ public class ResponseCreater {
      * @param status HTTP ステータスコード
      */
     public static void setFlowStepFailure(AuthenticationFlowContext context, AuthenticationFlowError error, Response response) {
-       context.getAuthenticationSession().setAuthNote(AUTH_FLOW_RESULT, ExecutionStatus.FAILED.toString());
        context.failure(error, response);
-    }
-
-    /**
-     * 認証フローの状態に認証できなかったことを設定します。
-     *
-     * このレスポンスはエラー状態でも、成功状態でもありません。
-     * 認証を試行したが認証することができなかったことを表します。
-     * 認証フロー内の次のステップが実施されます。
-     * @param context 認証フローのコンテキスト
-     */
-    public static void setFlowStepAttempt(AuthenticationFlowContext context) {
-        clearAuthNote(context);
-        context.attempted();
-    }
-
-    /**
-     * 認証フローコンテキスト内のセッション備考から認証フローの状態を取得します。
-     *
-     * @param context 認証フローのコンテキスト
-     * @return 認証フローの状態 設定されていない場合はNullを返します。
-     */
-    public static String getFlowState(AuthenticationFlowContext context) {
-       return context.getAuthenticationSession().getAuthNote(AUTH_FLOW_RESULT);
-    }
-
-    /**
-     * 認証フローのAuthNoteを初期化します。
-     *
-     * @param context 認証フローのコンテキスト
-     */
-    private static void clearAuthNote(AuthenticationFlowContext context) {
-        context.getAuthenticationSession().clearAuthNotes();
     }
 
     /**

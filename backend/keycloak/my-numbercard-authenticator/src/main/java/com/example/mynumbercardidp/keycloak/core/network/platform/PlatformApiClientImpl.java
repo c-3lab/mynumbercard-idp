@@ -1,4 +1,4 @@
-package com.example.mynumbercardidp.keycloak.network.platform;
+package com.example.mynumbercardidp.keycloak.core.network.platform;
 
 import org.keycloak.models.UserModel;
 
@@ -14,7 +14,7 @@ public interface PlatformApiClientImpl {
     /**
      * プラットフォームのAPI基準URLとプラットフォームへ送信するパラメータとIdp送信者識別符号で初期化します。
      * @param apiRootUri プラットフォームAPI URLでユーザーが希望する処理に関わらず共通の部分
-     *                   主にプロトコルとホスト名、ポート番号までを指す。
+     *                   主にプロトコルとホスト名、ポート番号までを指します。
      * @param formData Keycloakが受け取ったHTTPリクエスト内に含まれているFormパラメータをデコードした連想配列
      * @param idpSender プラットフォームへ送るIdp送信者の識別符号
      */
@@ -40,24 +40,24 @@ public interface PlatformApiClientImpl {
      *
      * @return ユーザーリクエストのデータ構造体インスタンス
      */
-    UserRequestModel getUserRequest();
+    UserRequestModelImpl getUserRequest();
 
     /**
      * プラットフォームリクエストの構造体を返します。
      *
      * @return プラットフォームリクエストのデータ構造体インスタンス
      */
-    PlatformRequestModel getPlatformRequest();
+    Object getPlatformRequest();
 
     /**
      * プラットフォームレスポンスの構造体を返します。
      *
      * @return プラットフォームレスポンスのデータ構造体インスタンス
      */
-    PlatformResponseModel getPlatformResponse();
+    Object getPlatformResponse();
 
     /**
-     * プラットフォームレスポンスにユーザーの一意のIDが存在することを保証します。
+     * プラットフォームレスポンスにユーザーの一意なIDが存在することを保証します。
      *
      * 存在しない場合は IllegalStateException を送出します。
      *

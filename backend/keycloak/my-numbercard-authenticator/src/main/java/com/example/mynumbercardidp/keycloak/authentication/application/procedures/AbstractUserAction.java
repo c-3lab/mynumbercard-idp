@@ -1,7 +1,9 @@
 package com.example.mynumbercardidp.keycloak.authentication.application.procedures;
 
 import com.example.mynumbercardidp.keycloak.authentication.authenticators.browser.SpiConfigProperty;
-import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientImpl;
+import com.example.mynumbercardidp.keycloak.network.platform.UserRequestModel;
+import com.example.mynumbercardidp.keycloak.core.authentication.application.procedures.ApplicationProcedure;
+import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformApiClientImpl;
 import com.example.mynumbercardidp.keycloak.util.authentication.CurrentConfig;
 import com.example.mynumbercardidp.keycloak.util.StringUtil;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -47,17 +49,21 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
      */
     @Override
     public void preExecute(AuthenticationFlowContext context, PlatformApiClientImpl platform) {
+        UserRequestModel user = (UserRequestModel) platform.getUserRequest();
+        user.ensureHasValues();
+
         // ユーザーが送ってきたNonceをハッシュ化した値は信用しない。
         String nonce = getNonce(context);
         consoleLogger.debug("Nonce: " + nonce);
-
         String nonceHash = toHashString(nonce);
         consoleLogger.debug("Nonce hash: " + nonceHash);
 
-        String applicantData = platform.getUserRequest().getApplicantData();
+        String applicantData = user.getApplicantData();
         consoleLogger.debug("Applicant data: " + applicantData);
+        String applicantDataLower = applicantData.toLowerCase();
+        String applicantDataUpper = applicantData.toUpperCase();
 
-        if (!nonceHash.equals(applicantData)) {
+        if (!nonceHash.equals(applicantDataLower) && !nonceHash.equals(applicantDataUpper)) {
             String message ="Applicant data is not equals a nonce hash.";
             if (!isDebugMode(context)) {
                 throw new IllegalArgumentException(message);
@@ -65,16 +71,15 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
             consoleLogger.info("Debug mode is enabled. " + message);
         }
 
-        String certificate = platform.getUserRequest().getCertificate();
-        String sign = platform.getUserRequest().getSign();
+        String certificate = user.getCertificate();
+        String sign = user.getSign();
         if (!isDebugMode(context)) {
-            if (!validateSignature(sign, certificate, nonceHash)) {
-                throw new IllegalArgumentException("The signature is not equals a nonce hash.");
+            if (!validateSignature(sign, certificate, nonceHash.toLowerCase()) ||
+                !validateSignature(sign, certificate, nonceHash.toUpperCase())) {
+                    throw new IllegalArgumentException("The signature is not equals a nonce hash.");
             }
         }
-        if (!validateSignature(sign, certificate, nonceHash, nonce, applicantData)) {
-            throw new IllegalArgumentException("The signature is not equals a applicant data.");
-        }
+        validateSignature(sign, certificate, nonceHash, nonce, applicantData);
     }
 
     /**
@@ -86,6 +91,8 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
      * @param certificateBase64Content 公開鍵を基本型Base64でエンコードした値
      * @param str 署名された文字列
      * @return 検証された場合はtrue、そうでない場合はfalse
+     * @exception UncheckedIOException 公開鍵の値が空値の場合
+     * @exception IllegalArgumentException 署名の検証中に例外が発生した場合
      */
     private boolean validateSignature(String signature, String certificateBase64Content, String str) {
         String charset = "utf-8";
@@ -122,23 +129,23 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
      * @param nonceHash nonceをハッシュ化した文字列
      * @param nonce ランダムに生成された文字列
      * @param applicantData ユーザーが自己申告した文字列
-     * @return 検証された場合はtrue、そうでない場合はfalse
      */
-    private boolean validateSignature(String signature, String certificateBase64Content, String nonceHash, String nonce, String applicantData) {
-        if (validateSignature(signature, certificateBase64Content, nonceHash)) {
-            return true;
+    private void validateSignature(String signature, String certificateBase64Content, String nonceHash, String nonce, String applicantData) {
+        if (validateSignature(signature, certificateBase64Content, nonceHash.toLowerCase()) ||
+            validateSignature(signature, certificateBase64Content, nonceHash.toUpperCase())) {
+            return;
         }
 
         String consoleMessage = "Failed validate signature. The signed value was not a nonce hash. Retry, verifies that the signed value is a nonce.";
         consoleLogger.info("Debug mode is enabled. " + consoleMessage);
         if (validateSignature(signature, certificateBase64Content, nonce)) {
-            return true;
+            return;
         }
 
         consoleMessage = "Failed validate signature. The signed value was not a applicant data.";
         consoleLogger.info(consoleMessage);
         if (validateSignature(signature, certificateBase64Content, applicantData)) {
-            return true;
+            return;
         }
         throw new IllegalArgumentException("The signature is not equals a applicant data.");
     }

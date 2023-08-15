@@ -1,5 +1,7 @@
 package com.example.mynumbercardidp.keycloak.network.platform;
 
+import com.example.mynumbercardidp.keycloak.core.network.platform.CertificateType;
+
 /**
  * Keycloakを利用してログインするユーザーが送信したHTTPリクエスト内容とプラットフォームへ送信するHTTPリクエスト内容で共通する構造体を表すクラスです。
  */

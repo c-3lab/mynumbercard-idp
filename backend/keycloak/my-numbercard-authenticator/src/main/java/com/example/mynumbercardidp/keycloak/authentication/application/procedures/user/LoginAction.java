@@ -2,8 +2,8 @@ package com.example.mynumbercardidp.keycloak.authentication.application.procedur
 
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.AbstractUserAction;
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ResponseCreater;
-import com.example.mynumbercardidp.keycloak.network.platform.CommonResponseModel;
-import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientImpl;
+import com.example.mynumbercardidp.keycloak.network.platform.PlatformResponseModel;
+import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformApiClientImpl;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.models.UserModel;
@@ -22,7 +22,7 @@ public class LoginAction extends AbstractUserAction {
     private static Logger consoleLogger = Logger.getLogger(LoginAction.class);
    
     /**
-     * 公的個人認証部分をプラットフォームへ送信し、その応答からKeycloak内の認証を実施します。
+     * 公的個人認証部分をプラットフォームへ送信し、その応答からユーザーを認証します。
      *
      * @param context 認証フローのコンテキスト
      * @param platform プラットフォーム APIクライアントのインスタンス
@@ -31,19 +31,19 @@ public class LoginAction extends AbstractUserAction {
     public void execute(AuthenticationFlowContext context, PlatformApiClientImpl platform) { 
         // プラットフォームへデータを送信する。
         platform.action();
-        int platformStatusCode = platform.getPlatformResponse().getHttpStatusCode();
+        PlatformResponseModel platformResponse = (PlatformResponseModel) platform.getPlatformResponse();
+        int platformStatusCode = platformResponse.getHttpStatusCode();
         if (! new FlowTransition().canAction(context, platformStatusCode)) {
             return;
         }
 
-        // ユニークIDからKeycloak内のユーザーを探す。
-        platform.ensureHasUniqueId();
-        String uniqueId = platform.getPlatformResponse().getUniqueId();
-        UserModel user = findUser(context, uniqueId);
-
         /*
+         * ユニークIDからKeycloak内のユーザーを探す。
          * Keycloak内にユーザーが存在しない場合は登録画面を表示する。
          */
+        platform.ensureHasUniqueId();
+        String uniqueId = platformResponse.getUniqueId();
+        UserModel user = findUser(context, uniqueId);
         if (Objects.isNull(user)) {
             actionRegistrationChallenge(context);
             return;

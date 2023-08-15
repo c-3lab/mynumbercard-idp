@@ -1,6 +1,6 @@
 package com.example.mynumbercardidp.keycloak.network.platform;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -9,8 +9,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * Jacksonによるオブジェクト、JSON間の相互変換することができるデータ定義です。
  */
-// @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class PlatformResponseModel extends CommonResponseModel {
+public class PlatformResponseModel {
+
+    private int httpStatusCode;
+
+    public int getHttpStatusCode() {
+        return httpStatusCode;
+    }
+
+    @JsonIgnore
+    public void setHttpStatusCode(int status) {
+        httpStatusCode = status;
+    }
 
     static class ResponseInfo {
         public String transactionId;
@@ -40,6 +50,7 @@ public class PlatformResponseModel extends CommonResponseModel {
     public IdentityInfo identityInfo = new IdentityInfo();
     public String applicantId = "";
 
+    @JsonIgnore
     public String getUniqueId() {
         return identityInfo.uniqueId;
     }

@@ -1,12 +1,10 @@
-package com.example.mynumbercardidp.keycloak.authentication.application.procedures;
+package com.example.mynumbercardidp.keycloak.core.authentication.application.procedures;
 
-import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientImpl;
+import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformApiClientImpl;
 import org.keycloak.authentication.AuthenticationFlowContext;
 
 /**
  * このインターフェイスは認証フローの中で認証、登録、登録情報の変更など、処理を切り替えたいユーザー向けです。
- *
- * Strategy パターンによる実装を想定しています。
  */
 public interface ApplicationProcedure {
 
