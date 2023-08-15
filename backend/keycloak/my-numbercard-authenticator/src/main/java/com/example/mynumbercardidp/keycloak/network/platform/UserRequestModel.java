@@ -6,10 +6,10 @@ package com.example.mynumbercardidp.keycloak.network.platform;
 public class UserRequestModel extends CommonRequestModel implements UserRequestModelImpl {
     public static enum Filed {
         ACTION_MODE("mode"),
-        USER_AUTHENTICATION_CERTIFICATE(CertificateType.USER_AUTHENTICATION.name()),
-        ENCRYPTED_DIGITAL_SIGNATURE_CERTIFICATE(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE.name()),
+        USER_AUTHENTICATION_CERTIFICATE(CertificateType.USER_AUTHENTICATION.getName()),
+        ENCRYPTED_DIGITAL_SIGNATURE_CERTIFICATE(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE.getName()),
         APPLICANT_DATA("applicantData"),
-        SIGN("sigin");
+        SIGN("sign");
 
         private String name;
 

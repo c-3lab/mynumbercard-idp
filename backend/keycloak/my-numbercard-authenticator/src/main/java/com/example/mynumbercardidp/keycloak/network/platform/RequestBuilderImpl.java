@@ -46,4 +46,13 @@ public interface RequestBuilderImpl {
      * @param request プラットフォーム構造のインスタンス
      */
     void setPlatformRequest(CommonRequestModelImpl request);
+
+    /**
+     * ユーザーのリクエスト構造体からプラットフォームへのリクエスト構造体に変換します。
+     * 
+     * @param platformRequestModel プラットフォームへ送るリクエスト構造体のクラス
+     * @param sender プラットフォームが識別するIDプロバイダーの送信者符号
+     * @return ユーザーリクエスト構造のインスタンス
+     */
+    CommonRequestModelImpl toPlatformRequest(Class<? extends CommonRequestModelImpl> platformRequestModel, String sender);
 }

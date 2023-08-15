@@ -30,26 +30,26 @@ public interface PlatformApiClientImpl {
      * このメソッドを実行する前に{@link #initPost(MultivaluedMap<String, String>)}を実行しておく必要があります。
      * @return プラットフォームからの応答内容
      */
-    CommonResponseModel action();
+    PlatformResponseModel action();
 
     /**
      * ユーザーリクエストの構造体を返します。
      *
      * @return ユーザーリクエストのデータ構造体インスタンス
      */
-    CommonRequestModelImpl getUserRequest();
+    UserRequestModel getUserRequest();
 
     /**
      * プラットフォームリクエストの構造体を返します。
      *
      * @return プラットフォームリクエストのデータ構造体インスタンス
      */
-    CommonRequestModelImpl getPlatformRequest();
+    PlatformRequestModel getPlatformRequest();
 
     /**
      * プラットフォームレスポンスの構造体を返します。
      *
      * @return プラットフォームレスポンスのデータ構造体インスタンス
      */
-    CommonResponseModel getPlatformResponse();
+    PlatformResponseModel getPlatformResponse();
 }

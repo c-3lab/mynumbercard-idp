@@ -42,10 +42,6 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
     private ContentType httpRequestContentType;
     /** プラットフォームのAPIルートURI */
     private URI apiRootUri;
-    /** ユーザー、プラットフォームのリクエストデータ構造 */
-    protected RequestBuilderImpl requestBuilder;
-    /** プラットフォームのレスポンスデータ構造 */
-    private CommonResponseModel platformResponse;
     /** プラットフォームに送信するHTTP Bodyの文字セット */
     private Charset defaultCharset;
 
@@ -147,10 +143,9 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      * @param apiUri プラットフォームのAPI URI
      * @param headers HTTP リクエストのヘッダー
      * @param entity HTTP リクエストのボディ
-     * @param platformResponseClass プラットフォームのレスポンスデータ構造クラス
      * @return プラットフォームのレスポンス
      */
-    protected CommonResponseModel post(URI apiUri, Header[] headers, HttpEntity entity) {
+    protected Class<?> post(URI apiUri, Header[] headers, HttpEntity entity) {
         HttpPost httpPost = new HttpPost(apiUri);
         httpPost.setHeaders(headers);
         httpPost.setEntity(entity);
@@ -159,15 +154,13 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
             .setDefaultRequestConfig(buildRequestConfig())
             .build();
         try (CloseableHttpResponse httpResponse = httpClient.execute(httpPost)) {
-            platformResponse = tryInitResponseModel(httpResponse);
-            platformResponse = toPlatformResponse(httpResponse);
+            return toPlatformResponse(httpResponse);
         } catch (HttpTimeoutException e) {
             String message = "Connect timeout. Platform URL: " + apiUri.toString();
             throw new IllegalArgumentException(message, e);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-        return platformResponse;
     }
 
     /**
@@ -180,7 +173,7 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
      * @param entity HTTP リクエストのボディ
      * @return プラットフォームのレスポンス
      */
-    protected CommonResponseModel post(URI apiUri, MultivaluedMap<String, Object> headersMap, HttpEntity entity) {
+    protected Class<?> post(URI apiUri, MultivaluedMap<String, Object> headersMap, HttpEntity entity) {
         ArrayList<Header> headers = new ArrayList<>();
         headersMap.forEach((key, value) -> headers.add(new BasicHeader(key, value)));
         return post(apiUri, headers.toArray(new Header[headers.size()]), entity);
@@ -316,28 +309,25 @@ public abstract class AbstractPlatformApiClient implements PlatformApiClientImpl
     }
 
     /**
-     * プラットフォームレスポンス構造のインスタンス作成を試みます。
-     * 
-     * @param httpResponse プラットフォームのHTTPレスポンス
-     * @return プラットフォームレスポンス構造のインスタンス
-     * @exception PlatformException プラットフォームからエラーが返された場合
-     */
-    protected final CommonResponseModel tryInitResponseModel(CloseableHttpResponse httpResponse) {
-       return toPlatformResponse(httpResponse);
-    }
-
-    /**
      * プラットフォーム APIのレスポンスデータ構造を表すインスタンスへ変換します。
      *
      * @param httpResponse プラットフォームのHTTPレスポンス
      * @return プラットフォームレスポンスのデータ構造インスタンス
      */
-    protected abstract CommonResponseModel toPlatformResponse(CloseableHttpResponse httpResponse);
+    protected abstract PlatformResponseModel toPlatformResponse(CloseableHttpResponse httpResponse);
 
     @Override
     public abstract void init(MultivaluedMap<String, String> formData, String idpSender);
 
     @Override
-    public abstract CommonResponseModel action();
+    public abstract PlatformResponseModel action();
 
+    @Override
+    public abstract UserRequestModel getUserRequest();
+
+    @Override
+    public abstract PlatformRequestModel getPlatformRequest();
+
+    @Override
+    public abstract PlatformResponseModel getPlatformResponse();
 }

@@ -1,6 +1,8 @@
 package com.example.mynumbercardidp.keycloak.authentication.application.procedures;
 
+import com.example.mynumbercardidp.keycloak.network.platform.CommonRequestModelImpl;
 import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientImpl;
+import com.example.mynumbercardidp.keycloak.network.platform.UserRequestModelImpl;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
@@ -21,10 +23,11 @@ public abstract class AbstractActionHandler implements ApplicationProcedure {
     protected ApplicationProcedure action;
 
     static {
-        // サブクラスで実行された場合はサブクラスのパッケージ名を代入する。
-        MY_PACKAGE_NAME = new Object(){}.getClass().getPackageName();
+        // パッケージ名の自動取得
+        Class<?> my = new Object(){}.getClass();
+        MY_PACKAGE_NAME = my.getPackageName();
         USER_ACTION_PACKAGE_NAME = MY_PACKAGE_NAME + USER_ACTION_PACKAGE_PREFIX_NAME;
-        consoleLogger = Logger.getLogger(new Object(){}.getClass());
+        consoleLogger = Logger.getLogger(my);
     }
 
     AbstractActionHandler() {
@@ -39,38 +42,20 @@ public abstract class AbstractActionHandler implements ApplicationProcedure {
      */
     @Override
     public void execute(AuthenticationFlowContext context, PlatformApiClientImpl platform) {
+        UserRequestModelImpl userReq = (UserRequestModelImpl) platform.getUserRequest();
+        String actionMode = userReq.getActionMode();
+        actionMode = actionMode.substring(0, 1).toUpperCase() + actionMode.substring(1);
+        String actionClass = USER_ACTION_PACKAGE_NAME + "." + actionMode + "Action";
         try {
-            String actionMode = (String) platform.getUserRequest().get("actionMode");
-            String actionClass = USER_ACTION_PACKAGE_NAME + "." + actionMode;
-            try {
-                action = (ApplicationProcedure) Class.forName(actionClass)
-                    .getDeclaredConstructor()
-                    .newInstance();
-                action.preExecute(context, platform);
-            } catch (ClassNotFoundException e) {
-                executeNotFoundAction(context, actionMode, NotFoundType.CLASS);
-                return;
-            } catch (NoSuchMethodException e) {
-                executeNotFoundAction(context, actionMode, NotFoundType.METHOD);
-                return;
-            } catch (InstantiationException e) {
-                executeFailedNewInstance(context, actionClass);
-                return;
-            } catch (InvocationTargetException e) {
-                /*
-                 * 呼び出し先メソッド、コンストラクタで補足できなかった例外を取り出し、
-                 * コンソールへ出力する。
-                 */
-                executeUnreportedException(context, e);
-                return;
-            }
-        } catch (NoSuchFieldException e) {
-            executeNotFoundActionFiled(context);
-            return;
-        } catch (IllegalAccessException e) {
-            executeIllegalAccess(context, e);
+            action = (ApplicationProcedure) Class.forName(actionClass)
+                .getDeclaredConstructor()
+                .newInstance();
+            action.preExecute(context, platform);
+            action.execute(context, platform);
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException |
+                 InvocationTargetException | IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
         }
-        action.execute(context, platform);
     } 
 
     @Override

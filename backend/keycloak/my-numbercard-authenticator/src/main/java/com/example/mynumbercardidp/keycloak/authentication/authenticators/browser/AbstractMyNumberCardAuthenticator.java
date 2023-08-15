@@ -95,7 +95,7 @@ public abstract class AbstractMyNumberCardAuthenticator extends AbstractFormAuth
             String config = context.getAuthenticatorConfig()
                 .getConfig()
                 .get(configName);
-            return config.toString();
+            return java.util.Objects.nonNull(config) ? config.toString() : "";
         }
     }
 }

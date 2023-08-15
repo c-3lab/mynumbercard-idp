@@ -1,6 +1,5 @@
 package com.example.mynumbercardidp.keycloak.authentication.application.procedures;
 
-import com.example.mynumbercardidp.keycloak.network.platform.RequestBuilder;
 import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientImpl;
 import org.keycloak.authentication.AuthenticationFlowContext;
 

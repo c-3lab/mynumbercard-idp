@@ -1,7 +1,7 @@
 package com.example.mynumbercardidp.keycloak.authentication.application.procedures;
 
-import com.example.mynumbercardidp.keycloak.network.platform.RequestBuilder;
 import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientImpl;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.authenticators.x509.UserIdentityToModelMapper;
 import org.keycloak.authentication.AuthenticationFlowContext;
@@ -14,7 +14,6 @@ import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Signature;
 import java.security.SignatureException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -45,12 +44,20 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
     @Override
     public void preExecute(AuthenticationFlowContext context, PlatformApiClientImpl platform) {
         // ユーザーが送ってきたNonceをハッシュ化した値は信用しない。
-        String nonceHash = toHashString(getNonce(context));
+        String nonce = getNonce(context);
+        consoleLogger.debug("Nonce: " + nonce);
+        String nonceHash = toHashString(nonce);
+        consoleLogger.debug("Nonce hash: " + nonceHash);
         String certificate = platform.getUserRequest().getCertificate();
+        consoleLogger.debug("certificate: " + certificate);
         String sign = platform.getUserRequest().getSign();
+        consoleLogger.debug("sign: " + sign);
         if (!validateSignature(sign, certificate, nonceHash)) {
-            // 署名検証はしたが、失敗した場合
-            throw new IllegalArgumentException("The signature not equals nonce hash.");
+            // [TODO] デバッグ用 Nonce文字列そのままで再度検証
+            if (!validateSignature(sign, certificate, nonce)) {
+                // 署名検証はしたが、失敗した場合
+                throw new IllegalArgumentException("The signature not equals nonce hash.");
+            }
         }     
     }
 
@@ -67,6 +74,9 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
     private boolean validateSignature(String signature, String certificateBase64Content, String str) {
         String charset = "utf-8";
         String certType = "X.509";
+        consoleLogger.debug("signature: " + signature);
+        consoleLogger.debug("certificateBase64Content: " + certificateBase64Content);
+        consoleLogger.debug("str: " + str);
         try {
             byte[] certificateBinary = Base64.getDecoder().decode(certificateBase64Content.getBytes(charset));
             Certificate certificate = null;
@@ -80,6 +90,8 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
             Signature engine = Signature.getInstance(signAlgorithm);
             engine.initVerify(certificate);
             engine.update(str.getBytes(charset));
+
+
             return engine.verify(Base64.getDecoder().decode(signature.getBytes(charset)));
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException | CertificateException |
                  InvalidKeyException | SignatureException e) {
@@ -91,11 +103,13 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
     /**
      * 認証ユーザーのセッション情報からNonce文字列を取得します。
      * 
+     * AuthNote名のnonceはActionHandler呼び出し前に上書きされるため、
+     * AuthNoteからverifyNonceを取得します。
      * @param constext 認証フローのコンテキスト
      * @return Nonce文字列
      */
     private String getNonce(AuthenticationFlowContext context) {
-       return context.getAuthenticationSession().getAuthNote("nonce");
+       return context.getAuthenticationSession().getAuthNote("verifyNonce");
     }
 
     /**
@@ -105,21 +119,7 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
      * @return SHA256アルゴリズムでハッシュ化された文字列
      */
     private String toHashString(String str) {
-        return toHashString(str);
-    }
-
-    /**
-     * 指定された文字列を指定されたメッセージダイジェストアルゴリズムでハッシュ化し、その文字列を返します。
-     * 
-     * @param mdAlg メッセージダイジェストアルゴリズムの種類
-     * @param str 指定されたメッセージダイジェストアルゴリズムでハッシュ化する文字列
-     * @return 指定されたメッセージダイジェストアルゴリズムでハッシュ化された文字列
-     * @exception NoSuchAlgorithmException 指定されたアルゴリズムが存在しない場合
-     */
-    private String toHashString(String mdAlg, String str) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance(mdAlg);
-        byte[] hash = md.digest(str.getBytes());
-        return new String(hash);
+        return DigestUtils.sha256Hex(str);
     }
 
     /**

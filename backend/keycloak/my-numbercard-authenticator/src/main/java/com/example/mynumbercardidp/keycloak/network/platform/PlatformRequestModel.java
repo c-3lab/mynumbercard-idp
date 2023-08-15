@@ -19,11 +19,19 @@ public class PlatformRequestModel extends CommonRequestModel {
        private Filed(String formName) {
            name = formName;
        }
+
+       public String getName() {
+           return name;
+       }
    }
 
    private RequstInfo requstInfo;
    
-   PlatformRequestModel(String sender) {
+   public PlatformRequestModel() {
+       requstInfo = new RequstInfo();
+   }
+
+   public PlatformRequestModel(String sender) {
        requstInfo = new RequstInfo(sender);
    }
 
@@ -37,7 +45,7 @@ public class PlatformRequestModel extends CommonRequestModel {
    }
 
    public static class RequstInfo {
-       protected static enum Filed {
+       public static enum Filed {
            TRANSACTION_ID("transactionId"),
            RECIPIENT("recipient"),
            SENDER("sender"),
@@ -61,7 +69,9 @@ public class PlatformRequestModel extends CommonRequestModel {
            timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss.SSS").toString();
        }
 
-       RequstInfo(String sender) {
+       public RequstInfo() {}
+
+       public RequstInfo(String sender) {
            this.sender = sender;
        }
 

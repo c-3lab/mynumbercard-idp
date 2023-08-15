@@ -47,7 +47,7 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
      * @param context 認証フローのコンテキスト
      */
     public void action(AuthenticationFlowContext context) {
-        String platformApiClassFqdn = CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiClientClassFqdn.NAME);
+        String platformApiClassFqdn = CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiClientClassFqdn.CONFIG.getName());
         if (isStringEmpty(platformApiClassFqdn)) {
             consoleLogger.error(SpiConfigProperty.PlatformApiClientClassFqdn.LABEL + " is empty.");
             ResponseCreater.createInternalServerErrorPage(context, null, null);
@@ -55,33 +55,19 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
         }
 
         String platformRootApiUri = CurrentConfig.getValue(context, SpiConfigProperty.CertificateValidatorRootUri.NAME);
-        String idpSender = CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiIdpSender.NAME);
+        String idpSender = CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiIdpSender.CONFIG.getName());
         PlatformApiClientLoader platformLoader = new PlatformApiClientLoader();
-        PlatformApiClientImpl platform = null;
-        try {
-            platform = platformLoader.load(platformApiClassFqdn, context, platformRootApiUri, idpSender);
-            /*
-             * 認証を試行するユーザーが希望している動作で処理をする。
-             *
-             * ActionHandlerクラスが持つメソッドの戻り値はvoid型かつ、
-             * publicアクセス修飾子のメソッドはexecuteのみであるため、インスタンスを変数へ格納しない。
-             */
-            setLoginFormAttributes(context);
-            new ActionHandler().execute(context, platform);
-
-        } catch (RuntimeException e) {
-            // RuntimeException はそのままスロー
-            throw e;
-        } catch (Exception e) {
-            /*
-             * 宣言されたExceptionを呼び出し元へのスローすることは許されていないため、
-             * Exceptionを握り潰し、ユーザーへ内部エラーのレスポンス 500を返す。
-             * コンソール向けにスタックトレースを表示する。
-             */
-            ResponseCreater.createInternalServerErrorPage(context, null, null);
-            e.printStackTrace();
-            return;
-        }
+        String verifyNonce = context.getAuthenticationSession().getAuthNote("nonce");
+        context.getAuthenticationSession().setAuthNote("verifyNonce", verifyNonce);
+        PlatformApiClientImpl platform = platformLoader.load(platformApiClassFqdn, context, platformRootApiUri, idpSender);
+        /*
+         * 認証を試行するユーザーが希望している動作で処理をする。
+         *
+         * ActionHandlerクラスが持つメソッドの戻り値はvoid型かつ、
+         * publicアクセス修飾子のメソッドはexecuteのみであるため、インスタンスを変数へ格納しない。
+         */
+        setLoginFormAttributes(context);
+        new ActionHandler().execute(context, platform);
 
         /*
          * [HACK] 認証試行ユーザーのセッション情報から認証フローの結果を取得します。
@@ -100,7 +86,7 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
             throw new IllegalStateException("Not found AuthFlowResult in auth note for authentication session.");
         }
 
-        if ( !(authFlowResult.equals(ExecutionStatus.FAILED.toString()) ||
+        if (!(authFlowResult.equals(ExecutionStatus.FAILED.toString()) ||
                 authFlowResult.equals(ExecutionStatus.CHALLENGED.toString()) ||
                 authFlowResult.equals(ExecutionStatus.SUCCESS.toString()))) {
             return;

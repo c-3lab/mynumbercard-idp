@@ -1,5 +1,6 @@
 package com.example.mynumbercardidp.keycloak.network.platform;
 
+import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 
 import java.lang.reflect.InvocationTargetException;
@@ -14,10 +15,18 @@ public class RequestBuilder implements RequestBuilderImpl {
     private MultivaluedMap<String, String> formData;
 
     /** Keycloakがユーザーから受け取ったHTMLフォームデータの構造体 */
-    private CommonRequestModelImpl userRequest;
+    private UserRequestModel userRequest;
 
     /** プラットフォームへ送るデータの構造体 */
-    private CommonRequestModelImpl platformRequest;
+    private PlatformRequestModel platformRequest;
+
+    /** コンソール用ロガー */
+    private static Logger consoleLogger = Logger.getLogger(RequestBuilder.class);
+
+    {
+        userRequest = new UserRequestModel();
+        userRequest = new PlatformRequestModel();
+    }
 
     /**
      *  HTTPリクエスト内容を元に作成するデータ構造体のインスタンスを初期化します。
@@ -26,6 +35,17 @@ public class RequestBuilder implements RequestBuilderImpl {
      */
     public RequestBuilder(AuthenticationFlowContext context) {
         formData = RequestBuilderImpl.extractFormData(context);
+        userRequest = toUserRequestModel(formData);
+    }
+
+    /**
+     *  HTTPリクエスト内容を元に作成するデータ構造体のインスタンスを初期化します。
+     *
+     * @param context 認証フローのコンテキスト
+     */
+    public RequestBuilder(MultivaluedMap<String, String> formData) {
+        this.formData = formData;
+        userRequest = toUserRequestModel(formData);
     }
 
     /**
@@ -42,7 +62,7 @@ public class RequestBuilder implements RequestBuilderImpl {
      *
      * @return ユーザーリクエスト構造のインスタンス
      */
-    public CommonRequestModelImpl getUserRequest() {
+    public UserRequestModel getUserRequest() {
         return userRequest;
     }
 
@@ -51,7 +71,7 @@ public class RequestBuilder implements RequestBuilderImpl {
      *
      * @return プラットフォーム構造のインスタンス
      */
-    public CommonRequestModelImpl getPlatformRequest() {
+    public PlatformRequestModel getPlatformRequest() {
         return platformRequest;
     }
 
@@ -60,7 +80,7 @@ public class RequestBuilder implements RequestBuilderImpl {
      *
      * @param request ユーザーリクエスト構造のインスタンス
      */
-    public void setUserRequest(CommonRequestModelImpl request) {
+    public void setUserRequest(UserRequestModel request) {
         userRequest = request;
     }
 
@@ -69,32 +89,54 @@ public class RequestBuilder implements RequestBuilderImpl {
      *
      * @param request プラットフォーム構造のインスタンス
      */
-    public void  setPlatformRequest(CommonRequestModelImpl request) {
+    public void  setPlatformRequest(PlatformRequestModel request) {
         platformRequest = request;
     }
 
     /**
      * ユーザーのリクエスト構造体からプラットフォームへのリクエスト構造体に変換します。
      * 
-     * @param platformRequestModel プラットフォームへ送るリクエスト構造体のクラス
      * @param sender プラットフォームが識別するIDプロバイダーの送信者符号
-     * @return ユーザーリクエスト構造のインスタンス
+     * @return プラットフォームリクエスト構造のインスタンス
      */
-    public CommonRequestModelImpl toPlatformRequest(Class<? extends CommonRequestModelImpl> platformRequestModel, String sender) {
-        try {
-            CommonRequestModelImpl model = platformRequestModel.getDeclaredConstructor()
-                .newInstance();
-            // インスタンスの初期化
-            platformRequest = model.setCertificateType(userRequest.getCertificateType())
-               .setCertificate(userRequest.getCertificate())
-               .setApplicantData(userRequest.getApplicantData())
-               .setSign(userRequest.getSign());
-            return platformRequest;
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalArgumentException(e);
-        }
+    @Override
+    public PlatformRequestModel toPlatformRequest(String sender) {
+        platformRequest = new PlatformRequestModel();
+        platformRequest.setCertificateType(userRequest.getCertificateType())
+           .setCertificate(userRequest.getCertificate())
+           .setApplicantData(userRequest.getApplicantData())
+           .setSign(userRequest.getSign());
+        platformPart.RequstInfo.setSender(sender);
+        return platformRequest;
     }
 
+   private UserRequestModel toUserRequestModel(MultivaluedMap<String, String> formData) {
+        String actionMode = formData.getFirst(UserRequestModel.Filed.ACTION_MODE.getName());
+        consoleLogger.debug("actionMode: " + actionMode);
+        UserRequestModelImpl userPart = (UserRequestModelImpl) new UserRequestModel();
+        userPart.setActionMode(actionMode);
+
+        CommonRequestModelImpl certificatePart = (CommonRequestModelImpl) userPart;
+        String applicantData = formData.getFirst(UserRequestModel.Filed.APPLICANT_DATA.getName());
+        consoleLogger.debug("applicantData: " + applicantData);
+        String sign = formData.getFirst(UserRequestModel.Filed.SIGN.getName());
+        consoleLogger.debug("sign: " + sign);
+        certificatePart.setApplicantData(applicantData)
+            .setSign(sign);
+
+        switch (userPart.getActionMode().toLowerCase()) {
+            case "login":
+                certificatePart.setCertificateType(CertificateType.USER_AUTHENTICATION);
+                break;
+            case "registration":
+            case "replacement":
+                certificatePart.setCertificateType(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE);
+                break;
+        }
+        String certificateTypeName = certificatePart.getCertificateType().getName();
+        certificatePart.setCertificate(formData.getFirst(certificateTypeName));
+        return (CommonRequestModelImpl) certificatePart;
+   }
     // /**
     //  * ユーザーのリクエスト構造体からプラットフォームへのリクエスト構造体に変換します。
     //  * 
