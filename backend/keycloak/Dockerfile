@@ -11,27 +11,18 @@ RUN npm install && \
 FROM maven:3.8.6-openjdk-11-slim as spi-build-stage
 
 WORKDIR /opt
-COPY ./x509-relay-authenticator /opt
-COPY --from=js-build-stage /usr/local/src/forge/dist/forge.min.js /opt/src/main/resources/theme/call-native-app/login/resources/js
-COPY --from=js-build-stage /usr/local/src/forge/dist/forge.min.js.map /opt/src/main/resources/theme/call-native-app/login/resources/js
-
-RUN mvn clean package
-
-# -----
-FROM maven:3.8.6-openjdk-11-slim as replace-spi-build-stage
-
-WORKDIR /opt
 COPY ./my-numbercard-authenticator/pom.xml /opt
 RUN mvn dependency:go-offline --fail-never
 COPY ./my-numbercard-authenticator /opt
 COPY --from=js-build-stage /usr/local/src/forge/dist/forge.min.js /opt/src/main/resources/theme/mynumbercard-auth/login/resources/js
 COPY --from=js-build-stage /usr/local/src/forge/dist/forge.min.js.map /opt/src/main/resources/theme/mynumbercard-auth/login/resources/js
-RUN mvn package
+COPY ./x509-relay-authenticator/src/main/java/com/example/mynumbercardidp/keycloak/rest /opt/src/main/java/com/example/mynumbercardidp/keycloak/rest
+COPY ./x509-relay-authenticator/src/main/resources/META-INF/services/org.keycloak.services.resource.RealmResourceProviderFactory /opt/src/main/resources/META-INF/services
+RUN mvn clean package
 
 # -----
 FROM quay.io/keycloak/keycloak:21.0.1 as development-stage
 
-COPY --from=spi-build-stage /opt/target/x509-relay-authenticator-jar-with-dependencies.jar /opt/keycloak/providers
-COPY --from=replace-spi-build-stage /opt/target/my-numbercard-authenticator.jar /opt/keycloak/providers
+COPY --from=spi-build-stage /opt/target/my-numbercard-authenticator.jar /opt/keycloak/providers
 
-ONBUILD /opt/keycloak/bin/kc.sh build
+ONBUILD RUN /opt/keycloak/bin/kc.sh build
