@@ -106,10 +106,9 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
             throw new IllegalStateException("Not found AuthFlowResult in auth note for authentication session.");
         }
 
-        // [HACK] ハードコーディングしている状態文字列の代わりに列挙体を使いたい。
-        if ( !(authFlowResult.equals("failure") ||
-                authFlowResult.equals("challenge") ||
-                authFlowResult.equals("success"))) {
+        if ( !(authFlowResult.equals(ExecutionStatus.FAILED.toString()) ||
+                authFlowResult.equals(ExecutionStatus.CHALLENGED.toString()) ||
+                authFlowResult.equals(ExecutionStatus.SUCCESS.toString()))) {
             return;
         }
     }
