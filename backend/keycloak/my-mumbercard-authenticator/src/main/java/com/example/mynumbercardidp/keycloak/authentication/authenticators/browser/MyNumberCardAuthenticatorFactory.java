@@ -23,9 +23,7 @@ public class MyNumberCardAuthenticatorFactory implements AuthenticatorFactory {
       AuthenticationExecutionModel.Requirement.REQUIRED
     };
     private static final List<ProviderConfigProperty> configProperties = SpiConfigProperty.getPropertis();
-
     public static final MyNumberCardAuthenticator SINGLETON = new MyNumberCardAuthenticator();
-
 
     @Override
     public void close() {

@@ -54,7 +54,7 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
             return;
         }
 
-        String platformRootApiUri = CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiClientUri.NAME);
+        String platformRootApiUri = CurrentConfig.getValue(context, SpiConfigProperty.CertificateValidatorRootUri.NAME);
         String idpSender = CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiIdpSender.NAME);
         PlatformApiClientLoader platformLoader = new PlatformApiClientLoader();
         PlatformApiClientImpl platform = null;
@@ -159,12 +159,8 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
         String androidConfigName = SpiConfigProperty.RunUriOfAndroidApplication.CONFIG.getName();
         spiConfig.put("androidAppUri", CurrentConfig.getValue(context, androidConfigName));
 
-        /*
-         * [NOTE] 内部クラス名の単語 Ios は意図したものです。
-         *        詳細は SpiConfigProperty.RunUriOfIosApplication クラスにコメントアウトを参照してください。
-         */
-        String iosConfigName = SpiConfigProperty.RunUriOfIosApplication.CONFIG.getName();
-        form.setAttribute("iosAppUri", CurrentConfig.getValue(context, androidConfigName));
+        String iosConfigName = SpiConfigProperty.RunUriOfiOSApplication.CONFIG.getName();
+        form.setAttribute("iosAppUri", CurrentConfig.getValue(context, iosConfigName));
 
         String otherAppUri = SpiConfigProperty.InstallationUriOfSmartPhoneApplication.CONFIG.getName();
         form.setAttribute("otherAppUri", CurrentConfig.getValue(context, otherAppUri));
