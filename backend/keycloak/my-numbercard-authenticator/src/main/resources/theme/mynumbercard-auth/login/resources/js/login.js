@@ -121,10 +121,27 @@ function onOpenRegistrationButton() {
     document.querySelector('#userLogin').style.display = 'none';
     document.querySelector('#userRegistration').style.display = 'block';
     document.querySelector('div[name="debug-form-block"]');
-    let dstElement = document.querySelector('#kc-form-options + div');
+    moveToRegistrationBlockWhenDebugModeEnable();
+}
+
+function moveToRegistrationBlockWhenDebugModeEnable() {
     let srcElement = document.querySelector('div[name="debug-form-block"]');
+    if (srcElement == null) {
+        return;
+    }
+    let dstelement = document.queryselector('#kc-form-options + div');
     dstElement.appendChild(srcElement);
     srcElement.classList.add("margin-top-20px");
+}
+
+function moveToLoginBlockWhenDebugModeEnable() {
+    let srcElement = document.querySelector('div[name="debug-form-block"]');
+    if (srcElement == null) {
+        return;
+    }
+    let dstElement = document.querySelector('#userLogin');
+    dstElement.insertAdjacentElement('afterbegin', srcElement);
+    srcElement.classList.remove("margin-top-20px");
 }
 
 function addEventListeners() {
@@ -141,10 +158,7 @@ function addEventListeners() {
     goBackLink.addEventListener('click', (event) => {
         document.querySelector('#userLogin').style.display = 'block';
         document.querySelector('#userRegistration').style.display = 'none';
-        let dstElement = document.querySelector('#userLogin');
-        let srcElement = document.querySelector('div[name="debug-form-block"]');
-        dstElement.insertAdjacentElement('afterbegin', srcElement);
-        srcElement.classList.remove("margin-top-20px");
+        moveToLoginBlockWhenDebugModeEnable();
     });
 
     let loginButton = document.querySelector('input[name="login"][type="button"]');

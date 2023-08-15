@@ -54,10 +54,6 @@ public class SpiConfigProperty {
 
     // Authenticatorから実行され、FTLファイルへ注入する定数を作成する。
     static void initFreeMarkerJavaTemplateVariablesIfNeeded(AuthenticationFlowContext context) {
-        if (FREE_MARKER_JAVA_TEMPLATE_VARIABLES.size() != 0) {
-            return;
-        }
-
         FREE_MARKER_JAVA_TEMPLATE_VARIABLES.put("androidAppUri", CurrentConfig.getValue(context, SpiConfigProperty.RunUriOfAndroidApplication.CONFIG.getName()));
         FREE_MARKER_JAVA_TEMPLATE_VARIABLES.put("iosAppUri", CurrentConfig.getValue(context, SpiConfigProperty.RunUriOfiOSApplication.CONFIG.getName()));
         FREE_MARKER_JAVA_TEMPLATE_VARIABLES.put("otherAppUri", CurrentConfig.getValue(context, SpiConfigProperty.InstallationUriOfSmartPhoneApplication.CONFIG.getName()));
