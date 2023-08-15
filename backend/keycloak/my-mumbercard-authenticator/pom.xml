@@ -7,7 +7,7 @@
     <version>0.5</version>
 
     <name>Keycloak: Authenticator - My Number Card Authenticator</name>
-    <description>A Keycloak authenticator relay x509 file.</description>
+    <description>A Keycloak authenticator using My Number Card.</description>
 
     <packaging>jar</packaging>
 
