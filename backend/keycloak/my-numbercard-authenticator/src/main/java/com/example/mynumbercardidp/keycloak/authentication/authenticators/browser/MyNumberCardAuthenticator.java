@@ -128,6 +128,9 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
         spiConfig.put("androidAppUri", CurrentConfig.getValue(context, SpiConfigProperty.RunUriOfAndroidApplication.CONFIG.getName()));
         spiConfig.put("iosAppUri", CurrentConfig.getValue(context, SpiConfigProperty.RunUriOfiOSApplication.CONFIG.getName()));
         spiConfig.put("otherAppUri", CurrentConfig.getValue(context, SpiConfigProperty.InstallationUriOfSmartPhoneApplication.CONFIG.getName()));
+        spiConfig.put("termsOfUseDirUrl", CurrentConfig.getValue(context, SpiConfigProperty.TermsOfUseDirURL.CONFIG.getName()));
+        spiConfig.put("privacyPolicyDirUrl", CurrentConfig.getValue(context, SpiConfigProperty.PrivacyPolicyDirURL.CONFIG.getName()));
+        spiConfig.put("personalDataProtectionPolicyDirUrl", CurrentConfig.getValue(context, SpiConfigProperty.PersonalDataProtectionPolicyDirURL.CONFIG.getName()));
 
         String debugMode = SpiConfigProperty.DebugMode.CONFIG.getName();
         String debugModeValue = CurrentConfig.getValue(context, debugMode).toLowerCase();

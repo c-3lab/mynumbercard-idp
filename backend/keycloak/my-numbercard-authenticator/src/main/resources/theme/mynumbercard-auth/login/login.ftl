@@ -172,11 +172,11 @@
                 <div id="user-registration">
                     <div id="terms-of-service" class="${properties.kcLabelWrapperClass!} terms-of-service">
                         <input type="checkbox" id="${paramAgreeTos!'agree-tos'}" name="${paramAgreeTos!'agree-tos'}" />
-                        <label for="${paramAgreeTos!'agree-tos'}" class="pf-c-form__label-text terms-of-service">${msg("agreePhraseBefore")}<a href="https://nginx.example.com/open-id/${termsofServiceFileName}" target="_blank">${msg("displayTextTos")}</a>${msg("agreePhraseAfter")}</label>
+                        <label for="agree-tos" class="pf-c-form__label-text terms-of-service">${msg("agreePhraseBefore")}<a href="${termsOfUseDirUrl}${termsofServiceFileName}" target="_blank">${msg("displayTextTos")}</a>${msg("agreePhraseAfter")}</label>
                     </div>
                     <div id="privacy-policy" class="${properties.kcLabelWrapperClass!} privacy-policy kc-terms-text">
                         <input type="checkbox" id="${paramAgreePp!'agree-pp'}" name="${paramAgreePp!'agree-pp'}" />
-                        <label for="${paramAgreePp!'agree-pp'}" class="pf-c-form__label-text privacy-policy">${msg("agreePhraseBefore")}<a href="https://nginx.example.com/open-id/${privacyPolicyFileName}" target="_blank">${msg("displayTextPp")}</a>${msg("agreePhraseAfter")}</label>
+                        <label for="agree-pp" class="pf-c-form__label-text privacy-policy">${msg("agreePhraseBefore")}<a href="${privacyPolicyDirUrl}${privacyPolicyFileName}" target="_blank">${msg("displayTextPp")}</a>${msg("agreePhraseAfter")}</label>
                     </div>
                     <div id="kc-form-registration-button" class="kc-form-buttons">
                         <input class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}" name="registration" type="button" value="${msg("doUserRegistration")}"/>
@@ -187,9 +187,9 @@
       </div>
     </div>
     <#elseif section = "info" >
-        <span><a tabindex="6" href="https://nginx.example.com/open-id/${termsofServiceFileName}" target="_blank">${msg("displayTextTos")}</a></span>
-        <span><a tabindex="6" href="https://nginx.example.com/open-id/${privacyPolicyFileName}" target="_blank">${msg("displayTextPp")}</a></span>
-        <span><a tabindex="6" href="https://nginx.example.com/open-id/${personalDataProtectionPolicyFileName}" target="_blank">${msg("displayTextPdpp")}</a></span>
+        <span><a href="${termsOfUseDirUrl}${termsofServiceFileName}" target="_blank">${msg("displayTextTos")}</a></span>
+        <span><a href="${privacyPolicyDirUrl}${privacyPolicyFileName}" target="_blank">${msg("displayTextPp")}</a></span>
+        <span><a href="${personalDataProtectionPolicyDirUrl}${personalDataProtectionPolicyFileName}" target="_blank">${msg("displayTextPdpp")}</a></span>
     </#if>
 
 </@layout.registrationLayout>
