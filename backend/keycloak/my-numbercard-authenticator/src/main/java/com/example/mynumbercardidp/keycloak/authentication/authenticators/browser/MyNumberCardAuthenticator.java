@@ -4,6 +4,8 @@ import com.example.mynumbercardidp.keycloak.authentication.application.procedure
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ResponseCreater;
 import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientImpl;
 import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientLoader;
+import com.example.mynumbercardidp.keycloak.util.authentication.CurrentConfig;
+import com.example.mynumbercardidp.keycloak.util.StringUtil;
 import org.jboss.resteasy.specimpl.MultivaluedMapImpl;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
@@ -48,13 +50,13 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
      */
     public void action(AuthenticationFlowContext context) {
         String platformApiClassFqdn = CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiClientClassFqdn.CONFIG.getName());
-        if (isStringEmpty(platformApiClassFqdn)) {
+        if (StringUtil.isStringEmpty(platformApiClassFqdn)) {
             consoleLogger.error(SpiConfigProperty.PlatformApiClientClassFqdn.LABEL + " is empty.");
             ResponseCreater.createInternalServerErrorPage(context, null, null);
             return;
         }
 
-        String platformRootApiUri = CurrentConfig.getValue(context, SpiConfigProperty.CertificateValidatorRootUri.NAME);
+        String platformRootApiUri = CurrentConfig.getValue(context, SpiConfigProperty.CertificateValidatorRootUri.CONFIG.getName());
         String idpSender = CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiIdpSender.CONFIG.getName());
         PlatformApiClientLoader platformLoader = new PlatformApiClientLoader();
         String verifyNonce = context.getAuthenticationSession().getAuthNote("nonce");
@@ -77,7 +79,7 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
          */
         String authFlowResult = ResponseCreater.getFlowState(context);
 
-        if (isStringEmpty(authFlowResult)) {
+        if (StringUtil.isStringEmpty(authFlowResult)) {
             /*
              * [TODO] Exceptionを返したときにユーザーへ内部エラーのレスポンス 500を返さない動作を確認した場合、
              *        Exceptionをスローしない処理へ修正する。
@@ -103,7 +105,7 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
         setLoginFormAttributes(context);
 
         String initialView = context.getAuthenticationSession().getAuthNote("initialView");
-        if (isStringEmpty(initialView)) {
+        if (StringUtil.isStringEmpty(initialView)) {
             initialView = "";
         }
         javax.ws.rs.core.Response response = ResponseCreater.createChallengePage(context, initialView);
@@ -141,20 +143,16 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
         }
 
         Map<String, String> spiConfig = new LinkedHashMap<>();
-
-        String androidConfigName = SpiConfigProperty.RunUriOfAndroidApplication.CONFIG.getName();
-        spiConfig.put("androidAppUri", CurrentConfig.getValue(context, androidConfigName));
-
-        String iosConfigName = SpiConfigProperty.RunUriOfiOSApplication.CONFIG.getName();
-        form.setAttribute("iosAppUri", CurrentConfig.getValue(context, iosConfigName));
-
-        String otherAppUri = SpiConfigProperty.InstallationUriOfSmartPhoneApplication.CONFIG.getName();
-        form.setAttribute("otherAppUri", CurrentConfig.getValue(context, otherAppUri));
+        spiConfig.put("androidAppUri", CurrentConfig.getValue(context, SpiConfigProperty.RunUriOfAndroidApplication.CONFIG.getName()));
+        spiConfig.put("iosAppUri", CurrentConfig.getValue(context, SpiConfigProperty.RunUriOfiOSApplication.CONFIG.getName()));
+        spiConfig.put("otherAppUri", CurrentConfig.getValue(context, SpiConfigProperty.InstallationUriOfSmartPhoneApplication.CONFIG.getName()));
 
         String debugMode = SpiConfigProperty.DebugMode.CONFIG.getName();
         String debugModeValue = CurrentConfig.getValue(context, debugMode).toLowerCase();
-        debugModeValue = isStringEmpty(debugModeValue) ? "false" : debugModeValue.toLowerCase();
-        form.setAttribute("debug", debugModeValue);
+        debugModeValue = StringUtil.isStringEmpty(debugModeValue) ? "false" : debugModeValue.toLowerCase();
+        spiConfig.put("debug", debugModeValue);
+
+        spiConfig.forEach((k, v) -> form.setAttribute(k, v));
     }
 
     /**
@@ -164,15 +162,5 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
      */
     protected String createNonce() {
         return UUID.randomUUID().toString();
-    }
-
-    /**
-     * String型がNullまたは文字列の長さがゼロであるかを判定します。
-     *
-     * @param str Nullまたは長さがゼロであるか判定したい文字列
-     * @return Nullまたは長さがゼロの場合はtrue、そうでない場合はfalse
-     */
-    protected boolean isStringEmpty(String str) {
-        return Objects.isNull(str) || str.length() == 0;
     }
 }

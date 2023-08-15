@@ -25,26 +25,35 @@ public class PlatformRequestModel extends CommonRequestModel {
        }
    }
 
-   private RequstInfo requstInfo;
+   private RequestInfo requestInfo;
    
-   public PlatformRequestModel() {
-       requstInfo = new RequstInfo();
+   protected PlatformRequestModel() {
+       requestInfo = new RequestInfo();
    }
 
-   public PlatformRequestModel(String sender) {
-       requstInfo = new RequstInfo(sender);
+   protected PlatformRequestModel(String sender) {
+       requestInfo = new RequestInfo(sender);
    }
 
-   public JSONObject toJsonObject() {
+   public RequestInfo getRequestInfo() {
+       return requestInfo;
+   }
+
+   protected PlatformRequestModel setRequestInfo(RequestInfo requestInfo) {
+       this.requestInfo = requestInfo;
+       return this;
+   }
+
+   protected JSONObject toJsonObject() {
        JSONObject jsonObj = new JSONObject();
-       jsonObj.put(Filed.REQUEST_INFO.name(), requstInfo.toJsonObject());
-       jsonObj.put(certificateType.name(), certificate);
-       jsonObj.put(Filed.APPLICANT_DATA.name(), applicantData);
-       jsonObj.put(Filed.SIGN.name(), sign);
+       jsonObj.put(Filed.REQUEST_INFO.getName(), requestInfo.toJsonObject());
+       jsonObj.put(certificateType.getName(), certificate);
+       jsonObj.put(Filed.APPLICANT_DATA.getName(), applicantData);
+       jsonObj.put(Filed.SIGN.getName(), sign);
        return jsonObj;
    }
 
-   public static class RequstInfo {
+   public static class RequestInfo {
        public static enum Filed {
            TRANSACTION_ID("transactionId"),
            RECIPIENT("recipient"),
@@ -55,6 +64,10 @@ public class PlatformRequestModel extends CommonRequestModel {
 
            private Filed(String formName) {
                name = formName;
+           }
+
+           public String getName() {
+               return name;
            }
        }
 
@@ -69,9 +82,9 @@ public class PlatformRequestModel extends CommonRequestModel {
            timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss.SSS").toString();
        }
 
-       public RequstInfo() {}
+       public RequestInfo() {}
 
-       public RequstInfo(String sender) {
+       protected RequestInfo(String sender) {
            this.sender = sender;
        }
 
@@ -79,12 +92,12 @@ public class PlatformRequestModel extends CommonRequestModel {
            return transactionId;
        }
 
-       public RequstInfo setTransactionId(String transactionId) {
+       protected RequestInfo setTransactionId(String transactionId) {
            this.transactionId = transactionId;
            return this;
        }
 
-       public RequstInfo setTransactionId(UUID transactionId) {
+       protected RequestInfo setTransactionId(UUID transactionId) {
            this.transactionId = transactionId.toString();
            return this;
        }
@@ -93,7 +106,7 @@ public class PlatformRequestModel extends CommonRequestModel {
            return recipient;
        }
 
-       public RequstInfo setRecipient(String recipient) {
+       protected RequestInfo setRecipient(String recipient) {
            this.recipient = recipient;
            return this;
        }
@@ -102,7 +115,7 @@ public class PlatformRequestModel extends CommonRequestModel {
            return sender;
        }
 
-       public RequstInfo setSender(String sender) {
+       protected RequestInfo setSender(String sender) {
            this.sender = sender;
            return this;
        }
@@ -111,17 +124,17 @@ public class PlatformRequestModel extends CommonRequestModel {
            return timeStamp;
        }
 
-       public RequstInfo setTimeStamp(String timeStamp) {
+       protected RequestInfo setTimeStamp(String timeStamp) {
            this.timeStamp = timeStamp;
            return this;
        }
 
-       public JSONObject toJsonObject() {
+       protected JSONObject toJsonObject() {
            JSONObject jsonObj = new JSONObject();
-           jsonObj.put(Filed.TRANSACTION_ID.name(), transactionId);
-           jsonObj.put(Filed.RECIPIENT.name(), recipient);
-           jsonObj.put(Filed.SENDER.name(), sender);
-           jsonObj.put(Filed.TIME_STAMP.name(), timeStamp);
+           jsonObj.put(Filed.TRANSACTION_ID.getName(), transactionId);
+           jsonObj.put(Filed.RECIPIENT.getName(), recipient);
+           jsonObj.put(Filed.SENDER.getName(), sender);
+           jsonObj.put(Filed.TIME_STAMP.getName(), timeStamp);
            return jsonObj;
        }
    }

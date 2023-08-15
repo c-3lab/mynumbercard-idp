@@ -1,6 +1,9 @@
 package com.example.mynumbercardidp.keycloak.authentication.application.procedures;
 
+import com.example.mynumbercardidp.keycloak.authentication.authenticators.browser.SpiConfigProperty;
 import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientImpl;
+import com.example.mynumbercardidp.keycloak.util.authentication.CurrentConfig;
+import com.example.mynumbercardidp.keycloak.util.StringUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.authenticators.x509.UserIdentityToModelMapper;
@@ -20,6 +23,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.InvalidKeyException;
 import java.util.Base64;
+import javax.ws.rs.core.Response;
 
 /**
  * ユーザーが希望する操作の抽象クラスです。
@@ -46,19 +50,31 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
         // ユーザーが送ってきたNonceをハッシュ化した値は信用しない。
         String nonce = getNonce(context);
         consoleLogger.debug("Nonce: " + nonce);
+
         String nonceHash = toHashString(nonce);
         consoleLogger.debug("Nonce hash: " + nonceHash);
-        String certificate = platform.getUserRequest().getCertificate();
-        consoleLogger.debug("certificate: " + certificate);
-        String sign = platform.getUserRequest().getSign();
-        consoleLogger.debug("sign: " + sign);
-        if (!validateSignature(sign, certificate, nonceHash)) {
-            // [TODO] デバッグ用 Nonce文字列そのままで再度検証
-            if (!validateSignature(sign, certificate, nonce)) {
-                // 署名検証はしたが、失敗した場合
-                throw new IllegalArgumentException("The signature not equals nonce hash.");
+
+        String applicantData = platform.getUserRequest().getApplicantData();
+        consoleLogger.debug("Applicant data: " + applicantData);
+
+        if (!nonceHash.equals(applicantData)) {
+            String message ="Applicant data is not equals a nonce hash.";
+            if (!isDebugMode(context)) {
+                throw new IllegalArgumentException(message);
             }
-        }     
+            consoleLogger.info("Debug mode is enabled. " + message);
+        }
+
+        String certificate = platform.getUserRequest().getCertificate();
+        String sign = platform.getUserRequest().getSign();
+        if (!isDebugMode(context)) {
+            if (!validateSignature(sign, certificate, nonceHash)) {
+                throw new IllegalArgumentException("The signature is not equals a nonce hash.");
+            }
+        }
+        if (!validateSignature(sign, certificate, nonceHash, nonce, applicantData)) {
+            throw new IllegalArgumentException("The signature is not equals a applicant data.");
+        }
     }
 
     /**
@@ -74,9 +90,6 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
     private boolean validateSignature(String signature, String certificateBase64Content, String str) {
         String charset = "utf-8";
         String certType = "X.509";
-        consoleLogger.debug("signature: " + signature);
-        consoleLogger.debug("certificateBase64Content: " + certificateBase64Content);
-        consoleLogger.debug("str: " + str);
         try {
             byte[] certificateBinary = Base64.getDecoder().decode(certificateBase64Content.getBytes(charset));
             Certificate certificate = null;
@@ -99,6 +112,36 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
         }
     }
 
+    /**
+     * 公開鍵とnonceを利用して、署名した値が文字列と一致するかを検証します。
+     *
+     * nonceをハッシュ化した値、nonce、ユーザーが自己申告した値の順で検証します。
+     *
+     * @param signature X.509に準拠する鍵で文字列に署名した結果
+     * @param certificateBase64Content 公開鍵を基本型Base64でエンコードした値
+     * @param nonceHash nonceをハッシュ化した文字列
+     * @param nonce ランダムに生成された文字列
+     * @param applicantData ユーザーが自己申告した文字列
+     * @return 検証された場合はtrue、そうでない場合はfalse
+     */
+    private boolean validateSignature(String signature, String certificateBase64Content, String nonceHash, String nonce, String applicantData) {
+        if (validateSignature(signature, certificateBase64Content, nonceHash)) {
+            return true;
+        }
+
+        String consoleMessage = "Failed validate signature. The signed value was not a nonce hash. Retry, verifies that the signed value is a nonce.";
+        consoleLogger.info("Debug mode is enabled. " + consoleMessage);
+        if (validateSignature(signature, certificateBase64Content, nonce)) {
+            return true;
+        }
+
+        consoleMessage = "Failed validate signature. The signed value was not a applicant data.";
+        consoleLogger.info(consoleMessage);
+        if (validateSignature(signature, certificateBase64Content, applicantData)) {
+            return true;
+        }
+        throw new IllegalArgumentException("The signature is not equals a applicant data.");
+    }
 
     /**
      * 認証ユーザーのセッション情報からNonce文字列を取得します。
@@ -140,6 +183,49 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
              */
             throw new IllegalArgumentException(e);
         }
+    }
+
+    /**
+     * デバッグモードの状態を返します。
+     *
+     * @param constext 認証フローのコンテキスト
+     * @return 有効の場合はtrue、そうでない場合はfalse
+     */ 
+    protected boolean isDebugMode(AuthenticationFlowContext context) {
+        String debugMode = SpiConfigProperty.DebugMode.CONFIG.getName();
+        String debugModeValue = CurrentConfig.getValue(context, debugMode).toLowerCase();
+        debugModeValue = StringUtil.isStringEmpty(debugModeValue) ? "false" : debugModeValue.toLowerCase();
+        return Boolean.valueOf(debugModeValue);
+    }
+
+    /**
+     *  登録画面を初期表示とした画面のレスポンスを返します。
+     *
+     * @param context 認証フローのコンテキスト
+     */
+    protected void actionRegistrationChallenge(AuthenticationFlowContext context) {
+        actionReChallenge(context, "registration", Response.Status.NOT_FOUND.getStatusCode());
+    }
+
+    /**
+     *  認証画面を初期表示とした画面のレスポンスを返します。
+     *
+     * @param context 認証フローのコンテキスト
+     */
+    protected void actionLoginChallenge(AuthenticationFlowContext context) {
+        actionReChallenge(context, "login", Response.Status.NOT_FOUND.getStatusCode());
+    }
+
+    /**
+     *  指定された処理の画面を初期表示とした画面のレスポンスを返します。
+     *
+     * @param context 認証フローのコンテキスト
+     * @param actionName 遷移先処理の種類
+     * @param status プラットフォームのHTTPステータスコード
+     */
+    protected void actionReChallenge(AuthenticationFlowContext context, String actionName, int status) {
+        Response response = ResponseCreater.createChallengePage(context, actionName, status);
+        ResponseCreater.setFlowStepChallenge(context, response);
     }
 
     /**

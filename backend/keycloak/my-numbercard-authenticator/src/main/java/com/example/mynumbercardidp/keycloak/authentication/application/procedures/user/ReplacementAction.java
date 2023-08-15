@@ -14,15 +14,15 @@ import java.util.Objects;
 import javax.ws.rs.core.Response;
 
 /**
- * 個人番号カードの公的個人認証部分を利用したプラットフォームからの応答を元に認証処理をし、ユーザーへのレスポンスを設定する定義です。
+ * 個人番号カードの公的個人認証部分を利用したプラットフォームからの応答を元にユーザー情報を更新する定義です。
  */
-public class LoginAction extends AbstractUserAction {
+public class ReplacementAction extends AbstractUserAction {
 
-    private static final String ACTION_NAME = "login";
-    private static Logger consoleLogger = Logger.getLogger(LoginAction.class);
+    private static final String ACTION_NAME = "replacement";
+    private static Logger consoleLogger = Logger.getLogger(ReplacementAction.class);
    
     /**
-     * 公的個人認証部分をプラットフォームへ送信し、その応答からKeycloak内の認証を実施します。
+     * 公的個人認証部分をプラットフォームへ送信し、その応答からKeycloak内のユーザー情報を更新します。
      *
      * @param context 認証フローのコンテキスト
      * @param platform プラットフォーム APIクライアントのインスタンス
@@ -36,20 +36,21 @@ public class LoginAction extends AbstractUserAction {
             return;
         }
 
-        // ユニークIDからKeycloak内のユーザーを探す。
+        /*
+         * ユニークIDからKeycloak内のユーザーを探す。
+         * Keycloak内にユーザーが存在しない場合は登録画面を表示する。
+         */
         platform.ensureHasUniqueId();
         String uniqueId = platform.getPlatformResponse().getUniqueId();
         UserModel user = findUser(context, uniqueId);
-
-        /*
-         * Keycloak内にユーザーが存在しない場合は登録画面を表示する。
-         */
         if (Objects.isNull(user)) {
             actionRegistrationChallenge(context);
             return;
         }
-
         context.setUser(user);
+
+        // ユーザーの情報を更新する。
+        platform.addUserModelAttributes(context.getUser());
         context.success();
     } 
 
@@ -63,17 +64,12 @@ public class LoginAction extends AbstractUserAction {
             if (super.canAction(context, status)) {
                 return true;
             }
-            if (status == Response.Status.NOT_FOUND.getStatusCode()) {
-                actionRegistrationChallenge(context);
-                return false;
-            }
             if (status == Response.Status.UNAUTHORIZED.getStatusCode()) {
                 actionUnauthorized(context);
                 return false;
             }
-
-            if (status == Response.Status.GONE.getStatusCode()) {
-                actionReChallenge(context, "replacement", platformStatusCode);
+            if (status == Response.Status.CONFLICT.getStatusCode()) {
+                actionReChallenge(context, "login", status);
                 return false;
             }
             actionUndefinedFlow(ACTION_NAME);

@@ -4,26 +4,30 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@JsonIgnoreProperties(ignoreUnknown = true)
+/**
+ * プラットフォームのレスポンス構造体です。
+ *
+ * Jacksonによるオブジェクト、JSON間の相互変換することができるデータ定義です。
+ */
+// @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class PlatformResponseModel extends CommonResponseModel {
 
-    class ResponseInfo {
+    static class ResponseInfo {
         public String transactionId;
         public String recipient;
         public String sender;
-
         @JsonProperty("ts")
         public String timeStamp;
     }
 
-    class Status {
-        public int statusCode;
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class Status {
+        public String status;
         public String errorInfoReason;
         public String message;
     }
 
-    class IdentityInfo {
+    static class IdentityInfo {
         public String uniqueId;
         public String name;
         public String dateOfBirth;
@@ -31,13 +35,12 @@ public class PlatformResponseModel extends CommonResponseModel {
         public String address;
     }
 
-    ResponseInfo responseInfo;
-    Status status;
-    IdentityInfo identityInfo;
-    String applicantId;
+    public ResponseInfo responseInfo = new ResponseInfo();
+    public Status status = new Status();
+    public IdentityInfo identityInfo = new IdentityInfo();
+    public String applicantId = "";
 
-    {
-        uniqueId = identityInfo.uniqueId;
+    public String getUniqueId() {
+        return identityInfo.uniqueId;
     }
-
 }

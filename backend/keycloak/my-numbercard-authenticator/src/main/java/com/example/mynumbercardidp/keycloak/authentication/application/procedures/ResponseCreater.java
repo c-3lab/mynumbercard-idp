@@ -97,7 +97,10 @@ public class ResponseCreater {
                 form.setError(error);
             }
         }
-        return createLoginForm(form);
+        Response templateResponse = createLoginForm(form);
+        return Response.fromResponse(templateResponse)
+            .status(status)
+            .build();
     }
 
     private static Response createLoginForm(LoginFormsProvider form) {
@@ -129,25 +132,21 @@ public class ResponseCreater {
     /**
      * 認証フローの状態に失敗したことを設定し、ユーザーへエラー画面のレスポンスを返します。
      *
-     * このレスポンスは後続の認証フローのステップが実行されません。
      * @param context 認証フローのコンテキスト
+     * @param error 認証フローエラーの種類
      * @param status HTTP ステータスコード
      */
-    public static void setFlowStepFailure(AuthenticationFlowContext context, Response response) {
+    public static void setFlowStepFailure(AuthenticationFlowContext context, AuthenticationFlowError error, Response response) {
        context.getAuthenticationSession().setAuthNote(AUTH_FLOW_RESULT, ExecutionStatus.FAILED.toString());
-       context.challenge(response);
+       context.failure(error, response);
     }
 
     /**
-     * 認証フローの状態に認証できなかったことを設定し、認証フローのステップを次へ進めます。
+     * 認証フローの状態に認証できなかったことを設定します。
      *
      * このレスポンスはエラー状態でも、成功状態でもありません。
-     * このステップの認証SPIは、認証を試行したが認証することができなかったことを表します。
-     * 後続の認証フローで認証を行いたい場合はこの処理を呼び出してください。
-     *
-     * シナリオ例
-     *   ユーザー名とパスワードの認証を試行したが、認証することができなかった。（＝Attempted）
-     *   後続の認証ステップである、メールで送ったワンタイプパスフレーズで認証を試行する。
+     * 認証を試行したが認証することができなかったことを表します。
+     * 認証フロー内の次のステップが実施されます。
      * @param context 認証フローのコンテキスト
      */
     public static void setFlowStepAttempt(AuthenticationFlowContext context) {
@@ -156,7 +155,7 @@ public class ResponseCreater {
     }
 
     /**
-     * 認証フローのコンテキストにあるセッション備考から認証フローの状態を取得します。
+     * 認証フローコンテキスト内のセッション備考から認証フローの状態を取得します。
      *
      * @param context 認証フローのコンテキスト
      * @return 認証フローの状態 設定されていない場合はNullを返します。

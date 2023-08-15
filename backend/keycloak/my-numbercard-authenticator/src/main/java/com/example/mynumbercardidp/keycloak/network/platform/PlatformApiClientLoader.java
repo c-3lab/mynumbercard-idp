@@ -4,8 +4,6 @@ import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import javax.ws.rs.core.MultivaluedMap;
 
 /**
@@ -18,16 +16,20 @@ public class PlatformApiClientLoader implements PlatformApiClientLoaderImpl {
      public PlatformApiClientLoader() {}
 
      @Override
-     public PlatformApiClientImpl load(String platformClassFqdn, AuthenticationFlowContext context, String apiRootUri, String idpSender) throws ClassNotFoundException, ClassCastException, NoSuchMethodException, URISyntaxException, InstantiationException, IllegalAccessException, InvocationTargetException {
-         
-         AbstractPlatformApiClient platform = (AbstractPlatformApiClient) Class.forName(platformClassFqdn)
-             .getDeclaredConstructor(String.class)
-             .newInstance(apiRootUri);
+     public PlatformApiClientImpl load(String platformClassFqdn, AuthenticationFlowContext context, String apiRootUri, String idpSender) {
+         try {
+             AbstractPlatformApiClient platform = (AbstractPlatformApiClient) Class.forName(platformClassFqdn)
+                 .getDeclaredConstructor()
+                 .newInstance();
 
-         MultivaluedMap formData = extractFormData(context);
-         formData.forEach((k, v) -> consoleLogger.debug("Key " + k + " -> " + v));
-         platform.init(formData); 
-         return platform;
+             MultivaluedMap formData = extractFormData(context);
+             formData.forEach((k, v) -> consoleLogger.debug("Key " + k + " -> " + v));
+             platform.init(apiRootUri, formData, idpSender); 
+             return platform;
+         } catch (ClassNotFoundException | ClassCastException | NoSuchMethodException |
+                  InstantiationException | IllegalAccessException | InvocationTargetException e) {
+             throw new IllegalArgumentException(e);
+         }
      }
 
     /**

@@ -8,7 +8,6 @@ import org.keycloak.forms.login.LoginFormsProvider;
 public class CommonResponseModel {
 
     private int httpStatusCode;
-    protected String uniqueId;
 
     public int getHttpStatusCode() {
         return httpStatusCode;
@@ -16,13 +15,5 @@ public class CommonResponseModel {
 
     public void setHttpStatusCode(int status) {
         httpStatusCode = status;
-    }
-
-    public String getUniqueId() {
-        return uniqueId;
-    }
-
-    protected void setUniqueId(String id) {
-        uniqueId = id;
     }
 }

@@ -1,8 +1,6 @@
 package com.example.mynumbercardidp.keycloak.authentication.application.procedures;
 
-import com.example.mynumbercardidp.keycloak.network.platform.CommonRequestModelImpl;
 import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClientImpl;
-import com.example.mynumbercardidp.keycloak.network.platform.UserRequestModelImpl;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
@@ -19,6 +17,7 @@ public abstract class AbstractActionHandler implements ApplicationProcedure {
     private static final String MY_PACKAGE_NAME;
     private static final String USER_ACTION_PACKAGE_PREFIX_NAME = ".user";
     private static final String USER_ACTION_PACKAGE_NAME;
+    private static final String USER_ACTION_CLASS_NAME_SUFFIX = "Action";
     private static Logger consoleLogger;
     protected ApplicationProcedure action;
 
@@ -30,9 +29,7 @@ public abstract class AbstractActionHandler implements ApplicationProcedure {
         consoleLogger = Logger.getLogger(my);
     }
 
-    AbstractActionHandler() {
-
-    }
+    protected AbstractActionHandler() {}
 
     /**
      * ユーザーからKeycloakへのHTTPリクエストを元に実行する処理を呼び出します。
@@ -42,10 +39,9 @@ public abstract class AbstractActionHandler implements ApplicationProcedure {
      */
     @Override
     public void execute(AuthenticationFlowContext context, PlatformApiClientImpl platform) {
-        UserRequestModelImpl userReq = (UserRequestModelImpl) platform.getUserRequest();
-        String actionMode = userReq.getActionMode();
+        String actionMode = platform.getUserActionMode();
         actionMode = actionMode.substring(0, 1).toUpperCase() + actionMode.substring(1);
-        String actionClass = USER_ACTION_PACKAGE_NAME + "." + actionMode + "Action";
+        String actionClass = USER_ACTION_PACKAGE_NAME + "." + actionMode + USER_ACTION_CLASS_NAME_SUFFIX;
         try {
             action = (ApplicationProcedure) Class.forName(actionClass)
                 .getDeclaredConstructor()

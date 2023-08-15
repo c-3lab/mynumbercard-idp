@@ -3,7 +3,7 @@ package com.example.mynumbercardidp.keycloak.network.platform;
 /**
  * Keycloakを利用してログインするユーザーが送信したHTTPリクエスト内容の構造体を表すクラスです。
  */
-public class UserRequestModel extends CommonRequestModel implements UserRequestModelImpl {
+public class UserRequestModel extends CommonRequestModel {
     public static enum Filed {
         ACTION_MODE("mode"),
         USER_AUTHENTICATION_CERTIFICATE(CertificateType.USER_AUTHENTICATION.getName()),
@@ -28,7 +28,7 @@ public class UserRequestModel extends CommonRequestModel implements UserRequestM
         return actionMode;
     }
 
-    public UserRequestModelImpl setActionMode(String mode) {
+    public UserRequestModel setActionMode(String mode) {
         actionMode = mode;
         return this;
     }
