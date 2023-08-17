@@ -129,7 +129,7 @@ function moveToRegistrationBlockWhenDebugModeEnable() {
     if (srcElement == null) {
         return;
     }
-    let dstelement = document.queryselector('#kc-form-options + div');
+    let dstElement = document.querySelector('#kc-form-options + div');
     dstElement.appendChild(srcElement);
     srcElement.classList.add("margin-top-20px");
 }
