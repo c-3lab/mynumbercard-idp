@@ -136,7 +136,7 @@ public class SpiConfigProperty {
     public static class PlatformApiClientClassFqdn extends SpiConfigProperty {
         public static final ProviderConfigProperty CONFIG;
         public static final String NAME = "platform-class";
-        public static final String LABEL = "Platform API Clinet Class FQDN";
+        public static final String LABEL = "Platform API Client Class FQDN";
         public static final String HELP_TEXT = "Fully qualified class name of the platform API client for authentication using the public personal authentication part of My Number Card.";
         public static final String TYPE = ProviderConfigProperty.STRING_TYPE;
         public static final String DEFAULT_VALUE = "com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClient";
