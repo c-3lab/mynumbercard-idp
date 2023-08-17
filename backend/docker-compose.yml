@@ -34,6 +34,7 @@ services:
       #- ./native-app-settings/nginx/tls/certs:/etc/pki/tls/certs:ro
       #- ./native-app-settings/nginx/tls/private:/etc/pki/tls/private:ro
       - ./native-app-settings/nginx/html:/srv/html
+      - ./keycloak/open-id:/srv/keycloak-html
     ports:
       # If you want to ssl port enable, modify "443:443" comment out to enable.
       - "80:80"

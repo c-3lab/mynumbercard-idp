@@ -165,7 +165,7 @@ public class SpiConfigProperty {
         public static final String LABEL = "Terms of use page dir URL";
         public static final String HELP_TEXT = "The terms of use page directory path URL for identity provider.";
         public static final String TYPE = ProviderConfigProperty.STRING_TYPE;
-        public static final String DEFAULT_VALUE = "https://idp.example.com/open-id/";
+        public static final String DEFAULT_VALUE = "https://idp.example.com/keycloak-html/";
 
         static {
             CONFIG = new ProviderConfigProperty(SpiConfigProperty.NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
@@ -178,7 +178,7 @@ public class SpiConfigProperty {
         public static final String LABEL = "Privacy policy page dir URL";
         public static final String HELP_TEXT = "The privacy policy page directory path URL for identity provider.";
         public static final String TYPE = ProviderConfigProperty.STRING_TYPE;
-        public static final String DEFAULT_VALUE = "https://idp.example.com/open-id/";
+        public static final String DEFAULT_VALUE = "https://idp.example.com/keycloak-html/";
 
         static {
             CONFIG = new ProviderConfigProperty(SpiConfigProperty.NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
@@ -191,7 +191,7 @@ public class SpiConfigProperty {
         public static final String LABEL = "Personal data protection policy dir URL";
         public static final String HELP_TEXT = "The personal data protection policy page directory path URL for identity provider.";
         public static final String TYPE = ProviderConfigProperty.STRING_TYPE;
-        public static final String DEFAULT_VALUE = "https://idp.example.com/open-id/";
+        public static final String DEFAULT_VALUE = "https://idp.example.com/keycloak-html/";
 
         static {
             CONFIG = new ProviderConfigProperty(SpiConfigProperty.NAME_PREFIX + NAME, LABEL, HELP_TEXT, TYPE, DEFAULT_VALUE);
