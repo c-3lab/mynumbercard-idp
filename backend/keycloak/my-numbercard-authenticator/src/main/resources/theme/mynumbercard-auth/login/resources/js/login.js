@@ -6,7 +6,7 @@ function getMobileOS() {
     if (userAgent.match(/iPad|iPhone|iPod/))
         return 'iOS';
 
-    // Not Android and iOS.
+    // AndroidまたはiOSではない
     return 'other';
 }
 
