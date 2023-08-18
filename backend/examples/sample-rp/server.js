@@ -1,7 +1,6 @@
 const express = require("express");
 const session = require("express-session");
 const request = require("request");
-const fs = require('fs');
 const { auth, requiresAuth } = require('express-openid-connect')
 const sessionStore = new session.MemoryStore();
 
@@ -82,7 +81,6 @@ app.get("/", (req, res) => {
 
 app.post("/assign", async (req, res, next) => {
   try {
-    //const setting = JSON.parse(fs.readFileSync('./assign_setting.json', 'utf8'));
     const serviceIdValue = process.env.SERVICE_ID
     const noteValue = process.env.NOTE
     const assignAPIURL =  process.env.KEYCLOAK_URL + "/realms/" + process.env.KEYCLOAK_REALM + "/custom-attribute/assign"
