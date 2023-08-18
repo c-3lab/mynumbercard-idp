@@ -21,27 +21,33 @@ services:
     restart: unless-stopped
   sample-rp01:
     build:
-      context: examples/sample-rp/docker
-      args:
-        SERVICE_ID: "${RP1_SERVICE_ID}"
-        NOTE: "${RP1_NOTE}"
-        KEYCLOAK_AUTH_URL: "${AUTH_URL}"
-        KEYCLOAK_REALM: "${REALM}"
+      context: examples/sample-rp
     container_name: sample-web-app01
     hostname: sample-rp01
     restart: unless-stopped
+    environment:
+        BASE_URL: "${RP1_BASEURL}"
+        SERVICE_ID: "${RP1_SERVICE_ID}"
+        NOTE: "${RP1_NOTE}"
+        KEYCLOAK_CLIENT_ID: "${CLIENT_ID}"
+        KEYCLOAK_CLIENT_SECRET: "${CLIENT_SECRET}"
+        KEYCLOAK_URL: "${AUTH_URL}"
+        KEYCLOAK_REALM: "${REALM}"
     ports:
       - "0.0.0.0:3000:3000"
   sample-rp02:
     build:
-      context: examples/sample-rp/docker
-      args:
-        SERVICE_ID: "${RP2_SERVICE_ID}"
-        NOTE: "${RP2_NOTE}"
-        KEYCLOAK_AUTH_URL: "${AUTH_URL}"
-        KEYCLOAK_REALM: "${REALM}"
+      context: examples/sample-rp
     container_name: sample-web-app02
     hostname: sample-rp02
     restart: unless-stopped
+    environment:
+        BASE_URL: "${RP2_BASEURL}"
+        SERVICE_ID: "${RP2_SERVICE_ID}"
+        NOTE: "${RP2_NOTE}"
+        KEYCLOAK_CLIENT_ID: "${CLIENT_ID}"
+        KEYCLOAK_CLIENT_SECRET: "${CLIENT_SECRET}"
+        KEYCLOAK_URL: "${AUTH_URL}"
+        KEYCLOAK_REALM: "${REALM}"
     ports:
       - "0.0.0.0:3001:3000"

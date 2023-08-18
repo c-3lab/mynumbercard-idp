@@ -1,12 +1,9 @@
-// Sample web service using OpenID Connect.
 const express = require("express");
 const session = require("express-session");
-const Keycloak = require("keycloak-connect");
 const request = require("request");
 const fs = require('fs');
-
+const { auth, requiresAuth } = require('express-openid-connect')
 const sessionStore = new session.MemoryStore();
-const keycloak = new Keycloak({ store: sessionStore });
 
 const app = express();
 app.set('trust proxy', 'uniquelocal');
@@ -18,8 +15,22 @@ app.use(session({
   saveUninitialized: false
 }));
 
-app.use(keycloak.middleware());
 app.use(express.static('public'));
+
+const config = {
+  authorizationParams: {
+    response_type: 'code',
+    scope: 'openid',
+  },
+  authRequired: false,
+  baseURL: process.env.BASE_URL,
+  clientID: process.env.KEYCLOAK_CLIENT_ID,
+  clientSecret: process.env.KEYCLOAK_CLIENT_SECRET,
+  issuerBaseURL: process.env.KEYCLOAK_URL + '/realms/' + process.env.KEYCLOAK_REALM,
+  secret: 'long text to encrypt session'
+}
+
+app.use(auth(config))
 
 function getUser(req) {
   let idTokenContent = {};
@@ -34,19 +45,18 @@ function getUser(req) {
   let uniqueId = "";
   let accessToken = "";
 
-  if (typeof req.kauth.grant === 'object') {
-    idTokenContent = req.kauth.grant.id_token.content;
+  if (req.oidc.isAuthenticated()) {
+    idTokenContent = req.oidc.idTokenClaims;
 
-    username = idTokenContent.preferred_username;
-    name = idTokenContent.name;
-    address = idTokenContent.user_address;
-    gender = idTokenContent.gender_code;
-    dateOfBirth = idTokenContent.birth_date;
-    sub = idTokenContent.sub;
-    nickname = idTokenContent.nickname;
-    uniqueId = idTokenContent.unique_id;
+    username = req.oidc.user.preferred_username;
+    name = req.oidc.user.name;
+    address = req.oidc.user.user_address;
+    gender = req.oidc.user.gender_code;
+    dateOfBirth = req.oidc.user.birth_date;
+    sub = req.oidc.user.sub;
+    uniqueId =  req.oidc.user.unique_id;
 
-    accessToken = req.kauth.grant.access_token.token;
+    accessToken = req.oidc.accessToken.access_token;
   }
 
   const user = {
@@ -67,20 +77,15 @@ function getUser(req) {
 
 // public url
 app.get("/", (req, res) => {
-  res.render("index", { user: getUser(req) })
+  res.render("index",{user: getUser(req) })
 });
 
-// protecte url
-app.get("/login", keycloak.protect(), (req, res) => {
-  res.redirect(303, "/")
-});
-
-app.post("/assign", keycloak.protect(), async (req, res, next) => {
+app.post("/assign", async (req, res, next) => {
   try {
-    const setting = JSON.parse(fs.readFileSync('./assign_setting.json', 'utf8'));
-    const serviceIdValue = setting.serviceId
-    const noteValue = setting.note
-    const assignAPIURL = setting.URL
+    //const setting = JSON.parse(fs.readFileSync('./assign_setting.json', 'utf8'));
+    const serviceIdValue = process.env.SERVICE_ID
+    const noteValue = process.env.NOTE
+    const assignAPIURL =  process.env.KEYCLOAK_URL + "/realms/" + process.env.KEYCLOAK_REALM + "/custom-attribute/assign"
 
     // RP側のユーザーに関連した情報をIdP側のユーザーに紐づけるAPIを呼び出す
     const user = getUser(req)
@@ -96,8 +101,8 @@ app.post("/assign", keycloak.protect(), async (req, res, next) => {
         }
       }
     }, async (err, response, data) => {
-      const grant = await keycloak.grantManager.createGrant(JSON.stringify(data))
-      keycloak.storeGrant(grant, req, res)
+      const accessToken = req.oidc.accessToken;
+      await accessToken.refresh();
 
       res.redirect(303, "/")
     });
