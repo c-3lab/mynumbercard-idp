@@ -180,7 +180,7 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
             if (!isDebugMode(context)) {
                 throw new IllegalArgumentException(message);
             }
-            AbstractUserAction.consoleLogger.info(MESSAGE_DEBUG_MODE_ENABLED + message);
+            AbstractUserAction.consoleLogger.info(MESSAGE_DEBUG_MODE_ENABLED + " " + message);
         }
 
         String certificate = extractCertificate(platform);
@@ -248,7 +248,7 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
         }
 
         String consoleMessage = "Signature validation failed. The signed value was not a nonce hash. Retry and verify that the signed value is a nonce.";
-        AbstractUserAction.consoleLogger.info(AbstractUserAction.MESSAGE_DEBUG_MODE_ENABLED + consoleMessage);
+        AbstractUserAction.consoleLogger.info(AbstractUserAction.MESSAGE_DEBUG_MODE_ENABLED + " " + consoleMessage);
         if (validateSignature(signature, certificateBase64Content, nonce)) {
             return;
         }
