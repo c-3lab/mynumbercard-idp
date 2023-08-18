@@ -76,18 +76,23 @@
 17. `Name` に `my number card` と入力し、 `Create` ボタンをクリックします。
 18. `Add execution` ボタンをクリックします。
 19. `Browser Redirect for Cookie free authentication` 、 `Add` ボタンの順でクリックします。
-20. `Add step` 、 `X509 Relay Authenticator` 、 `Add` ボタンの順でクリックします。  
-21. `X509 Relay Authenticator` の右にある `Settings` （歯車のアイコン）をクリックします。  
+20. `Add step` 、 `My number card Authenticator` 、 `Add` ボタンの順でクリックします。  
+21. `My number card Authenticator` の右にある `Settings` （歯車のアイコン）をクリックします。  
 22. 以下のように設定し、 `Save` ボタンをクリックします。  
-    - Alias: (任意の文字列。 例えば `x509-auth` など。)
+    - Alias: (任意の文字列。 例えば `my number card auth` など。)
     - Enable debug mode: On
     - Certificate Validator URI: http://platform-gateway
     - Run URI of Android application: (Android アプリ リンクのURL または 入力しない)
     - Run URI of iOS application: (iOS ユニバーサルリンクのURL または 入力しない)
     - Installation URI of Android/iOS application: (アプリインストール案内ページのURL または 入力しない)
+    - Platform API Client Class FQDN: com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClient
+    - Platform API IDP sender: ID123
+    - Terms of use page dir URL: https://idp.example.com/keycloak-html/
+    - Privacy policy page dir URL: https://idp.example.com/keycloak-html/
+    - Personal data protection policy dir URL: https://idp.example.com/keycloak-html/
 23. ナビゲーションエリアにある `Configure` セクションの `Realm settings` をクリックします。  
 24. `Login` タブをクリックし、 `User registration` を `On` へ変更します。  
-25. `Themes` タブをクリックし、`Login theme` を `call-native-app` へ変更、 `Save` ボタンをクリックします。  
+25. `Themes` タブをクリックし、`Login theme` を `mynumbercard-auth` へ変更、 `Save` ボタンをクリックします。  
 26. ナビゲーションエリアにある `Manage` セクションの `Clients` をクリックします。  
 27. `Create client` をクリック、以下のように設定し、 `Next` ボタンをクリックします。  
     - Client type: OpenID Connect
@@ -266,7 +271,7 @@
 2. 画面右上部にある `ログイン` リンクをクリックします。  
 3. `利用者登録` ボタンをクリックします。  
 4. `利用規約` と `プライバシーポリシー` の同意チェックボックスを押します。  
-5. 下の `利用者登録へ進む` ボタンをクリックします。  
+5. `利用者登録へ進む` ボタンをクリックします。  
 6. アプリが起動し、トップ画面が表示されます。  
 7. `パスワード` ボックスへ、6～16桁の署名用暗証番号を入力します。  
 8. `読み取り開始` ボタンをタップします。  
@@ -276,7 +281,7 @@
 12. エラーや警告が表示されないことを確認します。  
 13. 画面右上部にある `ログアウト` リンクをクリックします。  
 14. 画面右上部にある `ログイン` リンクをクリックします。  
-15. 下の `ログイン` ボタンをクリックします。  
+15. `ログイン` ボタンをクリックします。  
 16. アプリが起動し、トップ画面が表示されます。  
 17. `パスワード` ボックスへ、4桁の利用者証明用パスワードを入力します。  
 18. `読み取り開始` ボタンをタップします。  
@@ -314,30 +319,28 @@
    このリポジトリの `/backend/keycloak/private.pem` ファイルです。  
 6. `X509 Certificate File` の `ファイル選択` をクリックし、前のステップで選択した秘密鍵に対応する公開鍵（証明書）を選択します。  
    サンプル用の公開鍵は、このリポジトリの `/backend/keycloak/public.pem` ファイルです。  
-7. 上の `利用者登録へ進む` ボタンをクリックします。
+7. `利用者登録へ進む` ボタンをクリックします。
 8. 表示される `これらのアクセス権限を付与しますか？` 画面で `はい` ボタンをクリックします。  
 9. エラーや警告が表示されないことを確認します。  
 10. 画面右上部にある `ログアウト` リンクをクリックします。  
 11. 画面右上部にある `ログイン` リンクをクリックします。
-12. `Mode Change` セレクトボックスで `login` を選択します。  
-13. `X509 privkey file` の `ファイル選択` をクリックし、次のステップで選択する公開鍵（証明書）に対応する秘密鍵を選択します。  
-14. `X509 Certificate File` の `ファイル選択` をクリックし、前のステップで選択した秘密鍵に対応する公開鍵（証明書）を選択します。  
-15. 上の `ログイン` ボタンをクリックします。  
-16. エラーや警告が表示されないことを確認します。  
-17. 画面右上部にある `ログアウト` リンクをクリックします。  
-18. ユーザー情報変更を試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `Manage` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し `Attributes` タブで以下の基本4情報を修正し `Save` ボタンをクリックします。  
+12. `X509 privkey file` の `ファイル選択` をクリックし、次のステップで選択する公開鍵（証明書）に対応する秘密鍵を選択します。  
+13. `X509 Certificate File` の `ファイル選択` をクリックし、前のステップで選択した秘密鍵に対応する公開鍵（証明書）を選択します。  
+14. `ログイン` ボタンをクリックします。  
+15. エラーや警告が表示されないことを確認します。  
+16. 画面右上部にある `ログアウト` リンクをクリックします。  
+17. ユーザー情報変更を試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `Manage` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し `Attributes` タブで以下の基本4情報を修正し `Save` ボタンをクリックします。  
     - user_address
     - birth_date
     - name
     - gender_code
-19. Webサービスの画面右上部にある `ログイン` リンクをクリックします。  
-20. `Mode Change` セレクトボックスで `replacement` を選択します。  
-21. `X509 privkey file` の `ファイル選択` をクリックし、次のステップで選択する公開鍵（証明書）に対応する秘密鍵を選択します。  
-22. `X509 Certificate File` の `ファイル選択` をクリックし、前のステップで選択した秘密鍵に対応する公開鍵（証明書）を選択します。  
-23. 上の `ログイン` ボタンをクリックします。  
-24. エラーや警告が表示されないことを確認します。  
-25. ユーザー情報変更の結果を確認したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `Manage` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し修正した基本4情報が初期状態に戻されたことを確認してください。  
-26. ユーザー登録をもう一度試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `Manage` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を削除してください。  
+18. Webサービスの画面右上部にある `ログイン` リンクをクリックします。  
+19. `X509 privkey file` の `ファイル選択` をクリックし、次のステップで選択する公開鍵（証明書）に対応する秘密鍵を選択します。  
+20. `X509 Certificate File` の `ファイル選択` をクリックし、前のステップで選択した秘密鍵に対応する公開鍵（証明書）を選択します。  
+21. `ログイン` ボタンをクリックします。  
+22. エラーや警告が表示されないことを確認します。  
+23. ユーザー情報変更の結果を確認したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `Manage` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し修正した基本4情報が初期状態に戻されたことを確認してください。  
+24. ユーザー登録をもう一度試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `Manage` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を削除してください。  
 
 ## Docker コンテナの停止
 1. Docker ホストにて、このリポジトリをダウンロードし、配置したディレクトリへ移動します。  
