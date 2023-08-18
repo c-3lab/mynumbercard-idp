@@ -63,7 +63,7 @@ public class UserRequestModel implements UserRequestModelWithApplicantDataImpl {
             StringUtil.isEmpty(this.certificate) ||
             StringUtil.isEmpty(this.applicantData) ||
             StringUtil.isEmpty(this.sign)) {
-            throw new IllegalStateException("One or more values is not set.");
+            throw new IllegalStateException("One or more values were not set.");
         }
     }
 

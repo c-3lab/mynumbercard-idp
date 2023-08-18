@@ -72,7 +72,7 @@ public class SpiConfigProperty {
         public static final ProviderConfigProperty CONFIG;
         public static final String NAME = "debug-mode";
         public static final String LABEL = "Enable debug mode";
-        public static final String HELP_TEXT = "Print javascript debug log to browser console, and login form screen.";
+        public static final String HELP_TEXT = "Print javascript debug log to browser console and login form screen.";
         public static final String TYPE = ProviderConfigProperty.BOOLEAN_TYPE;
         public static final boolean DEFAULT_VALUE = false;
 
@@ -85,7 +85,7 @@ public class SpiConfigProperty {
         public static final ProviderConfigProperty CONFIG;
         public static final String NAME = "certificate-validator-uri";
         public static final String LABEL = "Certificate Validator URI";
-        public static final String HELP_TEXT = "Platform API URL for authentication using the public personal authentication part of My Number Card.";
+        public static final String HELP_TEXT = "Platform API URL for authentication using the public personal authentication information from a My Number Card.";
         public static final String TYPE = ProviderConfigProperty.STRING_TYPE;
         public static final String DEFAULT_VALUE = "";
 
@@ -124,7 +124,7 @@ public class SpiConfigProperty {
         public static final ProviderConfigProperty CONFIG;
         public static final String NAME = "app-uri";
         public static final String LABEL = "Installation URI of Android/iOS application";
-        public static final String HELP_TEXT = "Access from non Android or iOS. (e.g., PC)";
+        public static final String HELP_TEXT = "Access from a non Android or iOS device. (e.g., PC)";
         public static final String TYPE = ProviderConfigProperty.STRING_TYPE;
         public static final String DEFAULT_VALUE = "";
 
@@ -137,7 +137,7 @@ public class SpiConfigProperty {
         public static final ProviderConfigProperty CONFIG;
         public static final String NAME = "platform-class";
         public static final String LABEL = "Platform API Client Class FQDN";
-        public static final String HELP_TEXT = "Fully qualified class name of the platform API client for authentication using the public personal authentication part of My Number Card.";
+        public static final String HELP_TEXT = "Fully qualified class name of the platform API client for authentication using the public personal authentication information from a My Number Card.";
         public static final String TYPE = ProviderConfigProperty.STRING_TYPE;
         public static final String DEFAULT_VALUE = "com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClient";
 
@@ -150,7 +150,7 @@ public class SpiConfigProperty {
         public static final ProviderConfigProperty CONFIG;
         public static final String NAME = "platform-sender";
         public static final String LABEL = "Platform API IDP sender";
-        public static final String HELP_TEXT = "Identity provider sender code that platform API identify.";
+        public static final String HELP_TEXT = "Identity provider sender code used in platform API calls.";
         public static final String TYPE = ProviderConfigProperty.STRING_TYPE;
         public static final String DEFAULT_VALUE = "ID123";
 

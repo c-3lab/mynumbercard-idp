@@ -36,7 +36,7 @@ import javax.ws.rs.core.Response;
  */
 public abstract class AbstractUserAction implements ApplicationProcedure {
 
-    private static final String MESSAGE_DEBUG_MODE_ENABLED = "Debug mode is enabled. ";
+    private static final String MESSAGE_DEBUG_MODE_ENABLED = "Debug mode is enabled.";
     private static Logger consoleLogger = Logger.getLogger(AbstractUserAction.class);
 
     /**
@@ -176,7 +176,7 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
         String applicantDataUpper = applicantData.toUpperCase();
 
         if (!nonceHash.equals(applicantDataLower) && !nonceHash.equals(applicantDataUpper)) {
-            String message ="Applicant data is not equals a nonce hash.";
+            String message ="Applicant data does not equal the nonce hash.";
             if (!isDebugMode(context)) {
                 throw new IllegalArgumentException(message);
             }
@@ -188,7 +188,7 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
         if (!isDebugMode(context)) {
             if (!validateSignature(sign, certificate, nonceHash.toLowerCase()) ||
                 !validateSignature(sign, certificate, nonceHash.toUpperCase())) {
-                    String message = "The signature is not equals a nonce hash.";
+                    String message = "The signature does not equal the nonce hash.";
                     throw new IllegalArgumentException(message);
             }
         }
@@ -247,18 +247,18 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
             return;
         }
 
-        String consoleMessage = "Failed validate signature. The signed value was not a nonce hash. Retry, verifies that the signed value is a nonce.";
+        String consoleMessage = "Signature validation failed. The signed value was not a nonce hash. Retry and verify that the signed value is a nonce.";
         AbstractUserAction.consoleLogger.info(AbstractUserAction.MESSAGE_DEBUG_MODE_ENABLED + consoleMessage);
         if (validateSignature(signature, certificateBase64Content, nonce)) {
             return;
         }
 
-        consoleMessage = "Failed validate signature. The signed value was not a nonce.";
+        consoleMessage = "Signature validation failed. The signed value was not a nonce.";
         AbstractUserAction.consoleLogger.info(consoleMessage);
         if (validateSignature(signature, certificateBase64Content, applicantData)) {
             return;
         }
-        String message = "The signature is not equals a applicant data.";
+        String message = "The signature does not equal the applicant data.";
         throw new IllegalArgumentException(message);
     }
 

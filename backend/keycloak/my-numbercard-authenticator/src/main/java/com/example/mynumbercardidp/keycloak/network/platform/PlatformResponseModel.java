@@ -35,7 +35,7 @@ public class PlatformResponseModel implements PlatformResponseModelImpl {
     public void ensureHasUniqueId() {
         String uniqueId = this.identityInfo.getUniqueId();
         if (StringUtil.isEmpty(uniqueId)) {
-            throw new IllegalStateException("The unique id is empty in platform response.");
+            throw new IllegalStateException("The unique id in the platform response was empty.");
         }
     }
 

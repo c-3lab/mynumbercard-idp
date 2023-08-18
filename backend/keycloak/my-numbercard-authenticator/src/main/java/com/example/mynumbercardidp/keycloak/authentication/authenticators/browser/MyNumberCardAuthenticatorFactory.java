@@ -18,7 +18,7 @@ public class MyNumberCardAuthenticatorFactory implements AuthenticatorFactory {
 
     private static final String PROVIDER_ID = "my-mumber-card-authenticator";
     private static final String DISPLAY_TYPE = "My number card Authenticator";
-    private static final String HELP_TEXT = "Send public personal authentication part in my number card at platform, validates.";
+    private static final String HELP_TEXT = "Send public personal authentication info from a my number card to a platform for validation.";
     private static final AuthenticationExecutionModel.Requirement[] REQUIREMENT_CHOICES = {
       AuthenticationExecutionModel.Requirement.REQUIRED
     };

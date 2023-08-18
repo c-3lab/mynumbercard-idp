@@ -64,7 +64,7 @@ public abstract class AbstractMyNumberCardAuthenticator extends AbstractFormAuth
      */
     protected final void ensureHasAuthFlowStatus(final AuthenticationFlowContext context) {
         if (Objects.isNull(context.getStatus())) {
-            throw new IllegalStateException("The Flow status in authentication flow context is not set.");
+            throw new IllegalStateException("The flow status in the authentication flow context was not set.");
         }
     }
 
