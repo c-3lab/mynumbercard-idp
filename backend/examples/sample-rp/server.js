@@ -76,7 +76,7 @@ function getUser(req) {
 
 // public url
 app.get("/", (req, res) => {
-  res.render("index",{user: getUser(req) })
+  res.render("index", { user: getUser(req) })
 });
 
 app.post("/assign", async (req, res, next) => {
