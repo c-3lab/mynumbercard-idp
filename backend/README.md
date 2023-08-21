@@ -23,7 +23,6 @@
    ```
    cd backend/keycloak
    ```
-3. Keycloakのデータディレクトリを作成します。  
    ```
    mkdir data
    ```
@@ -42,13 +41,13 @@
 
    （※ Dockerホストの外からのアクセスとコンテナ間のアクセス、両方で使用されるため、127.0.0.1は使用できません）  
 
-  RP1_BASEURL、RP2_BASEURL:  
+   RP1_BASEURL、RP2_BASEURL:  
    RP1_BASEURLはsample-rp01、RP2_BASEURLはsample-rp02に対応するため、portsの設定と一致させる。  
    例：  
-     - `http://192.0.2.100:3000/`  $
-     - `http://docker-server:3001/`  $
-
-  CLIENT_SECRET:  
+     - `http://192.0.2.100:3000/`  
+     - `http://docker-server:3001/`  
+     
+   CLIENT_SECRET:  
    この後に行うkeycloakの設定値に変更する。  
    ※keycloakの管理コンソールから設定を行うので、設定した後にランダムで生成された値を設定する。  
 
