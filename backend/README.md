@@ -31,7 +31,8 @@
    ```
    chmod 777 data
    ```
-5. ファイル `examples/sample-rp/docker01/keycloak.json` と`examples/sample-rp/docker02/keycloak.json`内の `auth-server-url` と`examples/sample-rp/docker01/assign_setting.json` と`examples/sample-rp/docker02/assign_setting.json`内の`URL`を以下のように変更します。  
+5. ファイル `../.env`内の各値を以下のように変更します。  
+  AUTH_URL:  
    Dockerホストの外側から接続する場合、  
    `http://[DockerホストのIPアドレス または DockerホストのDNS名]:8080/` へ変更します。  
    接続元の端末から見た、DockerホストのIPアドレス または DNS名を期待しています。  
@@ -39,12 +40,17 @@
      - `http://192.0.2.100:8080/`  
      - `http://docker-server:8080/`  
 
-   （※ Dockerホストの外からのアクセスとコンテナ間のアクセス、両方で使用されるため、127.0.0.1は使用できません）
+   （※ Dockerホストの外からのアクセスとコンテナ間のアクセス、両方で使用されるため、127.0.0.1は使用できません）  
 
-   assign_setting.jsonは以下の箇所となります
-   例：
-     - `http://192.0.2.100:8080/realms/OIdp/custom-attribute/assign`
-     - `http://docker-server:8080/realms/OIdp/custom-attribute/assign`
+  RP1_BASEURL、RP2_BASEURL:  
+   RP1_BASEURLはsample-rp01、RP2_BASEURLはsample-rp02に対応するため、portsの設定と一致させる。  
+   例：  
+     - `http://192.0.2.100:3000/`  $
+     - `http://docker-server:3001/`  $
+
+  CLIENT_SECRET:  
+   この後に行うkeycloakの設定値に変更する。  
+   ※keycloakの管理コンソールから設定を行うので、設定した後にランダムで生成された値を設定する。  
 
 6. ファイル `keycloak/x509-relay-authenticator/src/main/resources/theme/call-native-app/login/login.ftl` 内の330、334、372~374行目のファイル参照先を以下のように変更します。
    - 修正前： `https://nginx.example.com/open-id/ファイル名`
@@ -185,6 +191,10 @@
 52. `Supported locales` の `Select locales` 文字列部分をクリックし、 `日本語` をクリックします。  
 53. 画面内の余白をクリックし、言語のセレクトボックスを閉じます。  
 54. `Default locale` を `English` から `日本語` へ変更し、 `Save` をクリックします。  
+55. ナビゲーションエリアにある `Manage` セクションの `Clients` をクリックします。  
+56. `Clients list`タブの`sample-client`をクリックします。  
+57. `Settings`タブのCapability configにある`Client Authentication`をOnに変更し、Saveをクリックします。  
+58. `Credntials`タブが表示されるのでクリックし、`Client secret`の値を手順6で変更したファイル `.env`のCLIENT_SECRETに反映し保存する。  
 
 ## 動作確認（マイナンバーカード用）
 > note  
