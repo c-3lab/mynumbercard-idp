@@ -23,6 +23,7 @@
    ```
    cd backend/keycloak
    ```
+3. Keycloakのデータディレクトリを作成します。 
    ```
    mkdir data
    ```
@@ -30,8 +31,13 @@
    ```
    chmod 777 data
    ```
-5. ファイル `../.env`内の各値を以下のように変更します。  
-  AUTH_URL:  
+
+5. ディレクトリ `backend` へ移動します。  
+   ```
+   cd ..
+   ```
+6. ファイル `.env`内の各値を以下のように変更します。  
+  **AUTH_URL:**  
    Dockerホストの外側から接続する場合、  
    `http://[DockerホストのIPアドレス または DockerホストのDNS名]:8080/` へ変更します。  
    接続元の端末から見た、DockerホストのIPアドレス または DNS名を期待しています。  
@@ -41,23 +47,13 @@
 
    （※ Dockerホストの外からのアクセスとコンテナ間のアクセス、両方で使用されるため、127.0.0.1は使用できません）  
 
-   RP1_BASEURL、RP2_BASEURL:  
-   RP1_BASEURLはsample-rp01、RP2_BASEURLはsample-rp02に対応するため、portsの設定と一致させる。  
-   例：  
-     - `http://192.0.2.100:3000/`  
-     - `http://docker-server:3001/`  
-     
-   CLIENT_SECRET:  
-   この後に行うkeycloakの設定値に変更する。  
-   ※keycloakの管理コンソールから設定を行うので、設定した後にランダムで生成された値を設定する。  
+   **RP1_BASEURL, RP2_BASEURL:**  
+   RP1_BASEURLはAUTH_URLと同じDockerホストのIPアドレス または DNS名を期待しています。こちらはPORT番号を3000とし、RP2_BASEURLはPORT番号3001を設定します。
 
-6. ファイル `keycloak/x509-relay-authenticator/src/main/resources/theme/call-native-app/login/login.ftl` 内の330、334、372~374行目のファイル参照先を以下のように変更します。
+7. ファイル `keycloak/x509-relay-authenticator/src/main/resources/theme/call-native-app/login/login.ftl` 内の330、334、372~374行目のファイル参照先を以下のように変更します。
    - 修正前： `https://nginx.example.com/open-id/ファイル名`
    - 修正後： `https://[DockerホストのIPアドレス または DockerホストのDNS名]/open-id/ファイル名`
-7. ディレクトリ `backend` へ移動します。  
-   ```
-   cd ..
-   ```
+
 8. コンテナイメージをビルドします。  
    ```
    docker compose -f docker-compose.yml -f docker-compose-examples.yml build
@@ -190,11 +186,75 @@
 52. `Supported locales` の `Select locales` 文字列部分をクリックし、 `日本語` をクリックします。  
 53. 画面内の余白をクリックし、言語のセレクトボックスを閉じます。  
 54. `Default locale` を `English` から `日本語` へ変更し、 `Save` をクリックします。  
-55. ナビゲーションエリアにある `Manage` セクションの `Clients` をクリックします。  
-56. `Clients list`タブの`sample-client`をクリックします。  
-57. `Settings`タブのCapability configにある`Client Authentication`をOnに変更し、Saveをクリックします。  
-58. `Credntials`タブが表示されるのでクリックし、`Client secret`の値を手順6で変更したファイル `.env`のCLIENT_SECRETに反映し保存する。  
+55. ナビゲーションエリアにある `Manage` セクションの `Clients` をクリックします。 
 
+56. `Create client` をクリック、以下のように設定し、 `Next` ボタンをクリックします。  
+    - Client type: OpenID Connect
+    - Client ID: sample-client02
+57. `Next` ボタンをクリックします。  
+58. 以下のように設定し、`Save` ボタンをクリックします。  
+    - Root URL: (入力しない)
+    - Home URL: (入力しない)
+    - Valid redirect URIs: *
+    - Valid post logout redirect URIs: *
+    - Web origins: *
+59. `Login settings` セクションの `Consent required` を `On` に変更し、 `Save` ボタンをクリックします。  
+60. `Client scopes` タブをクリックします。  
+61. `sample-client-dedicated` リンク、 `Configure a new mapper` の順でクリックします。  
+62. `Audience` をクリックし、 以下のように設定します。設定後、 `Save` ボタンをクリックします。  
+    - Name: Audience
+    - Included Client Audience: (入力しない)
+    - Included Custom Audience: (入力しない)
+    - Add to ID token: On
+    - Add to access token: On
+63. 画面上部にある `Dedicated scopes` リンクをクリックし、 `Add mapper` 、 `By configuration` の順でクリックします。  
+64. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
+    - Name: Unique ID
+    - User Attribute: uniqueId
+    - Token Claim Name: unique_id
+    - Claim JSON Type: String
+    - Add to ID token: On
+    - Add to access token: On
+    - Add to userinfo: Off
+    - Multivalued: Off
+    - Aggregate attribute values: Off
+65. 画面上部にある `Dedicated scopes` リンクをクリックし、 `Add mapper` 、 `By configuration` の順でクリックします。  
+66. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
+    - Name: User Attributes
+    - User Attribute: sample-client02_user_attributes
+    - Token Claim Name: user_attributes
+    - Claim JSON Type: JSON
+    - Add to ID token: On
+    - Add to access token: On
+    - Add to userinfo: On
+    - Multivalued: Off
+    - Aggregate attribute values: Off
+67. 画面上部にある `Client details` リンクをクリックし、 `address` の `Assigned type` 列の値を `Optional` から `Default` へ変更します。  
+68. 画面上部にある `Advanced` タブをクリックします。
+69. `Authentication flow overrides` セクションの `Browser Flow` を `my number card` へ変更し、 `Save` ボタンをクリックします。  
+70. ナビゲーションエリアにある `Manage` セクションの `Clients` をクリックします。 
+71. `Clients list`タブの`sample-client`をクリックします。  
+72. `Settings`タブのCapability configにある`Client Authentication`をOnに変更し、Saveをクリックします。  
+73. `Credntials`タブが表示されるのでクリックし、`Client secret`の値をメモします。　　
+74. 画面上部にある `Clients` リンクをクリックし、 Clients list`タブの`sample-client02`をクリックします。  
+75. `Settings`タブのCapability configにある`Client Authentication`をOnに変更し、Saveをクリックします。  
+76. `Credntials`タブが表示されるのでクリックし、`Client secret`の値をメモします。　　
+77. 手順６で設定したファイル `.env`内の値を以下のように変更します。  
+   **RP1_CLIENT_SECRET, RP2_CLIENT_SECRET:**  
+   RP1_CLIENT_SECRETに手順73でメモした値、RP2_CLIENT_SECRETに手順76でメモした値を設定します。  
+78. Dockerコンテナを停止します  
+   ```
+   docker compose -f docker-compose.yml -f docker-compose-examples.yml down
+   ```
+79. コンテナイメージをビルドします。  
+   ```
+   docker compose -f docker-compose.yml -f docker-compose-examples.yml build
+   ```
+80. Dockerコンテナを起動し、コンテナのログを確認します。  
+   ```
+   docker compose -f docker-compose.yml -f docker-compose-examples.yml up -d
+   docker compose -f docker-compose.yml -f docker-compose-examples.yml logs -f
+   ```
 ## 動作確認（マイナンバーカード用）
 > note  
 ローカル環境で実施する場合、以下を実施してください。  
