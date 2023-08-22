@@ -1,19 +1,10 @@
 const express = require("express");
-const session = require("express-session");
 const request = require("request");
 const { auth, requiresAuth } = require('express-openid-connect')
-const sessionStore = new session.MemoryStore();
 
 const app = express();
 app.set('trust proxy', 'uniquelocal');
 app.set("view engine", "ejs");
-
-app.use(session({
-  secret: "45b7bd88-4432-4df5-9ace-abd80c36b2ad",
-  resave: false,
-  saveUninitialized: false
-}));
-
 app.use(express.static('public'));
 
 const config = {
@@ -79,7 +70,7 @@ app.get("/", (req, res) => {
   res.render("index", { user: getUser(req) })
 });
 
-app.post("/assign", async (req, res, next) => {
+app.post("/assign", requiresAuth(), async (req, res, next) => {
   try {
     const serviceIdValue = process.env.SERVICE_ID
     const noteValue = process.env.NOTE
@@ -90,7 +81,7 @@ app.post("/assign", async (req, res, next) => {
     request.post({
       uri: assignAPIURL,
       headers: { "Content-type": "application/json" },
-      headers: { "Authorization": "Bearer " + user.accessToken },
+      headers: { "Authorization": "Bearer " + req.oidc.accessToken.access_token },
       json: {
         "user_attributes": {
           //サービスの独自ID
@@ -99,8 +90,7 @@ app.post("/assign", async (req, res, next) => {
         }
       }
     }, async (err, response, data) => {
-      const accessToken = req.oidc.accessToken;
-      await accessToken.refresh();
+      await req.oidc.accessToken.refresh();
 
       res.redirect(303, "/")
     });
