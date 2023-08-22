@@ -23,7 +23,7 @@
    ```
    cd backend/keycloak
    ```
-3. Keycloakのデータディレクトリを作成します。 
+3. Keycloakのデータディレクトリを作成します。  
    ```
    mkdir data
    ```
