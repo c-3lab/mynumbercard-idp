@@ -20,6 +20,8 @@ import javax.ws.rs.core.Response;
  */
 public abstract class AbstractActionResolver implements ApplicationResolverImpl {
 
+    /** プラットフォームAPIクライアント検索クラスのインスタンス */
+    private PlatformApiClientResolver platformResolver = new PlatformApiClientResolver();
     /** ユーザーの希望する処理が定義されているクラスが存在するパッケージ名 */
     private String userActionPackageName;
     /** ユーザーの希望する処理が定義されているクラス名の接尾文字列 */
@@ -80,6 +82,10 @@ public abstract class AbstractActionResolver implements ApplicationResolverImpl 
         this.action.postAction(context, platform);
     }
 
+    protected String extractActionMode(final PlatformApiClientImpl platform) {
+        return StringUtil.toFirstUpperCase(platform.getUserActionMode());
+    }
+
     /**
      * プラットフォームAPIクライアントのインスタンスを読み込みます。
      *
@@ -93,8 +99,7 @@ public abstract class AbstractActionResolver implements ApplicationResolverImpl 
         }
         String platformRootApiUri = CurrentConfig.getValue(context, SpiConfigProperty.CertificateValidatorRootUri.CONFIG.getName());
         String idpSender = CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiIdpSender.CONFIG.getName());
-        PlatformApiClientResolver platformResolver = new PlatformApiClientResolver();
-        return platformResolver.load(platformApiClassFqdn, context, platformRootApiUri, idpSender);
+        return this.platformResolver.load(platformApiClassFqdn, context, platformRootApiUri, idpSender);
     }
 
     /**
@@ -117,13 +122,5 @@ public abstract class AbstractActionResolver implements ApplicationResolverImpl 
 
     private String getActionClass(final PlatformApiClientImpl platform) {
         return this.userActionPackageName + "." +  extractActionMode(platform) + this.userActionClassNameSuffix;
-    }
-
-    private String extractActionMode(final PlatformApiClientImpl platform) {
-        return toFirstUpperCase(platform.getUserActionMode());
-    }
-
-    private String toFirstUpperCase(final String str) {
-        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 }

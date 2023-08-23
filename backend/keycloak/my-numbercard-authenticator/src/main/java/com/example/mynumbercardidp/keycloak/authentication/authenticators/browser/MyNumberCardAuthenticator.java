@@ -2,6 +2,7 @@ package com.example.mynumbercardidp.keycloak.authentication.authenticators.brows
 
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ActionResolver;
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ResponseCreater;
+import com.example.mynumbercardidp.keycloak.core.authentication.application.procedures.ApplicationResolverImpl;
 import com.example.mynumbercardidp.keycloak.core.authentication.authenticators.browser.AbstractMyNumberCardAuthenticator;
 import com.example.mynumbercardidp.keycloak.util.authentication.CurrentConfig;
 import com.example.mynumbercardidp.keycloak.util.StringUtil;
@@ -19,6 +20,8 @@ import javax.ws.rs.core.Response;
  * @see <a href="https://www.keycloak.org/server/logging">ロギングの構成</a>
  */
 public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator {
+    private ApplicationResolverImpl actionResolver = new ActionResolver();
+
     /**
      * プラットフォームへ公的個人認証部分を送信し、その結果からログインや登録、登録情報の変更処理を呼び出します。
      *
@@ -32,10 +35,8 @@ public class MyNumberCardAuthenticator extends AbstractMyNumberCardAuthenticator
 
         /*
          * 認証を試行するユーザーが希望している動作で処理をします。
-         * ActionHandlerクラスが持つメソッドの戻り値はvoid型かつ、
-         * publicアクセス修飾子のメソッドはexecuteのみであるため、インスタンスを変数へ格納しません。
          */
-        new ActionResolver().action(context);
+        this.actionResolver.action(context);
 
         /*
          * 認証試行ユーザーのセッション情報から認証フローの結果を取得します。

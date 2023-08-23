@@ -6,6 +6,9 @@ import java.util.Objects;
  *  String型変数に関連するユーティリティクラスです。
  */
 public class StringUtil {
+
+    private StringUtil() {}
+
     /**
      * String型がNullまたは文字列の長さがゼロであるかを判定します。
      *
@@ -26,4 +29,7 @@ public class StringUtil {
         return Objects.nonNull(str) &&  0 < str.length();
     }
 
+    public static String toFirstUpperCase(final String str) {
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
 }

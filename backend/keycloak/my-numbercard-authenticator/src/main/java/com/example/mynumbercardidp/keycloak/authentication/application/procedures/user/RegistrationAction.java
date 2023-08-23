@@ -16,6 +16,8 @@ import javax.ws.rs.core.Response;
  * 個人番号カードの公的個人認証部分を利用したプラットフォームからの応答を元に登録処理をし、ユーザーへのレスポンスを設定する定義です。
  */
 public class RegistrationAction extends AbstractUserAction {
+    private CommonFlowTransition flowTransition = new RegistrationFlowTransition();
+
     /**
      * 公的個人認証部分をプラットフォームへ送信し、その応答からユーザーをKeycloakに登録します。
      *
@@ -26,7 +28,7 @@ public class RegistrationAction extends AbstractUserAction {
     public void onAction(AuthenticationFlowContext context, PlatformApiClientImpl platform) { 
         PlatformResponseModelImpl response = platform.getPlatformResponse();
         int platformStatusCode = response.getHttpStatusCode();
-        if (! new RegistrationFlowTransition().canAction(context, Response.Status.fromStatusCode(platformStatusCode))) {
+        if (! this.flowTransition.canAction(context, Response.Status.fromStatusCode(platformStatusCode))) {
             return;
         }
 

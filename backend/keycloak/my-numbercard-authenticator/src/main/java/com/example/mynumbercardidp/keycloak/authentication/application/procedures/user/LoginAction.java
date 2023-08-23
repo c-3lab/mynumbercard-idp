@@ -16,6 +16,8 @@ import javax.ws.rs.core.Response;
  * 個人番号カードの公的個人認証部分を利用したプラットフォームからの応答を元に認証処理をし、ユーザーへのレスポンスを設定する定義です。
  */
 public class LoginAction extends AbstractUserAction {
+    private CommonFlowTransition flowTransition = new LoginFlowTransition();
+
     /**
      * 公的個人認証部分をプラットフォームへ送信し、その応答からユーザーを認証します。
      *
@@ -26,7 +28,7 @@ public class LoginAction extends AbstractUserAction {
     public void onAction(final AuthenticationFlowContext context, final PlatformApiClientImpl platform) { 
         PlatformResponseModelImpl response = platform.getPlatformResponse();
         int platformStatusCode = response.getHttpStatusCode();
-        if (! new LoginFlowTransition().canAction(context, Response.Status.fromStatusCode(platformStatusCode))) {
+        if (! this.flowTransition.canAction(context, Response.Status.fromStatusCode(platformStatusCode))) {
             return;
         }
 
