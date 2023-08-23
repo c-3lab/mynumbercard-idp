@@ -88,6 +88,11 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate{
                 if(httpResponse.statusCode == 410 )
                 {
                     DispatchQueue.main.async {
+                        if let actionURL = httpResponse.allHeaderFields["x-action-url"] as? String{
+                            self.authenticationController.controller.actionURL = actionURL
+                            self.authenticationController.controllerForSignature.actionURL = actionURL
+                        }
+                        
                         self.authenticationController.viewState = .SignatureView
                         self.authenticationController.runMode = .Replacement
                         self.authenticationController.isAlert = true
