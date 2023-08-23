@@ -1,6 +1,5 @@
 package com.example.mynumbercardidp.keycloak.authentication.application.procedures;
 
-import com.example.mynumbercardidp.keycloak.authentication.application.procedures.ResponseCreater;
 import com.example.mynumbercardidp.keycloak.core.authentication.application.procedures.AbstractActionResolver;
 import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformApiClientImpl;
 import org.keycloak.authentication.AuthenticationFlowContext;
@@ -17,7 +16,6 @@ public class ActionResolver extends AbstractActionResolver {
 
     @Override
     public void onAction(final AuthenticationFlowContext context, final PlatformApiClientImpl platform) {
-        ResponseCreater.setLoginFormAttributes(context);
         super.onAction(context, platform);
     }
 }

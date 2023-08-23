@@ -10,7 +10,9 @@ import org.keycloak.models.utils.FormMessage;
 import org.keycloak.services.messages.Messages;
 import org.keycloak.sessions.CommonClientSessionModel.ExecutionStatus;
 import org.jboss.resteasy.specimpl.MultivaluedMapImpl;
+import org.jboss.logging.Logger;
 
+import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -23,6 +25,8 @@ import javax.ws.rs.core.Response;
  * このクラスはユーティリティです。
  */
 public final class ResponseCreater {
+    private static Logger consoleLogger = Logger.getLogger(ResponseCreater.class);
+
     private ResponseCreater() {}
 
     /**
@@ -58,8 +62,12 @@ public final class ResponseCreater {
     }
 
     public static final Response createChallengePage(final AuthenticationFlowContext context, final String error, final String field, final int status) {
+        String actionURLHeaderName = "X-Action-URL";
+        URI actionURLValue = ResponseCreater.getNewActionURI(context);
         LoginFormsProvider form = context.form()
-                .setExecution(context.getExecution().getId());
+                .setActionUri(actionURLValue)
+                .setExecution(context.getExecution().getId())
+                .setResponseHeader(actionURLHeaderName, actionURLValue.toString());
         String formRefreshUrlAttributeName = "refreshUrl";
         form.setAttribute(formRefreshUrlAttributeName, context.getRefreshUrl(true).toString());
 
@@ -74,6 +82,18 @@ public final class ResponseCreater {
         return Response.fromResponse(templateResponse)
             .status(status)
             .build();
+    }
+
+    /**
+     * 認証フローの新しいアクションURLを返します。
+     *
+     * この操作により、クライアント セッション タイムスタンプも更新されます。
+     * @param context 認証フローのコンテキスト
+     * @return 認証フローの新しいアクションURL
+     */
+    private static URI getNewActionURI(final AuthenticationFlowContext context) {
+        String accessCode = context.generateAccessCode();
+        return context.getActionUrl(accessCode);
     }
 
     /**
@@ -134,6 +154,7 @@ public final class ResponseCreater {
      * @param status プラットフォームのHTTPステータスコード
      */
     public static final void actionReChallenge(final AuthenticationFlowContext context, final String actionName, final int status) {
+        ResponseCreater.setLoginFormAttributes(context);
         Response response = ResponseCreater.createChallengePage(context, actionName, status);
         ResponseCreater.setFlowStepChallenge(context, response);
     }
@@ -154,15 +175,27 @@ public final class ResponseCreater {
     /**
      * 共通で使うテンプレート変数をユーザーに表示する画面のテンプレートへ設定します。
      *
+     * 認証フローのAuth noteにnonceの再利用フラグがあれば、直前に発行したnonceを利用します。
      * @param context 認証フローのコンテキスト
      */
     public static final void setLoginFormAttributes(final AuthenticationFlowContext context) {
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl<>();
         LoginFormsProvider form = context.form();
 
-        String nonce = ResponseCreater.createNonce();
-        context.getAuthenticationSession().setAuthNote("nonce", nonce);
-        form.setAttribute("nonce", nonce);
+        String reuseNonce = context.getAuthenticationSession().getAuthNote("reuseNonceFlag");
+        String authNoteNameNonce = "nonce";
+        String nonce = "";
+        if (StringUtil.isEmpty(reuseNonce)) {
+            nonce = ResponseCreater.createNonce();
+            context.getAuthenticationSession().setAuthNote(authNoteNameNonce, nonce);
+            consoleLogger.debug("create Nonce: " + nonce);
+            consoleLogger.debug("reuseNonceFlag: " + reuseNonce);
+        } else {
+            nonce = context.getAuthenticationSession().getAuthNote(authNoteNameNonce);
+            consoleLogger.debug("reuse Nonce: " + nonce);
+            consoleLogger.debug("reuseNonceFlag: " + reuseNonce);
+        }
+        form.setAttribute(authNoteNameNonce, nonce);
 
         Map<String, String> spiConfig = SpiConfigProperty.getFreeMarkerJavaTemplateVariables();
         spiConfig.forEach((k, v) -> form.setAttribute(k, v));

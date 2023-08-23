@@ -24,6 +24,7 @@ public class LoginFlowTransition extends CommonFlowTransition {
                 ResponseCreater.actionUnauthorized(context);
                 return false;
             case GONE:
+                context.getAuthenticationSession().setAuthNote("reuseNonceFlag", "true");
                 String replacementActionName = ActionType.REPLACEMENT.getName();
                 ResponseCreater.actionReChallenge(context, replacementActionName, status.getStatusCode());
                 return false;
