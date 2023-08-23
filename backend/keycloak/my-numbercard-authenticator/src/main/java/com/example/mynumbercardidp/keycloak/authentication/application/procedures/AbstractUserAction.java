@@ -42,8 +42,6 @@ public abstract class AbstractUserAction implements ApplicationProcedure {
     /**
      * 認証ユーザーのセッション情報からNonce文字列を取得します。
      *
-     * AuthNote名のnonceはActionHandler呼び出し前に上書きされるため、
-     * AuthNoteからverifyNonceを取得します。
      * @param constext 認証フローのコンテキスト
      * @return Nonce文字列
      */

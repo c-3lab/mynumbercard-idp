@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 /**
  * ユーザーからKeycloakへのHTTPリクエストを元に実行する処理を呼び出す抽象クラスです。
  *
- * このクラスを継承したサブクラスは、ユーザーの希望する処理が定義されているクラスのパッケージ名を定義する必要があります。
+ * このクラスを継承したサブクラスは、この抽象クラスのコンストラクタを呼び出してユーザーの希望する処理が定義されているクラスのパッケージ名を設定する必要があります。
  */
 public abstract class AbstractActionResolver implements ApplicationResolverImpl {
 

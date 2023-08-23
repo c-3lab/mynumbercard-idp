@@ -58,7 +58,7 @@ public abstract class AbstractMyNumberCardAuthenticator extends AbstractFormAuth
     /**
      * 認証試行ユーザーのセッション情報に認証フローの状態が存在することを保証します。
      *
-     * 存在しない場合はIllegalStateExceptionを送出します。ActionHandlerが呼び出したActionクラスに不備があります。
+     * 存在しない場合はIllegalStateExceptionを送出します。ActionResolverが呼び出したActionクラスに不備があります。
      * @param context 認証フローのコンテキスト
      * @exception IllegalStateException Auth noteに認証フローの結果が存在しない場合
      */
