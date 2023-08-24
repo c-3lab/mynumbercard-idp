@@ -15,10 +15,10 @@
   "author": "c-3lab",
   "license": "ASL",
   "dependencies": {
+    "axios": "^1.4.0",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
-    "express-openid-connect": "^2.16.0",
-    "request": "^2.88.2"
+    "express-openid-connect": "^2.16.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

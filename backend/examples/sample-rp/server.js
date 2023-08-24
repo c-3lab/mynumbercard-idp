@@ -1,5 +1,5 @@
 const express = require("express");
-const request = require("request");
+const axios = require('axios');
 const { auth, requiresAuth } = require('express-openid-connect')
 
 const app = express();
@@ -17,7 +17,7 @@ const config = {
   clientID: process.env.KEYCLOAK_CLIENT_ID,
   clientSecret: process.env.KEYCLOAK_CLIENT_SECRET,
   issuerBaseURL: process.env.KEYCLOAK_URL + '/realms/' + process.env.KEYCLOAK_REALM,
-  secret: 'long text to encrypt session'
+  secret: process.env.KEYCLOAK_CLIENT_ID + "(A long, random string used to encrypt the session cookie)"
 }
 
 app.use(auth(config))
@@ -77,23 +77,23 @@ app.post("/assign", requiresAuth(), async (req, res, next) => {
     const assignAPIURL =  process.env.KEYCLOAK_URL + "/realms/" + process.env.KEYCLOAK_REALM + "/custom-attribute/assign"
 
     // RP側のユーザーに関連した情報をIdP側のユーザーに紐づけるAPIを呼び出す
-    const user = getUser(req)
-    request.post({
-      uri: assignAPIURL,
-      headers: { "Content-type": "application/json" },
-      headers: { "Authorization": "Bearer " + req.oidc.accessToken.access_token },
-      json: {
+    await axios({
+      method: 'post',
+      url: assignAPIURL,
+      headers: {
+        "Content-type": "application/json",
+        "Authorization": "Bearer " + req.oidc.accessToken.access_token
+      },
+      data: {
         "user_attributes": {
-          //サービスの独自ID
           "service_id": serviceIdValue,
           "notes": noteValue
         }
       }
-    }, async (err, response, data) => {
-      await req.oidc.accessToken.refresh();
-
-      res.redirect(303, "/")
     });
+
+    await req.oidc.accessToken.refresh()
+    res.redirect(303, "/")
   } catch (error) {
     next(error)
   }
