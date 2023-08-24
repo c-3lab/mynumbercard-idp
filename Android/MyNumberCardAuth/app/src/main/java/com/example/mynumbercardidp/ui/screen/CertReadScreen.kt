@@ -1,5 +1,6 @@
 package com.example.mynumbercardidp.ui.screen
 
+import android.content.Context
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.util.Log
@@ -43,9 +44,18 @@ import kotlinx.coroutines.flow.collect
 import java.io.IOException
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.example.mynumbercardidp.data.MaxInputText
 import com.example.mynumbercardidp.data.ValidInputText
 import com.example.mynumbercardidp.ui.NfcState
@@ -103,16 +113,23 @@ fun CertReadScreen(
 
             val reader = NfcReader(tag)
 
-            viewModel.onChangeProgressViewState(true)
+            val context: Context = activity!!
+
+            viewModel.updateProgressViewState(true, context.getString(R.string.ready_to_scan), context.getString(R.string.scan_description))
 
             try {
                 reader.connect()
             } catch (e: Exception) {
                 Log.e(logTag, "Failed to reader connect. cause: ${e.message}")
-                viewModel.onChangeProgressViewState(false)
+                viewModel.updateProgressViewState(false)
                 viewModel.setState(KeycloakState.Error)
                 return
             }
+
+            Thread.sleep(2000)
+
+            viewModel.updateProgressViewState(true, context.getString(R.string.ready_to_scan), context.getString(
+                            R.string.notes_on_reading))
 
             Thread.sleep(2000)
 
@@ -129,7 +146,7 @@ fun CertReadScreen(
                 viewModel.setState(KeycloakState.Error)
             }
 
-            viewModel.onChangeProgressViewState(false)
+            viewModel.updateProgressViewState(false)
         }
     }
 
@@ -175,7 +192,7 @@ fun CertReadScreen(
     }
 
     if (receivedState.isNfcReading){
-        ShowProgress()
+        ShowProgress(receivedState.nfcReadingTitle!!, receivedState.nfcReadingMessage!!)
     }
 
     if (receivedState.keycloakState is Success){
@@ -314,13 +331,21 @@ private fun createOperationText(screenMode: ScreenModeState?):String {
 }
 
 @Composable
-private fun ShowProgress() {
+private fun ShowProgress(title: String = "", message: String = "") {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CircularProgressIndicator()
+        Row(modifier = Modifier.padding(20.dp).background(Color.White), verticalAlignment = Alignment.CenterVertically) {
+            CircularProgressIndicator(modifier = Modifier.size(50.dp))
+            Spacer(Modifier.width(30.dp))
+            Column(horizontalAlignment = Alignment.Start) {
+                Text(title, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.height(5.dp))
+                Text(message, fontSize = 15.sp)
+            }
+        }
     }
 }
 
@@ -359,5 +384,14 @@ private fun getKeyBoardType(screenMode: ScreenModeState): KeyboardType {
 fun MainScreenPreview() {
     MyNumberCardAuthTheme {
         CertReadScreen(null, null, viewModel(factory = StateViewModel.Factory))
+    }
+}
+
+@Preview(
+    showBackground = true)
+@Composable
+fun ShowProgressPreview() {
+    MyNumberCardAuthTheme {
+        ShowProgress(stringResource(R.string.ready_to_scan), stringResource(R.string.scan_description))
     }
 }

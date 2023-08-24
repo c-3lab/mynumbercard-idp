@@ -132,11 +132,11 @@ class StateViewModel(
                 }
             } catch (e: IOException) {
                 Log.e(logTag, "IOException occurred. Stack cause: ${e.message}")
-                onChangeProgressViewState(false)
+                updateProgressViewState(false)
                 KeycloakState.Error
             } catch (e: HttpException) {
                 Log.e(logTag, "HttpException occurred. Stack cause: ${e.message}")
-                onChangeProgressViewState(false)
+                updateProgressViewState(false)
                 KeycloakState.Error
             }
             _uiState.update { _uiState.value.copy(keycloakState = keycloakState) }
@@ -157,14 +157,14 @@ class StateViewModel(
             var readCertResult = readCertificate(reader, inputPin)
             if (readCertResult.status != NfcState.Success){
                 setState(KeycloakState.Error, readCertResult.status)
-                onChangeProgressViewState(false)
+                updateProgressViewState(false)
                 return
             }
 
             var signCertResult = computeSignature(reader, inputPin)
             if (signCertResult.status != NfcState.Success){
                 setState(KeycloakState.Error, signCertResult.status)
-                onChangeProgressViewState(false)
+                updateProgressViewState(false)
                 return
             }
 
@@ -181,27 +181,33 @@ class StateViewModel(
         } catch (e: APDUException) {
             Log.e(logTag, "APDUException occurred. cause: ${e.message}")
             setState(KeycloakState.Error,NfcState.Failure)
-            onChangeProgressViewState(false)
+            updateProgressViewState(false)
         }
         catch (e: TagLostException) {
             Log.e(logTag, "TagLostException occurred. cause: ${e.message}")
             setState(KeycloakState.Error,NfcState.Failure)
-            onChangeProgressViewState(false)
+            updateProgressViewState(false)
         } catch (e: SecurityException) {
             Log.e(logTag, "SecurityException occurred. cause: ${e.message}")
             setState(KeycloakState.Error,NfcState.Failure)
-            onChangeProgressViewState(false)
+            updateProgressViewState(false)
         }
         catch (e: Exception) {
             Log.e(logTag, "Exception occurred. Stack cause: ${e.message}")
             setState(KeycloakState.Error)
-            onChangeProgressViewState(false)
+            updateProgressViewState(false)
         }
     }
 
-    fun onChangeProgressViewState(isView: Boolean) {
+    fun updateProgressViewState(isView: Boolean, title: String = "", message: String = "") {
         viewModelScope.launch {
-            _uiState.update { _uiState.value.copy(isNfcReading = isView) }
+            _uiState.update {
+                _uiState.value.copy(
+                    isNfcReading = isView,
+                    nfcReadingTitle = title,
+                    nfcReadingMessage = message,
+                )
+            }
         }
     }
 
