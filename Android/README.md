@@ -17,7 +17,7 @@ Androidでマイナンバーカードを読み取り、公的個人認証を行�
 1. 画面上部の`Run 'app'` が選択可能になっていれば完了です。
 
 ## アプリ起動時のホスト名の変更
-[AndroidManifest.xml](./MyNumberCardAuth/app/src/main/AndroidManifest.xml)を編集し、インテントフィルタの設定値を変更します。
+[Android/MyNumberCardAuth/app/src/main/AndroidManifest.xml](./MyNumberCardAuth/app/src/main/AndroidManifest.xml)を編集し、インテントフィルタの設定値を変更します。
 
 `native-app.example.com` の部分をアプリの起動に使用したいホスト名に変更します。  
 (ローカル環境で動作確認する場合は、本READMEの「ngrokの設定(ローカルで動作確認をする場合)」で取得したホスト名を記載ください。)
@@ -39,17 +39,17 @@ Androidでマイナンバーカードを読み取り、公的個人認証を行�
 
 ## 利用規約/プライバシーポリシー/個人情報保護方針の表示URLを設定
 以下ファイルの`=`以降を、表示したいURLに変更してください。  
-[external_urls.properties](./MyNumberCardAuth/app/src/main/assets/external_urls.properties)
+[Android/MyNumberCardAuth/app/src/main/assets/external_urls.properties](./MyNumberCardAuth/app/src/main/assets/external_urls.properties)
 
 ```properties
 　//プライバシーポリシー
-  privacy_policy_url = https://example.com/open-id/privacy-policy.html
+  privacyPolicyUrl = https://example.com/open-id/privacy-policy.html
 
 　//個人情報保護方針
-  protection_policy_url = https://example.com/open-id/personal-data-protection-policy.html
+  protectionPolicyUrl = https://example.com/open-id/personal-data-protection-policy.html
 
 　//利用規約
-  terms_of_use_url = https://example.com/open-id/terms-of-use.html
+  termsOfUseUrl = https://example.com/open-id/terms-of-use.html
 ```
 
 ## 起動手順
@@ -125,7 +125,7 @@ Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:80
 Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:3000
 Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:8080
 ```
-ポート80の`https://XXXXXXXXXX.XXXXX.XXX` が、AndroidがWebサービスからアプリを起動する時のホスト名となりますので[AndroidManifest.xml](./MyNumberCardAuth/app/src/main/AndroidManifest.xml)に設定してください。  
+ポート80の`https://XXXXXXXXXX.XXXXX.XXX` が、AndroidがWebサービスからアプリを起動する時のホスト名となりますので[Android/MyNumberCardAuth/app/src/main/AndroidManifest.xml](./MyNumberCardAuth/app/src/main/AndroidManifest.xml)に設定してください。  
 
 ・Keycloak管理コンソールを開き、以下の設定を行います。  
 realm Oidp＞Configure＞Realm settings＞General>Frontend URL   
@@ -135,9 +135,9 @@ realm Oidp＞Configure＞Authentication＞my number card>X509 Relay Authenticato
 ポート80の`https://XXXXXXXXXX.XXXXX.XXX`
 
 ・keycloak.jsonを設定します。  
-[docker01/keycloak.json](../backend/examples/sample-rp/docker01/keycloak.json)  
+[backend/examples/sample-rp/docker01/keycloak.json](../backend/examples/sample-rp/docker01/keycloak.json)  
 または  
-[docker02/keycloak.json](../backend/examples/sample-rp/docker02/keycloak.json)  
+[backend/examples/sample-rp/docker02/keycloak.json](../backend/examples/sample-rp/docker02/keycloak.json)  
 を開き、auth-server-urlにポート8080の`https://XXXXXXXXXX.XXXXX.XXX` を設定します。
 
 ```json
@@ -145,16 +145,16 @@ realm Oidp＞Configure＞Authentication＞my number card>X509 Relay Authenticato
 ```
 
 ・assign_setting.jsonを設定します。  
-[docker01/assign_setting.json](../backend/examples/sample-rp/docker01/assign_setting.json)  
+[backend/examples/sample-rp/docker01/assign_setting.json](../backend/examples/sample-rp/docker01/assign_setting.json)  
 または  
-[docker02/assign_setting.json](../backend/examples/sample-rp/docker02/assign_setting.json)  
+[backend/examples/sample-rp/docker02/assign_setting.json](../backend/examples/sample-rp/docker02/assign_setting.json)  
 を開き、URLにポート8080の`https://XXXXXXXXXX.XXXXX.XXX` を設定します。
 
 ```json
   "URL": "https://XXXXXXXXXX.XXXXX.XXX/realms/OIdp/custom-attribute/assign",
 ```
 
-※各ポートの`https://XXXXXXXXXX.XXXXX.XXX`はngrok startを行うごとに切り替わりますので、都度、[AndroidManifest.xml](./MyNumberCardAuth/app/src/main/AndroidManifest.xml)と、  
+※各ポートの`https://XXXXXXXXXX.XXXXX.XXX`はngrok startを行うごとに切り替わりますので、都度、[Android/MyNumberCardAuth/app/src/main/AndroidManifest.xml](./MyNumberCardAuth/app/src/main/AndroidManifest.xml)と、  
 上記手順の設定値(keycloak.json、assign_setting.json、Keycloak管理コンソールのFrontend URL、Run URI of Android application)を書き換えてください。
 
 ## 動作確認
@@ -181,7 +181,7 @@ Webサービスからログイン処理を行い、認証成功画面を開く�
 `java.net.UnknownServiceException: CLEARTEXT communication to`  
 ※この事象は、http環境特有です。発生した場合は以下を実施してください。  
 
-[AndroidManifest.xml](./MyNumberCardAuth/app/src/main/AndroidManifest.xml)を編集し、以下のように属性を追加します。  
+[Android/MyNumberCardAuth/app/src/main/AndroidManifest.xml](./MyNumberCardAuth/app/src/main/AndroidManifest.xml)を編集し、以下のように属性を追加します。  
 ```diff
     <application
 +       android:usesCleartextTraffic="true"
