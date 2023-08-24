@@ -92,10 +92,10 @@ class MainActivity : ComponentActivity() {
         inputStream.close()
 
         return ExternalUrls(
-            properties.getProperty("inquiry_url"),
-            properties.getProperty("privacy_policy_url"),
-            properties.getProperty("protection_policy_url"),
-            properties.getProperty("terms_of_use_url")
+            properties.getProperty("inquiryUrl"),
+            properties.getProperty("privacyPolicyUrl"),
+            properties.getProperty("protectionPolicyUrl"),
+            properties.getProperty("termsOfUseUrl")
         )
     }
 }
