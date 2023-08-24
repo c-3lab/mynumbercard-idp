@@ -13,7 +13,6 @@
 - クライアント
   - OS: Windows 10 build 19044.2846
   - ブラウザ: Google Chrome (version 112.0.5615.138)
-
 ## インストール
 1. このリポジトリをダウンロードします。すでに実行している場合は次へ進んでください。  
    ```
@@ -153,7 +152,7 @@
     - Web origins: *
 49. `Login settings` セクションの `Consent required` を `On` に変更し、 `Save` ボタンをクリックします。  
 50. `Client scopes` タブをクリックします。  
-51. `sample-client-dedicated` リンク、 `Configure a new mapper` の順でクリックします。  
+51. `sample-client02-dedicated` リンク、 `Configure a new mapper` の順でクリックします。  
 52. `Audience` をクリックし、 以下のように設定します。設定後、 `Save` ボタンをクリックします。  
     - Name: Audience
     - Included Client Audience: (入力しない)
@@ -185,12 +184,13 @@
 57. 画面上部にある `Client details` リンクをクリックし、 `address` の `Assigned type` 列の値を `Optional` から `Default` へ変更します。  
 58. 画面上部にある `Advanced` タブをクリックします。
 59. `Authentication flow overrides` セクションの `Browser Flow` を `my number card` へ変更し、 `Save` ボタンをクリックします。  
-60. 画面上部にある `Clients` リンクをクリックし、 Clients list`タブの`sample-client02`をクリックします。  
-61. `Settings`タブのCapability configにある`Client Authentication`をOnに変更し、Saveをクリックします。  
-62. `Credntials`タブが表示されるのでクリックし、`Client secret`の値をメモします。　
-63. ナビゲーションエリアにある `Manage` セクションの `Client scopes` をクリックし、`profile`リンクをクリックします。  
-64. 画面上部にある `Mappers` タブをクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
-65. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
+60. ナビゲーションエリアにある `Manage` セクションの `Clients` をクリックします。 
+61. `Clients list`タブの`sample-client02`をクリックします。   
+62. `Settings`タブのCapability configにある`Client Authentication`をOnに変更し、Saveをクリックします。  
+63. `Credntials`タブが表示されるのでクリックし、`Client secret`の値をメモします。　
+64. ナビゲーションエリアにある `Manage` セクションの `Client scopes` をクリックし、`profile`リンクをクリックします。  
+65. 画面上部にある `Mappers` タブをクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
+66. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
     - Name: user address  
     - User Attribute: user_address
     - Token Claim Name: user_address
@@ -200,8 +200,8 @@
     - Add to userinfo: On
     - Multivalued: Off
     - Aggregate attribute values: Off
-66. 画面上部にある `Client scope details` をクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
-67. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
+67. 画面上部にある `Client scope details` をクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
+68. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
     - Name: name
     - User Attribute: name
     - Token Claim Name: name
@@ -211,8 +211,8 @@
     - Add to userinfo: On
     - Multivalued: Off
     - Aggregate attribute values: Off
-68. 画面上部にある `Client scope details` をクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
-69. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。
+69. 画面上部にある `Client scope details` をクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
+70. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。
     - Name: gender code
     - User Attribute: gender_code
     - Token Claim Name: gender_code
@@ -222,8 +222,8 @@
     - Add to userinfo: On
     - Multivalued: Off
     - Aggregate attribute values: Off
-70. 画面上部にある `Client scope details` をクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
-71. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
+71. 画面上部にある `Client scope details` をクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
+72. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
     - Name: birth date
     - User Attribute: birth_date
     - Token Claim Name: birth_date
@@ -233,23 +233,23 @@
     - Add to userinfo: On
     - Multivalued: Off
     - Aggregate attribute values: Off
-72. ナビゲーションエリアにある `Configure` セクションの `Realm settings` をクリックします。  
-73. `Localization` タブをクリックし、 `Internationalization` を `Disabled` から `Enabled` へ変更します。  
-74. `Supported locales` の `Select locales` 文字列部分をクリックし、 `日本語` をクリックします。  
-75. 画面内の余白をクリックし、言語のセレクトボックスを閉じます。  
-76. `Default locale` を `English` から `日本語` へ変更し、 `Save` をクリックします。  
-77. 手順6で設定したファイル `.env`内の値を以下のように変更します。  
+73. ナビゲーションエリアにある `Configure` セクションの `Realm settings` をクリックします。  
+74. `Localization` タブをクリックし、 `Internationalization` を `Disabled` から `Enabled` へ変更します。  
+75. `Supported locales` の `Select locales` 文字列部分をクリックし、 `日本語` をクリックします。  
+76. 画面内の余白をクリックし、言語のセレクトボックスを閉じます。  
+77. `Default locale` を `English` から `日本語` へ変更し、 `Save` をクリックします。  
+78. 手順6で設定したファイル `.env`内の値を以下のように変更します。  
    **RP1_CLIENT_SECRET, RP2_CLIENT_SECRET:**  
-   RP1_CLIENT_SECRETに手順44でメモした値、RP2_CLIENT_SECRETに手順62でメモした値を設定します。  
-78. Dockerコンテナを停止します  
+   RP1_CLIENT_SECRETに手順44でメモした値、RP2_CLIENT_SECRETに手順63でメモした値を設定します。  
+79. Dockerコンテナを停止します  
    ```
    docker compose -f docker-compose.yml -f docker-compose-examples.yml down
    ```
-79. コンテナイメージをビルドします。  
+80. コンテナイメージをビルドします。  
    ```
    docker compose -f docker-compose.yml -f docker-compose-examples.yml build
    ```
-80. Dockerコンテナを起動し、コンテナのログを確認します。  
+81. Dockerコンテナを起動し、コンテナのログを確認します。  
    ```
    docker compose -f docker-compose.yml -f docker-compose-examples.yml up -d
    docker compose -f docker-compose.yml -f docker-compose-examples.yml logs -f
