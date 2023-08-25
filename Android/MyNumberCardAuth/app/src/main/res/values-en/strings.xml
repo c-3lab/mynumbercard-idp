@@ -28,7 +28,7 @@
     <string name="in_correct_pin">The password for my number card is invalid.</string>
     <string name="try_count_Is_not_left">The number of password attempts for my number card has exceeded the upper limit.</string>
     <string name="my_number_card_read_failure">Failed to read my number card.</string>
-    <string name="ready_to_scan">Ready to scan</string>
-    <string name="scan_description">Hold your My Number Card over the Android reader.</string>
-    <string name="notes_on_reading">Reading... Do not remove card from Android.</string>
+    <string name="scan_title_ready">Ready to scan</string>
+    <string name="scan_message_ready">Hold your My Number Card over the Android reader.</string>
+    <string name="scan_message_reading">Reading... Do not remove card from Android.</string>
 </resources>

@@ -7,8 +7,8 @@ data class UiState(
     var uriParameters: UriParameters? = null,
     var nfcState: NfcState? = NfcState.None,
     var externalUrls: ExternalUrls? = null,
-    var nfcReadingTitle: String? = "",
-    var nfcReadingMessage: String? = "",
+    var nfcReadingTitle: String = "",
+    var nfcReadingMessage: String = "",
 ) {
     companion object
     {

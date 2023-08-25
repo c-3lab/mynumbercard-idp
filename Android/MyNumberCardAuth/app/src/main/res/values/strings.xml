@@ -30,7 +30,7 @@
     <string name="in_correct_pin">マイナンバーカードのパスワードが不正です。</string>
     <string name="try_count_Is_not_left">マイナンバーカードのパスワード試行回数が上限を超えました。</string>
     <string name="my_number_card_read_failure">マイナンバーカードの読み取りに失敗しました。</string>
-    <string name="ready_to_scan">スキャンの準備ができました</string>
-    <string name="scan_description">Androidの読み取り部分にマイナンバーカードをかざしてください。</string>
-    <string name="notes_on_reading">読み取り中...カードをAndroidから離さないでください。</string>
+    <string name="scan_title_ready">スキャンの準備ができました</string>
+    <string name="scan_message_ready">Androidの読み取り部分にマイナンバーカードをかざしてください。</string>
+    <string name="scan_message_reading">読み取り中...カードをAndroidから離さないでください。</string>
 </resources>

@@ -115,7 +115,7 @@ fun CertReadScreen(
 
             val context: Context = activity!!
 
-            viewModel.updateProgressViewState(true, context.getString(R.string.ready_to_scan), context.getString(R.string.scan_description))
+            viewModel.updateProgressViewState(true, context.getString(R.string.scan_title_ready), context.getString(R.string.scan_message_ready))
 
             try {
                 reader.connect()
@@ -128,8 +128,8 @@ fun CertReadScreen(
 
             Thread.sleep(2000)
 
-            viewModel.updateProgressViewState(true, context.getString(R.string.ready_to_scan), context.getString(
-                            R.string.notes_on_reading))
+            viewModel.updateProgressViewState(true, context.getString(R.string.scan_title_ready), context.getString(
+                            R.string.scan_message_reading))
 
             Thread.sleep(2000)
 
@@ -392,6 +392,6 @@ fun MainScreenPreview() {
 @Composable
 fun ShowProgressPreview() {
     MyNumberCardAuthTheme {
-        ShowProgress(stringResource(R.string.ready_to_scan), stringResource(R.string.scan_description))
+        ShowProgress(stringResource(R.string.scan_title_ready), stringResource(R.string.scan_message_ready))
     }
 }
