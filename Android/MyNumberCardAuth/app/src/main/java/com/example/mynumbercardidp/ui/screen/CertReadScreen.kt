@@ -1,6 +1,6 @@
 package com.example.mynumbercardidp.ui.screen
 
-import android.content.Context
+import android.app.Activity
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.util.Log
@@ -32,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mynumbercardidp.util.PasswordVisualTransformationExcludesLast
-import com.example.mynumbercardidp.MainActivity
 import com.example.mynumbercardidp.R
 import com.example.mynumbercardidp.util.onEach
 import com.example.mynumbercardidp.ui.theme.MyNumberCardAuthTheme
@@ -53,6 +52,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -77,9 +77,9 @@ data class ErrorDialogDetail(
 @Composable
 fun CertReadScreen(
     nfcAdapter: NfcAdapter?,
-    activity: MainActivity?,
     viewModel: StateViewModel
 ) {
+    val activity = LocalContext.current as Activity
     val logTag = "CertReadScreen"
     var inputPin by remember { mutableStateOf("") }
     var visualTransformation: VisualTransformation by remember {
@@ -113,9 +113,7 @@ fun CertReadScreen(
 
             val reader = NfcReader(tag)
 
-            val context: Context = activity!!
-
-            viewModel.updateProgressViewState(true, context.getString(R.string.scan_title_ready), context.getString(R.string.scan_message_ready))
+            viewModel.updateProgressViewState(true, activity.getString(R.string.scan_title_ready), activity.getString(R.string.scan_message_reading))
 
             try {
                 reader.connect()
@@ -125,13 +123,6 @@ fun CertReadScreen(
                 viewModel.setState(KeycloakState.Error)
                 return
             }
-
-            Thread.sleep(2000)
-
-            viewModel.updateProgressViewState(true, context.getString(R.string.scan_title_ready), context.getString(
-                            R.string.scan_message_reading))
-
-            Thread.sleep(2000)
 
             viewModel.myNumberCardAuth(reader, inputPin)
 
@@ -183,6 +174,7 @@ fun CertReadScreen(
                     NfcAdapter.FLAG_READER_NFC_B or NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK,
                     null
                 )
+                viewModel.updateProgressViewState(true, activity.getString(R.string.scan_title_ready), activity.getString(R.string.scan_message_ready))
             },
             enabled = isReadingButtonEnabled(receivedState.screenMode, inputPin),
             modifier = Modifier.padding(10.dp)
@@ -192,7 +184,7 @@ fun CertReadScreen(
     }
 
     if (receivedState.isNfcReading){
-        ShowProgress(receivedState.nfcReadingTitle!!, receivedState.nfcReadingMessage!!)
+        ShowProgress(receivedState.nfcReadingTitle, receivedState.nfcReadingMessage)
     }
 
     if (receivedState.keycloakState is Success){
@@ -383,7 +375,7 @@ private fun getKeyBoardType(screenMode: ScreenModeState): KeyboardType {
 @Composable
 fun MainScreenPreview() {
     MyNumberCardAuthTheme {
-        CertReadScreen(null, null, viewModel(factory = StateViewModel.Factory))
+        CertReadScreen(null, viewModel(factory = StateViewModel.Factory))
     }
 }
 
