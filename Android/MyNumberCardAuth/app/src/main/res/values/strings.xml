@@ -1,4 +1,5 @@
 <resources>
+    <string name="title">[Android] マイナンバーカード認証アプリ</string>
     <string name="app_name" translatable="false">MyNumberCardAuth</string>
     <string name="ok" translatable="false">OK</string>
     <string name="about_this_app">このアプリについて</string>
