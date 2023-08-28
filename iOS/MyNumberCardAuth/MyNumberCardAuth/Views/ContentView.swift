@@ -23,7 +23,7 @@ struct ContentView: View {
                 NFCReadingView(queryDict: $queryDict,authenticationController: self.authenticationController,controller: self.controller)
                     .toolbar {
                       ToolbarItem(placement: .principal) {
-                        Text("iOS App For MyNumberCard Authentication")
+                        Text("[iOS] MyNumberCard Authorization App")
                               .bold()
                               .multilineTextAlignment(.center)
                               .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
@@ -36,7 +36,7 @@ struct ContentView: View {
                 NFCReadingForSignatureView(queryDict: $queryDict, authenticationController: self.authenticationController,controller: self.controllerForSignature)
                     .toolbar {
                       ToolbarItem(placement: .principal) {
-                        Text("iOS App For MyNumberCard Authentication")
+                        Text("[iOS] MyNumberCard Authorization App")
                               .bold()
                               .multilineTextAlignment(.center)
                               .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
@@ -49,7 +49,7 @@ struct ContentView: View {
                 AppExplanationView(authenticationController: self.authenticationController)
                     .toolbar {
                       ToolbarItem(placement: .principal) {
-                        Text("iOS App For MyNumberCard Authentication")
+                        Text("[iOS] MyNumberCard Authorization App")
                               .bold()
                               .multilineTextAlignment(.center)
                               .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
