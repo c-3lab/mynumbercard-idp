@@ -31,8 +31,7 @@ Info.plistの以下を修正します。
 　　　　　プライバシーポリシーの表示先URL(https://example.com/open-id/privacy-policy.html)   
 
 ### Signing & Capabilities
-プロジェクトTARGETS > Signing & Capabilities  
-に以下を追加します。
+プロジェクトTARGETS > Signing & Capabilitiesに以下を追加します。
 
 - Universal Linksを使うために以下の設定を行います。  
     - Associated Domains  
@@ -51,8 +50,8 @@ Info.plistの以下を修正します。
 **※有料アカウントの登録が必要になります。**  
 (ユニバーサルリンクを用いてアプリを起動しますが、無料アカウントの場合、Webサービスがapple-app-site-associationをダウンロードする際に確認画面が出てしまい、jsonがダウンロードできないため。)  
 1. Authtokenを取得してください。([ngrok公式](https://ngrok.com/)よりログイン後、左側のメニューに「Your Authtoken」という項目があるのでクリックすると、Authtokenが表示されるのでコピーできます。)
-1. コマンドプロンプトでngrok.exeを配置したディレクトリに移動し、`ngrok authtoken xxxxxxxxxxxxxxxxxxxxxxxxx`を実行後、以下のファイルが作成されていることを確認してください。
-1. `上記コマンド実行後に表示されたディレクトリ/ngrok.yml`
+1. コマンドプロンプトでngrok.exeを配置したディレクトリに移動し、`ngrok authtoken xxxxxxxxxxxxxxxxxxxxxxxxx`を実行後、以下のファイルが作成されていることを確認してください。  
+`上記コマンド実行後に表示されたディレクトリ/ngrok.yml`
 
 #### 設定
 ・sample-rpを使用するため、使用可能なIPアドレスを取得します。  
