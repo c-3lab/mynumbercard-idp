@@ -36,7 +36,7 @@ fun ManualBootScreen(
         // 利用規約
         OpenUrlButton(
             receivedState.externalUrls?.termsOfUse!!,
-            stringResource(R.string.person_Info_protection_policy)
+            stringResource(R.string.terms_of_use)
         )
 
         // プライバシーポリシー
