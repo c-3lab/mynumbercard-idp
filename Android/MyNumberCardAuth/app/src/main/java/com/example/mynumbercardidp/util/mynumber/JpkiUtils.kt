@@ -53,10 +53,10 @@ class JpkiUtils(private val reader: NfcReader) {
         if (header.isEmpty()) { return byteArrayOf() }
 
         // 読み込んだデータから、データ全体量の格納部分を抽出
-        val sizeToRead = ByteBuffer.wrap(header, 2, 2).short
+        val bodySize = ByteBuffer.wrap(header, 2, 2).short
 
         // 全体を読み込み、データを返却する
-        return readBinary(sizeToRead + headerSize)
+        return readBinary(bodySize + headerSize)
     }
 
     private fun readBinary(expectedSize: Int): ByteArray {
@@ -64,7 +64,7 @@ class JpkiUtils(private val reader: NfcReader) {
 
         // 不足サイズ分が取り切れるまでREAD BINARYを繰り返す
         while (data.size < expectedSize) {
-            var currentData = reader.readBinary(expectedSize - data.size, data.size)
+            var currentData = reader.readBinary(expectedSize - data.size, data.size.toUShort())
             if (currentData.isEmpty()) { break }
             data += currentData
         }
