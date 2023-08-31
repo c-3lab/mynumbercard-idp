@@ -56,7 +56,7 @@ class JpkiUtils(private val reader: NfcReader) {
         val bodySize = ByteBuffer.wrap(header, 2, 2).short
 
         // 全体を読み込み、データを返却する
-        return readBinary(bodySize + headerSize)
+        return readBinary(headerSize + bodySize)
     }
 
     private fun readBinary(expectedSize: Int): ByteArray {

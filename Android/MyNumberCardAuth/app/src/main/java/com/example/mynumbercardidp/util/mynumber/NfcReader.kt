@@ -94,8 +94,8 @@ class NfcReader(nfcTag: Tag) {
 
     fun readBinary(size: Int, offset: UShort = 0u): ByteArray {
         // オフセットの指定値を上位バイトと、下位バイトに変換
-        val p1 = (offset.toInt() shr 8).toByte()
-        val p2 = offset.toByte()
+        val p1 = ((offset.toULong() shr 8) and 255u).toByte()
+        val p2 = (offset.toULong() and 255u).toByte()
 
         val apduCommand = APDUCommand.apduCase2(0x00, 0xB0.toByte(), p1, p2, size)
         val (_, _, data) = transceiver(apduCommand)
