@@ -94,10 +94,10 @@ Android アプリリンクを用いてアプリを起動できるようにする
 `上記コマンド実行後に表示されたディレクトリ/ngrok.yml`
 
 #### 設定
-・sample-rpを使用するため、使用可能なIPアドレスを取得します。  
+1. sample-rpを使用するため、使用可能なIPアドレスを取得します。  
 （※ [DockerホストのIPアドレス]を指定してください。ただし、127.0.0.1は使用できません。）
 
-・前提条件で作成したngrok.ymlに以下の設定を行います
+2. 前提条件で作成したngrok.ymlに以下の設定を行います
 ```yml
 version: "2"
 authtoken: XXXXXXXXX
@@ -115,47 +115,47 @@ tunnels:
     addr: [DockerホストのIPアドレス]:80
 ```
 
-・コマンドプロンプトを開き、ngrok.exeを配置したディレクトリに移動し、以下を実行します。  
+3. コマンドプロンプトを開き、ngrok.exeを配置したディレクトリに移動し、以下を実行します。  
 `ngrok start --all`  または  
 `ngrok start samplerp keycloak nativeapp`  (samplerp/keycloak/nativeapp以外にもポートを記載している場合は明示的に指定する必要があります。)  
 
-・以下のような実行結果が表示されます。  
-```shell
-Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:80
-Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:3000
-Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:8080
-```
-ポート80の`https://XXXXXXXXXX.XXXXX.XXX` が、AndroidがWebサービスからアプリを起動する時のホスト名となりますので[Android/MyNumberCardAuth/app/src/main/AndroidManifest.xml](./MyNumberCardAuth/app/src/main/AndroidManifest.xml)に設定してください。  
+    以下のような実行結果が表示されます。
+    ```shell
+    Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:80
+    Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:3000
+    Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:8080
+    ```
+    ポート80の`https://XXXXXXXXXX.XXXXX.XXX` が、AndroidがWebサービスからアプリを起動する時のホスト名となりますので[Android/MyNumberCardAuth/app/src/main/AndroidManifest.xml](./MyNumberCardAuth/app/src/main/AndroidManifest.xml)に設定してください。  
 
-・Keycloak管理コンソールを開き、以下の設定を行います。  
+4. Keycloak管理コンソールを開き、以下の設定を行います。  
 realm Oidp＞Configure＞Realm settings＞General>Frontend URL   
 ポート8080の`https://XXXXXXXXXX.XXXXX.XXX`
 
-realm Oidp＞Configure＞Authentication＞my number card>X509 Relay Authenticatorの右にあるSettings（歯車のアイコン）＞Run URI of Android application  
+    realm Oidp＞Configure＞Authentication＞my number card>X509 Relay Authenticatorの右にあるSettings（歯車のアイコン）＞Run URI of Android application  
 ポート80の`https://XXXXXXXXXX.XXXXX.XXX`
 
-・keycloak.jsonを設定します。  
+5. keycloak.jsonを設定します。  
 [backend/examples/sample-rp/docker01/keycloak.json](../backend/examples/sample-rp/docker01/keycloak.json)  
 または  
 [backend/examples/sample-rp/docker02/keycloak.json](../backend/examples/sample-rp/docker02/keycloak.json)  
 を開き、auth-server-urlにポート8080の`https://XXXXXXXXXX.XXXXX.XXX` を設定します。
 
-```json
-  "auth-server-url": "https://XXXXXXXXXX.XXXXX.XXX",
-```
+    ```json
+      "auth-server-url": "https://XXXXXXXXXX.XXXXX.XXX",
+    ```
 
-・assign_setting.jsonを設定します。  
+6. assign_setting.jsonを設定します。  
 [backend/examples/sample-rp/docker01/assign_setting.json](../backend/examples/sample-rp/docker01/assign_setting.json)  
 または  
 [backend/examples/sample-rp/docker02/assign_setting.json](../backend/examples/sample-rp/docker02/assign_setting.json)  
 を開き、URLにポート8080の`https://XXXXXXXXXX.XXXXX.XXX` を設定します。
 
-```json
-  "URL": "https://XXXXXXXXXX.XXXXX.XXX/realms/OIdp/custom-attribute/assign",
-```
+    ```json
+      "URL": "https://XXXXXXXXXX.XXXXX.XXX/realms/OIdp/custom-attribute/assign",
+    ```
 
-※各ポートの`https://XXXXXXXXXX.XXXXX.XXX`はngrok startを行うごとに切り替わりますので、都度、[Android/MyNumberCardAuth/app/src/main/AndroidManifest.xml](./MyNumberCardAuth/app/src/main/AndroidManifest.xml)と、  
-上記手順の設定値(keycloak.json、assign_setting.json、Keycloak管理コンソールのFrontend URL、Run URI of Android application)を書き換えてください。
+    ※各ポートの`https://XXXXXXXXXX.XXXXX.XXX`はngrok startを行うごとに切り替わりますので、都度、[Android/MyNumberCardAuth/app/src/main/AndroidManifest.xml](./MyNumberCardAuth/app/src/main/AndroidManifest.xml)と、  
+    上記手順の設定値(keycloak.json、assign_setting.json、Keycloak管理コンソールのFrontend URL、Run URI of Android application)を書き換えてください。
 
 ## 動作確認
 Webサービスからログイン処理を行い、認証成功画面を開くまでの動作確認手順です。
