@@ -1,7 +1,6 @@
 package com.example.mynumbercardidp.keycloak.network.platform;
 
-import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformResponseModelImpl;
-import com.example.mynumbercardidp.keycloak.util.StringUtil;
+import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformAuthenticationResponseStructure;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -16,27 +15,18 @@ import org.keycloak.models.UserModel;
  */
 // [NOTE] 参照されないフィールドのゲッターとセッターは書かない。必要になった場合に書く。
 @JsonAutoDetect(fieldVisibility = Visibility.ANY)
-public class PlatformResponseModel implements PlatformResponseModelImpl {
+public class PlatformAuthenticationResponse implements PlatformAuthenticationResponseStructure {
 
     @JsonIgnore
     private int httpStatusCode;
-    private PlatformResponseModel.ResponseInfo responseInfo = new ResponseInfo();
-    private PlatformResponseModel.Status status = new Status();
-    private PlatformResponseModel.IdentityInfo identityInfo = new IdentityInfo();
+    private PlatformAuthenticationResponse.ResponseInfo responseInfo = new ResponseInfo();
+    private PlatformAuthenticationResponse.Status status = new Status();
+    private PlatformAuthenticationResponse.IdentityInfo identityInfo = new IdentityInfo();
     private String applicantId;
 
     @Override
     public int getHttpStatusCode() {
         return this.httpStatusCode;
-    }
-
-    @Override
-    @JsonIgnore
-    public void ensureHasUniqueId() {
-        String uniqueId = this.identityInfo.getUniqueId();
-        if (StringUtil.isEmpty(uniqueId)) {
-            throw new IllegalStateException("The unique id in the platform response was empty.");
-        }
     }
 
     @Override
@@ -60,7 +50,7 @@ public class PlatformResponseModel implements PlatformResponseModelImpl {
         return this.identityInfo.uniqueId;
     }
 
-    public PlatformResponseModel.IdentityInfo getIdentityInfo() {
+    public PlatformAuthenticationResponse.IdentityInfo getIdentityInfo() {
         return this.identityInfo;
     }
 

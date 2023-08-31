@@ -1,6 +1,6 @@
 package com.example.mynumbercardidp.keycloak.core.network.platform;
 
-import com.example.mynumbercardidp.keycloak.core.network.UserRequestModelImpl;
+import com.example.mynumbercardidp.keycloak.core.network.AuthenticationRequest;
 import org.apache.http.client.methods.CloseableHttpResponse;
 
 import java.nio.charset.Charset;
@@ -10,7 +10,7 @@ import javax.ws.rs.core.MultivaluedMap;
  * Keycloakへ送信されたユーザーのリクエストデータやプラットフォームへ送信するリクエストデータ、
  * プラットフォームから送信されたレスポンスデータを管理するクラスのインタフェースです。
  */
-public interface DataModelManagerImpl {
+public interface RequestAndResponseDataManager {
     /**
      * ユーザーが送信したHTMLフォームパラメータを設定します。
      *
@@ -29,6 +29,7 @@ public interface DataModelManagerImpl {
      * プラットフォームへ送信するIdP送信者符号を設定します。
      *
      * 空文字列は許容しますが、nullは許容しません。
+     *
      * @param requestSender プラットフォームへ送信するIdP送信者符号
      * @exception NullPointerException - nullである場合
      */
@@ -39,7 +40,7 @@ public interface DataModelManagerImpl {
      *
      * @return ユーザーリクエストのデータ
      */
-    UserRequestModelImpl getUserRequest();
+    AuthenticationRequest getUserRequest();
 
     /**
      * プラットフォームリクエストのデータ構造を返します。
@@ -53,15 +54,14 @@ public interface DataModelManagerImpl {
      *
      * @return プラットフォームレスポンスのデータ
      */
-    PlatformResponseModelImpl getPlatformResponse();
+    PlatformAuthenticationResponseStructure getPlatformResponse();
 
     /**
-     * HTTPレスポンスからプラットフォームレスポンスのデータ構造を返します。
+     * HTTPレスポンスからプラットフォームレスポンスのデータ構造を設定します。
      *
-     * 2回目以降は引数なしで呼び出すことができます。
      * @param httpResponse プラットフォームのHTTPレスポンス
      * @return プラットフォームレスポンスのデータ
      * @exception NullPointerException プラットフォームのHTTPレスポンスがnullである場合
      */
-    Object getPlatformResponse(CloseableHttpResponse httpResponse);
+    void setPlatformResponseFromHttpResponse(CloseableHttpResponse httpResponse);
 }

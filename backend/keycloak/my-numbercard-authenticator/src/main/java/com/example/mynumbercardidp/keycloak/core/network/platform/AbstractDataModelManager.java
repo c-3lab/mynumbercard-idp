@@ -1,6 +1,6 @@
 package com.example.mynumbercardidp.keycloak.core.network.platform;
 
-import com.example.mynumbercardidp.keycloak.core.network.UserRequestModelImpl;
+import com.example.mynumbercardidp.keycloak.core.network.AuthenticationRequest;
 import org.apache.http.client.methods.CloseableHttpResponse;
 
 import java.nio.charset.Charset;
@@ -11,7 +11,7 @@ import javax.ws.rs.core.MultivaluedMap;
  * Keycloakへ送信されたユーザーのリクエストデータやプラットフォームへ送信するリクエストデータ、
  * プラットフォームから送信されたレスポンスデータを管理する機能の抽象クラスです。
  */
-public abstract class AbstractDataModelManager implements DataModelManagerImpl {
+public abstract class AbstractDataModelManager implements RequestAndResponseDataManager {
     /** ユーザーが送信したHTMLフォームパラメータ */
     private MultivaluedMap<String, String> userFormData;
     /** プラットフォームへリクエストを送る場合の文字セット */
@@ -19,11 +19,11 @@ public abstract class AbstractDataModelManager implements DataModelManagerImpl {
     /** プラットフォームへ送信するIdP送信者符号 */
     private String platformRequestSender = "";
     /** ユーザーリクエストのデータ構造 */
-    private UserRequestModelImpl userRequest;
+    private AuthenticationRequest userRequest;
     /** プラットフォームリクエストのデータ構造 */
     private Object platformRequest;
     /** プラットフォームレスポンスのデータ構造 */
-    private PlatformResponseModelImpl platformResponse;
+    private PlatformAuthenticationResponseStructure platformResponse;
 
     @Override
     public void setPlatformRequestSender(final String requestSender) {
@@ -40,25 +40,40 @@ public abstract class AbstractDataModelManager implements DataModelManagerImpl {
         this.requestCharset = charset;
     }
 
+    /**
+     * ユーザーリクエストのデータ構造を返します。必要に応じて、HTMLフォームパラメータから変換します。
+     *
+     * @return ユーザーリクエストのデータ構造
+     */
     @Override
-    public UserRequestModelImpl getUserRequest() {
-        return toUserRequestIfNeeded();
+    public AuthenticationRequest getUserRequest() {
+        if (Objects.isNull(this.userRequest)) {
+            this.userRequest = toUserRequest(this.userFormData);
+        }
+        return this.userRequest;
     }
 
+    /**
+     * プラットフォームリクエストのデータ構造を返します。必要に応じて、ユーザーリクエストのデータ構造から変換します。
+     *
+     * @return ユーザーリクエストのデータ構造
+     */
     @Override
     public Object getPlatformRequest() {
-        return toPlatformRequestIfNeeded();
+        if (Objects.isNull(this.platformRequest)) {
+            this.platformRequest = toPlatformRequest(this.userRequest);
+        }
+        return this.platformRequest;
     }
 
     @Override
-    public PlatformResponseModelImpl getPlatformResponse() {
+    public PlatformAuthenticationResponseStructure getPlatformResponse() {
         return this.platformResponse;
     }
 
     @Override
-    public Object getPlatformResponse(final CloseableHttpResponse httpResponse) {
+    public void setPlatformResponseFromHttpResponse(final CloseableHttpResponse httpResponse) {
         this.platformResponse = toPlatformResponse(Objects.requireNonNull(httpResponse));
-        return this.platformResponse;
     }
 
     protected Charset getRequestCharset() {
@@ -69,7 +84,7 @@ public abstract class AbstractDataModelManager implements DataModelManagerImpl {
         return this.platformRequestSender;
     }
 
-    protected void setUserRequest(final UserRequestModelImpl request) {
+    protected void setUserRequest(final AuthenticationRequest request) {
         this.userRequest = request;
     }
 
@@ -77,36 +92,13 @@ public abstract class AbstractDataModelManager implements DataModelManagerImpl {
         this.platformRequest = request;
     }
 
-    protected void setPlatformResponse(final PlatformResponseModelImpl response) {
+    protected void setPlatformResponse(final PlatformAuthenticationResponseStructure response) {
         this.platformResponse = response;
     }
 
-    protected abstract UserRequestModelImpl toUserRequest(MultivaluedMap<String, String> formData);
-    protected abstract Object toPlatformRequest(UserRequestModelImpl user);
-    protected abstract PlatformResponseModelImpl toPlatformResponse(CloseableHttpResponse httpResponse);
+    protected abstract AuthenticationRequest toUserRequest(MultivaluedMap<String, String> formData);
 
-    /**
-     * ユーザーリクエストのデータ構造を返します。必要に応じて、HTMLフォームパラメータから変換します。
-     *
-     * @return ユーザーリクエストのデータ構造
-     */
-    private UserRequestModelImpl toUserRequestIfNeeded() {
-        if (Objects.isNull(this.userRequest)) {
-            this.userRequest = toUserRequest(this.userFormData);
-        }
-        return this.userRequest;
-    }
+    protected abstract Object toPlatformRequest(AuthenticationRequest userRequestStructure);
 
-    /**
-     * プラットフォームリクエストのデータ構造を返します。必要に応じて、ユーザーリクエストのデータ構造から変換します。
-     *
-     * @param request ユーザーリクエストのデータ構造
-     * @return ユーザーリクエストのデータ構造
-     */
-    private Object toPlatformRequestIfNeeded() {
-        if (Objects.isNull(this.platformRequest)) {
-            this.platformRequest = toPlatformRequest(this.userRequest);
-        }
-        return this.platformRequest;
-    }
+    protected abstract PlatformAuthenticationResponseStructure toPlatformResponse(CloseableHttpResponse httpResponse);
 }

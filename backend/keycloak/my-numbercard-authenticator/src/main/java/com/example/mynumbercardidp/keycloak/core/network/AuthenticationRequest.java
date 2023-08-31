@@ -1,7 +1,6 @@
-package com.example.mynumbercardidp.keycloak.network;
+package com.example.mynumbercardidp.keycloak.core.network;
 
 import com.example.mynumbercardidp.keycloak.core.network.platform.CertificateType;
-import com.example.mynumbercardidp.keycloak.core.network.UserRequestModelWithApplicantDataImpl;
 import com.example.mynumbercardidp.keycloak.util.StringUtil;
 
 import java.util.Objects;
@@ -9,7 +8,7 @@ import java.util.Objects;
 /**
  * Keycloakを利用してログインするユーザーが送信したHTTPリクエスト内容の構造体を表すクラスです。
  */
-public class UserRequestModel implements UserRequestModelWithApplicantDataImpl {
+public class AuthenticationRequest {
 
     private CertificateType certificateType;
     private String certificate;
@@ -33,22 +32,22 @@ public class UserRequestModel implements UserRequestModelWithApplicantDataImpl {
         return this.sign;
     }
 
-    public UserRequestModel setCertificateType(final CertificateType certificateType) {
+    public AuthenticationRequest setCertificateType(final CertificateType certificateType) {
         this.certificateType = certificateType;
         return this;
     }
 
-    public UserRequestModel setCertificate(final String certificate) {
+    public AuthenticationRequest setCertificate(final String certificate) {
         this.certificate = certificate;
         return this;
     }
 
-    public UserRequestModel setApplicantData(final String applicantData) {
+    public AuthenticationRequest setApplicantData(final String applicantData) {
         this.applicantData = applicantData;
         return this;
     }
 
-    public UserRequestModel setSign(final String sign) {
+    public AuthenticationRequest setSign(final String sign) {
         this.sign = sign;
         return this;
     }
@@ -57,18 +56,25 @@ public class UserRequestModel implements UserRequestModelWithApplicantDataImpl {
         return this.actionMode;
     }
 
-    public void ensureHasValues() {
-        if (Objects.isNull(this.certificateType) ||
-            StringUtil.isEmpty(this.actionMode) ||
-            StringUtil.isEmpty(this.certificate) ||
-            StringUtil.isEmpty(this.applicantData) ||
-            StringUtil.isEmpty(this.sign)) {
-            throw new IllegalStateException("One or more values were not set.");
-        }
-    }
-
     public final void setActionMode(final String mode) {
         this.actionMode = mode;
+    }
+
+    /**
+     * すべてのフィールドに値が存在することを検証します。
+     *
+     * 1つ以上のフィールドでNullまたは許容されていない空値があった場合は例外を送出します。
+     *
+     * @exception IllegalStateException 1つ以上のフィールドでNullまたは空値があった場合
+     */
+    public void validateHasValues() {
+        if (Objects.isNull(this.certificateType) ||
+                StringUtil.isEmpty(this.actionMode) ||
+                StringUtil.isEmpty(this.certificate) ||
+                StringUtil.isEmpty(this.applicantData) ||
+                StringUtil.isEmpty(this.sign)) {
+            throw new IllegalStateException("One or more values were not set.");
+        }
     }
 
     public static enum Filed {

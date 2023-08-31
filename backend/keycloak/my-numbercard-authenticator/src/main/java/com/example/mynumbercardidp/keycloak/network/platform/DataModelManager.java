@@ -1,10 +1,9 @@
 package com.example.mynumbercardidp.keycloak.network.platform;
 
 import com.example.mynumbercardidp.keycloak.core.network.platform.CertificateType;
-import com.example.mynumbercardidp.keycloak.core.network.UserRequestModelImpl;
-import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformResponseModelImpl;
+import com.example.mynumbercardidp.keycloak.core.network.AuthenticationRequest;
+import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformAuthenticationResponseStructure;
 import com.example.mynumbercardidp.keycloak.core.network.platform.AbstractDataModelManager;
-import com.example.mynumbercardidp.keycloak.network.UserRequestModel;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,7 +18,6 @@ import org.jboss.logging.Logger;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.Objects;
 import javax.ws.rs.core.MultivaluedMap;
 
 public class DataModelManager extends AbstractDataModelManager {
@@ -28,48 +26,48 @@ public class DataModelManager extends AbstractDataModelManager {
     private static JsonFactory jsonFactory = new JsonFactory();
 
     @Override
-    protected UserRequestModelImpl toUserRequest(final MultivaluedMap<String, String> formData) {
+    protected AuthenticationRequest toUserRequest(final MultivaluedMap<String, String> formData) {
         formData.forEach((k, v) -> DataModelManager.consoleLogger.debug("Key " + k + " -> " + v));
-        String actionMode = formData.getFirst(UserRequestModel.Filed.ACTION_MODE.getName());
+        String actionMode = formData.getFirst(AuthenticationRequest.Filed.ACTION_MODE.getName());
         DataModelManager.consoleLogger.debug("actionMode: " + actionMode);
-        UserRequestModel user = new UserRequestModel();
-        user.setActionMode(actionMode);
-        user.setApplicantData(formData.getFirst(UserRequestModel.Filed.APPLICANT_DATA.getName()))
-            .setSign(formData.getFirst(UserRequestModel.Filed.SIGN.getName()));
+        AuthenticationRequest userRequest = new AuthenticationRequest();
+        userRequest.setActionMode(actionMode);
+        userRequest.setApplicantData(formData.getFirst(AuthenticationRequest.Filed.APPLICANT_DATA.getName()))
+                .setSign(formData.getFirst(AuthenticationRequest.Filed.SIGN.getName()));
 
-        switch (user.getActionMode().toLowerCase()) {
+        switch (userRequest.getActionMode().toLowerCase()) {
             case "login":
-                user.setCertificateType(CertificateType.USER_AUTHENTICATION);
+                userRequest.setCertificateType(CertificateType.USER_AUTHENTICATION);
                 break;
             case "registration":
                 // フォールスルー
             case "replacement":
-                user.setCertificateType(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE);
+                userRequest.setCertificateType(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE);
                 break;
         }
-        String certificateTypeName = user.getCertificateType().getName();
-        user.setCertificate(formData.getFirst(certificateTypeName));
-        return user;
+        String certificateTypeName = userRequest.getCertificateType().getName();
+        userRequest.setCertificate(formData.getFirst(certificateTypeName));
+        return userRequest;
     }
 
     @Override
-    protected Object toPlatformRequest(final UserRequestModelImpl user) {
+    protected Object toPlatformRequest(final AuthenticationRequest userRequestStructure) {
         String requestSender = super.getPlatformRequestSender();
-        PlatformRequestModel platform = new PlatformRequestModel(requestSender);
-        UserRequestModel userReq = (UserRequestModel) user;
-        platform.setCertificateType(userReq.getCertificateType())
-            .setCertificate(userReq.getCertificate())
-            .setApplicantData(userReq.getApplicantData())
-            .setSign(userReq.getSign());
+        PlatformAuthenticationRequest platform = new PlatformAuthenticationRequest(requestSender);
+        AuthenticationRequest userRequest = (AuthenticationRequest) userRequestStructure;
+        platform.setCertificateType(userRequest.getCertificateType())
+                .setCertificate(userRequest.getCertificate())
+                .setApplicantData(userRequest.getApplicantData())
+                .setSign(userRequest.getSign());
         return (Object) platform;
     }
 
     @Override
-    protected PlatformResponseModelImpl toPlatformResponse(final CloseableHttpResponse httpResponse) {
-        PlatformResponseModel response = new PlatformResponseModel();
+    protected PlatformAuthenticationResponseStructure toPlatformResponse(final CloseableHttpResponse httpResponse) {
+        PlatformAuthenticationResponse response = new PlatformAuthenticationResponse();
         try (InputStream inputStream = httpResponse.getEntity().getContent()) {
             String contentsBody = IOUtils.toString(inputStream, super.getRequestCharset());
-            ObjectReader objectReader = DataModelManager.objectMapper.readerFor(PlatformResponseModel.class);
+            ObjectReader objectReader = DataModelManager.objectMapper.readerFor(PlatformAuthenticationResponse.class);
             try (JsonParser parser = DataModelManager.jsonFactory.createParser(contentsBody)) {
                 response = objectReader.readValue(parser);
             } catch (IOException e) {
@@ -79,16 +77,16 @@ public class DataModelManager extends AbstractDataModelManager {
             throw new UncheckedIOException(e);
         }
         response.setHttpStatusCode(httpResponse.getStatusLine().getStatusCode());
-        return (PlatformResponseModelImpl) response;
+        return (PlatformAuthenticationResponseStructure) response;
     }
 
     protected String convertPlatformRequestToJson() {
         try {
             Object requestObj = super.getPlatformRequest();
-            PlatformRequestModel request = (PlatformRequestModel) requestObj;
-            ObjectWriter objectWriter = DataModelManager.objectMapper.writerFor(PlatformRequestModel.class);
+            PlatformAuthenticationRequest request = (PlatformAuthenticationRequest) requestObj;
+            ObjectWriter objectWriter = DataModelManager.objectMapper.writerFor(PlatformAuthenticationRequest.class);
             String baseJson = objectWriter.writeValueAsString(request);
-            ObjectReader objectReader = DataModelManager.objectMapper.readerFor(PlatformRequestModel.class);
+            ObjectReader objectReader = DataModelManager.objectMapper.readerFor(PlatformAuthenticationRequest.class);
             ObjectNode objectNode = objectReader.readTree(baseJson).deepCopy();
             objectNode.put(request.getCertificateType().getName(), request.getCertificate());
             objectWriter = DataModelManager.objectMapper.writer();

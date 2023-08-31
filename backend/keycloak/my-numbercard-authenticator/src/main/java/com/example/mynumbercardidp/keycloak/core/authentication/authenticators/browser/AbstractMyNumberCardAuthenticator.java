@@ -7,12 +7,24 @@ import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 
 import java.util.Objects;
-import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * 個人番号カードの公的個人認証部分を利用する認証処理で共通して実行する定義を表すクラスです。
  */
 public abstract class AbstractMyNumberCardAuthenticator extends AbstractFormAuthenticator {
+    /**
+     * 認証試行ユーザーのセッション情報に認証フローの状態が存在することを検証します。
+     *
+     * 存在しない場合はIllegalStateExceptionを送出します。
+     *
+     * @param context 認証フローのコンテキスト
+     * @exception IllegalStateException Auth noteに認証フローの結果が存在しない場合
+     */
+    protected static void validateHasAuthFlowStatus(final AuthenticationFlowContext context) {
+        if (Objects.isNull(context.getStatus())) {
+            throw new IllegalStateException("The flow status in the authentication flow context was not set.");
+        }
+    }
 
     @Override
     public void authenticate(final AuthenticationFlowContext context) {
@@ -44,28 +56,4 @@ public abstract class AbstractMyNumberCardAuthenticator extends AbstractFormAuth
     public void close() {
 
     }
-
-    /**
-     * HTTPフォームデータを取得する。
-     *
-     * @param context 認証フローのコンテキスト
-     * @return デコード済みのHTTPフォームデータ配列
-     */
-    protected final MultivaluedMap<String, String> getFormData(final AuthenticationFlowContext context) {
-        return context.getHttpRequest().getDecodedFormParameters();
-    }
-
-    /**
-     * 認証試行ユーザーのセッション情報に認証フローの状態が存在することを保証します。
-     *
-     * 存在しない場合はIllegalStateExceptionを送出します。ActionResolverが呼び出したActionクラスに不備があります。
-     * @param context 認証フローのコンテキスト
-     * @exception IllegalStateException Auth noteに認証フローの結果が存在しない場合
-     */
-    protected final void ensureHasAuthFlowStatus(final AuthenticationFlowContext context) {
-        if (Objects.isNull(context.getStatus())) {
-            throw new IllegalStateException("The flow status in the authentication flow context was not set.");
-        }
-    }
-
 }

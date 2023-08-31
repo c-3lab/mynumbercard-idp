@@ -2,13 +2,15 @@ package com.example.mynumbercardidp.keycloak.util.authentication;
 
 import org.keycloak.authentication.AuthenticationFlowContext;
 
-import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 現在のSPI設定を取得するユーティリティクラスです。
  */
 public class CurrentConfig {
-    private CurrentConfig() {}
+    private CurrentConfig() {
+    }
+
     /**
      * 現在のSPI設定の値を返します。
      *
@@ -18,8 +20,8 @@ public class CurrentConfig {
      */
     public static String getValue(final AuthenticationFlowContext context, final String configName) {
         String config = context.getAuthenticatorConfig()
-            .getConfig()
-            .get(configName);
-        return Objects.nonNull(config) ? config.toString() : "";
+                .getConfig()
+                .get(configName);
+        return Optional.ofNullable(config).orElse("");
     }
 }

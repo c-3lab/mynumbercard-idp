@@ -1,22 +1,17 @@
 package com.example.mynumbercardidp.keycloak.authentication.application.procedures;
 
 import com.example.mynumbercardidp.keycloak.authentication.authenticators.browser.SpiConfigProperty;
-import com.example.mynumbercardidp.keycloak.util.authentication.CurrentConfig;
 import com.example.mynumbercardidp.keycloak.util.StringUtil;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
 import org.keycloak.forms.login.LoginFormsProvider;
 import org.keycloak.models.utils.FormMessage;
 import org.keycloak.services.messages.Messages;
-import org.keycloak.sessions.CommonClientSessionModel.ExecutionStatus;
-import org.jboss.resteasy.specimpl.MultivaluedMapImpl;
-import org.jboss.logging.Logger;
+import org.keycloak.sessions.AuthenticationSessionModel;
 
 import java.net.URI;
-import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 /**
@@ -25,52 +20,51 @@ import javax.ws.rs.core.Response;
  * このクラスはユーティリティです。
  */
 public final class ResponseCreater {
-    private static Logger consoleLogger = Logger.getLogger(ResponseCreater.class);
-
-    private ResponseCreater() {}
+    private ResponseCreater() {
+    }
 
     /**
      * 認証フローに認証が必要であることを設定し、ユーザーへ認証画面のレスポンスを返します。
      *
-     * @param context 認証フローのコンテキスト
-     * @param actionMode 初期表示とする動作の種類
+     * @param context    認証フローのコンテキスト
+     * @param actionName 初期表示とする動作の種類
      * @return HTTP レスポンス
      */
-    public static final Response createChallengePage(final AuthenticationFlowContext context, final String actionMode) {
-       return ResponseCreater.createChallengePage(context, actionMode, Response.Status.OK.getStatusCode());
+    public static final Response createChallengePage(final AuthenticationFlowContext context, final String actionName) {
+        return ResponseCreater.createChallengePage(context, actionName, Response.Status.OK);
     }
 
     /**
      * 認証フローに認証が必要であることを設定し、ユーザーへ認証画面のレスポンスを返します。
      *
      * @param context 認証フローのコンテキスト
-     * @param status HTTP ステータスコード
+     * @param status  HTTP ステータスコード
      * @return HTTP レスポンス
      */
-    public static final Response createChallengePage(final AuthenticationFlowContext context, final int status) {
-       return ResponseCreater.createChallengePage(context, null, null, status);
-    }
-
-    public static final Response createChallengePage(final AuthenticationFlowContext context, String actionMode, final int status) {
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl<>();
-        LoginFormsProvider form = context.form();
-
-        String authNoteInitialViewAttributeName = "initialView";
-        context.getAuthenticationSession().setAuthNote(authNoteInitialViewAttributeName, actionMode);
-        form.setAttribute(authNoteInitialViewAttributeName, actionMode);
+    public static final Response createChallengePage(final AuthenticationFlowContext context,
+            final Response.Status status) {
         return ResponseCreater.createChallengePage(context, null, null, status);
     }
 
-    public static final Response createChallengePage(final AuthenticationFlowContext context, final String error, final String field, final int status) {
-        String actionURLHeaderName = "X-Action-URL";
-        URI actionURLValue = ResponseCreater.getNewActionURI(context);
+    public static final Response createChallengePage(final AuthenticationFlowContext context, String actionName,
+            final Response.Status status) {
+        LoginFormsProvider form = context.form();
+
+        Optional<String> actionNameValue = Optional.ofNullable(actionName);
+        context.getAuthenticationSession().setAuthNote("initialView", actionNameValue.orElse(""));
+        form.setAttribute("initialView", actionNameValue.orElse(""));
+        return ResponseCreater.createChallengePage(context, null, null, status);
+    }
+
+    public static final Response createChallengePage(final AuthenticationFlowContext context, final String error,
+            final String field, final Response.Status status) {
+        URI actionURLValue = context.getActionUrl(context.generateAccessCode());
         LoginFormsProvider form = context.form()
                 .setActionUri(actionURLValue)
                 .setExecution(context.getExecution().getId())
-                .setResponseHeader(actionURLHeaderName, actionURLValue.toString());
-        String formRefreshUrlAttributeName = "refreshUrl";
-        form.setAttribute(formRefreshUrlAttributeName, context.getRefreshUrl(true).toString());
+                .setResponseHeader("X-Action-URL", actionURLValue.toString());
 
+        form.setAttribute("refreshUrl", context.getRefreshUrl(true).toString());
         if (StringUtil.isNonEmpty(error)) {
             if (StringUtil.isNonEmpty(field)) {
                 form.addError(new FormMessage(field, error));
@@ -78,139 +72,68 @@ public final class ResponseCreater {
                 form.setError(error);
             }
         }
-        Response templateResponse = ResponseCreater.createLoginForm(form);
+        Response templateResponse = form.createLoginUsernamePassword();
         return Response.fromResponse(templateResponse)
-            .status(status)
-            .build();
+                .status(status)
+                .build();
     }
 
     /**
-     * 認証フローの新しいアクションURLを返します。
+     * 指定された処理の画面を初期表示とした画面のレスポンスを返します。
      *
-     * この操作により、クライアント セッション タイムスタンプも更新されます。
-     * @param context 認証フローのコンテキスト
-     * @return 認証フローの新しいアクションURL
-     */
-    private static URI getNewActionURI(final AuthenticationFlowContext context) {
-        String accessCode = context.generateAccessCode();
-        return context.getActionUrl(accessCode);
-    }
-
-    /**
-     * 認証フローの状態に認証が成功したことを設定し、認証フローを終了します。
-     *
-     * @param context 認証フローのコンテキスト
-     */
-    public static final void setFlowStepSuccess(final AuthenticationFlowContext context) {
-       context.success();
-    }
-
-    /**
-     * 認証フローの状態に認証が必要であることを設定し、ユーザーへ認証画面のレスポンスを返します。
-     *
-     * @param context 認証フローのコンテキスト
-     * @param status HTTP ステータスコード
-     */
-    public static final void setFlowStepChallenge(final AuthenticationFlowContext context, final Response response) {
-       context.challenge(response);
-    }
-
-    /**
-     * 認証フローの状態に失敗したことを設定し、ユーザーへエラー画面のレスポンスを返します。
-     *
-     * @param context 認証フローのコンテキスト
-     * @param error 認証フローエラーの種類
-     * @param status HTTP ステータスコード
-     */
-    public static final void setFlowStepFailure(final AuthenticationFlowContext context, final AuthenticationFlowError error, final Response response) {
-       context.failure(error, response);
-    }
-
-    /**
-     *  登録画面を初期表示とした画面のレスポンスを返します。
-     *
-     * @param context 認証フローのコンテキスト
-     */
-    public static final void actionRegistrationChallenge(final AuthenticationFlowContext context) {
-        String registrationActionMode = "registration";
-        ResponseCreater.actionReChallenge(context, registrationActionMode, Response.Status.NOT_FOUND.getStatusCode());
-    }
-
-    /**
-     *  認証画面を初期表示とした画面のレスポンスを返します。
-     *
-     * @param context 認証フローのコンテキスト
-     */
-    public static final void actionLoginChallenge(final AuthenticationFlowContext context) {
-        String loginActionMode = "login";
-        ResponseCreater.actionReChallenge(context, loginActionMode, Response.Status.NOT_FOUND.getStatusCode());
-    }
-
-    /**
-     *  指定された処理の画面を初期表示とした画面のレスポンスを返します。
-     *
-     * @param context 認証フローのコンテキスト
+     * @param context    認証フローのコンテキスト
      * @param actionName 遷移先処理の種類
-     * @param status プラットフォームのHTTPステータスコード
+     * @param status     プラットフォームのHTTPステータスコード
      */
-    public static final void actionReChallenge(final AuthenticationFlowContext context, final String actionName, final int status) {
+    public static final void sendChallengeResponse(final AuthenticationFlowContext context, final String actionName,
+            final Response.Status status) {
         ResponseCreater.setLoginFormAttributes(context);
         Response response = ResponseCreater.createChallengePage(context, actionName, status);
-        ResponseCreater.setFlowStepChallenge(context, response);
+        context.challenge(response);
     }
 
     /**
-     * 公的電子証明書を検証できなかった画面のレスポンスを返します。
+     * 無効な要求であったことを返します。
      *
      * @param context 認証フローのコンテキスト
-     * @param actionName 遷移先処理の種類
-     * @param status プラットフォームのHTTPステータスコード
+     * @param status  プラットフォームのHTTPステータスコード
      */
-    public static final void actionUnauthorized(final AuthenticationFlowContext context) {
+    public static final void sendInvalidRequestResponse(final AuthenticationFlowContext context,
+            final Response.Status status) {
         context.form().setError(Messages.INVALID_REQUEST, "");
-        context.failure(AuthenticationFlowError.INVALID_CREDENTIALS,
-                        context.form().createErrorPage(Response.Status.UNAUTHORIZED));
+        context.failure(AuthenticationFlowError.INVALID_CREDENTIALS, context.form().createErrorPage(status));
     }
 
     /**
      * 共通で使うテンプレート変数をユーザーに表示する画面のテンプレートへ設定します。
      *
-     * 認証フローのAuth noteにnonceの再利用フラグがあれば、直前に発行したnonceを利用します。
      * @param context 認証フローのコンテキスト
      */
     public static final void setLoginFormAttributes(final AuthenticationFlowContext context) {
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl<>();
+        boolean reuseNonceFlag = Boolean.valueOf(context.getAuthenticationSession().getAuthNote("reuseNonceFlag"));
+        String nonce = ResponseCreater.createNonceOrReuse(reuseNonceFlag, context.getAuthenticationSession());
         LoginFormsProvider form = context.form();
-
-        String reuseNonce = context.getAuthenticationSession().getAuthNote("reuseNonceFlag");
-        String authNoteNameNonce = "nonce";
-        String nonce = "";
-        if (StringUtil.isEmpty(reuseNonce)) {
-            nonce = ResponseCreater.createNonce();
-            context.getAuthenticationSession().setAuthNote(authNoteNameNonce, nonce);
-            consoleLogger.debug("create Nonce: " + nonce);
-            consoleLogger.debug("reuseNonceFlag: " + reuseNonce);
-        } else {
-            nonce = context.getAuthenticationSession().getAuthNote(authNoteNameNonce);
-            consoleLogger.debug("reuse Nonce: " + nonce);
-            consoleLogger.debug("reuseNonceFlag: " + reuseNonce);
-        }
-        form.setAttribute(authNoteNameNonce, nonce);
-
-        Map<String, String> spiConfig = SpiConfigProperty.getFreeMarkerJavaTemplateVariables();
-        spiConfig.forEach((k, v) -> form.setAttribute(k, v));
+        form.setAttribute("nonce", nonce);
+        SpiConfigProperty.getFreeMarkerJavaTemplateVariables().forEach((k, v) -> form.setAttribute(k, v));
     }
 
     /**
-     * Nonceを生成します。
+     * Nonceを返します。
      *
-     * @return nonce UUIDの文字列
+     * 認証フローのAuth noteにあるNonceの再利用フラグがtrueの場合、直前に発行したNonceの文字列を返します。
+     * そうでない場合はUUID文字列を返します。
+     *
+     * @param reuseNonceFlag Nonceの再利用フラグ
+     * @param session        認証フローのセッション情報
+     * @return UUID文字列
      */
-    protected static final String createNonce() {
-        return UUID.randomUUID().toString();
-    }
-
-    private static final Response createLoginForm(final LoginFormsProvider form) {
-        return form.createLoginUsernamePassword();
+    private static String createNonceOrReuse(boolean reuseNonceFlag, final AuthenticationSessionModel session) {
+        if (reuseNonceFlag) {
+            return session.getAuthNote("nonce");
+        } else {
+            String nonce = UUID.randomUUID().toString();
+            session.setAuthNote("nonce", nonce);
+            return nonce;
+        }
     }
 }

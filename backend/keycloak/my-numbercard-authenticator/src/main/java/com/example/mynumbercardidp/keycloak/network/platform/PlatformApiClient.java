@@ -1,7 +1,9 @@
 package com.example.mynumbercardidp.keycloak.network.platform;
 
 import com.example.mynumbercardidp.keycloak.core.network.platform.AbstractPlatformApiClient;
-import com.example.mynumbercardidp.keycloak.core.network.platform.DataModelManagerImpl;
+import com.example.mynumbercardidp.keycloak.core.network.platform.RequestAndResponseDataManager;
+
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -9,31 +11,34 @@ import org.jboss.logging.Logger;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import javax.ws.rs.core.MultivaluedMap;
 
 public class PlatformApiClient extends AbstractPlatformApiClient {
     private static final ContentType REQUEST_CONTENT_TYPE = ContentType.APPLICATION_JSON;
     private static final String API_URI_PATH = "/verify/";
     private static Logger consoleLogger = Logger.getLogger(PlatformApiClient.class);
-    private String platformRequestSender = "";
 
     {
         super.setHttpRequestContentType(PlatformApiClient.REQUEST_CONTENT_TYPE);
+        super.setDefaultCharset(Charset.forName("UTF-8"));
     }
 
     @Override
-    public void action() {
+    public void sendRequest() {
         DataModelManager data = (DataModelManager) super.getDataModelManager();
-        HttpEntity requsetEntity = super.createHttpEntity(data.convertPlatformRequestToJson());
+        HttpEntity requsetEntity = new ByteArrayEntity(
+                data.convertPlatformRequestToJson().getBytes(super.getDefaultCharset()),
+                PlatformApiClient.REQUEST_CONTENT_TYPE);
         URI apiUri = createApiUri();
         Header[] headers = {};
         PlatformApiClient.consoleLogger.debug("Platform API URI: " + apiUri);
-        super.post(apiUri, headers, requsetEntity);
+        super.sendEntity(apiUri, headers, requsetEntity);
     }
 
     @Override
-    protected DataModelManagerImpl createDataManager(final MultivaluedMap<String, String> formData) {
-        DataModelManagerImpl data = new DataModelManager();
+    protected RequestAndResponseDataManager createDataManager(final MultivaluedMap<String, String> formData) {
+        RequestAndResponseDataManager data = new DataModelManager();
         data.setUserFormData(formData);
         return data;
     }
