@@ -33,12 +33,17 @@ Info.plistの以下を修正します。
 ### Signing & Capabilities
 プロジェクトTARGETS > Signing & Capabilitiesに以下を追加します。
 
-- Universal Linksを使うために以下の設定を行います。  
+- Universal Links  
+`example`をapple-app-site-associationのappIDsと同じものに変更、
+`example.com`をapple-app-site-associationの配置先ドメインと同じものに変更します。   
+
+    - Signing   
+    Bundle Identifier   
+    `com.example.MyNumberCardAuth`
+
     - Associated Domains  
     Domains  
-    applinks:example.com?mode=developer  
-    ※apple-app-site-associationの配置先ドメインと一致させること  
-    ※ビルドするアプリのTeamID.Bundle Identifierをapple-app-site-associationのappleIdsに記載すること
+    `applinks:example.com?mode=developer`  
 
 ## ngrokの設定(ローカルで動作確認をする場合)
 ローカルで動作確認をする場合、iOS端末からlocalhost環境にアクセスする方法としてngrokを使用することを想定しています。　　
