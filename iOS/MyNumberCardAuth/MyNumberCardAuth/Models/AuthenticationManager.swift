@@ -69,7 +69,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
         
         self.authenticationController.nonceHash = String(nonceStr.dropFirst(15))
 
-        let dataToSignByteArray = [UInt8](dataToSign.utf8)
+        let dataToSignByteArray = [UInt8](self.authenticationController.nonceHash.utf8)
         self.reader = IndividualNumberReader(delegate: self)
         // 以下処理はNFC読み取りが非同期で行われ、完了するとindividualNumberReaderSessionが呼び出される
         self.reader.computeDigitalSignatureForUserAuthentication(userAuthenticationPIN: userAuthenticationPIN,dataToSign: dataToSignByteArray)
@@ -83,7 +83,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
         
         self.authenticationController.nonceHash = String(nonceStr.dropFirst(15))
         
-        let dataToSignByteArray = [UInt8](dataToSign.utf8)
+        let dataToSignByteArray = [UInt8](self.authenticationController.nonceHash.utf8)
         self.reader = IndividualNumberReader(delegate: self)
         // 以下処理はNFC読み取りが非同期で行われ、完了するとindividualNumberReaderSessionが呼び出される
         self.reader.computeDigitalSignatureForSignature(SignaturePIN: SignaturePIN,dataToSign: dataToSignByteArray)
