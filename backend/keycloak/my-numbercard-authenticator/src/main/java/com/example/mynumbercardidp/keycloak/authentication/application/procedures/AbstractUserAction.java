@@ -121,14 +121,12 @@ public abstract class AbstractUserAction {
         String certificate = platform.getUserRequest().getCertificate();
         String sign = platform.getUserRequest().getSign();
         if (!isDebugMode(context)) {
-            if (!validateSignature(sign, certificate, nonceHash.toLowerCase())) {
-                AbstractUserAction.consoleLogger.info("The signature does not equal the nonce hash.");
-                return false;
-            } else {
-                return true;
-            }
+            return validateSignature(sign, certificate, nonceHash.toLowerCase()) ||
+                    validateSignature(sign, certificate, nonceHash.toUpperCase());
         } else {
-            return validateSignature(sign, certificate, applicantData);
+            return validateSignature(sign, certificate, nonceHash.toLowerCase()) ||
+                    validateSignature(sign, certificate, nonceHash.toUpperCase()) ||
+                    validateSignature(sign, certificate, applicantData);
         }
     }
 
