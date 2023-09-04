@@ -33,15 +33,13 @@ Info.plistの以下を修正します。
 ### Signing & Capabilities
 プロジェクトTARGETS > Signing & Capabilitiesに以下を追加します。
 
-- Universal Links  
-`example`をapple-app-site-associationのappIDsと同じものに変更、
-`example.com`をapple-app-site-associationの配置先ドメインと同じものに変更します。   
-
-    - Signing   
-    Bundle Identifier   
-    `com.example.MyNumberCardAuth`
-
-    - Associated Domains  
+Universal Links   
+- 以下の`example`をapple-app-site-associationのappIDsと同じものに変更します。   
+    * Signing   
+     Bundle Identifier   
+     `com.example.MyNumberCardAuth`
+- 以下の`example.com`をapple-app-site-associationの配置先ドメインと同じものに変更します。   
+    * Associated Domains  
     Domains  
     `applinks:example.com?mode=developer`  
 
