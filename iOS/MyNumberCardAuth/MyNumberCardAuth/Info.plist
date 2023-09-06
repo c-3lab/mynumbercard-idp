@@ -2,14 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>AuthenticationPIN_Lower</key>
-	<integer>24</integer>
-	<key>AuthenticationPIN_Upper</key>
-	<integer>0</integer>
-	<key>AuthenticationUertificate_Lower</key>
-	<integer>10</integer>
-	<key>AuthenticationUertificate_Upper</key>
-	<integer>0</integer>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -30,24 +22,8 @@
 	</dict>
 	<key>PrivacyPolicyURL</key>
 	<string>https://example.com/open-id/privacy-policy.html</string>
-	<key>ProofKey_Upper</key>
-	<integer>0</integer>
-	<key>Proofkey_Lower</key>
-	<integer>23</integer>
 	<key>ProtectionPolicyURL</key>
 	<string>https://example.com/open-id/personal-data-protection-policy.html</string>
-	<key>SignaturePIN_Lower</key>
-	<integer>27</integer>
-	<key>SignaturePIN_Upper</key>
-	<integer>0</integer>
-	<key>SigningCertificate_Lower</key>
-	<integer>1</integer>
-	<key>SigningCertificate_Upper</key>
-	<integer>0</integer>
-	<key>SigningKey_Lower</key>
-	<integer>26</integer>
-	<key>SigningKey_Upper</key>
-	<integer>0</integer>
 	<key>TermsOfServiceURL</key>
 	<string>https://example.com/open-id/terms-of-use.html</string>
 	<key>UIApplicationSceneManifest</key>
