@@ -30,6 +30,31 @@ Info.plistの以下を修正します。
     - PrivacyPolicyURL   
 　　　　　プライバシーポリシーの表示先URL(https://example.com/open-id/privacy-policy.html)   
 
+### Package Dependencies
+XcodeのメニューからFile > Add Packagesを選択します。  
+表示されたダイアログの右上検索欄に`https://github.com/treastrain/TRETJapanNFCReader.git`を入力し実行します。   
+
+TRETJapanNFCReaderが検索されるので、Dependency Ruleに`Branch`の`master`を指定しAdd Packageを実行します。  
+※動作確認時のリビジョンは`03470a515c0b06d762de39e6d80f9a07ed502cae`になります。  
+
+Xcode左側のProject navigatorにPackage DependenciesのTRETJapanNFCReaderが表示されますので、  
+Sources > MIFARE > IndovidualNumberを選択し、右クリックメニューの`Show in Finder`でフォルダを表示します。  
+フォルダに下記に記載するファイルを.swpを削除するリネームを行なって配置します。  
+
+`iOS/MyNumberCardAuth/MyNumberCardAuth/IndividualNumberCardExtensions`
+```
+IndividualNumberCardData.swift.swp
+IndividualNumberReaderExtension.swift.swp
+IndividualNumberReaderReadFunctionsExtensions.swift.swp
+```
+
+配置を行なった後、Project navigatorのTRETJapanNFCReaderを選択し、右クリックメニューの
+`Update Pakage`でビルドを実行します。
+
+その後、以下の設定を行います。  
+プロジェクトTARGETS > General > Frameworks, Libraries, and Embedded Contentに
+「TRETJapanNFCReader-MIFARE-IndividualNumber」を追加します。
+
 ### Signing & Capabilities
 プロジェクトTARGETS > Signing & Capabilitiesに以下を追加します。
 
