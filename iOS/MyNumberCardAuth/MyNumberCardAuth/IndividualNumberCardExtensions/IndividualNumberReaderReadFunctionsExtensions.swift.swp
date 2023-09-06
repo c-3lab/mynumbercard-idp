@@ -12,18 +12,13 @@ import TRETJapanNFCReader_MIFARE
 #endif
 import CryptoKit
 
-var authenticationPINU:UInt8 = Bundle.main.object(forInfoDictionaryKey: "AuthenticationPIN_Upper") as! UInt8
-var authenticationPINL:UInt8 = Bundle.main.object(forInfoDictionaryKey: "AuthenticationPIN_Lower") as! UInt8
-var ProofKeyU:UInt8 = Bundle.main.object(forInfoDictionaryKey: "ProofKey_Upper") as! UInt8
-var ProofKeyL:UInt8 = Bundle.main.object(forInfoDictionaryKey: "Proofkey_Lower") as! UInt8
-var AuthenticationUertificateU:UInt8 = Bundle.main.object(forInfoDictionaryKey: "AuthenticationUertificate_Upper") as! UInt8
-var AuthenticationUertificateL:UInt8 = Bundle.main.object(forInfoDictionaryKey: "AuthenticationUertificate_Lower") as! UInt8
-var SignaturePINU:UInt8 = Bundle.main.object(forInfoDictionaryKey: "SignaturePIN_Upper") as! UInt8
-var SignaturePINL:UInt8 = Bundle.main.object(forInfoDictionaryKey: "SignaturePIN_Lower") as! UInt8
-var SigningKeyU:UInt8 = Bundle.main.object(forInfoDictionaryKey: "SigningKey_Upper") as! UInt8
-var SigningKeyL:UInt8 = Bundle.main.object(forInfoDictionaryKey: "SigningKey_Lower") as! UInt8
-var SigningCertificateU:UInt8 = Bundle.main.object(forInfoDictionaryKey: "SigningCertificate_Upper") as! UInt8
-var SigningCertificateL:UInt8 = Bundle.main.object(forInfoDictionaryKey: "SigningCertificate_Lower") as! UInt8
+var authenticationPINStr:String = Bundle.main.object(forInfoDictionaryKey: "AuthenticationPIN") as! String
+var proofKeyStr:String = Bundle.main.object(forInfoDictionaryKey: "ProofKey") as! String
+var authenticationUertificateStr:String = Bundle.main.object(forInfoDictionaryKey: "AuthenticationUertificate") as! String
+var signaturePINStr:String = Bundle.main.object(forInfoDictionaryKey: "SignaturePIN") as! String
+var signingKeyStr:String = Bundle.main.object(forInfoDictionaryKey: "SigningKey") as! String
+var signingCertificateStr:String = Bundle.main.object(forInfoDictionaryKey: "SigningCertificate") as! String
+var digitalSignatureStr:String = Bundle.main.object(forInfoDictionaryKey: "DigitalSignature") as! String
 
 @available(iOS 13.0, *)
 extension IndividualNumberReader {
@@ -50,7 +45,8 @@ extension IndividualNumberReader {
                 return
             }
             
-            self.selectEF(tag: tag, data: [authenticationPINU, authenticationPINL]) { (responseData, sw1, sw2, error) in
+            let authenticationPIN = self.getHexNum(hexString: authenticationPINStr)
+            self.selectEF(tag: tag, data: [authenticationPIN.upper, authenticationPIN.lower]) { (responseData, sw1, sw2, error) in
                 // 認証用PINを選択する
                 self.printData(responseData, sw1, sw2)
                 
@@ -66,7 +62,8 @@ extension IndividualNumberReader {
                         return
                     }
                     
-                    self.selectEF(tag: tag, data: [ProofKeyU, ProofKeyL]) { (responseData, sw1, sw2, error) in
+                    let proofKey = self.getHexNum(hexString: proofKeyStr)
+                    self.selectEF(tag: tag, data: [proofKey.upper, proofKey.lower]) { (responseData, sw1, sw2, error) in
                         // 認証用秘密鍵を選択する
                         self.printData(responseData, sw1, sw2)
                         
@@ -108,7 +105,8 @@ extension IndividualNumberReader {
                 return
             }
             
-            self.selectEF(tag: tag, data: [AuthenticationUertificateU, AuthenticationUertificateL]) { (responseData, sw1, sw2, error) in
+            let authenticationUertificate = self.getHexNum(hexString: authenticationUertificateStr)
+            self.selectEF(tag: tag, data: [authenticationUertificate.upper, authenticationUertificate.lower]) { (responseData, sw1, sw2, error) in
                 // 公的個人認証用証明書を選択する
                 self.printData(responseData, sw1, sw2)
                 
@@ -170,7 +168,8 @@ extension IndividualNumberReader {
                 return
             }
 
-            self.selectEF(tag: tag, data: [SignaturePINU, SignaturePINL]) { (responseData, sw1, sw2, error) in
+            let signaturePIN = self.getHexNum(hexString: signaturePINStr)
+            self.selectEF(tag: tag, data: [signaturePIN.upper, signaturePIN.lower]) { (responseData, sw1, sw2, error) in
                 // 認証用PINを選択する
                 self.printData(responseData, sw1, sw2)
 
@@ -186,7 +185,8 @@ extension IndividualNumberReader {
                         return
                     }
 
-                    self.selectEF(tag: tag, data: [SigningKeyU, SigningKeyL]) { (responseData, sw1, sw2, error) in
+                    let signingKey = self.getHexNum(hexString: signingKeyStr)
+                    self.selectEF(tag: tag, data: [signingKey.upper, signingKey.lower]) { (responseData, sw1, sw2, error) in
                         // 認証用秘密鍵を選択する
                         self.printData(responseData, sw1, sw2)
 
@@ -229,7 +229,8 @@ extension IndividualNumberReader {
                 return
             }
 
-            self.selectEF(tag: tag, data: [SignaturePINU, SignaturePINL]) { (responseData, sw1, sw2, error) in
+            let signaturePIN = self.getHexNum(hexString: signaturePINStr)
+            self.selectEF(tag: tag, data: [signaturePIN.upper, signaturePIN.lower]) { (responseData, sw1, sw2, error) in
                 // 認証用PINを選択する
                 self.printData(responseData, sw1, sw2)
 
@@ -246,7 +247,8 @@ extension IndividualNumberReader {
                     }
 
                     // 署名用証明書を読みこむ
-                    self.selectEF(tag: tag, data: [SigningCertificateU, SigningCertificateL]) { (responseData, sw1, sw2, error) in
+                    let signingCertificate = self.getHexNum(hexString: signingCertificateStr)
+                    self.selectEF(tag: tag, data: [signingCertificate.upper, signingCertificate.lower]) { (responseData, sw1, sw2, error) in
                         // 公的個人認証用証明書を選択する
                         self.printData(responseData, sw1, sw2)
 
@@ -361,7 +363,8 @@ extension IndividualNumberReader {
     }
     
     internal func computeDigitalSignature(tag: IndividualNumberCardTag, expectedResponseLength: Int, dataToSign: [UInt8], completionHandler: @escaping IndividualNumberReaderCompletionHandler) {
-        let apdu = NFCISO7816APDU(instructionClass: 0x80, instructionCode: 0x2A, p1Parameter: 0x00, p2Parameter: 0x80, data: Data(dataToSign), expectedResponseLength: expectedResponseLength)
+        let digitalSignature = self.getHexNum(hexString: digitalSignatureStr)
+        let apdu = NFCISO7816APDU(instructionClass: 0x80, instructionCode: 0x2A, p1Parameter: digitalSignature.upper, p2Parameter: digitalSignature.lower, data: Data(dataToSign), expectedResponseLength: expectedResponseLength)
         
         tag.sendCommand(apdu: apdu, completionHandler: completionHandler)
     }
@@ -380,6 +383,15 @@ extension IndividualNumberReader {
         let inputData = Data(data)
         let hashedData = SHA256.hash(data: inputData)
         return Array(hashedData)
+    }
+    
+    func getHexNum(hexString: String)-> (upper:UInt8, lower:UInt8) {
+        let UpperStr = String(hexString.prefix(2))
+        let LowerStr = String(hexString.suffix(2))
+        let upper = UInt8(UpperStr, radix: 16)!
+        let lower = UInt8(LowerStr, radix: 16)!
+        
+        return (upper, lower)
     }
 }
 #endif
