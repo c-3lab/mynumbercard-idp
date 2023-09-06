@@ -10,13 +10,13 @@
 		9F3D97972A5BCE2400FAF526 /* AppExplanationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3D97962A5BCE2400FAF526 /* AppExplanationView.swift */; };
 		9F41DCD12A550C7F0078FD7C /* AuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F41DCD02A550C7F0078FD7C /* AuthenticationController.swift */; };
 		9F5BCA092A52658E004E95E6 /* SignatureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5BCA082A52658E004E95E6 /* SignatureViewController.swift */; };
+		9F931D902AA6FE1A009BA06A /* TRETJapanNFCReader-MIFARE-IndividualNumber in Frameworks */ = {isa = PBXBuildFile; productRef = 9F931D8F2AA6FE1A009BA06A /* TRETJapanNFCReader-MIFARE-IndividualNumber */; };
 		9FCA69B32A4BEE24008AC285 /* NFCReadingForSignatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCA69B22A4BEE24008AC285 /* NFCReadingForSignatureView.swift */; };
 		9FE5928D2A57E91B000C3569 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9FE5928F2A57E91B000C3569 /* Localizable.strings */; };
 		AD80228D29F0B402009EA409 /* MyNumberCardAuthApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD80228C29F0B402009EA409 /* MyNumberCardAuthApp.swift */; };
 		AD80228F29F0B402009EA409 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD80228E29F0B402009EA409 /* ContentView.swift */; };
 		AD80229129F0B403009EA409 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD80229029F0B403009EA409 /* Assets.xcassets */; };
 		AD80229429F0B403009EA409 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD80229329F0B403009EA409 /* Preview Assets.xcassets */; };
-		AD80229F29F0B666009EA409 /* TRETJapanNFCReader-MIFARE-IndividualNumber in Frameworks */ = {isa = PBXBuildFile; productRef = AD80229E29F0B666009EA409 /* TRETJapanNFCReader-MIFARE-IndividualNumber */; };
 		AD8022A129F0BB68009EA409 /* SmallButtonModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8022A029F0BB68009EA409 /* SmallButtonModifier.swift */; };
 		AD8022A329F0BBBF009EA409 /* NFCReadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8022A229F0BBBF009EA409 /* NFCReadingView.swift */; };
 		AD8022A729F0BC65009EA409 /* HTTPSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8022A629F0BC65009EA409 /* HTTPSession.swift */; };
@@ -36,7 +36,6 @@
 		AD80228E29F0B402009EA409 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		AD80229029F0B403009EA409 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AD80229329F0B403009EA409 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		AD80229B29F0B42E009EA409 /* TRETJapanNFCReader */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = TRETJapanNFCReader; path = ../TRETJapanNFCReader; sourceTree = "<group>"; };
 		AD80229C29F0B560009EA409 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AD8022A029F0BB68009EA409 /* SmallButtonModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallButtonModifier.swift; sourceTree = "<group>"; };
 		AD8022A229F0BBBF009EA409 /* NFCReadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReadingView.swift; sourceTree = "<group>"; };
@@ -51,7 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD80229F29F0B666009EA409 /* TRETJapanNFCReader-MIFARE-IndividualNumber in Frameworks */,
+				9F931D902AA6FE1A009BA06A /* TRETJapanNFCReader-MIFARE-IndividualNumber in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,7 +68,6 @@
 		AD80228029F0B402009EA409 = {
 			isa = PBXGroup;
 			children = (
-				AD80229A29F0B42E009EA409 /* Packages */,
 				AD80228B29F0B402009EA409 /* MyNumberCardAuth */,
 				AD80228A29F0B402009EA409 /* Products */,
 				AD80229D29F0B666009EA409 /* Frameworks */,
@@ -107,14 +105,6 @@
 				AD80229329F0B403009EA409 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		AD80229A29F0B42E009EA409 /* Packages */ = {
-			isa = PBXGroup;
-			children = (
-				AD80229B29F0B42E009EA409 /* TRETJapanNFCReader */,
-			);
-			name = Packages;
 			sourceTree = "<group>";
 		};
 		AD80229D29F0B666009EA409 /* Frameworks */ = {
@@ -171,7 +161,7 @@
 			);
 			name = MyNumberCardAuth;
 			packageProductDependencies = (
-				AD80229E29F0B666009EA409 /* TRETJapanNFCReader-MIFARE-IndividualNumber */,
+				9F931D8F2AA6FE1A009BA06A /* TRETJapanNFCReader-MIFARE-IndividualNumber */,
 			);
 			productName = MyNumberCardAuth;
 			productReference = AD80228929F0B402009EA409 /* MyNumberCardAuth.app */;
@@ -202,6 +192,8 @@
 				ja,
 			);
 			mainGroup = AD80228029F0B402009EA409;
+			packageReferences = (
+			);
 			productRefGroup = AD80228A29F0B402009EA409 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -462,7 +454,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		AD80229E29F0B666009EA409 /* TRETJapanNFCReader-MIFARE-IndividualNumber */ = {
+		9F931D8F2AA6FE1A009BA06A /* TRETJapanNFCReader-MIFARE-IndividualNumber */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = "TRETJapanNFCReader-MIFARE-IndividualNumber";
 		};
