@@ -13,7 +13,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
     private var authenticationController:AuthenticationController
     private var individualNumberCardExecuteType: IndividualNumberCardExecuteType?
     private var actionURL: String?
-    private var reader: IndividualNumberReader!
+    private var reader: IndividualNumberReaderExtension!
 
     init(authenticationController: AuthenticationController) {
         self.authenticationController = authenticationController
@@ -49,15 +49,17 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
     }
     
     private func conputeDigitalSignatureForUserVerification(userAuthenticationPIN: String, dataToSign: String) {
-        self.individualNumberCardExecuteType = .computeDigitalSignatureForUserAuthentication
-
+        self.individualNumberCardExecuteType = .computeDigitalSignature
+        
         let data = dataToSign.data(using: .utf8)
         let nonceStr = (SHA256.hash(data: data!).description)
         
         self.authenticationController.nonceHash = String(nonceStr.dropFirst(15))
 
-        let dataToSignByteArray = [UInt8](dataToSign.utf8)
-        self.reader = IndividualNumberReader(delegate: self)
+        // generateDigestInfoメソッドでハッシュ化を行なっているが、keycloakのハッシュ化チェックでは
+        // 未ハッシュ判定となるため、下記でハッシュ化したものを使用する
+        let dataToSignByteArray = [UInt8](self.authenticationController.nonceHash.utf8)
+        self.reader = IndividualNumberReaderExtension(delegate: self)
         // 以下処理はNFC読み取りが非同期で行われ、完了するとindividualNumberReaderSessionが呼び出される
         self.reader.computeDigitalSignatureForUserAuthentication(userAuthenticationPIN: userAuthenticationPIN,dataToSign: dataToSignByteArray)
     }

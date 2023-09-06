@@ -199,9 +199,8 @@
 			);
 			mainGroup = AD80228029F0B402009EA409;
 			packageReferences = (
-				9FF1B6F12AAD83C900793DD6 /* XCRemoteSwiftPackageReference "TRETJapanNFCReader" */,
 			);
-			productRefGroup = AD80228029F0B402009EA409;
+			productRefGroup = AD80228A29F0B402009EA409 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
