@@ -68,6 +68,7 @@ private fun OpenUrlButton(url: String, buttonText:String){
     }
 }
 
+// デバッグ用のため未カバレッジ
 @Preview(
     showBackground = true)
 @Composable
