@@ -344,7 +344,8 @@ class StateViewModel(
         }
 
         // 署名対象のデータをハッシュ化
-        val digest = MessageDigest.getInstance("SHA-256").digest(_uiState.value.uriParameters?.nonce!!.toByteArray(Charsets.UTF_8))
+        val nonceHash = MessageDigest.getInstance("SHA-256").digest(_uiState.value.uriParameters?.nonce!!.toByteArray(Charset.defaultCharset())).toHexString()
+        val digest = MessageDigest.getInstance("SHA-256").digest(nonceHash.toByteArray())
         Log.d(logTag, "digest: ${digest.toHexString()}")
 
         //RSA署名のハッシュプレフィックス
@@ -375,7 +376,8 @@ class StateViewModel(
         }
 
         // 署名対象のデータをハッシュ化
-        val digest = MessageDigest.getInstance("SHA-256").digest(_uiState.value.uriParameters?.nonce!!.toByteArray(Charset.defaultCharset()))
+        val nonceHash = MessageDigest.getInstance("SHA-256").digest(_uiState.value.uriParameters?.nonce!!.toByteArray(Charset.defaultCharset())).toHexString()
+        val digest = MessageDigest.getInstance("SHA-256").digest(nonceHash.toByteArray())
         Log.d(logTag, "digest: ${digest.toHexString()}")
 
         //RSA署名のハッシュプレフィックス
