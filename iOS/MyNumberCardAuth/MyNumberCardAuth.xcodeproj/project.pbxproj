@@ -24,14 +24,27 @@
 		ADE94AA829F914CB00A98728 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE94AA729F914CB00A98728 /* ViewController.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		9FD1C09E2AA8869A00057715 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		9F3D97962A5BCE2400FAF526 /* AppExplanationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppExplanationView.swift; sourceTree = "<group>"; };
 		9F41DCD02A550C7F0078FD7C /* AuthenticationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationController.swift; sourceTree = "<group>"; };
 		9F5BCA082A52658E004E95E6 /* SignatureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureViewController.swift; sourceTree = "<group>"; };
 		9FCA69B22A4BEE24008AC285 /* NFCReadingForSignatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReadingForSignatureView.swift; sourceTree = "<group>"; };
+		9FD1C0A12AA8877D00057715 /* MyNumberCardAuth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyNumberCardAuth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FE5928E2A57E91B000C3569 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9FE592902A57E91F000C3569 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		AD80228929F0B402009EA409 /* MyNumberCardAuth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyNumberCardAuth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD80228C29F0B402009EA409 /* MyNumberCardAuthApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNumberCardAuthApp.swift; sourceTree = "<group>"; };
 		AD80228E29F0B402009EA409 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		AD80229029F0B403009EA409 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -69,17 +82,9 @@
 			isa = PBXGroup;
 			children = (
 				AD80228B29F0B402009EA409 /* MyNumberCardAuth */,
-				AD80228A29F0B402009EA409 /* Products */,
 				AD80229D29F0B666009EA409 /* Frameworks */,
+				9FD1C0A12AA8877D00057715 /* MyNumberCardAuth.app */,
 			);
-			sourceTree = "<group>";
-		};
-		AD80228A29F0B402009EA409 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				AD80228929F0B402009EA409 /* MyNumberCardAuth.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		AD80228B29F0B402009EA409 /* MyNumberCardAuth */ = {
@@ -154,6 +159,7 @@
 				AD80228529F0B402009EA409 /* Sources */,
 				AD80228629F0B402009EA409 /* Frameworks */,
 				AD80228729F0B402009EA409 /* Resources */,
+				9FD1C09E2AA8869A00057715 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -164,7 +170,7 @@
 				9F931D8F2AA6FE1A009BA06A /* TRETJapanNFCReader-MIFARE-IndividualNumber */,
 			);
 			productName = MyNumberCardAuth;
-			productReference = AD80228929F0B402009EA409 /* MyNumberCardAuth.app */;
+			productReference = 9FD1C0A12AA8877D00057715 /* MyNumberCardAuth.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -193,8 +199,9 @@
 			);
 			mainGroup = AD80228029F0B402009EA409;
 			packageReferences = (
+				9FD9E7322AA992C90029EFAE /* XCRemoteSwiftPackageReference "TRETJapanNFCReader" */,
 			);
-			productRefGroup = AD80228A29F0B402009EA409 /* Products */;
+			productRefGroup = AD80228029F0B402009EA409;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -452,6 +459,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9FD9E7322AA992C90029EFAE /* XCRemoteSwiftPackageReference "TRETJapanNFCReader" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/c-3lab/TRETJapanNFCReader.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		9F931D8F2AA6FE1A009BA06A /* TRETJapanNFCReader-MIFARE-IndividualNumber */ = {
