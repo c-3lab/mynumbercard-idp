@@ -42,7 +42,7 @@
 		9F41DCD02A550C7F0078FD7C /* AuthenticationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationController.swift; sourceTree = "<group>"; };
 		9F5BCA082A52658E004E95E6 /* SignatureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureViewController.swift; sourceTree = "<group>"; };
 		9FCA69B22A4BEE24008AC285 /* NFCReadingForSignatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReadingForSignatureView.swift; sourceTree = "<group>"; };
-		9FD1C0A12AA8877D00057715 /* MyNumberCardAuth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyNumberCardAuth.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9FD1C0A12AA8877D00057715 /* MyNumberCardAuth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = MyNumberCardAuth.app; path = "/Users/abelstaff/Desktop/split_mynumbercard-idp/iOS/MyNumberCardAuth/build/Debug-iphoneos/MyNumberCardAuth.app"; sourceTree = "<absolute>"; };
 		9FE5928E2A57E91B000C3569 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9FE592902A57E91F000C3569 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD80228C29F0B402009EA409 /* MyNumberCardAuthApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNumberCardAuthApp.swift; sourceTree = "<group>"; };
@@ -83,7 +83,6 @@
 			children = (
 				AD80228B29F0B402009EA409 /* MyNumberCardAuth */,
 				AD80229D29F0B666009EA409 /* Frameworks */,
-				9FD1C0A12AA8877D00057715 /* MyNumberCardAuth.app */,
 			);
 			sourceTree = "<group>";
 		};
