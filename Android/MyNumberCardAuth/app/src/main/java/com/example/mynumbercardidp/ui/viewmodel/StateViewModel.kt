@@ -2,7 +2,6 @@ package com.example.mynumbercardidp.ui.viewmodel
 
 import android.nfc.TagLostException
 import android.os.Build
-import java.util.Base64
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
@@ -28,6 +27,13 @@ import com.example.mynumbercardidp.util.hexToByteArray
 import com.example.mynumbercardidp.util.mynumber.APDUException
 import com.example.mynumbercardidp.util.mynumber.NfcReader
 import com.example.mynumbercardidp.util.toHexString
+import com.nimbusds.jose.EncryptionMethod
+import com.nimbusds.jose.JWEAlgorithm
+import com.nimbusds.jose.JWEHeader
+import com.nimbusds.jose.crypto.RSAEncrypter
+import com.nimbusds.jose.jwk.JWKSet
+import com.nimbusds.jwt.EncryptedJWT
+import com.nimbusds.jwt.JWTClaimsSet
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,9 +41,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+import java.net.URL
 import java.net.URLEncoder
 import java.nio.charset.Charset
 import java.security.MessageDigest
+import java.util.Base64
+import java.util.Date
+
 
 class StateViewModel(
     private val keycloakRepository: KeycloakRepository,
@@ -170,14 +180,19 @@ class StateViewModel(
             }
 
             val url = _uiState.value.uriParameters?.action_url!!
-            val certificate = Base64.getEncoder().encodeToString(readCertResult?.retData)
-            val sign = Base64.getEncoder().encodeToString(signCertResult?.retData)
+
+            val certificate = readCertResult?.retData!!
+            val regex = "^(https?://[^/]+/)".toRegex()
+            val jwksUrl = regex.find(url)?.value + "keys/jwks.json"
+
             val mode = URLEncoder.encode(_uiState.value.uriParameters?.mode!!, "UTF-8")
+            val jweCertificate = encrypt(certificate, jwksUrl)
             val applicantData = URLEncoder.encode(
                 MessageDigest.getInstance("SHA-256").digest(_uiState.value.uriParameters?.nonce!!.toByteArray()).toHexString(),
                 "UTF-8")
+            val sign = Base64.getEncoder().encodeToString(signCertResult?.retData)
 
-            authenticate(url, mode, certificate, applicantData, sign)
+            authenticate(url, mode, jweCertificate, applicantData, sign)
 
         } catch (e: APDUException) {
             Log.e(logTag, "APDUException occurred. cause: ${e.message}")
@@ -235,6 +250,31 @@ class StateViewModel(
         viewModelScope.launch {
             _uiState.update { _uiState.value.copy(externalUrls = externalUrls) }
         }
+    }
+
+    private fun encrypt(content: ByteArray, jwksUrl: String): String {
+        val now = Date()
+
+        // JWT作成
+        val jwtClaims = JWTClaimsSet.Builder()
+            .claim("claim", String(content))
+            .expirationTime(Date(now.time + 1000 * 60 * 5)) // expires in 5 minutes
+            .build()
+        val header = JWEHeader(
+            JWEAlgorithm.RSA_OAEP_256,
+            EncryptionMethod.A128CBC_HS256
+        )
+        val jwt = EncryptedJWT(header, jwtClaims)
+
+        // 公開鍵を取得
+        val jwkSet = JWKSet.load(URL(jwksUrl))
+        val publicKey = jwkSet.keys[0].toRSAKey()
+        val encrypter = RSAEncrypter(publicKey)
+
+        // 暗号化に使用した共通鍵を、公開鍵を用いて暗号化
+        jwt.encrypt(encrypter)
+
+        return jwt.serialize()
     }
 
     private fun readCertificate(reader: NfcReader, inputPin: String): StateViewModel.NfcResult {
