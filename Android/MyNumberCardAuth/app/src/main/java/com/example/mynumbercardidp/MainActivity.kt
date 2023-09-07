@@ -11,14 +11,14 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mynumbercardidp.ui.ExternalUrls
 import com.example.mynumbercardidp.ui.screen.CertReadScreen
 import com.example.mynumbercardidp.ui.screen.ManualBootScreen
 import com.example.mynumbercardidp.ui.ScreenModeState
 import com.example.mynumbercardidp.ui.UriParameters
 import com.example.mynumbercardidp.ui.theme.MyNumberCardAuthTheme
 import com.example.mynumbercardidp.ui.viewmodel.StateViewModel
-import java.net.URLDecoder
-import java.net.URLEncoder
+import java.util.Properties
 
 class MainActivity : ComponentActivity() {
     var nfcAdapter: NfcAdapter? = null
@@ -34,6 +34,8 @@ class MainActivity : ComponentActivity() {
         Log.i(logTag, "uriParameters: ${uriParameters.toString()}")
         var screenMode = getScreenMode(uriParameters)
         Log.i(logTag, "screenMode: $screenMode")
+        var externalUrls = getExternalUrls()
+        Log.i(logTag, "externalUrls: $externalUrls")
 
         setContent {
             MyNumberCardAuthTheme {
@@ -41,13 +43,15 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = colorScheme.background,
                 ) {
+                    val viewModel: StateViewModel = viewModel(factory = StateViewModel.Factory)
                     if (screenMode == ScreenModeState.ManualBoot){
-                        ManualBootScreen()
+                        viewModel.setExternalUrls(externalUrls)
+                        ManualBootScreen(viewModel)
                     }
                     else {
-                        val viewModel: StateViewModel = viewModel(factory = StateViewModel.Factory)
                         viewModel.changeViewMode(screenMode)
                         viewModel.setUriParameters(uriParameters)
+                        viewModel.setExternalUrls(externalUrls)
                         CertReadScreen(nfcAdapter, activity, viewModel)
                     }
                 }
@@ -79,5 +83,19 @@ class MainActivity : ComponentActivity() {
         else {
             null
         }
+    }
+
+    private fun getExternalUrls():ExternalUrls {
+        val properties = Properties()
+        val inputStream = assets.open("external_urls.properties")
+        properties.load(inputStream)
+        inputStream.close()
+
+        return ExternalUrls(
+            properties.getProperty("inquiryUrl"),
+            properties.getProperty("privacyPolicyUrl"),
+            properties.getProperty("protectionPolicyUrl"),
+            properties.getProperty("termsOfUseUrl")
+        )
     }
 }

@@ -18,6 +18,7 @@ import com.example.mynumbercardidp.KeycloakConnectionApplication
 import com.example.mynumbercardidp.data.HttPStatusCode
 import com.example.mynumbercardidp.data.KeycloakRepository
 import com.example.mynumbercardidp.data.Rfc3447HashPrefix
+import com.example.mynumbercardidp.ui.ExternalUrls
 import com.example.mynumbercardidp.ui.NfcState
 import com.example.mynumbercardidp.ui.KeycloakState
 import com.example.mynumbercardidp.ui.UiState
@@ -220,6 +221,12 @@ class StateViewModel(
     fun setUriParameters(uriParameters: UriParameters?){
         viewModelScope.launch {
             _uiState.update { _uiState.value.copy(uriParameters = uriParameters) }
+        }
+    }
+
+    fun setExternalUrls(externalUrls: ExternalUrls){
+        viewModelScope.launch {
+            _uiState.update { _uiState.value.copy(externalUrls = externalUrls) }
         }
     }
 
