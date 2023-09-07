@@ -165,23 +165,23 @@ class StateViewModel(
     @RequiresApi(Build.VERSION_CODES.O)
     fun myNumberCardAuth(reader: NfcReader, inputPin: String) {
         try {
-            var readCertResult = readCertificate(reader, inputPin)
-            if (readCertResult.status != NfcState.Success){
-                setState(KeycloakState.Error, readCertResult.status)
+            var readCertificateResult = readCertificate(reader, inputPin)
+            if (readCertificateResult.status != NfcState.Success){
+                setState(KeycloakState.Error, readCertificateResult.status)
                 updateProgressViewState(false)
                 return
             }
 
-            var signCertResult = computeSignature(reader, inputPin)
-            if (signCertResult.status != NfcState.Success){
-                setState(KeycloakState.Error, signCertResult.status)
+            var signCertificateResult = computeSignature(reader, inputPin)
+            if (signCertificateResult.status != NfcState.Success){
+                setState(KeycloakState.Error, signCertificateResult.status)
                 updateProgressViewState(false)
                 return
             }
 
             val url = _uiState.value.uriParameters?.action_url!!
 
-            val certificate = readCertResult?.retData!!
+            val certificate = readCertificateResult?.retData!!
             val regex = "^(https?://[^/]+/)".toRegex()
             val jwksUrl = regex.find(url)?.value + "keys/jwks.json"
 
@@ -190,7 +190,7 @@ class StateViewModel(
             val applicantData = URLEncoder.encode(
                 MessageDigest.getInstance("SHA-256").digest(_uiState.value.uriParameters?.nonce!!.toByteArray()).toHexString(),
                 "UTF-8")
-            val sign = Base64.getEncoder().encodeToString(signCertResult?.retData)
+            val sign = Base64.getEncoder().encodeToString(signCertificateResult?.retData)
 
             authenticate(url, mode, jweCertificate, applicantData, sign)
 
