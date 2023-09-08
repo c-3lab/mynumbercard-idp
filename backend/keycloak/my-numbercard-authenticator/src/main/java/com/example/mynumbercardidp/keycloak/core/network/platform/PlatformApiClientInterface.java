@@ -4,6 +4,8 @@ import com.example.mynumbercardidp.keycloak.core.network.AuthenticationRequest;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.keycloak.authentication.AuthenticationFlowContext;
+
 /**
  * このインターフェイスは個人番号カードの公的個人認証部分を利用する認証をしたいユーザー向けです。
  */
@@ -46,4 +48,11 @@ public interface PlatformApiClientInterface {
      * @return プラットフォームレスポンスのデータ構造体インスタンス
      */
     PlatformAuthenticationResponseStructure getPlatformResponse();
+
+    /**
+     * Keycloakのコンテキストを返します。
+     *
+     * @return Keycloakのコンテキストインスタンス
+     */
+    void setContextForDataManager(AuthenticationFlowContext context);
 }

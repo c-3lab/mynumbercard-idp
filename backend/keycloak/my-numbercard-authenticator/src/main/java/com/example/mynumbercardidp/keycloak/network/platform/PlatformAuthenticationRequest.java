@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -78,7 +79,7 @@ public class PlatformAuthenticationRequest {
         private String recipient = "JPKI";
         private String sender;
         @JsonProperty("ts")
-        private String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss.SSS").toString();
+        private String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss.SSS").format(new Date());
 
         protected RequestInfo(final String sender) {
             this.sender = sender;

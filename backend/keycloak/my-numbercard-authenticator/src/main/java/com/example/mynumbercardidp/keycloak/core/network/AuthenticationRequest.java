@@ -79,7 +79,7 @@ public class AuthenticationRequest {
 
     public static enum Filed {
         ACTION_MODE("mode"),
-        USER_AUTHENTICATION_CERTIFICATE(CertificateType.USER_AUTHENTICATION.getName()),
+        ENCRYPTED_USER_AUTHENTICATION_CERTIFICATE(CertificateType.ENCRYPTED_USER_AUTHENTICATION.getName()),
         ENCRYPTED_DIGITAL_SIGNATURE_CERTIFICATE(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE.getName()),
         APPLICANT_DATA("applicantData"),
         SIGN("sign");

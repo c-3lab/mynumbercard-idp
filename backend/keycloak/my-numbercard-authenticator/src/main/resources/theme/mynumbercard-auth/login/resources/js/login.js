@@ -10,99 +10,75 @@ function getMobileOS() {
     return 'other';
 }
 
-function convertFileToBase64(uploadFile, publicKeyElement) {
-    const curFiles = uploadFile.files;
-    if (curFiles.length === 0 |
-        curFiles.length > 1) {
-        return;
-    }
+async function encryptDataAsJWE(data, jwksUrl) {
+    // JWKS形式の公開鍵をダウンロードして公開鍵を読み込み
+    const JWKS = jose.createRemoteJWKSet(jwksUrl);
+    const publicKey = await JWKS({alg: 'RSA-OAEP-256'});
 
+    const jwe = await new jose.EncryptJWT({ 'claim': data })
+        .setProtectedHeader({ alg: 'RSA-OAEP-256', enc: 'A128CBC-HS256' })
+        .setExpirationTime('5m')
+        .encrypt(publicKey);
+
+    return jwe;
+}
+
+function readFile(fileElement) {
     const reader = new FileReader();
-    reader.onload = (event) => {
-        const binary = event.currentTarget.result;
-        const base64Text = btoa(binary);
-
-        publicKeyElement.value = base64Text;
-    }
-
-    for (const file of curFiles) {
-        reader.readAsBinaryString(file);
-    }
+    return new Promise(resolve => {
+        reader.onload = (event) => {
+            resolve(event.currentTarget.result);
+        }
+    
+        reader.readAsBinaryString(fileElement.files[0]);
+    })
 }
 
-function signatureNonce(privKeyFile, signatureElement, nonce) {
-    const curFiles = privKeyFile.files;
-    if (curFiles.length === 0 |
-        curFiles.length > 1) {
-        return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        const rsa = forge.pki.rsa;
-        const md = forge.md.sha256.create();
-        md.update(nonce, 'utf8');
-        let privKey = forge.pki.privateKeyFromPem(event.currentTarget.result);
-        let signature = privKey.sign(md);
-        let base64Text = btoa(signature);
-
-        signatureElement.value = base64Text;
-    }
-
-    for (const file of curFiles) {
-        reader.readAsBinaryString(file);
-    }
-}
-
-function clearX509Files(formData) {
-    formData.delete('x509PrivFileName');
-    formData.delete('x509FileName');
-    formData.delete('certificate');
-}
-
-function setCertificateParameter(mode) {
-    let certificate = document.querySelector('#certificate');
-    if (mode === "login") certificate.name = 'userAuthenticationCertificate';
-    if (mode === "registration" || mode === "replacement") certificate.name = 'encryptedDigitalSignatureCertificate';
+function signatureNonce(nonce, privateKey) {
+    const rsa = forge.pki.rsa;
+    const md = forge.md.sha256.create();
+    md.update(nonce, 'utf8');
+    const key = forge.pki.privateKeyFromPem(privateKey);
+    return btoa(key.sign(md));
 }
 
 function hasDebugParameters() {
-    let applicantData = document.querySelector('input[name="applicantData"][type="hidden"]');
-    let sign = document.querySelector('input[name="sign"][type="hidden"]');
-    let certificate = document.querySelector('#certificate');
-    if (applicantData.value == null ||
-        sign.value == null ||
-        certificate.value == null) return false;
+    const privateKey = document.querySelector('input[name="privateKey"]');
+    const publicCertificate = document.querySelector('input[name="publicCertificate"]');
+    if (privateKey.files.length === 0) return false; 
+    if (publicCertificate.files.length === 0) return false; 
     return true;
 }
 
-function submitWhenDebugMode(event) {
-    if (hasDebugParameters()) {
-        let form = document.querySelector('form#kc-form-login');
-        let mode = event.currentTarget.name;
-        document.querySelector('input[name="mode"][type="hidden"]').value = mode;
-        setCertificateParameter(mode);
-        form.submit();
+async function submitWhenDebugMode(mode) {
+    if (!hasDebugParameters()) return;
+
+    const form = document.querySelector('form#kc-form-login');
+    form.mode.value = mode;
+
+    //  公開鍵をJWEで暗号化してフォームに設定
+    const publicCertificateElement = document.querySelector('#publicCertificate');
+    const publicCertificate = await readFile(publicCertificateElement);
+    const jwksPath = document.querySelector('#jwksPath').value;
+    const jwksUrl = new URL(jwksPath, location.href);
+    const jwe = await encryptDataAsJWE(publicCertificate, jwksUrl);
+    if (mode === 'login') {
+        form.encryptedUserAuthenticationCertificate.value = jwe;
+    } else {
+        form.encryptedDigitalSignatureCertificate.value = jwe;
     }
-}
 
-function enableDebugMode(nonce) {
-    let applicantData = document.querySelector('input[name="applicantData"][type="hidden"]');
-    let nonceHashMd = forge.md.sha256.create();
-    nonceHashMd.update(nonce, 'utf8');
-    applicantData.value = nonceHashMd.digest().toHex();
+    //  nonceをフォームに設定
+    const nonce = document.querySelector('#nonce').value;
+    form.applicantData.value = nonce;
 
-    let x509PrivFile = document.querySelector('#x509PrivFileName');
-    x509PrivFile.addEventListener('change', (event) => {
-        let signature = document.querySelector('input[name="sign"][type="hidden"]');
-        signatureNonce(event.currentTarget, signature, applicantData.value);
-    });
+    //  nonceのハッシュを秘密鍵で署名してフォームに設定
+    const privateKeyElement = document.querySelector('#privateKey');
+    const privateKey = await readFile(privateKeyElement);
+    const signature = signatureNonce(nonce, privateKey);
+    form.sign.value = signature;
 
-    let x509PublicFile = document.querySelector('#x509_upload');
-    x509PublicFile.addEventListener('change', (event) => {
-        let certificate = document.querySelector('#certificate');
-        convertFileToBase64(event.currentTarget, certificate);
-    });
+    form.submit();
 }
 
 function switchEnableActionRegistrationButtons() {
@@ -145,12 +121,6 @@ function moveToLoginBlockWhenDebugModeEnable() {
 }
 
 function addEventListeners() {
-    let form = document.querySelector('form#kc-form-login');
-    form.addEventListener('formdata', (event) => {
-        let formData = event.formData;
-        clearX509Files(formData);
-    });
-
     let openRegistrationButton = document.querySelector('input[name="openRegistration"][type="button"]');
     openRegistrationButton.addEventListener('click', (event) => { onOpenRegistrationButton(); });
 
@@ -162,10 +132,10 @@ function addEventListeners() {
     });
 
     let loginButton = document.querySelector('input[name="login"][type="button"]');
-    loginButton.addEventListener('click', (event) => { onClickActionButton(event); });
+    loginButton.addEventListener('click', () => { onClickActionButton('login'); });
 
     let replacementButton = document.querySelector('input[name="replacement"][type="button"]');
-    replacementButton.addEventListener('click', (event) => { onClickActionButton(event); });
+    replacementButton.addEventListener('click', () => { onClickActionButton('replacement'); });
 
     let agreeTosButton = document.querySelector('input[name="agree-tos"]');
     agreeTosButton.addEventListener('input', (event) => { switchEnableActionRegistrationButtons(); });
@@ -173,5 +143,5 @@ function addEventListeners() {
     agreePpButton.addEventListener('input', (event) => { switchEnableActionRegistrationButtons(); });
 
     let registrationButton = document.querySelector('input[name="registration"][type="button"]');
-    registrationButton.addEventListener('click', (event) => { onClickActionButton(event); });
+    registrationButton.addEventListener('click', () => { onClickActionButton('registration'); });
 }

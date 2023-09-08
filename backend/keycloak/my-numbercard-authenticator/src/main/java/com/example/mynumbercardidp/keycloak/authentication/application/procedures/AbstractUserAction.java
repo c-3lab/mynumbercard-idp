@@ -4,9 +4,9 @@ import com.example.mynumbercardidp.keycloak.authentication.authenticators.browse
 import com.example.mynumbercardidp.keycloak.core.network.AuthenticationRequest;
 import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformApiClientInterface;
 import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformAuthenticationResponseStructure;
+import com.example.mynumbercardidp.keycloak.util.Encryption;
 import com.example.mynumbercardidp.keycloak.util.StringUtil;
 import com.example.mynumbercardidp.keycloak.util.authentication.CurrentConfig;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.authenticators.x509.UserIdentityToModelMapper;
 import org.keycloak.authentication.AuthenticationFlowContext;
@@ -28,25 +28,23 @@ import java.util.Base64;
  */
 public abstract class AbstractUserAction {
 
-    private static final String MESSAGE_DEBUG_MODE_ENABLED = "Debug mode is enabled.";
     private static Logger consoleLogger = Logger.getLogger(AbstractUserAction.class);
 
     /**
-     * 認証ユーザーのセッション情報からNonceをハッシュ化した文字列を取得します。
+     * 認証ユーザーのセッション情報からNonce文字列を取得します。
      *
-     * @param constext 認証フローのコンテキスト
-     * @return Nonceをハッシュ化した文字列
+     * @param context 認証フローのコンテキスト
+     * @return Nonce文字列
      */
-    private static String getSessionNonceHash(final AuthenticationFlowContext context) {
+    private static String getSessionNonce(final AuthenticationFlowContext context) {
         String authNoteName = "nonce";
-        String nonce = context.getAuthenticationSession().getAuthNote(authNoteName);
-        return DigestUtils.sha256Hex(nonce);
+        return context.getAuthenticationSession().getAuthNote(authNoteName);
     }
 
     /**
      * プラットフォームが返したユニークIDからKeycloak内のユーザーを返します。
      * 
-     * @param constext 認証フローのコンテキスト
+     * @param context 認証フローのコンテキスト
      * @param uniqueId プラットフォームが識別したユーザーを特定する一意の文字列
      * @return ユーザーのデータ構造 Keycloak内のユーザーが見つかった場合はユーザーデータ構造、そうでない場合はNull
      * @exception IllegalArgumentException Keycloak内のユーザーを検索中に例外が発生した場合
@@ -63,7 +61,7 @@ public abstract class AbstractUserAction {
     /**
      * デバッグモードの状態を返します。
      *
-     * @param constext 認証フローのコンテキスト
+     * @param context 認証フローのコンテキスト
      * @return 有効の場合はtrue、そうでない場合はfalse
      */
     protected boolean isDebugMode(final AuthenticationFlowContext context) {
@@ -93,41 +91,28 @@ public abstract class AbstractUserAction {
     /**
      * ユーザーリクエストから公開鍵とnonceを利用して、署名した値が文字列と一致するかを検証します。
      *
-     * @param constext 認証フローのコンテキスト
+     * @param context 認証フローのコンテキスト
      * @param platform プラットフォームAPIクライアント
      * @return 検証された場合はtrue、そうでない場合はfalse
      */
-    // Keycloakが発行したnonceをハッシュ化した値とユーザーが自己申告したnonceをハッシュ化した値は異なる可能性がある。
-    // デバッグモードが無効の場合、ユーザーが送ってきたnonceをハッシュ化した値は信用しない。
-    // デバッグモードが有効の場合、検証に失敗した場合はユーザーが送ってきたnonceをハッシュ化した値も比較する。
+    // Keycloakが発行したnonce値とユーザーが自己申告したnonce値は異なる可能性がある。
     protected boolean validateSignature(final AuthenticationFlowContext context,
             final PlatformApiClientInterface platform) {
-        String nonceHash = AbstractUserAction.getSessionNonceHash(context);
-        AbstractUserAction.consoleLogger.debug("Nonce hash: " + nonceHash);
+        String nonce = AbstractUserAction.getSessionNonce(context);
+        AbstractUserAction.consoleLogger.debug("Nonce: " + nonce);
 
         AuthenticationRequest userRequest = platform.getUserRequest();
         userRequest.validateHasValues();
         String applicantData = userRequest.getApplicantData();
         AbstractUserAction.consoleLogger.debug("Applicant data: " + applicantData);
 
-        if (!nonceHash.toLowerCase().equals(applicantData.toLowerCase())) {
-            if (!isDebugMode(context)) {
-                return false;
-            }
-            String message = "Applicant data does not equal the nonce hash.";
-            AbstractUserAction.consoleLogger.info(MESSAGE_DEBUG_MODE_ENABLED + " " + message);
+        if (!nonce.equals(applicantData)) {
+            return false;
         }
 
         String certificate = platform.getUserRequest().getCertificate();
         String sign = platform.getUserRequest().getSign();
-        if (!isDebugMode(context)) {
-            return validateSignature(sign, certificate, nonceHash.toLowerCase()) ||
-                    validateSignature(sign, certificate, nonceHash.toUpperCase());
-        } else {
-            return validateSignature(sign, certificate, nonceHash.toLowerCase()) ||
-                    validateSignature(sign, certificate, nonceHash.toUpperCase()) ||
-                    validateSignature(sign, certificate, applicantData);
-        }
+        return validateSignature(context, sign, certificate, nonce);
     }
 
     /**
@@ -135,18 +120,17 @@ public abstract class AbstractUserAction {
      *
      * 例外が発生した場合は握り潰し、falseを返します。
      *
-     * @param signature                X.509に準拠する鍵で文字列に署名した結果
-     * @param certificateBase64Content 公開鍵を基本型Base64でエンコードした値
-     * @param nonceHash                Nonceをハッシュ化した文字列
+     * @param signature          X.509に準拠する鍵で文字列に署名した結果
+     * @param certificateContent 公開鍵をJWEでエンコードした値
+     * @param nonce              Nonce文字列
      * @return 検証された場合はtrue、そうでない場合はfalse
      */
-    // [NOTE] 署名用証明書はJWE形式のデータ、利用者用証明書は生のデータで受け取るため、このメソッドは置き換えられる可能性がある。
-    private boolean validateSignature(final String signature, final String certificateBase64Content,
-            final String nonceHash) {
+    private boolean validateSignature(final AuthenticationFlowContext context, final String signature, 
+        final String certificateContent, final String nonce) {
         try {
-            byte[] certificateBinary = Base64.getDecoder().decode(certificateBase64Content.getBytes("utf-8"));
+            byte[] certificateBytes = Encryption.decrypt(certificateContent, "theme/mynumbercard-auth/private.pem").get("claim").asText().getBytes("utf-8");
             Certificate certificate = null;
-            try (InputStream inputStream = new ByteArrayInputStream(certificateBinary)) {
+            try (InputStream inputStream = new ByteArrayInputStream(certificateBytes)) {
                 certificate = CertificateFactory.getInstance("X.509").generateCertificate(inputStream);
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
@@ -154,11 +138,11 @@ public abstract class AbstractUserAction {
 
             Signature engine = Signature.getInstance("SHA256withRSA");
             engine.initVerify(certificate);
-            engine.update(nonceHash.getBytes("utf-8"));
+            engine.update(nonce.getBytes());
             return engine.verify(Base64.getDecoder().decode(signature.getBytes("utf-8")));
         } catch (Exception e) {
             // 例外を握り潰す。
-            AbstractUserAction.consoleLogger.debug("Catched exception at method validateSignature. " + e.getMessage());
+            AbstractUserAction.consoleLogger.warn("Caught exception at method validateSignature." + e.getMessage(), e);
             return false;
         }
     }

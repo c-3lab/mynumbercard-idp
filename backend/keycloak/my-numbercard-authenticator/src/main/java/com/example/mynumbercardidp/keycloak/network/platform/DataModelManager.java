@@ -1,8 +1,11 @@
 package com.example.mynumbercardidp.keycloak.network.platform;
 
 import com.example.mynumbercardidp.keycloak.core.network.platform.CertificateType;
+import com.example.mynumbercardidp.keycloak.authentication.authenticators.browser.SpiConfigProperty;
 import com.example.mynumbercardidp.keycloak.core.network.AuthenticationRequest;
 import com.example.mynumbercardidp.keycloak.core.network.platform.PlatformAuthenticationResponseStructure;
+import com.example.mynumbercardidp.keycloak.util.Encryption;
+import com.example.mynumbercardidp.keycloak.util.authentication.CurrentConfig;
 import com.example.mynumbercardidp.keycloak.core.network.platform.AbstractDataModelManager;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
@@ -14,6 +17,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.jboss.logging.Logger;
+import org.keycloak.authentication.AuthenticationFlowContext;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -24,6 +28,12 @@ public class DataModelManager extends AbstractDataModelManager {
     private static Logger consoleLogger = Logger.getLogger(DataModelManager.class);
     private static ObjectMapper objectMapper = new ObjectMapper();
     private static JsonFactory jsonFactory = new JsonFactory();
+    private AuthenticationFlowContext context;
+    private String decryptedJWE = null;
+
+    void setContext(final AuthenticationFlowContext context) {
+        this.context = context;
+    }
 
     @Override
     protected AuthenticationRequest toUserRequest(final MultivaluedMap<String, String> formData) {
@@ -37,7 +47,7 @@ public class DataModelManager extends AbstractDataModelManager {
 
         switch (userRequest.getActionMode().toLowerCase()) {
             case "login":
-                userRequest.setCertificateType(CertificateType.USER_AUTHENTICATION);
+                userRequest.setCertificateType(CertificateType.ENCRYPTED_USER_AUTHENTICATION);
                 break;
             case "registration":
                 // フォールスルー
@@ -46,17 +56,31 @@ public class DataModelManager extends AbstractDataModelManager {
                 break;
         }
         String certificateTypeName = userRequest.getCertificateType().getName();
+        // プラットフォーム通信時に証明書の元データを利用するため、decrypt済みのデータを別で保管しておく
+        try {
+            this.decryptedJWE = Encryption.decrypt(formData.getFirst(certificateTypeName), "theme/mynumbercard-auth/private.pem").get("claim").asText();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         userRequest.setCertificate(formData.getFirst(certificateTypeName));
         return userRequest;
     }
 
     @Override
-    protected Object toPlatformRequest(final AuthenticationRequest userRequestStructure) {
+    protected Object toPlatformRequest(final AuthenticationRequest userRequest) {
         String requestSender = super.getPlatformRequestSender();
         PlatformAuthenticationRequest platform = new PlatformAuthenticationRequest(requestSender);
-        AuthenticationRequest userRequest = (AuthenticationRequest) userRequestStructure;
+        String encryptedJWE = null;
+        try {
+            String platformRootUrl = CurrentConfig.getValue(context, SpiConfigProperty.CertificateValidatorRootUri.CONFIG.getName());
+            String jwksUrl = platformRootUrl + "/key/jwks.json";
+            encryptedJWE = Encryption.encrypt(context.getSession(), this.decryptedJWE, jwksUrl);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
         platform.setCertificateType(userRequest.getCertificateType())
-                .setCertificate(userRequest.getCertificate())
+                .setCertificate(encryptedJWE)
                 .setApplicantData(userRequest.getApplicantData())
                 .setSign(userRequest.getSign());
         return (Object) platform;

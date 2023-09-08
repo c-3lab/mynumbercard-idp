@@ -19,6 +19,7 @@ public class ActionResolver extends AbstractActionResolver {
     @Override
     public void executeUserAction(final AuthenticationFlowContext context) {
         PlatformApiClientInterface platform = super.createPlatform(context);
+        platform.setContextForDataManager(context);
         ActionType userActionMode = Enum.valueOf(ActionType.class,
                 platform.getUserRequest().getActionMode().toUpperCase());
         switch (userActionMode) {

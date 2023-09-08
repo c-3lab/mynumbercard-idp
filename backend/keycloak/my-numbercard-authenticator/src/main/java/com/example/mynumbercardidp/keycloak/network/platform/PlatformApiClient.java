@@ -8,6 +8,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.jboss.logging.Logger;
+import org.keycloak.authentication.AuthenticationFlowContext;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -51,5 +52,10 @@ public class PlatformApiClient extends AbstractPlatformApiClient {
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    public void setContextForDataManager(AuthenticationFlowContext context) {
+        DataModelManager dataModelManager = (DataModelManager) super.getDataModelManager();
+        dataModelManager.setContext(context);
     }
 }
