@@ -180,6 +180,7 @@ class StateViewModel(
             }
 
             val url = _uiState.value.uriParameters?.action_url!!
+            val nonce = _uiState.value.uriParameters?.nonce!!
 
             val certificate = readCertificateResult?.retData!!
             val regex = "^(https?://[^/]+/)".toRegex()
@@ -187,9 +188,7 @@ class StateViewModel(
 
             val mode = URLEncoder.encode(_uiState.value.uriParameters?.mode!!, "UTF-8")
             val jweCertificate = encrypt(certificate, jwksUrl)
-            val applicantData = URLEncoder.encode(
-                MessageDigest.getInstance("SHA-256").digest(_uiState.value.uriParameters?.nonce!!.toByteArray()).toHexString(),
-                "UTF-8")
+            val applicantData = nonce
             val sign = Base64.getEncoder().encodeToString(signCertificateResult?.retData)
 
             authenticate(url, mode, jweCertificate, applicantData, sign)
@@ -344,9 +343,8 @@ class StateViewModel(
         }
 
         // 署名対象のデータをハッシュ化
-        val nonceHash = MessageDigest.getInstance("SHA-256").digest(_uiState.value.uriParameters?.nonce!!.toByteArray(Charset.defaultCharset())).toHexString()
-        val digest = MessageDigest.getInstance("SHA-256").digest(nonceHash.toByteArray())
-        Log.d(logTag, "digest: ${digest.toHexString()}")
+        val digest = MessageDigest.getInstance("SHA-256").digest(_uiState.value.uriParameters?.nonce!!.toByteArray(Charset.defaultCharset()))
+        Log.d(logTag, "nonceHash: ${digest.toHexString()}")
 
         //RSA署名のハッシュプレフィックス
         val hashPrefix = Rfc3447HashPrefix.SHA256.toString()
@@ -376,8 +374,7 @@ class StateViewModel(
         }
 
         // 署名対象のデータをハッシュ化
-        val nonceHash = MessageDigest.getInstance("SHA-256").digest(_uiState.value.uriParameters?.nonce!!.toByteArray(Charset.defaultCharset())).toHexString()
-        val digest = MessageDigest.getInstance("SHA-256").digest(nonceHash.toByteArray())
+        val digest = MessageDigest.getInstance("SHA-256").digest(_uiState.value.uriParameters?.nonce!!.toByteArray(Charset.defaultCharset()))
         Log.d(logTag, "digest: ${digest.toHexString()}")
 
         //RSA署名のハッシュプレフィックス
