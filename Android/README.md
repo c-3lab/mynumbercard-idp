@@ -134,28 +134,18 @@ realm Oidp＞Configure＞Realm settings＞General>Frontend URL
     realm Oidp＞Configure＞Authentication＞my number card>X509 Relay Authenticatorの右にあるSettings（歯車のアイコン）＞Run URI of Android application  
 ポート80の`https://XXXXXXXXXX.XXXXX.XXX`
 
-5. keycloak.jsonを設定します。  
-[backend/examples/sample-rp/docker01/keycloak.json](../backend/examples/sample-rp/docker01/keycloak.json)  
-または  
-[backend/examples/sample-rp/docker02/keycloak.json](../backend/examples/sample-rp/docker02/keycloak.json)  
-を開き、auth-server-urlにポート8080の`https://XXXXXXXXXX.XXXXX.XXX` を設定します。
+5. .envを設定します。  
+../backend/.env   
+を開き、RP1_BASEURLにポート3000、RP2_BASEURLにポート3001、KEYCLOAK_URLにポート8080の`https://XXXXXXXXXX.XXXXX.XXX` を設定します。
 
-    ```json
-      "auth-server-url": "https://XXXXXXXXXX.XXXXX.XXX",
-    ```
+```shell
+  RP1_BASEURL=https://XXXXXXXXXX.XXXXX.XXX
+  RP2_BASEURL=https://XXXXXXXXXX.XXXXX.XXX
+  KEYCLOAK_URL=https://XXXXXXXXXX.XXXXX.XXX
+```
 
-6. assign_setting.jsonを設定します。  
-[backend/examples/sample-rp/docker01/assign_setting.json](../backend/examples/sample-rp/docker01/assign_setting.json)  
-または  
-[backend/examples/sample-rp/docker02/assign_setting.json](../backend/examples/sample-rp/docker02/assign_setting.json)  
-を開き、URLにポート8080の`https://XXXXXXXXXX.XXXXX.XXX` を設定します。
-
-    ```json
-      "URL": "https://XXXXXXXXXX.XXXXX.XXX/realms/OIdp/custom-attribute/assign",
-    ```
-
-    ※各ポートの`https://XXXXXXXXXX.XXXXX.XXX`はngrok startを行うごとに切り替わりますので、都度、[Android/MyNumberCardAuth/app/src/main/AndroidManifest.xml](./MyNumberCardAuth/app/src/main/AndroidManifest.xml)と、  
-    上記手順の設定値(keycloak.json、assign_setting.json、Keycloak管理コンソールのFrontend URL、Run URI of Android application)を書き換えてください。
+※各ポートの`https://XXXXXXXXXX.XXXXX.XXX`はngrok startを行うごとに切り替わりますので、都度、[Android/MyNumberCardAuth/app/src/main/AndroidManifest.xml](./MyNumberCardAuth/app/src/main/AndroidManifest.xml)と、  
+上記手順の設定値(.env、Keycloak管理コンソールのFrontend URL、Run URI of Android application)を書き換えてください。
 
 ## 動作確認
 Webサービスからログイン処理を行い、認証成功画面を開くまでの動作確認手順です。
