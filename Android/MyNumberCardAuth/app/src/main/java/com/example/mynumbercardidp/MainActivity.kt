@@ -22,7 +22,6 @@ import java.util.Properties
 
 class MainActivity : ComponentActivity() {
     var nfcAdapter: NfcAdapter? = null
-    var activity = this@MainActivity
     private val logTag = "MainActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +51,7 @@ class MainActivity : ComponentActivity() {
                         viewModel.changeViewMode(screenMode)
                         viewModel.setUriParameters(uriParameters)
                         viewModel.setExternalUrls(externalUrls)
-                        CertReadScreen(nfcAdapter, activity, viewModel)
+                        CertReadScreen(nfcAdapter, viewModel)
                     }
                 }
             }

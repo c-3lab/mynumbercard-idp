@@ -6,7 +6,9 @@ data class UiState(
     var screenMode: ScreenModeState = ScreenModeState.ManualBoot,
     var uriParameters: UriParameters? = null,
     var nfcState: NfcState? = NfcState.None,
-    var externalUrls: ExternalUrls? = null
+    var externalUrls: ExternalUrls? = null,
+    var nfcReadingTitle: String = "",
+    var nfcReadingMessage: String = "",
 ) {
     companion object
     {
