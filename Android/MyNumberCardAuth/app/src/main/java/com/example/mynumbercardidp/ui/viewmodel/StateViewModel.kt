@@ -184,7 +184,7 @@ class StateViewModel(
 
             val certificate = readCertificateResult?.retData!!
             val regex = "^(https?://[^/]+/)".toRegex()
-            val jwksUrl = regex.find(url)?.value + "keys/jwks.json"
+            val jwksUrl = regex.find(url)?.value + "key/jwks.json"
 
             val mode = URLEncoder.encode(_uiState.value.uriParameters?.mode!!, "UTF-8")
             val jweCertificate = encrypt(certificate, jwksUrl)
