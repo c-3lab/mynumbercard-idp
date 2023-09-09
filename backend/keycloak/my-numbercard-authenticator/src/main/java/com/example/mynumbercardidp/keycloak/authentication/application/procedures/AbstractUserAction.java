@@ -10,12 +10,15 @@ import com.example.mynumbercardidp.keycloak.util.authentication.CurrentConfig;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.authenticators.x509.UserIdentityToModelMapper;
 import org.keycloak.authentication.AuthenticationFlowContext;
+import org.keycloak.crypto.KeyUse;
+import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.security.Key;
 import java.security.Signature;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
@@ -110,9 +113,17 @@ public abstract class AbstractUserAction {
             return false;
         }
 
-        String certificate = platform.getUserRequest().getCertificate();
+        String jweCertificate = platform.getUserRequest().getCertificate();
         String sign = platform.getUserRequest().getSign();
-        return validateSignature(context, sign, certificate, nonce);
+
+        try {
+            RealmModel realm = context.getRealm();
+            Key privateKey = context.getSession().keys().getActiveKey(realm, KeyUse.ENC, "RSA-OAEP-256").getPrivateKey();
+            String certificateContent = Encryption.decrypt(jweCertificate, privateKey).get("claim").asText();
+            return validateSignature(sign, certificateContent, nonce);
+        } catch(Exception e) {
+            return false;
+        }
     }
 
     /**
@@ -121,16 +132,14 @@ public abstract class AbstractUserAction {
      * 例外が発生した場合は握り潰し、falseを返します。
      *
      * @param signature          X.509に準拠する鍵で文字列に署名した結果
-     * @param certificateContent 公開鍵をJWEでエンコードした値
+     * @param certificateContent 公開鍵
      * @param nonce              Nonce文字列
      * @return 検証された場合はtrue、そうでない場合はfalse
      */
-    private boolean validateSignature(final AuthenticationFlowContext context, final String signature, 
-        final String certificateContent, final String nonce) {
+    private boolean validateSignature(final String signature, final String certificateContent, final String nonce) {
         try {
-            byte[] certificateBytes = Encryption.decrypt(certificateContent, "theme/mynumbercard-auth/private.pem").get("claim").asText().getBytes("utf-8");
             Certificate certificate = null;
-            try (InputStream inputStream = new ByteArrayInputStream(certificateBytes)) {
+            try (InputStream inputStream = new ByteArrayInputStream(certificateContent.getBytes("utf-8"))) {
                 certificate = CertificateFactory.getInstance("X.509").generateCertificate(inputStream);
             } catch (IOException e) {
                 throw new UncheckedIOException(e);

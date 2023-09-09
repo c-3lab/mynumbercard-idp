@@ -53,7 +53,7 @@
                 }
             });
         </script>
-        <input type="hidden" id="jwksPath" value="${url.resourcesPath}/key/jwks.json" />
+        <input type="hidden" id="realm" value="${realm.name!''}" />
         <input type="hidden" id="nonce" value="${nonce!''}" />
         <form id="kc-form-login" onsubmit="login.disabled = true; return true;" action="${url.loginAction}" method="post">
             <input type="hidden" name="mode" />

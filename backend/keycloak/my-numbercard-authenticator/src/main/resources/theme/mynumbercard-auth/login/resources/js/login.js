@@ -12,8 +12,10 @@ function getMobileOS() {
 
 async function encryptDataAsJWE(data, jwksUrl) {
     // JWKS形式の公開鍵をダウンロードして公開鍵を読み込み
-    const JWKS = jose.createRemoteJWKSet(jwksUrl);
-    const publicKey = await JWKS({alg: 'RSA-OAEP-256'});
+    const response = await fetch(jwksUrl);
+    const JWKS = await response.json();
+    const jwk = JWKS.keys.find(jwk => jwk.alg === 'RSA-OAEP-256');
+    const publicKey = await jose.importJWK(jwk);
 
     const jwe = await new jose.EncryptJWT({ 'claim': data })
         .setProtectedHeader({ alg: 'RSA-OAEP-256', enc: 'A128CBC-HS256' })
@@ -59,7 +61,8 @@ async function submitWhenDebugMode(mode) {
     //  公開鍵をJWEで暗号化してフォームに設定
     const publicCertificateElement = document.querySelector('#publicCertificate');
     const publicCertificate = await readFile(publicCertificateElement);
-    const jwksPath = document.querySelector('#jwksPath').value;
+    const realm = document.querySelector('#realm').value;
+    const jwksPath = `/realms/${realm}/protocol/openid-connect/certs`;
     const jwksUrl = new URL(jwksPath, location.href);
     const jwe = await encryptDataAsJWE(publicCertificate, jwksUrl);
     if (mode === 'login') {

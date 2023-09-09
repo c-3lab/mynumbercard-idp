@@ -18,10 +18,13 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
+import org.keycloak.crypto.KeyUse;
+import org.keycloak.models.RealmModel;
 
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.security.Key;
 import javax.ws.rs.core.MultivaluedMap;
 
 public class DataModelManager extends AbstractDataModelManager {
@@ -58,7 +61,9 @@ public class DataModelManager extends AbstractDataModelManager {
         String certificateTypeName = userRequest.getCertificateType().getName();
         // プラットフォーム通信時に証明書の元データを利用するため、decrypt済みのデータを別で保管しておく
         try {
-            this.decryptedJWE = Encryption.decrypt(formData.getFirst(certificateTypeName), "theme/mynumbercard-auth/private.pem").get("claim").asText();
+            RealmModel realm = this.context.getRealm();
+            Key privateKey = context.getSession().keys().getActiveKey(realm, KeyUse.ENC, "RSA-OAEP-256").getPrivateKey();
+            this.decryptedJWE = Encryption.decrypt(formData.getFirst(certificateTypeName), privateKey).get("claim").asText();
         } catch (Exception e) {
             e.printStackTrace();
         }
