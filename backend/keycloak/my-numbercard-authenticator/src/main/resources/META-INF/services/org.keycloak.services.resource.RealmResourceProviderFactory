@@ -1,1 +1,2 @@
 com.example.mynumbercardidp.keycloak.rest.CustomAttributeProviderFactory
+com.example.mynumbercardidp.keycloak.rest.userinfo.replacement.UserInfoReplacementProviderFactory
