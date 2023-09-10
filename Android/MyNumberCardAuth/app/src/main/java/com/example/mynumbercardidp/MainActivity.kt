@@ -12,7 +12,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mynumbercardidp.ui.ExternalUrls
-import com.example.mynumbercardidp.ui.ApduCommands
 import com.example.mynumbercardidp.ui.screen.CertReadScreen
 import com.example.mynumbercardidp.ui.screen.ManualBootScreen
 import com.example.mynumbercardidp.ui.ScreenModeState
@@ -20,6 +19,17 @@ import com.example.mynumbercardidp.ui.UriParameters
 import com.example.mynumbercardidp.ui.theme.MyNumberCardAuthTheme
 import com.example.mynumbercardidp.ui.viewmodel.StateViewModel
 import java.util.Properties
+
+object ApduCommands {
+    var selectJpkiAp: String = ""
+    var selectUserAuthenticationPin: String = ""
+    var selectDigitalSignaturePin: String = ""
+    var computeDigitalSignature: String = ""
+    var selectUserAuthenticationPrivate: String = ""
+    var selectDigitalSignaturePrivate: String = ""
+    var selectUserAuthentication: String = ""
+    var selectDigitalSignature: String = ""
+}
 
 class MainActivity : ComponentActivity() {
     var nfcAdapter: NfcAdapter? = null
@@ -36,8 +46,8 @@ class MainActivity : ComponentActivity() {
         Log.i(logTag, "screenMode: $screenMode")
         var externalUrls = getExternalUrls()
         Log.i(logTag, "externalUrls: $externalUrls")
-        var apduCommands = getApduCommands()
-        Log.i(logTag, "apduCommands: $apduCommands")
+        loadApduCommands()
+        Log.i(logTag, "apduCommands: $ApduCommands")
 
         setContent {
             MyNumberCardAuthTheme {
@@ -54,8 +64,6 @@ class MainActivity : ComponentActivity() {
                         viewModel.changeViewMode(screenMode)
                         viewModel.setUriParameters(uriParameters)
                         viewModel.setExternalUrls(externalUrls)
-                        CertReadScreen(nfcAdapter, viewModel)
-                        viewModel.setApduCommands(apduCommands)
                         CertReadScreen(nfcAdapter, viewModel)
                     }
                 }
@@ -103,21 +111,19 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    private fun getApduCommands(): ApduCommands {
+    private fun loadApduCommands(){
         val properties = Properties()
         val inputStream = assets.open("apdu_commands.properties")
         properties.load(inputStream)
         inputStream.close()
 
-        return ApduCommands(
-            properties.getProperty("selectJpkiAp"),
-            properties.getProperty("selectUserAuthenticationPin"),
-            properties.getProperty("selectDigitalSignaturePin"),
-            properties.getProperty("computeDigitalSignature"),
-            properties.getProperty("selectUserAuthenticationPrivate"),
-            properties.getProperty("selectDigitalSignaturePrivate"),
-            properties.getProperty("selectUserAuthentication"),
-            properties.getProperty("selectDigitalSignature"),
-        )
+        ApduCommands.selectJpkiAp = properties.getProperty("selectJpkiAp")
+        ApduCommands.selectUserAuthenticationPin = properties.getProperty("selectUserAuthenticationPin")
+        ApduCommands.selectDigitalSignaturePin = properties.getProperty("selectDigitalSignaturePin")
+        ApduCommands.computeDigitalSignature = properties.getProperty("computeDigitalSignature")
+        ApduCommands.selectUserAuthenticationPrivate = properties.getProperty("selectUserAuthenticationPrivate")
+        ApduCommands.selectDigitalSignaturePrivate = properties.getProperty("selectDigitalSignaturePrivate")
+        ApduCommands.selectUserAuthentication = properties.getProperty("selectUserAuthentication")
+        ApduCommands.selectDigitalSignature = properties.getProperty("selectDigitalSignature")
     }
 }

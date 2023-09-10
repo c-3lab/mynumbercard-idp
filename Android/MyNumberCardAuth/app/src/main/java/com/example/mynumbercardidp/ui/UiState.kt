@@ -9,7 +9,6 @@ data class UiState(
     var externalUrls: ExternalUrls? = null,
     var nfcReadingTitle: String = "",
     var nfcReadingMessage: String = "",
-    var apduCommands: ApduCommands? = null,
 ) {
     companion object
     {
@@ -53,15 +52,4 @@ data class ExternalUrls(
     val privacyPolicy: String? = "",
     val protectionPolicy: String? = "",
     val termsOfUse: String? = "",
-)
-
-data class ApduCommands(
-    val selectJpkiAp: String? = "",
-    val selectUserAuthenticationPin: String? = "",
-    val selectDigitalSignaturePin: String? = "",
-    val computeDigitalSignature: String? = "",
-    val selectUserAuthenticationPrivate: String? = "",
-    val selectDigitalSignaturePrivate: String? = "",
-    val selectUserAuthentication: String? = "",
-    val selectDigitalSignature: String? = "",
 )
