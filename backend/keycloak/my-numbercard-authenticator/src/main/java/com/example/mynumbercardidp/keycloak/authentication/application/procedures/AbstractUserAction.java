@@ -73,7 +73,7 @@ public abstract class AbstractUserAction {
         if (StringUtil.isEmpty(value)) {
             return false;
         }
-        return Boolean.parseBoolean(value.toLowerCase());
+        return Boolean.parseBoolean(value);
     }
 
     /**
@@ -148,7 +148,7 @@ public abstract class AbstractUserAction {
             Signature engine = Signature.getInstance("SHA256withRSA");
             engine.initVerify(certificate);
             engine.update(nonce.getBytes());
-            return engine.verify(Base64.getDecoder().decode(signature.getBytes("utf-8")));
+            return engine.verify(Base64.getDecoder().decode(signature));
         } catch (Exception e) {
             // 例外を握り潰す。
             AbstractUserAction.consoleLogger.warn("Caught exception at method validateSignature." + e.getMessage(), e);
