@@ -122,6 +122,8 @@ public abstract class AbstractUserAction {
             String certificateContent = Encryption.decrypt(jweCertificate, privateKey).get("claim").asText();
             return validateSignature(sign, certificateContent, nonce);
         } catch(Exception e) {
+            // 例外を握り潰す。
+            AbstractUserAction.consoleLogger.warn("Caught exception at method validateSignature." + e.getMessage(), e);
             return false;
         }
     }
