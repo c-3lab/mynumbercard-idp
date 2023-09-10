@@ -45,7 +45,7 @@
 		9FCA69B22A4BEE24008AC285 /* NFCReadingForSignatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReadingForSignatureView.swift; sourceTree = "<group>"; };
 		9FE5928E2A57E91B000C3569 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9FE592902A57E91F000C3569 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		9FF1B6F22AAD83FF00793DD6 /* MyNumberCardAuth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyNumberCardAuth.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9FF1B6F72AAD9EB100793DD6 /* MyNumberCardAuth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyNumberCardAuth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD80228C29F0B402009EA409 /* MyNumberCardAuthApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNumberCardAuthApp.swift; sourceTree = "<group>"; };
 		AD80228E29F0B402009EA409 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		AD80229029F0B403009EA409 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -65,6 +65,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9F931D902AA6FE1A009BA06A /* TRETJapanNFCReader-MIFARE-IndividualNumber in Frameworks */,
+				9FF1B6F62AAD9E9200793DD6 /* JOSESwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,7 +85,7 @@
 			children = (
 				AD80228B29F0B402009EA409 /* MyNumberCardAuth */,
 				AD80229D29F0B666009EA409 /* Frameworks */,
-				9FF1B6F22AAD83FF00793DD6 /* MyNumberCardAuth.app */,
+				9FF1B6F72AAD9EB100793DD6 /* MyNumberCardAuth.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -169,9 +170,10 @@
 			name = MyNumberCardAuth;
 			packageProductDependencies = (
 				9F931D8F2AA6FE1A009BA06A /* TRETJapanNFCReader-MIFARE-IndividualNumber */,
+				9FF1B6F52AAD9E9200793DD6 /* JOSESwift */,
 			);
 			productName = MyNumberCardAuth;
-			productReference = 9FF1B6F22AAD83FF00793DD6 /* MyNumberCardAuth.app */;
+			productReference = 9FF1B6F72AAD9EB100793DD6 /* MyNumberCardAuth.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
