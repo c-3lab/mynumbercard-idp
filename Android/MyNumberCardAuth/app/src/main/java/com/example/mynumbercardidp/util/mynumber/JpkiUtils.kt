@@ -9,36 +9,18 @@ class JpkiUtils(private val reader: NfcReader) {
         private const val headerSize = 4 //データサイズなどの情報部が格納されている先頭部のバイト数
     }
 
-    fun lookupAuthPin(efid: String): Int {
+    fun lookupPin(efid: String): Int {
         reader.selectEF(efid.hexToByteArray())
         return reader.lookupPin()
     }
 
-    fun verifyAuthPin(efid: String, pin: String): Boolean {
+    fun verifyPin(efid: String, pin: String): Boolean {
         reader.selectEF(efid.hexToByteArray())
         return reader.verify(pin)
     }
 
-    fun lookupSignPin(efid: String): Int {
+    fun readCertificate(efid: String): ByteArray {
         reader.selectEF(efid.hexToByteArray())
-        return reader.lookupPin()
-    }
-
-    fun verifySignPin(efid: String, pin: String): Boolean {
-        reader.selectEF(efid.hexToByteArray())
-        return reader.verify(pin)
-    }
-
-    fun readCertificateUserVerification(efid: String): ByteArray {
-        return readCertificate(efid.hexToByteArray())
-    }
-
-    fun readCertificateSign(efid: String): ByteArray {
-        return readCertificate(efid.hexToByteArray())
-    }
-
-    private fun readCertificate(efid: ByteArray): ByteArray {
-        reader.selectEF(efid)
 
         // 読み込むべきサイズを取得するため、先頭4バイト取得
         val header = reader.readBinary(headerSize)
@@ -64,13 +46,8 @@ class JpkiUtils(private val reader: NfcReader) {
         return data
     }
 
-    fun authSignature(efid: String, commandArg: String, nonce: ByteArray): ByteArray {
+    fun computeSignature(efid: String, commandArg: String, nonce: ByteArray): ByteArray {
         reader.selectEF(efid.hexToByteArray())
-        return reader.signature(commandArg.toUShort(16), nonce)
-    }
-
-    fun signCertSignature(efid: String, commandArg: String, nonce: ByteArray): ByteArray {
-        reader.selectEF(efid.hexToByteArray())
-        return reader.signature(commandArg.toUShort(16), nonce)
+        return reader.computeSignature(commandArg.toUShort(16), nonce)
     }
 }

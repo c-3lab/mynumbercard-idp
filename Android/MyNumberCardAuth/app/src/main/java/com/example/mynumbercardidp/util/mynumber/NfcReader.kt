@@ -102,7 +102,7 @@ class NfcReader(nfcTag: Tag) {
         return data
     }
 
-    fun signature(commandArg:UShort, data: ByteArray): ByteArray {
+    fun computeSignature(commandArg:UShort, data: ByteArray): ByteArray {
         // コマンド引数の指定値を上位バイトと、下位バイトに変換
         val p1 = ((commandArg.toULong() shr 8) and 0xFFu).toByte()
         val p2 = (commandArg.toULong() and 0xFFu).toByte()
