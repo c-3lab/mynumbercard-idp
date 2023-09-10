@@ -33,16 +33,8 @@ class JpkiUtils(private val reader: NfcReader) {
         return readCertificate(efid.hexToByteArray())
     }
 
-    fun readCertificateUserVerificationCA(): ByteArray {
-        return readCertificate("000B".hexToByteArray())
-    }
-
     fun readCertificateSign(efid: String): ByteArray {
         return readCertificate(efid.hexToByteArray())
-    }
-
-    fun readCertificateSignCA(): ByteArray {
-        return readCertificate("0001".hexToByteArray())
     }
 
     private fun readCertificate(efid: ByteArray): ByteArray {
