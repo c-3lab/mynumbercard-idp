@@ -44,7 +44,7 @@
 		9FCA69B22A4BEE24008AC285 /* NFCReadingForSignatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReadingForSignatureView.swift; sourceTree = "<group>"; };
 		9FE5928E2A57E91B000C3569 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9FE592902A57E91F000C3569 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		9FF1B6F02AAD832800793DD6 /* MyNumberCardAuth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = MyNumberCardAuth.app; path = "/Users/abelstaff/Desktop/split_mynumbercard-idp/iOS/MyNumberCardAuth/build/Debug-iphoneos/MyNumberCardAuth.app"; sourceTree = "<absolute>"; };
+		9FF1B6F22AAD83FF00793DD6 /* MyNumberCardAuth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyNumberCardAuth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD80228C29F0B402009EA409 /* MyNumberCardAuthApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNumberCardAuthApp.swift; sourceTree = "<group>"; };
 		AD80228E29F0B402009EA409 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		AD80229029F0B403009EA409 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -83,6 +83,7 @@
 			children = (
 				AD80228B29F0B402009EA409 /* MyNumberCardAuth */,
 				AD80229D29F0B666009EA409 /* Frameworks */,
+				9FF1B6F22AAD83FF00793DD6 /* MyNumberCardAuth.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -169,7 +170,7 @@
 				9F931D8F2AA6FE1A009BA06A /* TRETJapanNFCReader-MIFARE-IndividualNumber */,
 			);
 			productName = MyNumberCardAuth;
-			productReference = 9FF1B6F02AAD832800793DD6 /* MyNumberCardAuth.app */;
+			productReference = 9FF1B6F22AAD83FF00793DD6 /* MyNumberCardAuth.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -396,7 +397,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.abelsoft.MyNumberCardAuth;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.MyNumberCardAuth;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -428,7 +429,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.abelsoft.MyNumberCardAuth;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.MyNumberCardAuth;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
