@@ -15,7 +15,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
     private var individualNumberCardSignatureType: IndividualNumberCardSignatureType?
     private var actionURL: String?
     private var reader: IndividualNumberReaderExtension!
-
+    
     init(authenticationController: AuthenticationController) {
         self.authenticationController = authenticationController
     }
@@ -71,7 +71,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
     
     private func computeDigitalSignatureForUserVerification(userAuthenticationPIN: String, dataToSign: String) {
         let dataToSignByteArray = [UInt8](dataToSign.utf8)
-        self.reader = IndividualNumberReader(delegate: self)
+        self.reader = IndividualNumberReaderExtension(delegate: self)
         // 以下処理はNFC読み取りが非同期で行われ、完了するとindividualNumberReaderSessionが呼び出される
         reader.computeDigitalSignature(signatureType: individualNumberCardSignatureType!,
                                        pin: userAuthenticationPIN,
@@ -129,6 +129,53 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
         }
     }
     
+=======
+        self.reader.computeDigitalSignatureForSignature(signaturePIN: signaturePIN,dataToSign: dataToSignByteArray)
+    }
+    
+    private func sendVerifySignatureRequest(digitalSignature: String, digitalCertificate: String, actionURL: String) {
+                
+        Task{
+            let payload = "{ \"claim\": \"" + digitalCertificate + "\" }"
+            let digitalCertificateJWEEncoded = try? await encryptJWE(from: [UInt8](payload.utf8))
+            var request = URLRequest(url: URL(string: actionURL)!)
+            
+            var mode:String = ""
+            switch(self.authenticationController.runMode){
+            case .Login:
+                mode = "login"
+            case .Registration:
+                mode = "registration"
+            case .Replacement:
+                mode = "replacement"
+            }
+            
+            var certificateName:String = ""
+            switch(self.authenticationController.viewState){
+            case .UserVerificationView:
+                certificateName = "encryptedUserAuthenticationCertificate"
+            case .SignatureView:
+                certificateName = "encryptedDigitalSignatureCertificate"
+            case .ExplanationView:
+                break
+            }
+            
+            request.httpMethod = "POST"
+            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            var requestBodyComponents = URLComponents()
+            requestBodyComponents.queryItems = [URLQueryItem(name: "mode", value: mode),
+                                                URLQueryItem(name: certificateName, value: digitalCertificateJWEEncoded),
+                                                URLQueryItem(name: "applicantData", value: self.authenticationController.nonce),
+                                                URLQueryItem(name: "sign", value: digitalSignature)]
+            
+            request.httpBody = requestBodyComponents.query?.data(using: .utf8)
+            
+            let session = HTTPSession(authenticationController: self.authenticationController)
+            session.openRedirectURLOnSafari(request: request)
+        }
+    }
+    
+>>>>>>> 84588be (証明書のJWE暗号化対応)
     private func encodingBase64URL(from: [UInt8]) -> String? {
         let fromData = Data(from)
         let fromBase64Encoded = fromData.base64EncodedString(options: [])
