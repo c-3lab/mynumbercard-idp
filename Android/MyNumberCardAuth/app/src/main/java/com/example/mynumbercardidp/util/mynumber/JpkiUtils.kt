@@ -9,36 +9,36 @@ class JpkiUtils(private val reader: NfcReader) {
         private const val headerSize = 4 //データサイズなどの情報部が格納されている先頭部のバイト数
     }
 
-    fun lookupAuthPin(): Int {
-        reader.selectEF("0018".hexToByteArray())
+    fun lookupAuthPin(efid: String): Int {
+        reader.selectEF(efid.hexToByteArray())
         return reader.lookupPin()
     }
 
-    fun verifyAuthPin(pin: String): Boolean {
-        reader.selectEF("0018".hexToByteArray())
+    fun verifyAuthPin(efid: String, pin: String): Boolean {
+        reader.selectEF(efid.hexToByteArray())
         return reader.verify(pin)
     }
 
-    fun lookupSignPin(): Int {
-        reader.selectEF("001B".hexToByteArray())
+    fun lookupSignPin(efid: String): Int {
+        reader.selectEF(efid.hexToByteArray())
         return reader.lookupPin()
     }
 
-    fun verifySignPin(pin: String): Boolean {
-        reader.selectEF("001B".hexToByteArray())
+    fun verifySignPin(efid: String, pin: String): Boolean {
+        reader.selectEF(efid.hexToByteArray())
         return reader.verify(pin)
     }
 
-    fun readCertificateUserVerification(): ByteArray {
-        return readCertificate("000A".hexToByteArray())
+    fun readCertificateUserVerification(efid: String): ByteArray {
+        return readCertificate(efid.hexToByteArray())
     }
 
     fun readCertificateUserVerificationCA(): ByteArray {
         return readCertificate("000B".hexToByteArray())
     }
 
-    fun readCertificateSign(): ByteArray {
-        return readCertificate("0001".hexToByteArray())
+    fun readCertificateSign(efid: String): ByteArray {
+        return readCertificate(efid.hexToByteArray())
     }
 
     fun readCertificateSignCA(): ByteArray {
@@ -72,13 +72,13 @@ class JpkiUtils(private val reader: NfcReader) {
         return data
     }
 
-    fun authSignature(nonce: ByteArray): ByteArray {
-        reader.selectEF("0017".hexToByteArray())
-        return reader.signature(nonce)
+    fun authSignature(efid: String, commandArg: String, nonce: ByteArray): ByteArray {
+        reader.selectEF(efid.hexToByteArray())
+        return reader.signature(commandArg.toUShort(16), nonce)
     }
 
-    fun signCertSignature(nonce: ByteArray): ByteArray {
-        reader.selectEF("001A".hexToByteArray())
-        return reader.signature(nonce)
+    fun signCertSignature(efid: String, commandArg: String, nonce: ByteArray): ByteArray {
+        reader.selectEF(efid.hexToByteArray())
+        return reader.signature(commandArg.toUShort(16), nonce)
     }
 }

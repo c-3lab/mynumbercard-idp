@@ -12,6 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mynumbercardidp.ui.ExternalUrls
+import com.example.mynumbercardidp.ui.ApduCommands
 import com.example.mynumbercardidp.ui.screen.CertReadScreen
 import com.example.mynumbercardidp.ui.screen.ManualBootScreen
 import com.example.mynumbercardidp.ui.ScreenModeState
@@ -35,6 +36,8 @@ class MainActivity : ComponentActivity() {
         Log.i(logTag, "screenMode: $screenMode")
         var externalUrls = getExternalUrls()
         Log.i(logTag, "externalUrls: $externalUrls")
+        var apduCommands = getApduCommands()
+        Log.i(logTag, "apduCommands: $apduCommands")
 
         setContent {
             MyNumberCardAuthTheme {
@@ -51,6 +54,8 @@ class MainActivity : ComponentActivity() {
                         viewModel.changeViewMode(screenMode)
                         viewModel.setUriParameters(uriParameters)
                         viewModel.setExternalUrls(externalUrls)
+                        CertReadScreen(nfcAdapter, viewModel)
+                        viewModel.setApduCommands(apduCommands)
                         CertReadScreen(nfcAdapter, viewModel)
                     }
                 }
@@ -95,6 +100,24 @@ class MainActivity : ComponentActivity() {
             properties.getProperty("privacyPolicyUrl"),
             properties.getProperty("protectionPolicyUrl"),
             properties.getProperty("termsOfUseUrl")
+        )
+    }
+
+    private fun getApduCommands(): ApduCommands {
+        val properties = Properties()
+        val inputStream = assets.open("apdu_commands.properties")
+        properties.load(inputStream)
+        inputStream.close()
+
+        return ApduCommands(
+            properties.getProperty("selectJpkiAp"),
+            properties.getProperty("selectUserAuthenticationPin"),
+            properties.getProperty("selectDigitalSignaturePin"),
+            properties.getProperty("computeDigitalSignature"),
+            properties.getProperty("selectUserAuthenticationPrivate"),
+            properties.getProperty("selectDigitalSignaturePrivate"),
+            properties.getProperty("selectUserAuthentication"),
+            properties.getProperty("selectDigitalSignature"),
         )
     }
 }

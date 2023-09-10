@@ -25,8 +25,8 @@ class NfcReader(nfcTag: Tag) {
         return isoDep.isConnected
     }
 
-    fun selectJpki(): JpkiUtils {
-        selectDF("D392F000260100000001".hexToByteArray())
+    fun selectJpki(id: String): JpkiUtils {
+        selectDF(id.hexToByteArray())
         return JpkiUtils(this)
     }
 
@@ -102,8 +102,12 @@ class NfcReader(nfcTag: Tag) {
         return data
     }
 
-    fun signature(data: ByteArray): ByteArray {
-        val apduCommand = APDUCommand.apduCase4(0x80.toByte(), 0x2A, 0x00, 0x80.toByte(), data, 0)
+    fun signature(commandArg:UShort, data: ByteArray): ByteArray {
+        // コマンド引数の指定値を上位バイトと、下位バイトに変換
+        val p1 = ((commandArg.toULong() shr 8) and 0xFFu).toByte()
+        val p2 = (commandArg.toULong() and 0xFFu).toByte()
+
+        val apduCommand = APDUCommand.apduCase4(0x80.toByte(), 0x2A, p1, p2, data, 0)
         val previousTimeout = isoDep.timeout
         isoDep.timeout = 5000
         val (sw1, sw2, res) = transceiver(apduCommand)
