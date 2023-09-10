@@ -21,14 +21,14 @@ import com.example.mynumbercardidp.ui.viewmodel.StateViewModel
 import java.util.Properties
 
 object ApduCommands {
-    var selectJpkiAp: String = ""
-    var selectUserAuthenticationPin: String = ""
-    var selectDigitalSignaturePin: String = ""
+    var jpkiAp: String = ""
+    var userAuthenticationPin: String = ""
+    var digitalSignaturePin: String = ""
     var computeDigitalSignature: String = ""
-    var selectUserAuthenticationPrivate: String = ""
-    var selectDigitalSignaturePrivate: String = ""
-    var selectUserAuthentication: String = ""
-    var selectDigitalSignature: String = ""
+    var userAuthenticationPrivate: String = ""
+    var digitalSignaturePrivate: String = ""
+    var userAuthenticationCertificate: String = ""
+    var digitalSignatureCertificate: String = ""
 }
 
 class MainActivity : ComponentActivity() {
@@ -117,13 +117,13 @@ class MainActivity : ComponentActivity() {
         properties.load(inputStream)
         inputStream.close()
 
-        ApduCommands.selectJpkiAp = properties.getProperty("selectJpkiAp")
-        ApduCommands.selectUserAuthenticationPin = properties.getProperty("selectUserAuthenticationPin")
-        ApduCommands.selectDigitalSignaturePin = properties.getProperty("selectDigitalSignaturePin")
+        ApduCommands.jpkiAp = properties.getProperty("jpkiAp")
+        ApduCommands.userAuthenticationPin = properties.getProperty("userAuthenticationPin")
+        ApduCommands.digitalSignaturePin = properties.getProperty("digitalSignaturePin")
         ApduCommands.computeDigitalSignature = properties.getProperty("computeDigitalSignature")
-        ApduCommands.selectUserAuthenticationPrivate = properties.getProperty("selectUserAuthenticationPrivate")
-        ApduCommands.selectDigitalSignaturePrivate = properties.getProperty("selectDigitalSignaturePrivate")
-        ApduCommands.selectUserAuthentication = properties.getProperty("selectUserAuthentication")
-        ApduCommands.selectDigitalSignature = properties.getProperty("selectDigitalSignature")
+        ApduCommands.userAuthenticationPrivate = properties.getProperty("userAuthenticationPrivate")
+        ApduCommands.digitalSignaturePrivate = properties.getProperty("digitalSignaturePrivate")
+        ApduCommands.userAuthenticationCertificate = properties.getProperty("userAuthenticationCertificate")
+        ApduCommands.digitalSignatureCertificate = properties.getProperty("digitalSignatureCertificate")
     }
 }

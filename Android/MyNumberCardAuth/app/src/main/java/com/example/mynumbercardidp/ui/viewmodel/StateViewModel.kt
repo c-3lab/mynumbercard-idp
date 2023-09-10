@@ -248,10 +248,10 @@ class StateViewModel(
     }
 
     private fun readCertificateUserVerification(reader: NfcReader, inputPin: String): StateViewModel.NfcResult {
-        val jpki = reader.selectJpki(ApduCommands.selectJpkiAp)
+        val jpki = reader.selectJpki(ApduCommands.jpkiAp)
 
         // 認証用証明書取得
-        val retData = jpki.readCertificateUserVerification(ApduCommands.selectUserAuthentication)
+        val retData = jpki.readCertificateUserVerification(ApduCommands.userAuthenticationCertificate)
         Log.d(logTag, "retData: ${retData.toHexString()}")
 
         return NfcResult(NfcState.Success, retData)
@@ -259,21 +259,21 @@ class StateViewModel(
 
     private fun readCertificateSign(reader: NfcReader, inputPin: String): NfcResult {
         // AP選択
-        val jpki = reader.selectJpki(ApduCommands.selectJpkiAp)
+        val jpki = reader.selectJpki(ApduCommands.jpkiAp)
 
         // PINの残りカウント取得
-        val count = jpki.lookupSignPin(ApduCommands.selectDigitalSignaturePin)
+        val count = jpki.lookupSignPin(ApduCommands.digitalSignaturePin)
         if (count == 0) {
             return NfcResult(NfcState.TryCountIsNotLeft, null)
         }
 
         // PIN解除
-        if (!jpki.verifySignPin(ApduCommands.selectDigitalSignaturePin, inputPin)) {
+        if (!jpki.verifySignPin(ApduCommands.digitalSignaturePin, inputPin)) {
             NfcResult(NfcState.IncorrectPin, null)
         }
 
         // 認証用証明書取得
-        val retData = jpki.readCertificateSign(ApduCommands.selectDigitalSignature)
+        val retData = jpki.readCertificateSign(ApduCommands.digitalSignatureCertificate)
         Log.d(logTag, "retData: ${retData.toHexString()}")
 
         return NfcResult(NfcState.Success, retData)
@@ -290,16 +290,16 @@ class StateViewModel(
 
     private fun userCertComputeSignature(reader: NfcReader, inputPin: String): NfcResult {
         // AP選択
-        val jpki = reader.selectJpki(ApduCommands.selectJpkiAp)
+        val jpki = reader.selectJpki(ApduCommands.jpkiAp)
 
         // PINの残りカウント取得
-        val count = jpki.lookupAuthPin(ApduCommands.selectUserAuthenticationPin)
+        val count = jpki.lookupAuthPin(ApduCommands.userAuthenticationPin)
         if (count == 0) {
             return NfcResult(NfcState.TryCountIsNotLeft,null)
         }
 
         // PIN解除
-        if (!jpki.verifyAuthPin(ApduCommands.selectUserAuthenticationPin, inputPin)) {
+        if (!jpki.verifyAuthPin(ApduCommands.userAuthenticationPin, inputPin)) {
             return NfcResult(NfcState.IncorrectPin,null)
         }
 
@@ -313,7 +313,7 @@ class StateViewModel(
         val digestInfo = hashPrefix.hexToByteArray() + digest
 
         // カードの秘密鍵で署名する
-        val signature = jpki.authSignature(ApduCommands.selectUserAuthenticationPrivate, ApduCommands.computeDigitalSignature, digestInfo)
+        val signature = jpki.authSignature(ApduCommands.userAuthenticationPrivate, ApduCommands.computeDigitalSignature, digestInfo)
         Log.d(logTag, "signature: ${signature.toHexString()}")
 
         return NfcResult(NfcState.Success, signature)
@@ -321,16 +321,16 @@ class StateViewModel(
 
     private fun signCertComputeSignature(reader: NfcReader, inputPin: String): NfcResult {
         // AP選択
-        val jpki = reader.selectJpki(ApduCommands.selectJpkiAp)
+        val jpki = reader.selectJpki(ApduCommands.jpkiAp)
 
         // PINの残りカウント取得
-        val count = jpki.lookupSignPin(ApduCommands.selectDigitalSignaturePin)
+        val count = jpki.lookupSignPin(ApduCommands.digitalSignaturePin)
         if (count == 0) {
             return NfcResult(NfcState.TryCountIsNotLeft,null)
         }
 
 // PIN解除
-        if (!jpki.verifySignPin(ApduCommands.selectDigitalSignaturePin, inputPin)) {
+        if (!jpki.verifySignPin(ApduCommands.digitalSignaturePin, inputPin)) {
             return NfcResult(NfcState.IncorrectPin,null)
         }
 
@@ -344,7 +344,7 @@ class StateViewModel(
         val digestInfo = hashPrefix.hexToByteArray() + digest
 
         // カードの秘密鍵で署名する
-        val signature = jpki.signCertSignature(ApduCommands.selectDigitalSignaturePrivate, ApduCommands.computeDigitalSignature, digestInfo)
+        val signature = jpki.signCertSignature(ApduCommands.digitalSignaturePrivate, ApduCommands.computeDigitalSignature, digestInfo)
         Log.d(logTag, "signature: ${signature.toHexString()}")
 
         return NfcResult(NfcState.Success, signature)
