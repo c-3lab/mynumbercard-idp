@@ -65,6 +65,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9F931D902AA6FE1A009BA06A /* TRETJapanNFCReader-MIFARE-IndividualNumber in Frameworks */,
+				9FF1B6F62AAD9E9200793DD6 /* JOSESwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -170,6 +171,7 @@
 			name = MyNumberCardAuth;
 			packageProductDependencies = (
 				9F931D8F2AA6FE1A009BA06A /* TRETJapanNFCReader-MIFARE-IndividualNumber */,
+				9FF1B6F52AAD9E9200793DD6 /* JOSESwift */,
 			);
 			productName = MyNumberCardAuth;
 			productReference = 9FF1B6F72AAD9EB100793DD6 /* MyNumberCardAuth.app */;
