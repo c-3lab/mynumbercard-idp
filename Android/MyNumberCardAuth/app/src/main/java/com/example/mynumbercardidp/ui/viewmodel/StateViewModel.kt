@@ -31,6 +31,8 @@ import com.nimbusds.jose.EncryptionMethod
 import com.nimbusds.jose.JWEAlgorithm
 import com.nimbusds.jose.JWEHeader
 import com.nimbusds.jose.crypto.RSAEncrypter
+import com.nimbusds.jose.jwk.JWKMatcher
+import com.nimbusds.jose.jwk.JWKSelector
 import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jwt.EncryptedJWT
 import com.nimbusds.jwt.JWTClaimsSet
@@ -180,15 +182,18 @@ class StateViewModel(
             }
 
             val url = _uiState.value.uriParameters?.action_url!!
-            val nonce = _uiState.value.uriParameters?.nonce!!
-
-            val certificate = readCertificateResult?.retData!!
-            val regex = "^(https?://[^/]+/)".toRegex()
-            val jwksUrl = regex.find(url)?.value + "key/jwks.json"
-
             val mode = URLEncoder.encode(_uiState.value.uriParameters?.mode!!, "UTF-8")
-            val jweCertificate = encrypt(certificate, jwksUrl)
-            val applicantData = nonce
+
+            // 証明書データ(DER形式)をPEM形式に変換
+            val certificate = readCertificateResult?.retData!!
+            val base64Certificate = Base64.getEncoder().encodeToString(certificate)
+            val pemCertificate = "-----BEGIN CERTIFICATE-----\n$base64Certificate\n-----END CERTIFICATE-----"
+            // Keycloakから渡されたactionUrlからjwksの配置URLを生成
+            val regex = "^https?://[^/]+/realms/[^/]+".toRegex()
+            val jwksUrl = regex.find(url)?.value + "/protocol/openid-connect/certs"
+            val jweCertificate = encrypt(pemCertificate, jwksUrl)
+
+            val applicantData = _uiState.value.uriParameters?.nonce!!
             val sign = Base64.getEncoder().encodeToString(signCertificateResult?.retData)
 
             authenticate(url, mode, jweCertificate, applicantData, sign)
@@ -251,12 +256,12 @@ class StateViewModel(
         }
     }
 
-    private fun encrypt(content: ByteArray, jwksUrl: String): String {
+    private fun encrypt(content: String, jwksUrl: String): String {
         val now = Date()
 
         // JWT作成
         val jwtClaims = JWTClaimsSet.Builder()
-            .claim("claim", String(content))
+            .claim("claim", content)
             .expirationTime(Date(now.time + 1000 * 60 * 5)) // expires in 5 minutes
             .build()
         val header = JWEHeader(
@@ -267,7 +272,8 @@ class StateViewModel(
 
         // 公開鍵を取得
         val jwkSet = JWKSet.load(URL(jwksUrl))
-        val publicKey = jwkSet.keys[0].toRSAKey()
+        val matches = JWKSelector(JWKMatcher.forJWEHeader(header)).select(jwkSet)
+        val publicKey = matches[0].toRSAKey()
         val encrypter = RSAEncrypter(publicKey)
 
         // 暗号化に使用した共通鍵を、公開鍵を用いて暗号化
