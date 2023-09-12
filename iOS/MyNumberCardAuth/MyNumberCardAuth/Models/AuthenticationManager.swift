@@ -140,12 +140,11 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
     }
     
     private func encryptJWE(from: [UInt8]) async throws -> String {
-        let pattern = /^https?:\/\/[^\/]+\/realms\/[^\/]+/
-        
         if (self.actionURL == nil) {
             return ""
         }
         
+        let pattern = /^https?:\/\/[^\/]+\/realms\/[^\/]+/
         let rootUrl = try pattern.firstMatch(in: self.actionURL!)!.0
         let strUrl = String(rootUrl)
         let jwksUrl = strUrl + "/protocol/openid-connect/certs"
@@ -156,10 +155,10 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
         
         for jwk in jwks {
             if (jwk["alg"] == "RSA-OAEP-256") {
-                let jwk: RSAPublicKey = jwk as! RSAPublicKey
+                let rsaPublicKey: RSAPublicKey = jwk as! RSAPublicKey
                 let header = JWEHeader(keyManagementAlgorithm: .RSAOAEP256, contentEncryptionAlgorithm: .A128CBCHS256)
                 let payload = Payload(Data(from))
-                let publicKey: SecKey = try jwk.converted(to: SecKey.self)
+                let publicKey: SecKey = try rsaPublicKey.converted(to: SecKey.self)
                 let encrypter = Encrypter(keyManagementAlgorithm: .RSAOAEP256, contentEncryptionAlgorithm: .A128CBCHS256, encryptionKey: publicKey)!
                 let jwe = try? JWE(header: header, payload: payload, encrypter: encrypter)
                      
