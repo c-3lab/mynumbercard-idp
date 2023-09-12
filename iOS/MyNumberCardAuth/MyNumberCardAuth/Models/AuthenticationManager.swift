@@ -96,7 +96,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
             let digitalCertificateJWEEncoded = try? await encryptJWE(from: [UInt8](payload.utf8))
             var request = URLRequest(url: URL(string: actionURL)!)
             
-            var mode:String = ""
+            var mode: String = ""
             switch(self.authenticationController.runMode){
             case .Login:
                 mode = "login"
@@ -106,7 +106,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
                 mode = "replacement"
             }
             
-            var certificateName:String = ""
+            var certificateName: String = ""
             switch(self.authenticationController.viewState){
             case .UserVerificationView:
                 certificateName = "encryptedUserAuthenticationCertificate"
