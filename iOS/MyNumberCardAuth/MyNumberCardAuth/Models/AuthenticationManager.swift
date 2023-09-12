@@ -140,33 +140,33 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
     }
     
     private func encryptJWE(from: [UInt8]) async throws -> String {
-        var serializeJWE: String = ""
         let pattern = /^https?:\/\/[^\/]+\/realms\/[^\/]+/
         
-        if let actionUrl = self.actionURL{
-            let rootUrl = try pattern.firstMatch(in: actionUrl)!.0
-            let strUrl = String(rootUrl)
-            let jwksUrl = strUrl + "/protocol/openid-connect/certs"
+        if (self.actionURL == nil) {
+            return ""
+        }
+        
+        let rootUrl = try pattern.firstMatch(in: self.actionURL!)!.0
+        let strUrl = String(rootUrl)
+        let jwksUrl = strUrl + "/protocol/openid-connect/certs"
             
-            let request = URLRequest(url: URL(string: jwksUrl)!)
-            let (data, _) = try await URLSession.shared.data(for: request)
-            let jwks = try JWKSet(data: data)
-            for key in jwks.keys {
-                if let value = key.parameters["alg"]{
-                    if(value == "RSA-OAEP-256"){
-                        let jwk: RSAPublicKey = key as! RSAPublicKey
-                        let header = JWEHeader(keyManagementAlgorithm: .RSAOAEP256, contentEncryptionAlgorithm: .A128CBCHS256)
-                        let payload = Payload(Data(from))
-                        let publicKey: SecKey = try jwk.converted(to: SecKey.self)
-                        let encrypter = Encrypter(keyManagementAlgorithm: .RSAOAEP256, contentEncryptionAlgorithm: .A128CBCHS256, encryptionKey: publicKey)!
-                        let jwe = try? JWE(header: header, payload: payload, encrypter: encrypter)
-                        
-                        serializeJWE = jwe!.compactSerializedString
-                    }
-                }
+        let request = URLRequest(url: URL(string: jwksUrl)!)
+        let (data, _) = try await URLSession.shared.data(for: request)
+        let jwks = try JWKSet(data: data)
+        
+        for jwk in jwks {
+            if (jwk["alg"] == "RSA-OAEP-256") {
+                let jwk: RSAPublicKey = jwk as! RSAPublicKey
+                let header = JWEHeader(keyManagementAlgorithm: .RSAOAEP256, contentEncryptionAlgorithm: .A128CBCHS256)
+                let payload = Payload(Data(from))
+                let publicKey: SecKey = try jwk.converted(to: SecKey.self)
+                let encrypter = Encrypter(keyManagementAlgorithm: .RSAOAEP256, contentEncryptionAlgorithm: .A128CBCHS256, encryptionKey: publicKey)!
+                let jwe = try? JWE(header: header, payload: payload, encrypter: encrypter)
+                     
+                return jwe!.compactSerializedString
             }
         }
-
-        return serializeJWE
+        
+        return ""
     }
 }
