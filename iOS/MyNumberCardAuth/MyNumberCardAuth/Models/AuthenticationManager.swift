@@ -24,7 +24,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
         self.actionURL = actionURL
         self.authenticationController.nonce = nonce
         self.individualNumberCardExecuteType = .computeDigitalSignature
-        self.conputeDigitalSignatureForUserVerification(userAuthenticationPIN: pin, dataToSign: nonce)
+        self.computeDigitalSignatureForUserVerification(userAuthenticationPIN: pin, dataToSign: nonce)
     }
     
     public func authenticateForSignature(pin: String, nonce: String, actionURL: String) {
