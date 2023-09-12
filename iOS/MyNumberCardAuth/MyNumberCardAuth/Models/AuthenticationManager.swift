@@ -10,7 +10,7 @@ import TRETJapanNFCReader_MIFARE_IndividualNumber
 import CryptoKit
 import JOSESwift
 
-public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
+public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
     private var authenticationController:AuthenticationController
     private var individualNumberCardExecuteType: IndividualNumberCardExecuteType?
     private var actionURL: String?
@@ -20,14 +20,14 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
         self.authenticationController = authenticationController
     }
     
-    public func authenticateForUserVerification(pin: String, nonce: String, actionURL: String){
+    public func authenticateForUserVerification(pin: String, nonce: String, actionURL: String) {
         self.actionURL = actionURL
         self.authenticationController.nonce = nonce
         self.individualNumberCardExecuteType = .computeDigitalSignature
         self.conputeDigitalSignatureForUserVerification(userAuthenticationPIN: pin, dataToSign: nonce)
     }
     
-    public func authenticateForSignature(pin: String, nonce: String, actionURL: String){
+    public func authenticateForSignature(pin: String, nonce: String, actionURL: String) {
         self.actionURL = actionURL
         self.computeDigitalCertificateForSignature(signaturePIN: pin, dataToSign: nonce)
     }
