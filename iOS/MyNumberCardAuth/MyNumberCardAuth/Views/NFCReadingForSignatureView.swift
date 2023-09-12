@@ -9,7 +9,6 @@ import SwiftUI
 import Combine
 
 struct NFCReadingForSignatureView: View {
-    @Binding var queryDict : [String: String]?
     @ObservedObject var authenticationController:AuthenticationController
     @FocusState private var isActive:Bool
     @ObservedObject var controller:SignatureViewController
@@ -83,6 +82,6 @@ struct NFCReadingForSignatureView_Previews: PreviewProvider {
     @ObservedObject static var authenticationController:AuthenticationController = AuthenticationController()
     @ObservedObject static var signatureController:SignatureViewController = SignatureViewController()
     static var previews: some View {
-        NFCReadingForSignatureView(queryDict: .constant([:]),authenticationController: authenticationController,controller: signatureController)
+        NFCReadingForSignatureView(authenticationController: authenticationController,controller: signatureController)
     }
 }

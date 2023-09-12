@@ -19,7 +19,7 @@ class AuthenticationController: ObservableObject {
     @Published var nonce:String = ""
     @Published var queryDict:[String: String]?
     @Published var openURL:String = ""
-    @Published var controller:ViewController = ViewController()
+    @Published var controllerForUserVerification:UserVerificationViewController = UserVerificationViewController()
     @Published var controllerForSignature:SignatureViewController = SignatureViewController()
 
     // 利用規約/プライバシーポリシー/個人情報保護方針URL
@@ -74,6 +74,30 @@ class AuthenticationController: ObservableObject {
             if let url = queryDict["error_url"]{
                 let replaceUrl = url.replacingOccurrences(of: "&amp;", with: "&")
                 self.openURL = replaceUrl
+            }
+        }
+    }
+    
+    public func onOpenURL(url: URL) {
+        let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        if let urlComponents = urlComponents {
+            self.queryDict = generateQueryDictionary(from: urlComponents)
+            if let query = queryDict {
+                self.viewState = self.viewState.isViewMode(queryDict: query)
+                self.runMode = self.runMode.isMode(queryDict: query)
+                self.queryDict = query;
+                self.clear()
+                self.setErrorPageURL(queryDict: query)
+                
+                if let actionURL = query["action_url"], let nonse = query["nonce"]
+                {
+                    self.controllerForUserVerification.inputPIN = ""
+                    self.controllerForSignature.inputPIN = ""
+                    self.controllerForUserVerification.actionURL = actionURL
+                    self.controllerForSignature.actionURL = actionURL
+                    self.controllerForUserVerification.nonce = nonse
+                    self.controllerForSignature.nonce = nonse
+                }
             }
         }
     }
