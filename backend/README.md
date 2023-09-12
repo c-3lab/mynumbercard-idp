@@ -234,22 +234,30 @@
     - Multivalued: Off
     - Aggregate attribute values: Off
 72. ナビゲーションエリアにある `Configure` セクションの `Realm settings` をクリックします。  
-73. `Localization` タブをクリックし、 `Internationalization` を `Disabled` から `Enabled` へ変更します。  
-74. `Supported locales` の `Select locales` 文字列部分をクリックし、 `日本語` をクリックします。  
-75. 画面内の余白をクリックし、言語のセレクトボックスを閉じます。  
-76. `Default locale` を `English` から `日本語` へ変更し、 `Save` をクリックします。  
-77. 手順6で設定したファイル `.env`内の値を以下のように変更します。  
+73. `Keys` タブをクリックし、`Providers` タブをクリックします。  
+74. `Add provider` から `rsa-enc-generated` を選択し、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
+    - Name: rsa-oaep-256-enc-generated
+    - Enabled: On
+    - Priority: 0
+    - Active: On
+    - Key size: 2048
+    - Algorithm: RSA-OAEP-256
+75. `Localization` タブをクリックし、 `Internationalization` を `Disabled` から `Enabled` へ変更します。  
+76. `Supported locales` の `Select locales` 文字列部分をクリックし、 `日本語` をクリックします。  
+77. 画面内の余白をクリックし、言語のセレクトボックスを閉じます。  
+78. `Default locale` を `English` から `日本語` へ変更し、 `Save` をクリックします。  
+79. 手順6で設定したファイル `.env`内の値を以下のように変更します。  
    **RP1_CLIENT_SECRET, RP2_CLIENT_SECRET:**  
    RP1_CLIENT_SECRETに手順44でメモした値、RP2_CLIENT_SECRETに手順63でメモした値を設定します。  
-78. Dockerコンテナを停止します  
+80. Dockerコンテナを停止します。  
    ```
    docker compose -f docker-compose.yml -f docker-compose-examples.yml down
    ```
-79. コンテナイメージをビルドします。  
+81. コンテナイメージをビルドします。  
    ```
    docker compose -f docker-compose.yml -f docker-compose-examples.yml build
    ```
-80. Dockerコンテナを起動し、コンテナのログを確認します。  
+82. Dockerコンテナを起動し、コンテナのログを確認します。  
    ```
    docker compose -f docker-compose.yml -f docker-compose-examples.yml up -d
    docker compose -f docker-compose.yml -f docker-compose-examples.yml logs -f
