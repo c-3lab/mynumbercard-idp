@@ -113,7 +113,7 @@
 33. 画面上部にある `Dedicated scopes` リンクをクリックし、 `Add mapper` 、 `By configuration` の順でクリックします。  
 34. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
     - Name: Unique ID
-    - User Attribute: uniqueId
+    - User Attribute: uniqueid
     - Token Claim Name: unique_id
     - Claim JSON Type: String
     - Add to ID token: On
@@ -162,7 +162,7 @@
 52. 画面上部にある `Dedicated scopes` リンクをクリックし、 `Add mapper` 、 `By configuration` の順でクリックします。  
 53. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
     - Name: Unique ID
-    - User Attribute: uniqueId
+    - User Attribute: uniqueid
     - Token Claim Name: unique_id
     - Claim JSON Type: String
     - Add to ID token: On
