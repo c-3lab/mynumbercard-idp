@@ -32,7 +32,7 @@ public class PlatformAuthenticationResponse implements PlatformAuthenticationRes
     @Override
     @JsonIgnore
     public UserModel toUserModelAttributes(final UserModel user) {
-        user.setSingleAttribute("uniqueId", this.identityInfo.getUniqueId());
+        user.setSingleAttribute("uniqueid", this.identityInfo.getUniqueId());
         user.setSingleAttribute("name", this.identityInfo.getName());
         user.setSingleAttribute("gender_code", this.identityInfo.getGender());
         user.setSingleAttribute("user_address", this.identityInfo.getAddress());
