@@ -1,5 +1,5 @@
 //
-//  NFCReadingView.swift
+//  NFCReadingForUserVerificationView.swift
 //  MyNumberCardAuth
 //
 //  Created by c3lab on 2023/04/20.
@@ -8,12 +8,11 @@
 import Combine
 import SwiftUI
 
-struct NFCReadingView: View {
-    @Binding var queryDict: [String: String]?
-    @ObservedObject var authenticationController: AuthenticationController
-    @FocusState private var isActive: Bool
-    @ObservedObject var controller: ViewController
-
+struct NFCReadingForUserVerificationView: View {
+    @ObservedObject var authenticationController:AuthenticationController
+    @FocusState private var isActive:Bool
+    @ObservedObject var controller:UserVerificationViewController
+    
     var body: some View {
         VStack {
             Text("My number card \n authentication")
@@ -85,9 +84,10 @@ struct NFCReadingView: View {
 }
 
 struct NFCReadingView_Previews: PreviewProvider {
-    @ObservedObject static var authenticationController: AuthenticationController = .init()
-    @ObservedObject static var controlller: ViewController = .init()
+    @ObservedObject static var authenticationController:AuthenticationController = AuthenticationController()
+    @ObservedObject static var controlller:UserVerificationViewController = UserVerificationViewController()
     static var previews: some View {
-        NFCReadingView(queryDict: .constant([:]), authenticationController: authenticationController, controller: controlller)
+        NFCReadingForUserVerificationView(authenticationController: authenticationController,controller: controlller)
     }
 }
+

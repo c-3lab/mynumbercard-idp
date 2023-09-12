@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  UserVerificationViewController.swift
 //  MyNumberCardAuth
 //
 //  Created by c3lab on 2023/04/26.
@@ -8,12 +8,12 @@
 import Foundation
 import SwiftUI
 
-public class ViewController: ObservableObject {
-    @Published var inputPIN: String = ""
-    @Published var nonce: String = ""
-    @Published var actionURL: String = ""
-
-    public func isEnableButton() -> Bool {
+public class UserVerificationViewController: ObservableObject {
+    @Published var inputPIN : String = ""
+    @Published var nonce : String = ""
+    @Published var actionURL : String = ""
+        
+    public func isEnableButton() -> Bool{
         return !nonce.isEmpty && !actionURL.isEmpty && isValidPin()
     }
 
