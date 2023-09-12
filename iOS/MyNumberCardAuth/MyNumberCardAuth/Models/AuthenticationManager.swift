@@ -76,7 +76,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
                 
         Task{
             let payload = "{ \"claim\": \"" + digitalCertificate + "\" }"
-            let digitalCertificateJWEEncoded = try? await encryptJWE(from: [UInt8](payload.utf8))
+            let encryptedCertificate = try? await encryptJWE(from: [UInt8](payload.utf8))
             var request = URLRequest(url: URL(string: actionURL)!)
             
             var mode: String = ""
@@ -103,7 +103,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
             request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
             var requestBodyComponents = URLComponents()
             requestBodyComponents.queryItems = [URLQueryItem(name: "mode", value: mode),
-                                                URLQueryItem(name: certificateName, value: digitalCertificateJWEEncoded),
+                                                URLQueryItem(name: certificateName, value: encryptedCertificate),
                                                 URLQueryItem(name: "applicantData", value: self.authenticationController.nonce),
                                                 URLQueryItem(name: "sign", value: digitalSignature)]
             
