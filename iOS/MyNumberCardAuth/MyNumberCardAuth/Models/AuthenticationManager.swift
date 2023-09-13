@@ -14,7 +14,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
     private var authenticationController:AuthenticationController
     private var individualNumberCardSignatureType: IndividualNumberCardSignatureType?
     private var actionURL: String?
-    private var reader: IndividualNumberReaderExtension!
+    private var reader: IndividualNumberReader!
 
     init(authenticationController: AuthenticationController) {
         self.authenticationController = authenticationController
@@ -71,7 +71,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
     
     private func computeDigitalSignatureForUserVerification(userAuthenticationPIN: String, dataToSign: String) {
         let dataToSignByteArray = [UInt8](dataToSign.utf8)
-        self.reader = IndividualNumberReaderExtension(delegate: self)
+        self.reader = IndividualNumberReader(delegate: self)
         // 以下処理はNFC読み取りが非同期で行われ、完了するとindividualNumberReaderSessionが呼び出される
         reader.computeDigitalSignature(signatureType: individualNumberCardSignatureType!,
                                        pin: userAuthenticationPIN,
