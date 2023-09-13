@@ -162,6 +162,7 @@
 				AD80228629F0B402009EA409 /* Frameworks */,
 				AD80228729F0B402009EA409 /* Resources */,
 				9FD1C09E2AA8869A00057715 /* Embed Frameworks */,
+				9B2D453D2AB1F9490018AE9E /* SwiftFormat */,
 			);
 			buildRules = (
 			);
@@ -205,7 +206,6 @@
 				9FF1B6F12AAD83C900793DD6 /* XCRemoteSwiftPackageReference "TRETJapanNFCReader" */,
 				9FF1B6F42AAD9E9200793DD6 /* XCRemoteSwiftPackageReference "JOSESwift" */,
 			);
-			productRefGroup = AD80228A29F0B402009EA409 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -226,6 +226,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		9B2D453D2AB1F9490018AE9E /* SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftFormat;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "SDKROOT=(xcrun --sdk macosx --show-sdk-path)\n#swift package update #Uncomment this line temporarily to update the version used to the latest matching your BuildTools/Package.swift file\nswift run -c release --package-path BuildTools swiftformat \"$SRCROOT\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		AD80228529F0B402009EA409 /* Sources */ = {
