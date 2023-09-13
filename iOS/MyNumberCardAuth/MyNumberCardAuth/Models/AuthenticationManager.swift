@@ -14,7 +14,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
     private var authenticationController:AuthenticationController
     private var individualNumberCardExecuteType: IndividualNumberCardExecuteType?
     private var actionURL: String?
-    private var reader: IndividualNumberReaderExtension!
+    private var reader: IndividualNumberReader!
 
     init(authenticationController: AuthenticationController) {
         self.authenticationController = authenticationController
@@ -23,12 +23,14 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
     public func authenticateForUserVerification(pin: String, nonce: String, actionURL: String) {
         self.actionURL = actionURL
         self.authenticationController.nonce = nonce
-        self.individualNumberCardExecuteType = .computeDigitalSignature
+        self.individualNumberCardExecuteType = .computeDigitalSignatureForUserAuthentication
         self.computeDigitalSignatureForUserVerification(userAuthenticationPIN: pin, dataToSign: nonce)
     }
     
     public func authenticateForSignature(pin: String, nonce: String, actionURL: String) {
         self.actionURL = actionURL
+        self.authenticationController.nonce = nonce
+        self.individualNumberCardExecuteType = .computeDigitalSignatureForSignature
         self.computeDigitalCertificateForSignature(signaturePIN: pin, dataToSign: nonce)
     }
     
@@ -57,17 +59,14 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
     
     private func computeDigitalSignatureForUserVerification(userAuthenticationPIN: String, dataToSign: String) {
         let dataToSignByteArray = [UInt8](dataToSign.utf8)
-        self.reader = IndividualNumberReaderExtension(delegate: self)
+        self.reader = IndividualNumberReader(delegate: self)
         // 以下処理はNFC読み取りが非同期で行われ、完了するとindividualNumberReaderSessionが呼び出される
         self.reader.computeDigitalSignatureForUserAuthentication(userAuthenticationPIN: userAuthenticationPIN,dataToSign: dataToSignByteArray)
     }
     
     private func computeDigitalCertificateForSignature(signaturePIN: String, dataToSign: String) {
-        self.individualNumberCardExecuteType = .computeDigitalSignatureForSignature
-        
-        self.authenticationController.nonce = dataToSign
         let dataToSignByteArray = [UInt8](dataToSign.utf8)
-        self.reader = IndividualNumberReaderExtension(delegate: self)
+        self.reader = IndividualNumberReader(delegate: self)
         // 以下処理はNFC読み取りが非同期で行われ、完了するとindividualNumberReaderSessionが呼び出される
         self.reader.computeDigitalSignatureForSignature(signaturePIN: signaturePIN,dataToSign: dataToSignByteArray)
     }
