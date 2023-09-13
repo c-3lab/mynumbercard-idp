@@ -71,34 +71,29 @@ class AuthenticationController: ObservableObject {
     public func
     setErrorPageURL(queryDict: [String : String]){
         if(((queryDict["error_url"]) != nil)){
-            if let url = queryDict["error_url"]{
-                let replaceUrl = url.replacingOccurrences(of: "&amp;", with: "&")
-                self.openURL = replaceUrl
-            }
+            let url = queryDict["error_url"]
+            let replaceUrl = url!.replacingOccurrences(of: "&amp;", with: "&")
+            self.openURL = replaceUrl
         }
     }
     
     public func onOpenURL(url: URL) {
         let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
-        if let urlComponents = urlComponents {
-            self.queryDict = generateQueryDictionary(from: urlComponents)
-            if let query = queryDict {
-                self.viewState = self.viewState.isViewMode(queryDict: query)
-                self.runMode = self.runMode.isMode(queryDict: query)
-                self.queryDict = query;
-                self.clear()
-                self.setErrorPageURL(queryDict: query)
+        self.queryDict = generateQueryDictionary(from: urlComponents!)
+        self.viewState = self.viewState.isViewMode(queryDict: self.queryDict!)
+        self.runMode = self.runMode.isMode(queryDict: self.queryDict!)
+        self.queryDict = self.queryDict;
+        self.clear()
+        self.setErrorPageURL(queryDict: self.queryDict!)
                 
-                if let actionURL = query["action_url"], let nonse = query["nonce"]
-                {
-                    self.controllerForUserVerification.inputPIN = ""
-                    self.controllerForSignature.inputPIN = ""
-                    self.controllerForUserVerification.actionURL = actionURL
-                    self.controllerForSignature.actionURL = actionURL
-                    self.controllerForUserVerification.nonce = nonse
-                    self.controllerForSignature.nonce = nonse
-                }
-            }
+        if let actionURL = self.queryDict!["action_url"], let nonse = self.queryDict!["nonce"]
+        {
+                self.controllerForUserVerification.inputPIN = ""
+                self.controllerForSignature.inputPIN = ""
+                self.controllerForUserVerification.actionURL = actionURL
+                self.controllerForSignature.actionURL = actionURL
+                self.controllerForUserVerification.nonce = nonse
+                self.controllerForSignature.nonce = nonse
         }
     }
 }
