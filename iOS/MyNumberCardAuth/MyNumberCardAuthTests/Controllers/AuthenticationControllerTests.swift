@@ -68,6 +68,22 @@ final class AuthenticationControllerTests: XCTestCase {
         XCTAssertEqual(controller.getButtonColor(checkStr: ""), Color(UIColor.lightGray))
     }
     
+    func testSetErrorPageURL_nil() throws {
+        controller.setErrorPageURL(queryDict: ["":""])
+        XCTAssertEqual(controller.openURL, "")
+    }
+    
+    func testSetErrorPageURL_empty() throws {
+        // Dictのvalueをnilにできない。。。
+        controller.setErrorPageURL(queryDict: ["error_url":""])
+        XCTAssertEqual(controller.openURL, "")
+    }
+    
+    func testSetErrorPageURL() throws {
+        controller.setErrorPageURL(queryDict: ["error_url":"https://example/?test=1&amp;test2=1"])
+        XCTAssertEqual(controller.openURL, "https://example/?test=1&test2=1")
+    }
+    
     func testOnOpenURL_empty() throws {
         // Componentsをnilにできない。。。
         controller.onOpenURL(url: URL(string: "https://example")!)
