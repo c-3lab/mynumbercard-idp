@@ -14,7 +14,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
     private var authenticationController:AuthenticationController
     private var individualNumberCardExecuteType: IndividualNumberCardExecuteType?
     private var actionURL: String?
-    private var reader: IndividualNumberReaderExtension!
+    private var reader: IndividualNumberReader!
     
     init(authenticationController: AuthenticationController) {
         self.authenticationController = authenticationController
