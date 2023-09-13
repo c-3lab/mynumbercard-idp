@@ -138,10 +138,9 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
         
         for jwk in jwks {
             if (jwk["alg"] == "RSA-OAEP-256") {
-                let rsaPublicKey: RSAPublicKey = jwk as! RSAPublicKey
                 let header = JWEHeader(keyManagementAlgorithm: .RSAOAEP256, contentEncryptionAlgorithm: .A128CBCHS256)
                 let payload = Payload(Data(from))
-                let publicKey: SecKey = try rsaPublicKey.converted(to: SecKey.self)
+                let publicKey: SecKey = try (jwk as! RSAPublicKey).converted(to: SecKey.self)
                 let encrypter = Encrypter(keyManagementAlgorithm: .RSAOAEP256, contentEncryptionAlgorithm: .A128CBCHS256, encryptionKey: publicKey)!
                 let jwe = try? JWE(header: header, payload: payload, encrypter: encrypter)
                      
