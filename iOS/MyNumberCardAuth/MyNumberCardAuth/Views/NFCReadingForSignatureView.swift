@@ -9,10 +9,10 @@ import Combine
 import SwiftUI
 
 struct NFCReadingForSignatureView: View {
-    @ObservedObject var authenticationController:AuthenticationController
-    @FocusState private var isActive:Bool
-    @ObservedObject var controller:SignatureViewController
-    
+    @ObservedObject var authenticationController: AuthenticationController
+    @FocusState private var isActive: Bool
+    @ObservedObject var controller: SignatureViewController
+
     var body: some View {
         VStack {
             Text("My number card \n authentication")
@@ -80,6 +80,6 @@ struct NFCReadingForSignatureView_Previews: PreviewProvider {
     @ObservedObject static var authenticationController: AuthenticationController = .init()
     @ObservedObject static var signatureController: SignatureViewController = .init()
     static var previews: some View {
-        NFCReadingForSignatureView(authenticationController: authenticationController,controller: signatureController)
+        NFCReadingForSignatureView(authenticationController: authenticationController, controller: signatureController)
     }
 }

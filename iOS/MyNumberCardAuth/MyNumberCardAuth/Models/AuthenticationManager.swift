@@ -10,36 +10,36 @@ import Foundation
 import JOSESwift
 import TRETJapanNFCReader_MIFARE_IndividualNumber
 
-public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
-    private var authenticationController:AuthenticationController
+public class AuthenticationManager: IndividualNumberReaderSessionDelegate {
+    private var authenticationController: AuthenticationController
     private var individualNumberCardSignatureType: IndividualNumberCardSignatureType?
     private var actionURL: String?
     private var reader: IndividualNumberReader!
-    
+
     init(authenticationController: AuthenticationController) {
         self.authenticationController = authenticationController
     }
 
     public func authenticateForUserVerification(pin: String, nonce: String, actionURL: String) {
         self.actionURL = actionURL
-        self.authenticationController.nonce = nonce
+        authenticationController.nonce = nonce
         individualNumberCardSignatureType = .userAuthentication
         computeDigitalSignatureForUserVerification(userAuthenticationPIN: pin, dataToSign: nonce)
     }
 
     public func authenticateForSignature(pin: String, nonce: String, actionURL: String) {
         self.actionURL = actionURL
-        self.authenticationController.nonce = nonce
+        authenticationController.nonce = nonce
         individualNumberCardSignatureType = .digitalSignature
         computeDigitalCertificateForSignature(signaturePIN: pin, dataToSign: nonce)
     }
 
     public func individualNumberReaderSession(didRead individualNumberCardData: TRETJapanNFCReader_MIFARE_IndividualNumber.IndividualNumberCardData) {
-        switch self.individualNumberCardSignatureType {
+        switch individualNumberCardSignatureType {
         case .userAuthentication:
             if let digitalSignature = individualNumberCardData.computeDigitalSignatureForUserAuthentication,
                let digitalCertificate = individualNumberCardData.userAuthenticationCertificate,
-               let actionURL = self.actionURL
+               let actionURL = actionURL
             {
                 let digitalSignatureBase64URLEncoded = encodingBase64URL(from: digitalSignature)!
                 let base64DigitalCertificate = Data(digitalCertificate).base64EncodedString()
@@ -47,11 +47,10 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
 
                 sendVerifySignatureRequest(digitalSignature: digitalSignatureBase64URLEncoded, digitalCertificate: pemDigitalCertificate, actionURL: actionURL)
             }
-            break
         case .digitalSignature:
             if let digitalSignature = individualNumberCardData.computeDigitalSignatureForDigitalSignature,
                let digitalCertificate = individualNumberCardData.digitalSignatureCertificate,
-               let actionURL = self.actionURL
+               let actionURL = actionURL
             {
                 let digitalSignatureBase64URLEncoded = encodingBase64URL(from: digitalSignature)!
                 let base64DigitalCertificate = Data(digitalCertificate).base64EncodedString()
@@ -124,7 +123,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
             session.openRedirectURLOnSafari(request: request)
         }
     }
-    
+
     private func encodingBase64URL(from: [UInt8]) -> String? {
         let fromData = Data(from)
         let fromBase64Encoded = fromData.base64EncodedString(options: [])

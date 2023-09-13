@@ -57,7 +57,7 @@ struct MyNumberCardAuthApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(authenticationController: authenticationController,controller: self.authenticationController.controllerForUserVerification,controllerForSignature: self.authenticationController.controllerForSignature).onOpenURL(perform: { url in
+            ContentView(authenticationController: authenticationController, controller: self.authenticationController.controllerForUserVerification, controllerForSignature: self.authenticationController.controllerForSignature).onOpenURL(perform: { url in
                 self.authenticationController.onOpenURL(url: url)
             })
         }

@@ -9,11 +9,11 @@ import Foundation
 import SwiftUI
 
 public class UserVerificationViewController: ObservableObject {
-    @Published var inputPIN : String = ""
-    @Published var nonce : String = ""
-    @Published var actionURL : String = ""
-        
-    public func isEnableButton() -> Bool{
+    @Published var inputPIN: String = ""
+    @Published var nonce: String = ""
+    @Published var actionURL: String = ""
+
+    public func isEnableButton() -> Bool {
         return !nonce.isEmpty && !actionURL.isEmpty && isValidPin()
     }
 
