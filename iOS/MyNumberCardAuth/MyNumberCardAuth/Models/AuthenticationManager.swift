@@ -10,26 +10,24 @@ import TRETJapanNFCReader_MIFARE_IndividualNumber
 import CryptoKit
 import JOSESwift
 
-public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
-    private var authenticationController:AuthenticationController
+public class AuthenticationManager:IndividualNumberReaderSessionDelegate, AuthenticationManagerProtocol{
+    private var authenticationController:AuthenticationController?
     private var individualNumberCardExecuteType: IndividualNumberCardExecuteType?
     private var actionURL: String?
     private var reader: IndividualNumberReader!
-    
-    init(authenticationController: AuthenticationController) {
+        
+    public func authenticateForUserVerification(pin: String, nonce: String, actionURL: String, authenticationController:AuthenticationController) {
         self.authenticationController = authenticationController
-    }
-    
-    public func authenticateForUserVerification(pin: String, nonce: String, actionURL: String) {
         self.actionURL = actionURL
-        self.authenticationController.nonce = nonce
+        self.authenticationController!.nonce = nonce
         self.individualNumberCardExecuteType = .computeDigitalSignatureForUserAuthentication
         self.computeDigitalSignatureForUserVerification(userAuthenticationPIN: pin, dataToSign: nonce)
     }
     
-    public func authenticateForSignature(pin: String, nonce: String, actionURL: String) {
+    public func authenticateForSignature(pin: String, nonce: String, actionURL: String, authenticationController:AuthenticationController) {
+        self.authenticationController = authenticationController
         self.actionURL = actionURL
-        self.authenticationController.nonce = nonce
+        self.authenticationController!.nonce = nonce
         self.individualNumberCardExecuteType = .computeDigitalSignatureForSignature
         self.computeDigitalCertificateForSignature(signaturePIN: pin, dataToSign: nonce)
     }
@@ -79,7 +77,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
             var request = URLRequest(url: URL(string: actionURL)!)
             
             var mode: String = ""
-            switch(self.authenticationController.runMode){
+            switch(self.authenticationController!.runMode){
             case .Login:
                 mode = "login"
             case .Registration:
@@ -89,7 +87,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
             }
             
             var certificateName: String = ""
-            switch(self.authenticationController.viewState){
+            switch(self.authenticationController!.viewState){
             case .UserVerificationView:
                 certificateName = "encryptedUserAuthenticationCertificate"
             case .SignatureView:
@@ -103,12 +101,12 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
             var requestBodyComponents = URLComponents()
             requestBodyComponents.queryItems = [URLQueryItem(name: "mode", value: mode),
                                                 URLQueryItem(name: certificateName, value: encryptedCertificate),
-                                                URLQueryItem(name: "applicantData", value: self.authenticationController.nonce),
+                                                URLQueryItem(name: "applicantData", value: self.authenticationController!.nonce),
                                                 URLQueryItem(name: "sign", value: digitalSignature)]
             
             request.httpBody = requestBodyComponents.query?.data(using: .utf8)
             
-            let session = HTTPSession(authenticationController: self.authenticationController)
+            let session = HTTPSession(authenticationController: self.authenticationController!)
             session.openRedirectURLOnSafari(request: request)
         }
     }
