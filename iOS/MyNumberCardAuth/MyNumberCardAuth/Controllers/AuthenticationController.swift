@@ -8,7 +8,12 @@
 import Foundation
 import SwiftUI
 
-class AuthenticationController: ObservableObject {
+protocol AuthenticationManagerProtocol {
+    func authenticateForSignature(pin: String, nonce: String, actionURL: String, authenticationController: AuthenticationController)
+    func authenticateForUserVerification(pin: String, nonce: String, actionURL: String, authenticationController: AuthenticationController)
+}
+
+public class AuthenticationController: ObservableObject {
     @Published var viewState: ShowView = .UserVerificationView
     @Published var runMode: Mode = .Login
     @Published var isAlert: Bool = false
@@ -29,6 +34,12 @@ class AuthenticationController: ObservableObject {
     // 問い合わせURL
     @Published var inquiryURL: String = Bundle.main.object(forInfoDictionaryKey: "InquiryURL") as! String
 
+    let authenticationManager: AuthenticationManagerProtocol
+
+    init(authenticationManager: AuthenticationManagerProtocol = AuthenticationManager()) {
+        self.authenticationManager = authenticationManager
+    }
+
     public func clear() {
         isLinkAlert = false
         isAlert = false
@@ -46,12 +57,11 @@ class AuthenticationController: ObservableObject {
     }
 
     public func startReading(pin: String, nonce: String, actionURL: String) {
-        let authenticationManager = AuthenticationManager(authenticationController: self)
         switch viewState {
         case .SignatureView:
-            authenticationManager.authenticateForSignature(pin: pin, nonce: nonce, actionURL: actionURL)
+            authenticationManager.authenticateForSignature(pin: pin, nonce: nonce, actionURL: actionURL, authenticationController: self)
         case .UserVerificationView:
-            authenticationManager.authenticateForUserVerification(pin: pin, nonce: nonce, actionURL: actionURL)
+            authenticationManager.authenticateForUserVerification(pin: pin, nonce: nonce, actionURL: actionURL, authenticationController: self)
         case .ExplanationView:
             break
         }
