@@ -1,5 +1,0 @@
-{
-  "serviceId":"example@example.com",
-  "note":"RP1",
-  "URL": "https://keycloak.example.com/realms/OIdp/custom-attribute/assign"
-}

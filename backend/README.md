@@ -13,7 +13,6 @@
 - クライアント
   - OS: Windows 10 build 19044.2846
   - ブラウザ: Google Chrome (version 112.0.5615.138)
-
 ## インストール
 1. このリポジトリをダウンロードします。すでに実行している場合は次へ進んでください。  
    ```
@@ -31,7 +30,13 @@
    ```
    chmod 777 data
    ```
-5. ファイル `examples/sample-rp/docker01/keycloak.json` と`examples/sample-rp/docker02/keycloak.json`内の `auth-server-url` と`examples/sample-rp/docker01/assign_setting.json` と`examples/sample-rp/docker02/assign_setting.json`内の`URL`を以下のように変更します。  
+
+5. ディレクトリ `backend` へ移動します。  
+   ```
+   cd ..
+   ```
+6. ファイル `.env`内の各値を以下のように変更します。  
+  **KEYCLOAK_URL:**  
    Dockerホストの外側から接続する場合、  
    `http://[DockerホストのIPアドレス または DockerホストのDNS名]:8080/` へ変更します。  
    接続元の端末から見た、DockerホストのIPアドレス または DNS名を期待しています。  
@@ -39,20 +44,15 @@
      - `http://192.0.2.100:8080/`  
      - `http://docker-server:8080/`  
 
-   （※ Dockerホストの外からのアクセスとコンテナ間のアクセス、両方で使用されるため、127.0.0.1は使用できません）
+   （※ Dockerホストの外からのアクセスとコンテナ間のアクセス、両方で使用されるため、127.0.0.1は使用できません）  
 
-   assign_setting.jsonは以下の箇所となります
-   例：
-     - `http://192.0.2.100:8080/realms/OIdp/custom-attribute/assign`
-     - `http://docker-server:8080/realms/OIdp/custom-attribute/assign`
+   **RP1_BASEURL, RP2_BASEURL:**  
+   RP1_BASEURLはKEYCLOAK_URLと同じDockerホストのIPアドレス または DNS名を期待しています。こちらはPORT番号を3000とし、RP2_BASEURLはPORT番号3001を設定します。
 
-6. ファイル `keycloak/x509-relay-authenticator/src/main/resources/theme/call-native-app/login/login.ftl` 内の330、334、372~374行目のファイル参照先を以下のように変更します。
+7. ファイル `keycloak/x509-relay-authenticator/src/main/resources/theme/call-native-app/login/login.ftl` 内の330、334、372~374行目のファイル参照先を以下のように変更します。
    - 修正前： `https://nginx.example.com/open-id/ファイル名`
    - 修正後： `https://[DockerホストのIPアドレス または DockerホストのDNS名]/open-id/ファイル名`
-7. ディレクトリ `backend` へ移動します。  
-   ```
-   cd ..
-   ```
+
 8. コンテナイメージをビルドします。  
    ```
    docker compose -f docker-compose.yml -f docker-compose-examples.yml build
@@ -93,7 +93,7 @@
 26. ナビゲーションエリアにある `Manage` セクションの `Clients` をクリックします。  
 27. `Create client` をクリック、以下のように設定し、 `Next` ボタンをクリックします。  
     - Client type: OpenID Connect
-    - Client ID: sample-client
+    - Client ID: sample-client01
 28. `Next` ボタンをクリックします。  
 29. 以下のように設定し、`Save` ボタンをクリックします。  
     - Root URL: (入力しない)
@@ -103,7 +103,7 @@
     - Web origins: *
 30. `Login settings` セクションの `Consent required` を `On` に変更し、 `Save` ボタンをクリックします。  
 31. `Client scopes` タブをクリックします。  
-32. `sample-client-dedicated` リンク、 `Configure a new mapper` の順でクリックします。  
+32. `sample-client01-dedicated` リンク、 `Configure a new mapper` の順でクリックします。  
 33. `Audience` をクリックし、 以下のように設定します。設定後、 `Save` ボタンをクリックします。  
     - Name: Audience
     - Included Client Audience: (入力しない)
@@ -124,7 +124,7 @@
 36. 画面上部にある `Dedicated scopes` リンクをクリックし、 `Add mapper` 、 `By configuration` の順でクリックします。  
 37. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
     - Name: User Attributes
-    - User Attribute: sample-client_user_attributes
+    - User Attribute: sample-client01_user_attributes
     - Token Claim Name: user_attributes
     - Claim JSON Type: JSON
     - Add to ID token: On
@@ -135,9 +135,62 @@
 38. 画面上部にある `Client details` リンクをクリックし、 `address` の `Assigned type` 列の値を `Optional` から `Default` へ変更します。  
 39. 画面上部にある `Advanced` タブをクリックします。
 40. `Authentication flow overrides` セクションの `Browser Flow` を `my number card` へ変更し、 `Save` ボタンをクリックします。  
-41. ナビゲーションエリアにある `Manage` セクションの `Client scopes` をクリックし、`profile`リンクをクリックします。  
-42. 画面上部にある `Mappers` タブをクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
-43. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
+41. ナビゲーションエリアにある `Manage` セクションの `Clients` をクリックします。 
+42. `Clients list`タブの`sample-client01`をクリックします。  
+43. `Settings`タブのCapability configにある`Client Authentication`をOnに変更し、Saveをクリックします。  
+44. `Credntials`タブが表示されるのでクリックし、`Client secret`の値をメモします。　　
+45. ナビゲーションエリアにある `Manage` セクションの `Clients` をクリックします。 
+46. `Create client` をクリック、以下のように設定し、 `Next` ボタンをクリックします。  
+    - Client type: OpenID Connect
+    - Client ID: sample-client02
+47. `Next` ボタンをクリックします。  
+48. 以下のように設定し、`Save` ボタンをクリックします。  
+    - Root URL: (入力しない)
+    - Home URL: (入力しない)
+    - Valid redirect URIs: *
+    - Valid post logout redirect URIs: *
+    - Web origins: *
+49. `Login settings` セクションの `Consent required` を `On` に変更し、 `Save` ボタンをクリックします。  
+50. `Client scopes` タブをクリックします。  
+51. `sample-client02-dedicated` リンク、 `Configure a new mapper` の順でクリックします。  
+52. `Audience` をクリックし、 以下のように設定します。設定後、 `Save` ボタンをクリックします。  
+    - Name: Audience
+    - Included Client Audience: (入力しない)
+    - Included Custom Audience: (入力しない)
+    - Add to ID token: On
+    - Add to access token: On
+53. 画面上部にある `Dedicated scopes` リンクをクリックし、 `Add mapper` 、 `By configuration` の順でクリックします。  
+54. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
+    - Name: Unique ID
+    - User Attribute: uniqueId
+    - Token Claim Name: unique_id
+    - Claim JSON Type: String
+    - Add to ID token: On
+    - Add to access token: On
+    - Add to userinfo: Off
+    - Multivalued: Off
+    - Aggregate attribute values: Off
+55. 画面上部にある `Dedicated scopes` リンクをクリックし、 `Add mapper` 、 `By configuration` の順でクリックします。  
+56. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
+    - Name: User Attributes
+    - User Attribute: sample-client02_user_attributes
+    - Token Claim Name: user_attributes
+    - Claim JSON Type: JSON
+    - Add to ID token: On
+    - Add to access token: On
+    - Add to userinfo: On
+    - Multivalued: Off
+    - Aggregate attribute values: Off
+57. 画面上部にある `Client details` リンクをクリックし、 `address` の `Assigned type` 列の値を `Optional` から `Default` へ変更します。  
+58. 画面上部にある `Advanced` タブをクリックします。
+59. `Authentication flow overrides` セクションの `Browser Flow` を `my number card` へ変更し、 `Save` ボタンをクリックします。  
+60. ナビゲーションエリアにある `Manage` セクションの `Clients` をクリックします。 
+61. `Clients list`タブの`sample-client02`をクリックします。   
+62. `Settings`タブのCapability configにある`Client Authentication`をOnに変更し、Saveをクリックします。  
+63. `Credntials`タブが表示されるのでクリックし、`Client secret`の値をメモします。　
+64. ナビゲーションエリアにある `Manage` セクションの `Client scopes` をクリックし、`profile`リンクをクリックします。  
+65. 画面上部にある `Mappers` タブをクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
+66. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
     - Name: user address  
     - User Attribute: user_address
     - Token Claim Name: user_address
@@ -147,8 +200,8 @@
     - Add to userinfo: On
     - Multivalued: Off
     - Aggregate attribute values: Off
-44. 画面上部にある `Client scope details` をクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
-45. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
+67. 画面上部にある `Client scope details` をクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
+68. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
     - Name: name
     - User Attribute: name
     - Token Claim Name: name
@@ -158,8 +211,8 @@
     - Add to userinfo: On
     - Multivalued: Off
     - Aggregate attribute values: Off
-46. 画面上部にある `Client scope details` をクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
-47. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。
+69. 画面上部にある `Client scope details` をクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
+70. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。
     - Name: gender code
     - User Attribute: gender_code
     - Token Claim Name: gender_code
@@ -169,8 +222,8 @@
     - Add to userinfo: On
     - Multivalued: Off
     - Aggregate attribute values: Off
-48. 画面上部にある `Client scope details` をクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
-49. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
+71. 画面上部にある `Client scope details` をクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
+72. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
     - Name: birth date
     - User Attribute: birth_date
     - Token Claim Name: birth_date
@@ -180,12 +233,27 @@
     - Add to userinfo: On
     - Multivalued: Off
     - Aggregate attribute values: Off
-50. ナビゲーションエリアにある `Configure` セクションの `Realm settings` をクリックします。  
-51. `Localization` タブをクリックし、 `Internationalization` を `Disabled` から `Enabled` へ変更します。  
-52. `Supported locales` の `Select locales` 文字列部分をクリックし、 `日本語` をクリックします。  
-53. 画面内の余白をクリックし、言語のセレクトボックスを閉じます。  
-54. `Default locale` を `English` から `日本語` へ変更し、 `Save` をクリックします。  
-
+73. ナビゲーションエリアにある `Configure` セクションの `Realm settings` をクリックします。  
+74. `Localization` タブをクリックし、 `Internationalization` を `Disabled` から `Enabled` へ変更します。  
+75. `Supported locales` の `Select locales` 文字列部分をクリックし、 `日本語` をクリックします。  
+76. 画面内の余白をクリックし、言語のセレクトボックスを閉じます。  
+77. `Default locale` を `English` から `日本語` へ変更し、 `Save` をクリックします。  
+78. 手順6で設定したファイル `.env`内の値を以下のように変更します。  
+   **RP1_CLIENT_SECRET, RP2_CLIENT_SECRET:**  
+   RP1_CLIENT_SECRETに手順44でメモした値、RP2_CLIENT_SECRETに手順63でメモした値を設定します。  
+79. Dockerコンテナを停止します  
+   ```
+   docker compose -f docker-compose.yml -f docker-compose-examples.yml down
+   ```
+80. コンテナイメージをビルドします。  
+   ```
+   docker compose -f docker-compose.yml -f docker-compose-examples.yml build
+   ```
+81. Dockerコンテナを起動し、コンテナのログを確認します。  
+   ```
+   docker compose -f docker-compose.yml -f docker-compose-examples.yml up -d
+   docker compose -f docker-compose.yml -f docker-compose-examples.yml logs -f
+   ```
 ## 動作確認（マイナンバーカード用）
 > note  
 ローカル環境で実施する場合、以下を実施してください。  
