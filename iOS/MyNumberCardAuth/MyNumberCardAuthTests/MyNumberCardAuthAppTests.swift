@@ -20,17 +20,17 @@ final class MyNumberCardAuthAppTests: XCTestCase {
     }
 
     func testGenerateQueryDictionary() throws {
-        guard let testURL = URL(string: "https://example?nonce=12345&empty") else { return }
-        guard let urlComponents = URLComponents(url: testURL, resolvingAgainstBaseURL: true) else { return }
+        let testURL = URL(string: "https://example?nonce=12345&empty")
+        let urlComponents = URLComponents(url: testURL!, resolvingAgainstBaseURL: true)
 
-        XCTAssertEqual(MyNumberCardAuth.generateQueryDictionary(from: urlComponents), ["nonce": "12345"])
+        XCTAssertEqual(MyNumberCardAuth.generateQueryDictionary(from: urlComponents!), ["nonce": "12345"])
     }
 
     func testGenerateQueryDictionaryEmpty() throws {
-        guard let testURL = URL(string: "https://example") else { return }
-        guard let urlComponents = URLComponents(url: testURL, resolvingAgainstBaseURL: true) else { return }
+        let testURL = URL(string: "https://example")
+        let urlComponents = URLComponents(url: testURL!, resolvingAgainstBaseURL: true)
 
-        XCTAssertEqual(MyNumberCardAuth.generateQueryDictionary(from: urlComponents), [:])
+        XCTAssertEqual(MyNumberCardAuth.generateQueryDictionary(from: urlComponents!), [:])
     }
 
     func testIsMode() throws {

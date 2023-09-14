@@ -8,6 +8,27 @@
 import SwiftUI
 import XCTest
 
+public class AuthenticationManagerMock: AuthenticationManagerProtocol {
+    var barCallCount = 0
+    var pin = ""
+    var nonce = ""
+    var actionURL = ""
+
+    public func authenticateForSignature(pin: String, nonce: String, actionURL: String, authenticationController _: AuthenticationController) {
+        self.pin = pin
+        self.nonce = nonce
+        self.actionURL = actionURL
+        barCallCount += 1
+    }
+
+    public func authenticateForUserVerification(pin: String, nonce: String, actionURL: String, authenticationController _: AuthenticationController) {
+        self.pin = pin
+        self.nonce = nonce
+        self.actionURL = actionURL
+        barCallCount += 1
+    }
+}
+
 final class AuthenticationControllerTests: XCTestCase {
     let controller: AuthenticationController = .init()
 
@@ -39,24 +60,41 @@ final class AuthenticationControllerTests: XCTestCase {
         controller.openURLButton(url: "https://example.com")
     }
 
-    func testOpenURLButton_empty() throws {
+    func testOpenURLButtonURLEmpty() throws {
         controller.openURLButton(url: "")
     }
 
-    func testOpenURLButton_noUrl() throws {
+    func testOpenURLButtonNoURL() throws {
         controller.openURLButton(url: "てすと")
     }
 
     func testStartReading() throws {
-        // mock必要
-        controller.viewState = .SignatureView
-        controller.startReading(pin: "1234", nonce: "0123456789", actionURL: "https:example")
+        let mock = AuthenticationManagerMock()
+        let authenticationController = AuthenticationController(authenticationManager: mock)
 
-        controller.viewState = .UserVerificationView
-        controller.startReading(pin: "1234", nonce: "0123456789", actionURL: "https:example")
+        authenticationController.viewState = .SignatureView
+        authenticationController.startReading(pin: "1234", nonce: "0123456789", actionURL: "https:example.1")
 
-        controller.viewState = .ExplanationView
-        controller.startReading(pin: "1234", nonce: "0123456789", actionURL: "https:example")
+        XCTAssertEqual(mock.barCallCount, 1)
+        XCTAssertEqual(mock.pin, "1234")
+        XCTAssertEqual(mock.nonce, "0123456789")
+        XCTAssertEqual(mock.actionURL, "https:example.1")
+
+        authenticationController.viewState = .UserVerificationView
+        authenticationController.startReading(pin: "5678", nonce: "9876543210", actionURL: "https:example.2")
+
+        XCTAssertEqual(mock.barCallCount, 2)
+        XCTAssertEqual(mock.pin, "5678")
+        XCTAssertEqual(mock.nonce, "9876543210")
+        XCTAssertEqual(mock.actionURL, "https:example.2")
+
+        authenticationController.viewState = .ExplanationView
+        authenticationController.startReading(pin: "test", nonce: "nonce", actionURL: "https:example.3")
+
+        XCTAssertEqual(mock.barCallCount, 2)
+        XCTAssertEqual(mock.pin, "5678")
+        XCTAssertEqual(mock.nonce, "9876543210")
+        XCTAssertEqual(mock.actionURL, "https:example.2")
     }
 
     func testGetButtonColor() throws {
@@ -67,13 +105,12 @@ final class AuthenticationControllerTests: XCTestCase {
         XCTAssertEqual(controller.getButtonColor(checkStr: ""), Color(UIColor.lightGray))
     }
 
-    func testSetErrorPageURL_nil() throws {
+    func testSetErrorPageURLQueryDicNil() throws {
         controller.setErrorPageURL(queryDict: ["": ""])
         XCTAssertEqual(controller.openURL, "")
     }
 
-    func testSetErrorPageURL_empty() throws {
-        // Dictのvalueをnilにできない。。。
+    func testSetErrorPageURLNoErrorURL() throws {
         controller.setErrorPageURL(queryDict: ["error_url": ""])
         XCTAssertEqual(controller.openURL, "")
     }
@@ -83,10 +120,20 @@ final class AuthenticationControllerTests: XCTestCase {
         XCTAssertEqual(controller.openURL, "https://example/?test=1&test2=1")
     }
 
-    func testOnOpenURL_empty() throws {
-        // Componentsをnilにできない。。。
-        controller.onOpenURL(url: URL(string: "https://example")!)
-        XCTAssertEqual(controller.queryDict, [:])
+    func testOnOpenURLEmptyNonceEmpty() throws {
+        controller.onOpenURL(url: URL(string: "http://example?action_url=example")!)
+        XCTAssertEqual(controller.controllerForUserVerification.actionURL, "")
+        XCTAssertEqual(controller.controllerForUserVerification.nonce, "")
+        XCTAssertEqual(controller.controllerForSignature.actionURL, "")
+        XCTAssertEqual(controller.controllerForSignature.nonce, "")
+    }
+
+    func testOnOpenURLEmptyActionURLEmpty() throws {
+        controller.onOpenURL(url: URL(string: "http://example?nonce=example")!)
+        XCTAssertEqual(controller.controllerForUserVerification.actionURL, "")
+        XCTAssertEqual(controller.controllerForUserVerification.nonce, "")
+        XCTAssertEqual(controller.controllerForSignature.actionURL, "")
+        XCTAssertEqual(controller.controllerForSignature.nonce, "")
     }
 
     func testOnOpenURL() throws {
