@@ -2,7 +2,7 @@
 //  MyNumberCardAuthUITestsLaunchTests.swift
 //  MyNumberCardAuthUITests
 //
-//  Created by abelstaff on 2023/09/10.
+//  Created by c3lab on 2023/09/10.
 //
 
 import XCTest
