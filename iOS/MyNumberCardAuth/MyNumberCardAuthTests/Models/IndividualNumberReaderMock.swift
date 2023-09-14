@@ -45,6 +45,17 @@ class IndividualNumberReaderMock: IndividualNumberReaderProtocol {
         if let lookupRemainingPINHandler = lookupRemainingPINHandler {
             lookupRemainingPINHandler(pinType, completion)
         }
+        
+    }
+
+    private(set) var checkReadingAvailableCallCount = 0
+    var checkReadingAvailableHandler: (() -> (Bool))?
+    func checkReadingAvailable() -> Bool {
+        checkReadingAvailableCallCount += 1
+        if let checkReadingAvailableHandler = checkReadingAvailableHandler {
+            return checkReadingAvailableHandler()
+        }
+        return false
     }
 }
 
