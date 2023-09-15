@@ -165,8 +165,8 @@
 		9F6D48DE2AB416A100F64FFC /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				9B2D453E2AB329EE0018AE9E /* IndividualNumberReaderProtocol.swift */,
 				9F6D48DC2AB413E600F64FFC /* AuthenticationManagerProtocol.swift */,
+				9B2D453E2AB329EE0018AE9E /* IndividualNumberReaderProtocol.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
