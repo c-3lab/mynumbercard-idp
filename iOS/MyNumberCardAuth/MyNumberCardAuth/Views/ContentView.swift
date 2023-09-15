@@ -21,14 +21,41 @@ struct ContentView: View {
             case .UserVerificationView:
                 // 利用者証明用電子証明書読込を表示
                 NFCReadingView(queryDict: $queryDict,authenticationController: self.authenticationController,controller: self.controller)
+                    .toolbar {
+                      ToolbarItem(placement: .principal) {
+                        Text("[iOS] MyNumberCard Authorization App")
+                              .bold()
+                              .multilineTextAlignment(.center)
+                              .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
+                              .minimumScaleFactor(0.8)
+                      }
+                    }
                     
             case .SignatureView:
                 // 署名用電子証明書読込を表示
                 NFCReadingForSignatureView(queryDict: $queryDict, authenticationController: self.authenticationController,controller: self.controllerForSignature)
+                    .toolbar {
+                      ToolbarItem(placement: .principal) {
+                        Text("[iOS] MyNumberCard Authorization App")
+                              .bold()
+                              .multilineTextAlignment(.center)
+                              .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
+                              .minimumScaleFactor(0.8)
+                      }
+                    }
                 
             case .ExplanationView:
                 // アプリ説明画面
                 AppExplanationView(authenticationController: self.authenticationController)
+                    .toolbar {
+                      ToolbarItem(placement: .principal) {
+                        Text("[iOS] MyNumberCard Authorization App")
+                              .bold()
+                              .multilineTextAlignment(.center)
+                              .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
+                              .minimumScaleFactor(0.8)
+                      }
+                    }
             }
         }
     }

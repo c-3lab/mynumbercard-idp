@@ -55,11 +55,10 @@ struct MyNumberCardAuthApp: App {
     @State var urlComponents: URLComponents?
     @State var queryDict : [String: String]?
     @State var authenticationController:AuthenticationController = AuthenticationController()
-    @State var controller = ViewController()
-    @State var controllerForSignature = SignatureViewController()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView(urlComponents: $urlComponents, queryDict: $queryDict,authenticationController: authenticationController,controller: controller,controllerForSignature: controllerForSignature).onOpenURL(perform: { url in
+            ContentView(urlComponents: $urlComponents, queryDict: $queryDict,authenticationController: authenticationController,controller: self.authenticationController.controller,controllerForSignature: self.authenticationController.controllerForSignature).onOpenURL(perform: { url in
                 
                 let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
                 self.urlComponents = urlComponents
@@ -74,12 +73,12 @@ struct MyNumberCardAuthApp: App {
                         
                         if let actionURL = query["action_url"], let nonse = query["nonce"]
                         {
-                            self.controller.inputPIN = ""
-                            self.controllerForSignature.inputPIN = ""
-                            self.controller.actionURL = actionURL
-                            self.controllerForSignature.actionURL = actionURL
-                            self.controller.nonce = nonse
-                            self.controllerForSignature.nonce = nonse
+                            self.authenticationController.controller.inputPIN = ""
+                            self.authenticationController.controllerForSignature.inputPIN = ""
+                            self.authenticationController.controller.actionURL = actionURL
+                            self.authenticationController.controllerForSignature.actionURL = actionURL
+                            self.authenticationController.controller.nonce = nonse
+                            self.authenticationController.controllerForSignature.nonce = nonse
                         }
                     }
                 }

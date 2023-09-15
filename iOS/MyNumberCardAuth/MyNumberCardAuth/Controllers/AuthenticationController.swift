@@ -19,7 +19,9 @@ class AuthenticationController: ObservableObject {
     @Published var nonceHash:String = ""
     @Published var queryDict:[String: String]?
     @Published var openURL:String = ""
-    
+    @Published var controller:ViewController = ViewController()
+    @Published var controllerForSignature:SignatureViewController = SignatureViewController()
+
     // 利用規約/プライバシーポリシー/個人情報保護方針URL
     @Published var termsOfUseURL:String = Bundle.main.object(forInfoDictionaryKey: "TermsOfServiceURL") as! String
     @Published var privacyPolicyURL:String = Bundle.main.object(forInfoDictionaryKey: "PrivacyPolicyURL") as! String
