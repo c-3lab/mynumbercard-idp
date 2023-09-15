@@ -54,7 +54,7 @@ Androidでマイナンバーカードを読み取り、公的個人認証を行�
 
 ## マイナンバーカードの電子証明書読み取り用および電子署名用のバイナリを設定
 以下ファイルの`CHANGE_TO_APDU_VALUE`の部分を変更してください。  
-※設定する値については、[J-LIS](https://www.j-lis.go.jp/index.html)にお問い合わせください。
+※設定する値の内容については、[J-LIS](https://www.j-lis.go.jp/index.html)にお問い合わせください。
 
 [Android/MyNumberCardAuth/app/src/main/assets/apdu_commands.properties](./MyNumberCardAuth/app/src/main/assets/apdu_commands.properties)
 
