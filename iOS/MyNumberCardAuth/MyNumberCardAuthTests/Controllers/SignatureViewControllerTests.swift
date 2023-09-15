@@ -9,8 +9,7 @@ import SwiftUI
 import XCTest
 
 final class SignatureViewControllerTests: XCTestCase {
-    let controller: SignatureViewController = .init()
-
+        
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
@@ -20,6 +19,8 @@ final class SignatureViewControllerTests: XCTestCase {
     }
 
     func testIsEnableButton() throws {
+        let controller:SignatureViewController = SignatureViewController()
+        
         controller.inputPIN = ""
         controller.nonce = ""
         controller.actionURL = ""
@@ -47,6 +48,8 @@ final class SignatureViewControllerTests: XCTestCase {
     }
 
     func testGetButtonColor() throws {
+        let controller:SignatureViewController = SignatureViewController()
+        
         controller.inputPIN = ""
         controller.nonce = ""
         controller.actionURL = ""

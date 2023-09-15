@@ -8,11 +8,6 @@
 import Foundation
 import SwiftUI
 
-protocol AuthenticationManagerProtocol {
-    func authenticateForSignature(pin: String, nonce: String, actionURL: String, authenticationController: AuthenticationController)
-    func authenticateForUserVerification(pin: String, nonce: String, actionURL: String, authenticationController: AuthenticationController)
-}
-
 public class AuthenticationController: ObservableObject {
     @Published var viewState: ShowView = .UserVerificationView
     @Published var runMode: Mode = .Login

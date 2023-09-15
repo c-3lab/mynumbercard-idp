@@ -7,7 +7,8 @@
 
 import XCTest
 
-var keycloakURL: String = "https://852ed96220eb.ngrok.app" // ポート80
+// ユニバーサルリンクを使用するため、keycloakへのアクセスが可能な状態にすること
+var keycloakURL: String = "https://852ed96220eb.ngrok.app" //ポート80
 var relum: String = "OIdp"
 
 final class MyNumberCardAuthUITests: XCTestCase {

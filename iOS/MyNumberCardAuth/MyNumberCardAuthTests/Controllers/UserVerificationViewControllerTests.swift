@@ -9,8 +9,7 @@ import SwiftUI
 import XCTest
 
 final class UserVerificationViewControllerTests: XCTestCase {
-    let controller: UserVerificationViewController = .init()
-
+        
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
@@ -20,6 +19,8 @@ final class UserVerificationViewControllerTests: XCTestCase {
     }
 
     func testIsEnableButton() throws {
+        let controller:UserVerificationViewController = UserVerificationViewController()
+        
         controller.inputPIN = ""
         controller.nonce = ""
         controller.actionURL = ""
@@ -52,6 +53,8 @@ final class UserVerificationViewControllerTests: XCTestCase {
     }
 
     func testGetButtonColor() throws {
+        let controller:UserVerificationViewController = UserVerificationViewController()
+        
         controller.inputPIN = ""
         controller.nonce = ""
         controller.actionURL = ""

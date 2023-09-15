@@ -22,7 +22,7 @@ import TRETJapanNFCReader_MIFARE
 #endif
 import CoreNFC
 #endif
-
+@testable import MyNumberCardAuth
 
 class IndividualNumberReaderMock: IndividualNumberReaderProtocol {
     init() { }
@@ -35,7 +35,6 @@ class IndividualNumberReaderMock: IndividualNumberReaderProtocol {
         if let getHandler = getHandler {
             getHandler(items, cardInfoInputSupportAppPIN)
         }
-        
     }
 
     private(set) var lookupRemainingPINCallCount = 0
@@ -57,5 +56,8 @@ class IndividualNumberReaderMock: IndividualNumberReaderProtocol {
         }
         return false
     }
+    
+    func computeDigitalSignatureForUserAuthentication(userAuthenticationPIN: String, dataToSign: [UInt8]) {}
+    func computeDigitalSignatureForSignature(signaturePIN: String, dataToSign: [UInt8]) {}
 }
 
