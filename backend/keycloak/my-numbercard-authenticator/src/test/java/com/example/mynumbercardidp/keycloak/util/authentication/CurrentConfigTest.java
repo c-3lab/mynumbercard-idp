@@ -38,7 +38,7 @@ public class CurrentConfigTest {
     }
 
     @Test
-    public void getValue() {
+    public void testGetValue() {
         assertEquals("", CurrentConfig.getValue(context, "TestConfig"));
         assertNotNull(CurrentConfig.getValue(context, SpiConfigProperty.PlatformApiClientClassFqdn.CONFIG.getName()));
     }

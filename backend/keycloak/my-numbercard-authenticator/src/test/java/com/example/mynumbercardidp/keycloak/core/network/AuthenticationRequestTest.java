@@ -3,9 +3,11 @@ package com.example.mynumbercardidp.keycloak.core.network;
 import com.example.mynumbercardidp.keycloak.core.network.AuthenticationRequest.Filed;
 import com.example.mynumbercardidp.keycloak.core.network.platform.CertificateType;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.lang.reflect.Field;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -15,73 +17,105 @@ public class AuthenticationRequestTest {
 
     AuthenticationRequest authenticationRequest = new AuthenticationRequest();
 
-    @Test
-    public void getCertificateType() {
-        assertNull(authenticationRequest.getCertificateType());
+    public AuthenticationRequest setTestValues(CertificateType certificateType, String certificate, String applicantData, String sign, String actionMode) {
+        AuthenticationRequest expected = new AuthenticationRequest() {
+            {
+                setCertificateType(certificateType);
+                setCertificate(certificate);
+                setApplicantData(applicantData);
+                setSign(sign);
+                setActionMode(actionMode);
+            }
+        };
+        return expected;
     }
 
     @Test
-    public void getCertificate() {
-        assertNull(authenticationRequest.getCertificate());
-    }
-
-    @Test
-    public void getApplicantData() {
-        assertNull(authenticationRequest.getApplicantData());
-    }
-
-    @Test
-    public void getSign() {
-        assertNull(authenticationRequest.getSign());
-    }
-
-    @Test
-    public void setCertificateType() {
-        authenticationRequest.setCertificateType(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE);
-        assertEquals(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE, authenticationRequest.getCertificateType());
-        assertEquals("encryptedDigitalSignatureCertificate", authenticationRequest.getCertificateType().getName());
-        authenticationRequest.setCertificateType(CertificateType.ENCRYPTED_USER_AUTHENTICATION);
+    public void testGetCertificateType() throws Exception {
+        Field field = authenticationRequest.getClass().getDeclaredField("certificateType");
+        field.setAccessible(true);
+        field.set(authenticationRequest, CertificateType.ENCRYPTED_USER_AUTHENTICATION);
         assertEquals(CertificateType.ENCRYPTED_USER_AUTHENTICATION, authenticationRequest.getCertificateType());
-        assertEquals("encryptedUserAuthenticationCertificate", authenticationRequest.getCertificateType().getName());
     }
 
     @Test
-    public void setCertificate() {
-        authenticationRequest.setCertificate(null);
-        assertNull(authenticationRequest.getCertificate());
-        authenticationRequest.setCertificate("");
-        assertEquals("", authenticationRequest.getCertificate());
-        authenticationRequest.setCertificate("abc123");
-        assertEquals("abc123", authenticationRequest.getCertificate());
+    public void testGetCertificate() throws Exception  {
+        Field field = authenticationRequest.getClass().getDeclaredField("certificate");
+        field.setAccessible(true);
+        field.set(authenticationRequest, "certificate");
+        assertEquals("certificate", authenticationRequest.getCertificate());
     }
 
     @Test
-    public void setApplicantData() {
-        authenticationRequest.setApplicantData(null);
-        assertNull(authenticationRequest.getApplicantData());
-        authenticationRequest.setApplicantData("");
-        assertEquals("", authenticationRequest.getApplicantData());
-        authenticationRequest.setApplicantData("abc123");
-        assertEquals("abc123", authenticationRequest.getApplicantData());
+    public void testGetApplicantData() throws Exception {
+        Field field = authenticationRequest.getClass().getDeclaredField("applicantData");
+        field.setAccessible(true);
+        field.set(authenticationRequest, "applicantData");
+        assertEquals("applicantData", authenticationRequest.getApplicantData());
     }
 
     @Test
-    public void setSign() {
-        authenticationRequest.setSign(null);
-        assertNull(authenticationRequest.getSign());
-        authenticationRequest.setSign("");
-        assertEquals("", authenticationRequest.getSign());
-        authenticationRequest.setSign("abc123");
-        assertEquals("abc123", authenticationRequest.getSign());
+    public void testGetSign() throws Exception {
+        Field field = authenticationRequest.getClass().getDeclaredField("sign");
+        field.setAccessible(true);
+        field.set(authenticationRequest, "sign");
+        assertEquals("sign", authenticationRequest.getSign());
     }
 
     @Test
-    public void getActionMode() {
-        assertNull(authenticationRequest.getActionMode());
+    public void testSetCertificateType() {
+        AuthenticationRequest expected = setTestValues(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE, null, null, null, null);
+        AuthenticationRequest result = authenticationRequest.setCertificateType(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE);
+        assertEquals(expected.getCertificateType(), result.getCertificateType());
+        assertEquals(expected.getCertificate(), result.getCertificate());
+        assertEquals(expected.getApplicantData(), result.getApplicantData());
+        assertEquals(expected.getSign(), result.getSign());
+        assertEquals(expected.getActionMode(), result.getActionMode());
     }
 
     @Test
-    public void setActionMode() {
+    public void testSetCertificate() {
+        AuthenticationRequest expected = setTestValues(null, "certificate", null, null, null);
+        AuthenticationRequest result = authenticationRequest.setCertificate("certificate");
+        assertEquals(expected.getCertificateType(), result.getCertificateType());
+        assertEquals(expected.getCertificate(), result.getCertificate());
+        assertEquals(expected.getApplicantData(), result.getApplicantData());
+        assertEquals(expected.getSign(), result.getSign());
+        assertEquals(expected.getActionMode(), result.getActionMode());
+    }
+
+    @Test
+    public void testSetApplicantData() {
+        AuthenticationRequest expected = setTestValues(null, null, "applicantData", null, null);
+        AuthenticationRequest result = authenticationRequest.setApplicantData("applicantData");
+        assertEquals(expected.getCertificateType(), result.getCertificateType());
+        assertEquals(expected.getCertificate(), result.getCertificate());
+        assertEquals(expected.getApplicantData(), result.getApplicantData());
+        assertEquals(expected.getSign(), result.getSign());
+        assertEquals(expected.getActionMode(), result.getActionMode());
+    }
+
+    @Test
+    public void testSetSign() {
+        AuthenticationRequest expected = setTestValues(null, null, null, "sign", null);
+        AuthenticationRequest result = authenticationRequest.setSign("sign");
+        assertEquals(expected.getCertificateType(), result.getCertificateType());
+        assertEquals(expected.getCertificate(), result.getCertificate());
+        assertEquals(expected.getApplicantData(), result.getApplicantData());
+        assertEquals(expected.getSign(), result.getSign());
+        assertEquals(expected.getActionMode(), result.getActionMode());
+    }
+
+    @Test
+    public void testGetActionMode() throws Exception {
+        Field field = authenticationRequest.getClass().getDeclaredField("actionMode");
+        field.setAccessible(true);
+        field.set(authenticationRequest, "actionMode");
+        assertEquals("actionMode", authenticationRequest.getActionMode());
+    }
+
+    @Test
+    public void testSetActionMode() {
         authenticationRequest.setActionMode(null);
         assertNull(authenticationRequest.getActionMode());
         authenticationRequest.setActionMode("login");
@@ -89,59 +123,59 @@ public class AuthenticationRequestTest {
     }
 
     @Test
-    public void validateHasValues() {
+    public void testValidateHasValues() {
         assertDoesNotThrow(() -> {
             authenticationRequest.setCertificateType(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE);
-            authenticationRequest.setCertificate("abc123");
-            authenticationRequest.setApplicantData("abc123");
-            authenticationRequest.setSign("abc123");
+            authenticationRequest.setCertificate("certificate");
+            authenticationRequest.setApplicantData("applicantData");
+            authenticationRequest.setSign("sign");
             authenticationRequest.setActionMode("login");
             authenticationRequest.validateHasValues();
         });
     }
 
     @Test
-    public void validateHasValuesWithoutCertificateWithoutCertificateType() {
+    public void testValidateHasValuesWithoutCertificateWithoutCertificateType() {
         assertThrows(IllegalStateException.class, () -> {
             authenticationRequest.setCertificateType(null);
-            authenticationRequest.setCertificate("abc123");
-            authenticationRequest.setApplicantData("abc123");
-            authenticationRequest.setSign("abc123");
+            authenticationRequest.setCertificate("certificate");
+            authenticationRequest.setApplicantData("applicantData");
+            authenticationRequest.setSign("sign");
             authenticationRequest.setActionMode("login");
             authenticationRequest.validateHasValues();
         });
     }
 
     @Test
-    public void validateHasValuesWithoutCertificate() {
+    public void testValidateHasValuesWithoutCertificate() {
         assertThrows(IllegalStateException.class, () -> {
             authenticationRequest.setCertificateType(CertificateType.ENCRYPTED_USER_AUTHENTICATION);
             authenticationRequest.setCertificate("");
-            authenticationRequest.setApplicantData("abc123");
-            authenticationRequest.setSign("abc123");
+            authenticationRequest.setApplicantData("applicantData");
+            authenticationRequest.setSign("sign");
             authenticationRequest.setActionMode("login");
             authenticationRequest.validateHasValues();
         });
     }
 
     @Test
-    public void validateHasValuesWithoutApplicantData() {
+    public void testValidateHasValuesWithoutApplicantData() {
         assertThrows(IllegalStateException.class, () -> {
             authenticationRequest.setCertificateType(CertificateType.ENCRYPTED_USER_AUTHENTICATION);
-            authenticationRequest.setCertificate("abc123");
+            authenticationRequest.setCertificate("certificate");
             authenticationRequest.setApplicantData("");
-            authenticationRequest.setSign("abc123");
+            authenticationRequest.setSign("sign");
             authenticationRequest.setActionMode("login");
             authenticationRequest.validateHasValues();
         });
     }
 
     @Test
-    public void validateHasValuesWithoutSign() {
+    public void testValidateHasValuesWithoutSign() {
         assertThrows(IllegalStateException.class, () -> {
             authenticationRequest.setCertificateType(CertificateType.ENCRYPTED_USER_AUTHENTICATION);
-            authenticationRequest.setCertificate("abc123");
-            authenticationRequest.setApplicantData("abc123");
+            authenticationRequest.setCertificate("certificate");
+            authenticationRequest.setApplicantData("applicantData");
             authenticationRequest.setSign("");
             authenticationRequest.setActionMode("login");
             authenticationRequest.validateHasValues();
@@ -149,19 +183,19 @@ public class AuthenticationRequestTest {
     }
 
     @Test
-    public void validateHasValuesWithoutMode() {
+    public void testValidateHasValuesWithoutMode() {
         assertThrows(IllegalStateException.class, () -> {
             authenticationRequest.setCertificateType(CertificateType.ENCRYPTED_USER_AUTHENTICATION);
-            authenticationRequest.setCertificate("abc123");
-            authenticationRequest.setApplicantData("abc123");
-            authenticationRequest.setSign("abc123");
+            authenticationRequest.setCertificate("certificate");
+            authenticationRequest.setApplicantData("applicantData");
+            authenticationRequest.setSign("sign");
             authenticationRequest.setActionMode("");
             authenticationRequest.validateHasValues();
         });
     }
 
     @Test
-    public void getName() {
-        assertNotNull(Filed.ACTION_MODE.getName());
+    public void testGetName() {
+        assertEquals("mode", Filed.ACTION_MODE.getName());
     }
 }

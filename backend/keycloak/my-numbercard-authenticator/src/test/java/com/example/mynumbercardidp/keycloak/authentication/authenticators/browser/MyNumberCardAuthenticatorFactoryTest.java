@@ -28,68 +28,68 @@ public class MyNumberCardAuthenticatorFactoryTest {
     }
 
     @Test
-    public void close() {
+    public void testClose() {
         assertDoesNotThrow(() -> {
             myNumberCardAuthenticatorFactory.close();
         });
     }
 
     @Test
-    public void create() {
+    public void testCreate() {
         assertNotNull(myNumberCardAuthenticatorFactory.create(session));
     }
 
     @Test
-    public void getId() {
+    public void testGetId() {
         assertNotNull(myNumberCardAuthenticatorFactory.getId());
     }
 
     @Test
-    public void init() {
+    public void testInit() {
         assertDoesNotThrow(() -> {
             myNumberCardAuthenticatorFactory.init(config);
         });
     }
 
     @Test
-    public void postInit() {
+    public void testPostInit() {
         assertDoesNotThrow(() -> {
             myNumberCardAuthenticatorFactory.postInit(factory);
         });
     }
 
     @Test
-    public void getDisplayType() {
+    public void testGetDisplayType() {
        assertNotNull(myNumberCardAuthenticatorFactory.getDisplayType());
     }
 
     @Test
-    public void getReferenceCategory() {
+    public void testGetReferenceCategory() {
         assertNotNull(myNumberCardAuthenticatorFactory.getReferenceCategory());
     }
 
     @Test
-    public void getRequirementChoices() {
+    public void testGetRequirementChoices() {
         assertNotNull(myNumberCardAuthenticatorFactory.getRequirementChoices());
     }
 
     @Test
-    public void isConfigurable() {
+    public void testIsConfigurable() {
         assertTrue(myNumberCardAuthenticatorFactory.isConfigurable());
     }
 
     @Test
-    public void isUserSetupAllowed() {
+    public void testIsUserSetupAllowed() {
         assertFalse(myNumberCardAuthenticatorFactory.isUserSetupAllowed());
     }
 
     @Test
-    public void getConfigProperties() {
+    public void testGetConfigProperties() {
         assertNotNull(myNumberCardAuthenticatorFactory.getConfigProperties());
     }
 
     @Test
-    public void getHelpText() {
+    public void testGetHelpText() {
         assertNotNull(myNumberCardAuthenticatorFactory.getHelpText());
     }
 }
