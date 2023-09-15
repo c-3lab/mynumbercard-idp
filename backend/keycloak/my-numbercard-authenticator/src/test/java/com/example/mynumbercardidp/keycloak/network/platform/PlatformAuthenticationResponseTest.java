@@ -2,6 +2,9 @@ package com.example.mynumbercardidp.keycloak.network.platform;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.lang.reflect.Field;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,14 +25,17 @@ public class PlatformAuthenticationResponseTest {
     }
 
     @Test
-    public void getHttpStatusCode() {
-        assertNotNull(platformAuthenticationResponse.getHttpStatusCode());
+    public void testGetHttpStatusCode() throws Exception {
+        Field field = platformAuthenticationResponse.getClass().getDeclaredField("httpStatusCode");
+        field.setAccessible(true);
+        field.set(platformAuthenticationResponse, 400);
+        assertEquals(400, platformAuthenticationResponse.getHttpStatusCode());
     }
 
     @Test
-    public void toUserModelAttributes() {
+    public void testToUserModelAttributes() {
         platformAuthenticationResponse.toUserModelAttributes(user);
-        assertNull(user.getFirstAttribute("uniqueid"));
+        assertNull(user.getFirstAttribute("uniqueiId"));
         assertNull(user.getFirstAttribute("name"));
         assertNull(user.getFirstAttribute("gender_code"));
         assertNull(user.getFirstAttribute("user_address"));
@@ -37,43 +43,58 @@ public class PlatformAuthenticationResponseTest {
     }
 
     @Test
-    public void setHttpStatusCode() {
+    public void testSetHttpStatusCode() {
         platformAuthenticationResponse.setHttpStatusCode(400);
-        assertNotNull(platformAuthenticationResponse.getHttpStatusCode());
+        assertEquals(400, platformAuthenticationResponse.getHttpStatusCode());
     }
 
     @Test
-    public void getUniqueId() {
+    public void testGetUniqueId() {
         assertNull(platformAuthenticationResponse.getUniqueId());
     }
 
     @Test
-    public void getIdentityInfo() {
+    public void testGetIdentityInfo() throws Exception {
         assertNotNull(platformAuthenticationResponse.getIdentityInfo());
     }
         
     @Test
-    public void getIndentityInfoUniqueId() {
-        assertNull(identityInfo.getUniqueId());
+    public void testGetIndentityInfoUniqueId() throws Exception {
+        Field field = identityInfo.getClass().getDeclaredField("uniqueId");
+        field.setAccessible(true);
+        field.set(identityInfo, "c610e161-90ce-4a31-ab84-9429dd484e83");
+        assertEquals("c610e161-90ce-4a31-ab84-9429dd484e83", identityInfo.getUniqueId());
     }
 
     @Test
-    public void getName() {
-        assertNull(identityInfo.getName());
+    public void testGetName() throws Exception {
+        Field field = identityInfo.getClass().getDeclaredField("name");
+        field.setAccessible(true);
+        field.set(identityInfo, "name");
+        assertEquals("name", identityInfo.getName());
     }
 
     @Test
-    public void getDateOfBirth() {
-        assertNull(identityInfo.getDateOfBirth());
+    public void testGetDateOfBirth() throws Exception {
+        Field field = identityInfo.getClass().getDeclaredField("dateOfBirth");
+        field.setAccessible(true);
+        field.set(identityInfo, "1999-01-01");
+        assertEquals("1999-01-01", identityInfo.getDateOfBirth());
     }
 
     @Test
-    public void getGender() {
-        assertNull(identityInfo.getGender());
+    public void testGetGender() throws Exception {
+        Field field = identityInfo.getClass().getDeclaredField("gender");
+        field.setAccessible(true);
+        field.set(identityInfo, "0");
+        assertEquals("0", identityInfo.getGender());
     }
 
     @Test
-    public void getAddress() {
-        assertNull(identityInfo.getAddress());
+    public void testGetAddress() throws Exception {
+        Field field = identityInfo.getClass().getDeclaredField("address");
+        field.setAccessible(true);
+        field.set(identityInfo, "address");
+        assertEquals("address", identityInfo.getAddress());
     }
 }

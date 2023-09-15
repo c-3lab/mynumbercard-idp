@@ -10,14 +10,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StringUtilTest {
     @Test
-    public void isEmpty() {
+    public void testIsEmpty() {
         assertTrue(StringUtil.isEmpty(null));
         assertTrue(StringUtil.isEmpty(""));
         assertFalse(StringUtil.isEmpty("abc123"));
     }
 
     @Test
-    public void isNonEmpty() {
+    public void testIsNonEmpty() {
         assertTrue(StringUtil.isNonEmpty("abc123"));
         assertFalse(StringUtil.isNonEmpty(""));
         assertFalse(StringUtil.isNonEmpty(null));
@@ -29,7 +29,7 @@ public class StringUtilTest {
         "123456, 123456",
         "$12.34, $12.34"
     })
-    public void toFirstUpperCase(String input, String expected) {
+    public void testToFirstUpperCase(String input, String expected) {
         assertEquals(expected, StringUtil.toFirstUpperCase(input));
     }
 }

@@ -37,17 +37,17 @@ public class SpiConfigPropertyTest {
     }
 
     @Test
-    public void getPropertis() {
+    public void testGetPropertis() {
         assertNotNull(SpiConfigProperty.getPropertis());
     }
 
     @Test
-    public void getFreeMarkerJavaTemplateVariables() {
+    public void testGetFreeMarkerJavaTemplateVariables() {
         assertNotNull(SpiConfigProperty.getFreeMarkerJavaTemplateVariables());
     }
 
     @Test
-    public void initFreeMarkerJavaTemplateVariables() {
+    public void testInitFreeMarkerJavaTemplateVariables() {
         assertNotNull(new SpiConfigProperty.DebugMode());
         assertNotNull(new SpiConfigProperty.CertificateValidatorRootUri());
         assertNotNull(new SpiConfigProperty.RunUriOfAndroidApplication());

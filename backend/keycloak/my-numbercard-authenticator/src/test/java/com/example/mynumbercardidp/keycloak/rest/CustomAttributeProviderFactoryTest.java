@@ -26,31 +26,31 @@ public class CustomAttributeProviderFactoryTest {
     }
 
     @Test
-    public void getId() {
+    public void testGetId() {
         assertNotNull(customAttributeProviderFactory.getId());
     }
 
     @Test
-    public void close() {
+    public void testClose() {
         assertDoesNotThrow(() -> {
             customAttributeProviderFactory.close();
         });
     }
 
     @Test
-    public void create() {
+    public void testCreate() {
         assertNotNull(customAttributeProviderFactory.create(session));
     }
 
     @Test
-    public void init() {
+    public void testInit() {
         assertDoesNotThrow(() -> {
             customAttributeProviderFactory.init(config);
         });
     }
 
     @Test
-    public void postInit() {
+    public void testPostInit() {
         assertDoesNotThrow(() -> {
             customAttributeProviderFactory.postInit(factory);
         });
