@@ -30,6 +30,8 @@ protocol IndividualNumberReaderProtocol {
     func get(items: [IndividualNumberCardItem], cardInfoInputSupportAppPIN: String)
     func lookupRemainingPIN(pinType: IndividualNumberCardPINType, completion: @escaping (Int?) -> Void)
     func checkReadingAvailable() -> Bool
+    func computeDigitalSignatureForUserAuthentication(userAuthenticationPIN: String, dataToSign: [UInt8])
+    func computeDigitalSignatureForSignature(signaturePIN: String, dataToSign: [UInt8])
 }
 
 extension IndividualNumberReader : IndividualNumberReaderProtocol {

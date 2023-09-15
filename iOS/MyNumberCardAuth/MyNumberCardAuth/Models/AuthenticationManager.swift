@@ -10,12 +10,17 @@ import TRETJapanNFCReader_MIFARE_IndividualNumber
 import CryptoKit
 import JOSESwift
 
-public class AuthenticationManager:IndividualNumberReaderSessionDelegate, AuthenticationManagerProtocol{
+public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
     private var authenticationController:AuthenticationController?
     private var individualNumberCardExecuteType: IndividualNumberCardExecuteType?
     private var actionURL: String?
-    private var reader: IndividualNumberReader!
-        
+    private var reader: IndividualNumberReaderProtocol!
+
+    init() {}
+    init(reader: IndividualNumberReaderProtocol){
+        self.reader = reader
+    }
+
     public func authenticateForUserVerification(pin: String, nonce: String, actionURL: String, authenticationController:AuthenticationController) {
         self.authenticationController = authenticationController
         self.actionURL = actionURL
