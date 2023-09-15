@@ -9,7 +9,6 @@
 import XCTest
 
 final class MyNumberCardAuthAppTests: XCTestCase {
-
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
@@ -39,10 +38,10 @@ final class MyNumberCardAuthAppTests: XCTestCase {
         XCTAssertEqual(mode.isMode(queryDict: loginObject), MyNumberCardAuth.Mode.Login)
 
         let registObject = ["mode": "registration"]
-        XCTAssertEqual(mode.isMode(queryDict: registObject), MyNumberCardAuth.Mode.Login)
+        XCTAssertEqual(mode.isMode(queryDict: registObject), MyNumberCardAuth.Mode.Registration)
 
         let replaceObject = ["mode": "replacement"]
-        XCTAssertEqual(mode.isMode(queryDict: replaceObject), MyNumberCardAuth.Mode.Login)
+        XCTAssertEqual(mode.isMode(queryDict: replaceObject), MyNumberCardAuth.Mode.Replacement)
     }
 
     func testIsViewMode() throws {

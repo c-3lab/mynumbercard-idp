@@ -8,11 +8,8 @@
 import Foundation
 
 protocol AuthenticationManagerProtocol {
-    func authenticateForSignature(pin: String, nonce: String, actionURL: String, authenticationController:AuthenticationController)
-    func authenticateForUserVerification(pin: String, nonce: String, actionURL: String, authenticationController:AuthenticationController)
+    func authenticateForSignature(pin: String, nonce: String, actionURL: String, authenticationController: AuthenticationController)
+    func authenticateForUserVerification(pin: String, nonce: String, actionURL: String, authenticationController: AuthenticationController)
 }
 
-extension AuthenticationManager : AuthenticationManagerProtocol
-{
-    
-}
+extension AuthenticationManager: AuthenticationManagerProtocol {}

@@ -10,18 +10,18 @@ import Foundation
 import JOSESwift
 import TRETJapanNFCReader_MIFARE_IndividualNumber
 
-public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
-    private var authenticationController:AuthenticationController?
+public class AuthenticationManager: IndividualNumberReaderSessionDelegate {
+    private var authenticationController: AuthenticationController?
     private var individualNumberCardSignatureType: IndividualNumberCardSignatureType?
     private var actionURL: String?
     private var reader: IndividualNumberReaderProtocol!
 
     init() {}
-    init(reader: IndividualNumberReaderProtocol){
+    init(reader: IndividualNumberReaderProtocol) {
         self.reader = reader
     }
 
-    public func authenticateForUserVerification(pin: String, nonce: String, actionURL: String, authenticationController:AuthenticationController) {
+    public func authenticateForUserVerification(pin: String, nonce: String, actionURL: String, authenticationController: AuthenticationController) {
         self.authenticationController = authenticationController
         self.actionURL = actionURL
         self.authenticationController!.nonce = nonce

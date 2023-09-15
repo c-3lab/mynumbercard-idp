@@ -13,15 +13,15 @@ public class AuthenticationManagerMock: AuthenticationManagerProtocol {
     var pin = ""
     var nonce = ""
     var actionURL = ""
-    
-    public func authenticateForSignature(pin: String, nonce: String, actionURL: String, authenticationController:AuthenticationController) {
+
+    public func authenticateForSignature(pin: String, nonce: String, actionURL: String, authenticationController _: AuthenticationController) {
         self.pin = pin
         self.nonce = nonce
         self.actionURL = actionURL
         barCallCount += 1
     }
-    
-    public func authenticateForUserVerification(pin: String, nonce: String, actionURL: String, authenticationController:AuthenticationController) {
+
+    public func authenticateForUserVerification(pin: String, nonce: String, actionURL: String, authenticationController _: AuthenticationController) {
         self.pin = pin
         self.nonce = nonce
         self.actionURL = actionURL
