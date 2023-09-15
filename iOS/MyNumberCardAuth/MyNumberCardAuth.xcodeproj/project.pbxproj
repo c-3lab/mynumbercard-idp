@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9B2D453F2AB329EE0018AE9E /* IndividualNumberReaderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B2D453E2AB329EE0018AE9E /* IndividualNumberReaderProtocol.swift */; };
 		9B2D45412AB32CA80018AE9E /* IndividualNumberReaderMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B2D45402AB32CA80018AE9E /* IndividualNumberReaderMock.swift */; };
 		9F1F5DD42AADB6A3002FCD23 /* MyNumberCardAuthAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1F5DD32AADB6A3002FCD23 /* MyNumberCardAuthAppTests.swift */; };
 		9F1F5DFB2AADBBF3002FCD23 /* MyNumberCardAuthUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1F5DF02AADBB55002FCD23 /* MyNumberCardAuthUITests.swift */; };
@@ -16,6 +15,9 @@
 		9F3D97972A5BCE2400FAF526 /* AppExplanationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3D97962A5BCE2400FAF526 /* AppExplanationView.swift */; };
 		9F41DCD12A550C7F0078FD7C /* AuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F41DCD02A550C7F0078FD7C /* AuthenticationController.swift */; };
 		9F5BCA092A52658E004E95E6 /* SignatureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5BCA082A52658E004E95E6 /* SignatureViewController.swift */; };
+		9F6D48DF2AB416D200F64FFC /* AuthenticationManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6D48DC2AB413E600F64FFC /* AuthenticationManagerProtocol.swift */; };
+		9F6D48E12AB418E400F64FFC /* AuthenticationManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6D48E02AB418E400F64FFC /* AuthenticationManagerMock.swift */; };
+		9F6D48E82AB42A2A00F64FFC /* IndividualNumberReaderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B2D453E2AB329EE0018AE9E /* IndividualNumberReaderProtocol.swift */; };
 		9F6EDCA02AB06609000F2EDE /* SignatureViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6EDC9F2AB06609000F2EDE /* SignatureViewControllerTests.swift */; };
 		9F6EDCA32AB06D03000F2EDE /* HTTPSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6EDCA22AB06D03000F2EDE /* HTTPSessionTests.swift */; };
 		9F6EDCA52AB06EA9000F2EDE /* AuthenticationManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6EDCA42AB06EA9000F2EDE /* AuthenticationManagerTests.swift */; };
@@ -79,6 +81,8 @@
 		9F3D97962A5BCE2400FAF526 /* AppExplanationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppExplanationView.swift; sourceTree = "<group>"; };
 		9F41DCD02A550C7F0078FD7C /* AuthenticationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationController.swift; sourceTree = "<group>"; };
 		9F5BCA082A52658E004E95E6 /* SignatureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureViewController.swift; sourceTree = "<group>"; };
+		9F6D48DC2AB413E600F64FFC /* AuthenticationManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManagerProtocol.swift; sourceTree = "<group>"; };
+		9F6D48E02AB418E400F64FFC /* AuthenticationManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManagerMock.swift; sourceTree = "<group>"; };
 		9F6EDC9F2AB06609000F2EDE /* SignatureViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureViewControllerTests.swift; sourceTree = "<group>"; };
 		9F6EDCA22AB06D03000F2EDE /* HTTPSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPSessionTests.swift; sourceTree = "<group>"; };
 		9F6EDCA42AB06EA9000F2EDE /* AuthenticationManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManagerTests.swift; sourceTree = "<group>"; };
@@ -134,6 +138,7 @@
 				9F6EDCA12AB06CE6000F2EDE /* Models */,
 				9F1F5DFE2AADCD80002FCD23 /* Controllers */,
 				9F1F5DD32AADB6A3002FCD23 /* MyNumberCardAuthAppTests.swift */,
+				9F6D48E72AB42A0900F64FFC /* Mock */,
 			);
 			path = MyNumberCardAuthTests;
 			sourceTree = "<group>";
@@ -157,13 +162,29 @@
 			path = Controllers;
 			sourceTree = "<group>";
 		};
+		9F6D48DE2AB416A100F64FFC /* Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				9B2D453E2AB329EE0018AE9E /* IndividualNumberReaderProtocol.swift */,
+				9F6D48DC2AB413E600F64FFC /* AuthenticationManagerProtocol.swift */,
+			);
+			path = Protocol;
+			sourceTree = "<group>";
+		};
+		9F6D48E72AB42A0900F64FFC /* Mock */ = {
+			isa = PBXGroup;
+			children = (
+				9F6D48E02AB418E400F64FFC /* AuthenticationManagerMock.swift */,
+				9B2D45402AB32CA80018AE9E /* IndividualNumberReaderMock.swift */,
+			);
+			path = Mock;
+			sourceTree = "<group>";
+		};
 		9F6EDCA12AB06CE6000F2EDE /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				9F6EDCA22AB06D03000F2EDE /* HTTPSessionTests.swift */,
 				9F6EDCA42AB06EA9000F2EDE /* AuthenticationManagerTests.swift */,
-				9B2D453E2AB329EE0018AE9E /* IndividualNumberReaderProtocol.swift */,
-				9B2D45402AB32CA80018AE9E /* IndividualNumberReaderMock.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -201,6 +222,7 @@
 				AD8022A929F0BEF7009EA409 /* Models */,
 				AD8022A029F0BB68009EA409 /* SmallButtonModifier.swift */,
 				AD80229029F0B403009EA409 /* Assets.xcassets */,
+				9F6D48DE2AB416A100F64FFC /* Protocol */,
 				9FE592852A57E81D000C3569 /* Language */,
 				AD80229229F0B403009EA409 /* Preview Content */,
 			);
@@ -395,12 +417,12 @@
 			files = (
 				9F6EDCA32AB06D03000F2EDE /* HTTPSessionTests.swift in Sources */,
 				9F6EDCA52AB06EA9000F2EDE /* AuthenticationManagerTests.swift in Sources */,
-				9B2D453F2AB329EE0018AE9E /* IndividualNumberReaderProtocol.swift in Sources */,
 				9F1F5DD42AADB6A3002FCD23 /* MyNumberCardAuthAppTests.swift in Sources */,
 				9B2D45412AB32CA80018AE9E /* IndividualNumberReaderMock.swift in Sources */,
 				9F6EDCA02AB06609000F2EDE /* SignatureViewControllerTests.swift in Sources */,
 				9FB0C5052AB0568D00B970FE /* UserVerificationViewControllerTests.swift in Sources */,
 				9F1F5E002AADCDC4002FCD23 /* AuthenticationControllerTests.swift in Sources */,
+				9F6D48E12AB418E400F64FFC /* AuthenticationManagerMock.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -424,9 +446,11 @@
 				ADE94AA629F66CB700A98728 /* AuthenticationManager.swift in Sources */,
 				9F41DCD12A550C7F0078FD7C /* AuthenticationController.swift in Sources */,
 				AD8022A129F0BB68009EA409 /* SmallButtonModifier.swift in Sources */,
+				9F6D48DF2AB416D200F64FFC /* AuthenticationManagerProtocol.swift in Sources */,
 				AD80228D29F0B402009EA409 /* MyNumberCardAuthApp.swift in Sources */,
 				ADE94AA829F914CB00A98728 /* UserVerificationViewController.swift in Sources */,
 				9F3D97972A5BCE2400FAF526 /* AppExplanationView.swift in Sources */,
+				9F6D48E82AB42A2A00F64FFC /* IndividualNumberReaderProtocol.swift in Sources */,
 				AD8022A329F0BBBF009EA409 /* NFCReadingForUserVerificationView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
