@@ -111,3 +111,6 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate{
         }
     }
 }
+
+extension HTTPSession: HTTPSessionProtocol {
+}
