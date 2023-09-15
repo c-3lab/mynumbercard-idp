@@ -52,6 +52,25 @@ Androidでマイナンバーカードを読み取り、公的個人認証を行�
   termsOfUseUrl = https://example.com/open-id/terms-of-use.html
 ```
 
+## マイナンバーカードの電子証明書読み取り用および電子署名用のバイナリを設定
+以下ファイルの`CHANGE_TO_APDU_VALUE`の部分を変更してください。  
+※設定する値の内容については、[J-LIS](https://www.j-lis.go.jp/index.html)にお問い合わせください。
+
+[Android/MyNumberCardAuth/app/src/main/assets/apdu_commands.properties](./MyNumberCardAuth/app/src/main/assets/apdu_commands.properties)
+
+```properties
+jpkiAp = CHANGE_TO_APDU_VALUE
+userAuthenticationPin = CHANGE_TO_APDU_VALUE
+digitalSignaturePin = CHANGE_TO_APDU_VALUE
+computeDigitalSignature = CHANGE_TO_APDU_VALUE
+
+userAuthenticationPrivate = CHANGE_TO_APDU_VALUE
+digitalSignaturePrivate = CHANGE_TO_APDU_VALUE
+
+userAuthenticationCertificate = CHANGE_TO_APDU_VALUE
+digitalSignatureCertificate = CHANGE_TO_APDU_VALUE
+```
+
 ## 起動手順
 1. Android 端末と Android Studio を起動しているマシンを USB ケーブルで接続します。
 1. 接続後、Android Studio 画面上部のデバイス選択ボックスに使用している Android 端末が表示されていることを確認します。
