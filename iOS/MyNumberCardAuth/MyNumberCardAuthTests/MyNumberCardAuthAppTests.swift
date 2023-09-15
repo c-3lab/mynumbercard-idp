@@ -39,10 +39,10 @@ final class MyNumberCardAuthAppTests: XCTestCase {
         XCTAssertEqual(mode.isMode(queryDict: loginObject), MyNumberCardAuth.Mode.Login)
         
         let registObject : [String: String] = ["mode":"registration"]
-        XCTAssertEqual(mode.isMode(queryDict: registObject), MyNumberCardAuth.Mode.Login)
+        XCTAssertEqual(mode.isMode(queryDict: registObject), MyNumberCardAuth.Mode.Registration)
         
         let replaceObject : [String: String] = ["mode":"replacement"]
-        XCTAssertEqual(mode.isMode(queryDict: replaceObject), MyNumberCardAuth.Mode.Login)
+        XCTAssertEqual(mode.isMode(queryDict: replaceObject), MyNumberCardAuth.Mode.Replacement)
     }
     
     func testIsViewMode() throws {
