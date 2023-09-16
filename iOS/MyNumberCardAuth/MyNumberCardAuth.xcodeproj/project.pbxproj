@@ -12,6 +12,8 @@
 		9B2D45462AB4A39D0018AE9E /* AuthenticationControllerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B2D45452AB4A39D0018AE9E /* AuthenticationControllerMock.swift */; };
 		9B2D45482AB51D2F0018AE9E /* HTTPSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B2D45472AB51D2F0018AE9E /* HTTPSessionProtocol.swift */; };
 		9B2D454A2AB51DA80018AE9E /* HTTPSessionMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B2D45492AB51DA80018AE9E /* HTTPSessionMock.swift */; };
+		9B59CACC2AB5842900B5F372 /* URLOpenerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B59CACB2AB5842900B5F372 /* URLOpenerProtocol.swift */; };
+		9B59CACE2AB5872700B5F372 /* URLOpenerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B59CACD2AB5872700B5F372 /* URLOpenerMock.swift */; };
 		9F1F5DD42AADB6A3002FCD23 /* MyNumberCardAuthAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1F5DD32AADB6A3002FCD23 /* MyNumberCardAuthAppTests.swift */; };
 		9F1F5DFB2AADBBF3002FCD23 /* MyNumberCardAuthUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1F5DF02AADBB55002FCD23 /* MyNumberCardAuthUITests.swift */; };
 		9F1F5DFC2AADBBF7002FCD23 /* MyNumberCardAuthUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1F5DF22AADBB55002FCD23 /* MyNumberCardAuthUITestsLaunchTests.swift */; };
@@ -79,6 +81,8 @@
 		9B2D45452AB4A39D0018AE9E /* AuthenticationControllerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationControllerMock.swift; sourceTree = "<group>"; };
 		9B2D45472AB51D2F0018AE9E /* HTTPSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPSessionProtocol.swift; sourceTree = "<group>"; };
 		9B2D45492AB51DA80018AE9E /* HTTPSessionMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPSessionMock.swift; sourceTree = "<group>"; };
+		9B59CACB2AB5842900B5F372 /* URLOpenerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLOpenerProtocol.swift; sourceTree = "<group>"; };
+		9B59CACD2AB5872700B5F372 /* URLOpenerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLOpenerMock.swift; sourceTree = "<group>"; };
 		9F1F5DD12AADB6A3002FCD23 /* MyNumberCardAuthTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyNumberCardAuthTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F1F5DD32AADB6A3002FCD23 /* MyNumberCardAuthAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNumberCardAuthAppTests.swift; sourceTree = "<group>"; };
 		9F1F5DDA2AADB70E002FCD23 /* MyNumberCardAuth.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = MyNumberCardAuth.xctestplan; sourceTree = "<group>"; };
@@ -177,6 +181,7 @@
 				9B2D45472AB51D2F0018AE9E /* HTTPSessionProtocol.swift */,
 				9F6D48DC2AB413E600F64FFC /* AuthenticationManagerProtocol.swift */,
 				9B2D453E2AB329EE0018AE9E /* IndividualNumberReaderProtocol.swift */,
+				9B59CACB2AB5842900B5F372 /* URLOpenerProtocol.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -188,6 +193,7 @@
 				9B2D45492AB51DA80018AE9E /* HTTPSessionMock.swift */,
 				9F6D48E02AB418E400F64FFC /* AuthenticationManagerMock.swift */,
 				9B2D45402AB32CA80018AE9E /* IndividualNumberReaderMock.swift */,
+				9B59CACD2AB5872700B5F372 /* URLOpenerMock.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -455,6 +461,7 @@
 				9B2D45462AB4A39D0018AE9E /* AuthenticationControllerMock.swift in Sources */,
 				9F1F5DD42AADB6A3002FCD23 /* MyNumberCardAuthAppTests.swift in Sources */,
 				9B2D45412AB32CA80018AE9E /* IndividualNumberReaderMock.swift in Sources */,
+				9B59CACE2AB5872700B5F372 /* URLOpenerMock.swift in Sources */,
 				9F6EDCA02AB06609000F2EDE /* SignatureViewControllerTests.swift in Sources */,
 				9B2D454A2AB51DA80018AE9E /* HTTPSessionMock.swift in Sources */,
 				9FB0C5052AB0568D00B970FE /* UserVerificationViewControllerTests.swift in Sources */,
@@ -476,6 +483,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B59CACC2AB5842900B5F372 /* URLOpenerProtocol.swift in Sources */,
 				9FCA69B32A4BEE24008AC285 /* NFCReadingForSignatureView.swift in Sources */,
 				AD8022A729F0BC65009EA409 /* HTTPSession.swift in Sources */,
 				AD80228F29F0B402009EA409 /* ContentView.swift in Sources */,
