@@ -12,7 +12,4 @@ protocol URLSessionDataTaskProtocol {
     func resume()
 }
 
-extension URLSessionDataTask : URLSessionDataTaskProtocol {
-    
-}
-
+extension URLSessionDataTask: URLSessionDataTaskProtocol {}

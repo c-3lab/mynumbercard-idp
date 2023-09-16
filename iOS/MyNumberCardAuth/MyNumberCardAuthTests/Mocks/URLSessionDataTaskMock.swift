@@ -9,14 +9,14 @@ import Foundation
 @testable import MyNumberCardAuth
 
 class URLSessionDataTaskMock: URLSessionDataTaskProtocol {
-    init() { }
+    init() {}
 
     private(set) var resumeCallCount = 0
-    var resumeHandler: (() -> ())?
-    func resume()  {
+    var resumeHandler: (() -> Void)?
+    func resume() {
         resumeCallCount += 1
         if let resumeHandler = resumeHandler {
             resumeHandler()
-        }        
+        }
     }
 }

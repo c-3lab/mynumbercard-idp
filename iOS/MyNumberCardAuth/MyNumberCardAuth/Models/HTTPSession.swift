@@ -9,10 +9,18 @@ import Foundation
 import UIKit
 
 public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
-    private var authenticationController: AuthenticationController
+    private var authenticationController: AuthenticationControllerProtocol
+    private let makeURLSession: (_ configuration: URLSessionConfiguration, _ delegate: URLSessionDelegate?, _ delegateQueue: OperationQueue?) -> URLSessionProtorol
 
-    init(authenticationController: AuthenticationController) {
+    convenience init(authenticationController: AuthenticationControllerProtocol) {
+        self.init(authenticationController: authenticationController, makeURLSession: {
+            URLSession(configuration: $0, delegate: $1, delegateQueue: $2)
+        })
+    }
+
+    init(authenticationController: AuthenticationControllerProtocol, makeURLSession: @escaping (_ configuration: URLSessionConfiguration, _ delegate: URLSessionDelegate?, _ delegateQueue: OperationQueue?) -> URLSessionProtorol) {
         self.authenticationController = authenticationController
+        self.makeURLSession = makeURLSession
     }
 
     public func urlSession(_: URLSession, task _: URLSessionTask, willPerformHTTPRedirection _: HTTPURLResponse, newRequest _: URLRequest, completionHandler: @escaping (URLRequest?) -> Void) {
@@ -24,8 +32,10 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
         if noRedirect {
             HTTPSessionDelegate = HTTPSession(authenticationController: authenticationController)
         }
-        let session = URLSession(configuration: URLSessionConfiguration.default, delegate: HTTPSessionDelegate, delegateQueue: nil)
-        let task = session.dataTask(with: request) { _, response, error in
+        let session = makeURLSession(URLSessionConfiguration.default,
+                                     HTTPSessionDelegate,
+                                     nil)
+        let task: URLSessionDataTaskProtocol = session.dataTask(with: request) { _, response, error in
             if let error = error {
                 print(error)
             }
