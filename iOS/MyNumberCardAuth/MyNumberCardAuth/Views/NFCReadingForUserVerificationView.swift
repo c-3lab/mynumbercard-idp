@@ -49,13 +49,9 @@ struct NFCReadingForUserVerificationView: View {
                 }
                 .alert(isPresented:self.$authenticationController.isAlert){
                         Alert(title:Text(self.authenticationController.messageTitle),message:Text(self.authenticationController.messageString),dismissButton: .default(Text("OK"),action: {
-                            if(self.authenticationController.isErrorOpenURL == true){
-                                if (self.authenticationController.openURL.isEmpty == false)
-                                {
-                                    if let openURL = URL(string:self.authenticationController.openURL){
-                                        UIApplication.shared.open(openURL)
-                                    };
-                                }
+                            if self.authenticationController.isErrorOpenURL {
+                                self.authenticationController
+                                    .openURL(string: self.authenticationController.openURL)
                             }
                         }))
                     }
@@ -67,12 +63,8 @@ struct NFCReadingForUserVerificationView: View {
             }.modifier(SmallButtonModifier(color: controller.getButtonColor()))
             .alert(isPresented:self.$authenticationController.isLinkAlert){
                     Alert(title:Text(self.authenticationController.messageTitle),message:Text(self.authenticationController.messageString),primaryButton: .default(Text("Contact page"),action: {
-                        if (self.authenticationController.inquiryURL.isEmpty == false)
-                        {
-                            if let openURL = URL(string:self.authenticationController.inquiryURL){
-                                UIApplication.shared.open(openURL)
-                            };
-                        }
+                        self.authenticationController
+                            .openURL(string: self.authenticationController.inquiryURL)
                     }),secondaryButton: .default(Text("OK"),action: {})
                 )}
         }
