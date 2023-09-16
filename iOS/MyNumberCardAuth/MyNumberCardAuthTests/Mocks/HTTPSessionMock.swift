@@ -9,15 +9,14 @@ import Foundation
 @testable import MyNumberCardAuth
 
 class HTTPSessionMock: HTTPSessionProtocol {
-    init() { }
+    init() {}
 
     private(set) var openRedirectURLOnSafariCallCount = 0
-    var openRedirectURLOnSafariHandler: ((URLRequest) -> ())?
-    func openRedirectURLOnSafari(request: URLRequest)  {
+    var openRedirectURLOnSafariHandler: ((URLRequest) -> Void)?
+    func openRedirectURLOnSafari(request: URLRequest) {
         openRedirectURLOnSafariCallCount += 1
         if let openRedirectURLOnSafariHandler = openRedirectURLOnSafariHandler {
             openRedirectURLOnSafariHandler(request)
         }
-        
     }
 }

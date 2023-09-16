@@ -100,5 +100,4 @@ public class AuthenticationController: ObservableObject {
     }
 }
 
-extension AuthenticationController: AuthenticationControllerProtocol {
-}
+extension AuthenticationController: AuthenticationControllerProtocol {}
