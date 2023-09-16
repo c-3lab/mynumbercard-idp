@@ -11,7 +11,7 @@ import CryptoKit
 
 public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
     private var authenticationController:AuthenticationController
-    private var individualNumberCardExecuteType: IndividualNumberCardExecuteType?
+    private var individualNumberCardSignatureType: IndividualNumberCardSignatureType?
     private var actionURL: String?
     private var reader: IndividualNumberReader!
 
@@ -30,10 +30,18 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
     }
     
     public func individualNumberReaderSession(didRead individualNumberCardData: TRETJapanNFCReader_MIFARE_IndividualNumber.IndividualNumberCardData) {
-        switch self.individualNumberCardExecuteType {
-        case .computeDigitalSignatureForSignature,.computeDigitalSignatureForUserAuthentication:
-            if let digitalSignature = individualNumberCardData.digitalSignature,
-               let digitalCertificate = individualNumberCardData.digitalCertificate,
+        switch self.individualNumberCardSignatureType {
+        case .userAuthentication:
+            if let digitalSignature = individualNumberCardData.computeDigitalSignatureForUserAuthentication,
+               let digitalCertificate = individualNumberCardData.userAuthenticationCertificate,
+               let actionURL = self.actionURL
+            {
+                self.verifySignature(digitalSignature: digitalSignature, digitalCertificate: digitalCertificate, actionURL: actionURL)
+            }
+            break
+        case .digitalSignature:
+            if let digitalSignature = individualNumberCardData.computeDigitalSignatureForDigitalSignature,
+               let digitalCertificate = individualNumberCardData.digitalSignatureCertificate,
                let actionURL = self.actionURL
             {
                 self.verifySignature(digitalSignature: digitalSignature, digitalCertificate: digitalCertificate, actionURL: actionURL)
@@ -49,7 +57,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
     }
     
     private func conputeDigitalSignatureForUserVerification(userAuthenticationPIN: String, dataToSign: String) {
-        self.individualNumberCardExecuteType = .computeDigitalSignatureForUserAuthentication
+        self.individualNumberCardSignatureType = .userAuthentication
 
         let data = dataToSign.data(using: .utf8)
         let nonceStr = (SHA256.hash(data: data!).description)
@@ -59,11 +67,11 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
         let dataToSignByteArray = [UInt8](dataToSign.utf8)
         self.reader = IndividualNumberReader(delegate: self)
         // 以下処理はNFC読み取りが非同期で行われ、完了するとindividualNumberReaderSessionが呼び出される
-        self.reader.computeDigitalSignatureForUserAuthentication(userAuthenticationPIN: userAuthenticationPIN,dataToSign: dataToSignByteArray)
+        self.reader.computeDigitalSignature(signatureType: self.individualNumberCardSignatureType!, pin: userAuthenticationPIN, dataToSign: dataToSignByteArray)
     }
     
     private func computeDigitalCertificateForSignature(signaturePIN: String, dataToSign: String) {
-        self.individualNumberCardExecuteType = .computeDigitalSignatureForSignature
+        self.individualNumberCardSignatureType = .digitalSignature
         
         let data = dataToSign.data(using: .utf8)
         let nonceStr = (SHA256.hash(data: data!).description)
@@ -73,7 +81,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
         let dataToSignByteArray = [UInt8](dataToSign.utf8)
         self.reader = IndividualNumberReader(delegate: self)
         // 以下処理はNFC読み取りが非同期で行われ、完了するとindividualNumberReaderSessionが呼び出される
-        self.reader.computeDigitalSignatureForSignature(signaturePIN: signaturePIN,dataToSign: dataToSignByteArray)
+        self.reader.computeDigitalSignature(signatureType: self.individualNumberCardSignatureType!, pin: signaturePIN, dataToSign: dataToSignByteArray)
     }
         
     private func verifySignature(digitalSignature: [UInt8], digitalCertificate: [UInt8], actionURL: String){
