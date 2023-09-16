@@ -34,23 +34,23 @@ final class AuthenticationControllerTests: XCTestCase {
         XCTAssertEqual(controller.messageString, "")
     }
 
-    func testOpenURLButton() throws {
+    func testOpenURL() throws {
         let controller = AuthenticationController()
 
         // mock必要
-        controller.openURLButton(url: "https://example.com")
+        controller.openURL(string: "https://example.com")
     }
 
-    func testOpenURLButtonURLEmpty() throws {
+    func testOpenURLURLEmpty() throws {
         let controller = AuthenticationController()
 
-        controller.openURLButton(url: "")
+        controller.openURL(string: "")
     }
 
-    func testOpenURLButtonNoURL() throws {
+    func testOpenURLNoURL() throws {
         let controller = AuthenticationController()
 
-        controller.openURLButton(url: "てすと")
+        controller.openURL(string: "てすと")
     }
 
     func testStartReadingViewStateIsSignatureView() throws {

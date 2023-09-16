@@ -85,12 +85,12 @@ class AuthenticationControllerMock: AuthenticationControllerProtocol {
         }
     }
 
-    private(set) var openURLButtonCallCount = 0
-    var openURLButtonHandler: ((String) -> Void)?
-    func openURLButton(url: String) {
-        openURLButtonCallCount += 1
-        if let openURLButtonHandler = openURLButtonHandler {
-            openURLButtonHandler(url)
+    private(set) var openURLCallCount = 0
+    var openURLHandler: ((String) -> Void)?
+    func openURL(string: String) {
+        openURLCallCount += 1
+        if let openURLHandler = openURLHandler {
+            openURLHandler(string)
         }
     }
 
