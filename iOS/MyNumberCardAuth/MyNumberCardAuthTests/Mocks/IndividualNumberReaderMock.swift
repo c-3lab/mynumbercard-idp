@@ -56,8 +56,22 @@ class IndividualNumberReaderMock: IndividualNumberReaderProtocol {
         }
         return false
     }
-    
-    func computeDigitalSignatureForUserAuthentication(userAuthenticationPIN: String, dataToSign: [UInt8]) {}
-    func computeDigitalSignatureForSignature(signaturePIN: String, dataToSign: [UInt8]) {}
-}
 
+    private(set) var computeDigitalSignatureForUserAuthenticationCallCount = 0
+    var computeDigitalSignatureForUserAuthenticationHandler: ((String, [UInt8]) -> ())?
+    func computeDigitalSignatureForUserAuthentication(userAuthenticationPIN: String, dataToSign: [UInt8])  {
+        computeDigitalSignatureForUserAuthenticationCallCount += 1
+        if let computeDigitalSignatureForUserAuthenticationHandler = computeDigitalSignatureForUserAuthenticationHandler {
+            computeDigitalSignatureForUserAuthenticationHandler(userAuthenticationPIN, dataToSign)
+        }
+    }
+
+    private(set) var computeDigitalSignatureForSignatureCallCount = 0
+    var computeDigitalSignatureForSignatureHandler: ((String, [UInt8]) -> ())?
+    func computeDigitalSignatureForSignature(signaturePIN: String, dataToSign: [UInt8])  {
+        computeDigitalSignatureForSignatureCallCount += 1
+        if let computeDigitalSignatureForSignatureHandler = computeDigitalSignatureForSignatureHandler {
+            computeDigitalSignatureForSignatureHandler(signaturePIN, dataToSign)
+        }
+    }
+}
