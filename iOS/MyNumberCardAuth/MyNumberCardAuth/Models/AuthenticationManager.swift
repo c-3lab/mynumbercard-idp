@@ -14,11 +14,15 @@ public class AuthenticationManager: IndividualNumberReaderSessionDelegate {
     private var authenticationController: AuthenticationController?
     private var individualNumberCardSignatureType: IndividualNumberCardSignatureType?
     private var actionURL: String?
+    private let makeReader: (AuthenticationManager) -> IndividualNumberReaderProtocol
     private var reader: IndividualNumberReaderProtocol!
 
-    init() {}
-    init(reader: IndividualNumberReaderProtocol) {
-        self.reader = reader
+    convenience init() {
+        self.init { IndividualNumberReader(delegate: $0) }
+    }
+
+    init(makeReader: @escaping (AuthenticationManager) -> IndividualNumberReaderProtocol) {
+        self.makeReader = makeReader
     }
 
     public func authenticateForUserVerification(pin: String, nonce: String, actionURL: String, authenticationController: AuthenticationController) {
@@ -70,7 +74,7 @@ public class AuthenticationManager: IndividualNumberReaderSessionDelegate {
 
     private func computeDigitalSignatureForUserVerification(userAuthenticationPIN: String, dataToSign: String) {
         let dataToSignByteArray = [UInt8](dataToSign.utf8)
-        reader = IndividualNumberReader(delegate: self)
+        reader = makeReader(self)
         // 以下処理はNFC読み取りが非同期で行われ、完了するとindividualNumberReaderSessionが呼び出される
         reader.computeDigitalSignature(signatureType: individualNumberCardSignatureType!,
                                        pin: userAuthenticationPIN,
@@ -79,7 +83,7 @@ public class AuthenticationManager: IndividualNumberReaderSessionDelegate {
 
     private func computeDigitalCertificateForSignature(signaturePIN: String, dataToSign: String) {
         let dataToSignByteArray = [UInt8](dataToSign.utf8)
-        reader = IndividualNumberReader(delegate: self)
+        reader = makeReader(self)
         // 以下処理はNFC読み取りが非同期で行われ、完了するとindividualNumberReaderSessionが呼び出される
         reader.computeDigitalSignature(signatureType: individualNumberCardSignatureType!,
                                        pin: signaturePIN,
