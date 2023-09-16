@@ -153,3 +153,9 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
         return ""
     }
 }
+
+
+extension AuthenticationManager : AuthenticationManagerProtocol
+{
+    
+}
