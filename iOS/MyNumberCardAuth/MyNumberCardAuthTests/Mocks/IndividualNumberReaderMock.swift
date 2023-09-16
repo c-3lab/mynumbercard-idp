@@ -55,5 +55,12 @@ class IndividualNumberReaderMock: IndividualNumberReaderProtocol {
         return false
     }
 
-    func computeDigitalSignature(signatureType _: IndividualNumberCardSignatureType, pin _: String, dataToSign _: [UInt8]) {}
+    private(set) var computeDigitalSignatureCallCount = 0
+    var computeDigitalSignatureHandler: ((IndividualNumberCardSignatureType, String, [UInt8]) -> Void)?
+    func computeDigitalSignature(signatureType: IndividualNumberCardSignatureType, pin: String, dataToSign: [UInt8]) {
+        computeDigitalSignatureCallCount += 1
+        if let computeDigitalSignatureHandler = computeDigitalSignatureHandler {
+            computeDigitalSignatureHandler(signatureType, pin, dataToSign)
+        }
+    }
 }
