@@ -35,29 +35,53 @@ final class AuthenticationControllerTests: XCTestCase {
     }
 
     func testOpenURL() throws {
-        let controller = AuthenticationController()
+        let urlOpenerMock = URLOpenerMock()
+        let controller = AuthenticationController(urlOpener: urlOpenerMock)
+        var handlerCalled = false
+        urlOpenerMock.openURLHandler = {
+            XCTAssertEqual($0, URL(string: "https://example.com"))
+            handlerCalled = true
+        }
 
-        // mock必要
         controller.openURL(string: "https://example.com")
+
+        XCTAssertEqual(urlOpenerMock.openURLCallCount, 1)
+        XCTAssertTrue(handlerCalled)
     }
 
     func testOpenURLURLEmpty() throws {
-        let controller = AuthenticationController()
+        let urlOpenerMock = URLOpenerMock()
+        let controller = AuthenticationController(urlOpener: urlOpenerMock)
+        var handlerCalled = false
+        urlOpenerMock.openURLHandler = { _ in
+            handlerCalled = true
+        }
 
         controller.openURL(string: "")
+
+        XCTAssertEqual(urlOpenerMock.openURLCallCount, 0)
+        XCTAssertFalse(handlerCalled)
     }
 
-    func testOpenURLNoURL() throws {
-        let controller = AuthenticationController()
+    func testOpenURLInvalidURL() throws {
+        let urlOpenerMock = URLOpenerMock()
+        let controller = AuthenticationController(urlOpener: urlOpenerMock)
+        var handlerCalled = false
+        urlOpenerMock.openURLHandler = { _ in
+            handlerCalled = true
+        }
 
         controller.openURL(string: "てすと")
+
+        XCTAssertEqual(urlOpenerMock.openURLCallCount, 0)
+        XCTAssertFalse(handlerCalled)
     }
 
     func testStartReadingViewStateIsSignatureView() throws {
-        let mock = AuthenticationManagerMock()
-        let controller = AuthenticationController(authenticationManager: mock)
+        let authenticationManagerMock = AuthenticationManagerMock()
+        let controller = AuthenticationController(authenticationManager: authenticationManagerMock)
         var handlerCalled = false
-        mock.authenticateForSignatureHandler = {
+        authenticationManagerMock.authenticateForSignatureHandler = {
             XCTAssertEqual($0, "1234")
             XCTAssertEqual($1, "0123456789")
             XCTAssertEqual($2, "https:example.1")
@@ -68,16 +92,16 @@ final class AuthenticationControllerTests: XCTestCase {
         controller.viewState = .SignatureView
         controller.startReading(pin: "1234", nonce: "0123456789", actionURL: "https:example.1")
 
-        XCTAssertEqual(mock.authenticateForSignatureCallCount, 1)
-        XCTAssertEqual(mock.authenticateForUserVerificationCallCount, 0)
+        XCTAssertEqual(authenticationManagerMock.authenticateForSignatureCallCount, 1)
+        XCTAssertEqual(authenticationManagerMock.authenticateForUserVerificationCallCount, 0)
         XCTAssertTrue(handlerCalled)
     }
 
     func testStartReadingViewStateIsUserVerificationView() throws {
-        let mock = AuthenticationManagerMock()
-        let controller = AuthenticationController(authenticationManager: mock)
+        let authenticationManagerMock = AuthenticationManagerMock()
+        let controller = AuthenticationController(authenticationManager: authenticationManagerMock)
         var handlerCalled = false
-        mock.authenticateForUserVerificationHandler = {
+        authenticationManagerMock.authenticateForUserVerificationHandler = {
             XCTAssertEqual($0, "5678")
             XCTAssertEqual($1, "9876543210")
             XCTAssertEqual($2, "https:example.2")
@@ -88,24 +112,24 @@ final class AuthenticationControllerTests: XCTestCase {
         controller.viewState = .UserVerificationView
         controller.startReading(pin: "5678", nonce: "9876543210", actionURL: "https:example.2")
 
-        XCTAssertEqual(mock.authenticateForSignatureCallCount, 0)
-        XCTAssertEqual(mock.authenticateForUserVerificationCallCount, 1)
+        XCTAssertEqual(authenticationManagerMock.authenticateForSignatureCallCount, 0)
+        XCTAssertEqual(authenticationManagerMock.authenticateForUserVerificationCallCount, 1)
         XCTAssertTrue(handlerCalled)
     }
 
     func testStartReadingViewStateIsExplanationView() throws {
-        let mock = AuthenticationManagerMock()
-        let controller = AuthenticationController(authenticationManager: mock)
+        let authenticationManagerMock = AuthenticationManagerMock()
+        let controller = AuthenticationController(authenticationManager: authenticationManagerMock)
         var handlerCalled = false
-        mock.authenticateForSignatureHandler = { _, _, _, _ in
+        authenticationManagerMock.authenticateForSignatureHandler = { _, _, _, _ in
             handlerCalled = true
         }
 
         controller.viewState = .ExplanationView
         controller.startReading(pin: "9012", nonce: "9876501234", actionURL: "https:example.3")
 
-        XCTAssertEqual(mock.authenticateForSignatureCallCount, 0)
-        XCTAssertEqual(mock.authenticateForUserVerificationCallCount, 0)
+        XCTAssertEqual(authenticationManagerMock.authenticateForSignatureCallCount, 0)
+        XCTAssertEqual(authenticationManagerMock.authenticateForUserVerificationCallCount, 0)
         XCTAssertFalse(handlerCalled)
     }
 

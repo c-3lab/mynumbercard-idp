@@ -30,9 +30,13 @@ public class AuthenticationController: ObservableObject {
     @Published var inquiryURL: String = Bundle.main.object(forInfoDictionaryKey: "InquiryURL") as! String
 
     let authenticationManager: AuthenticationManagerProtocol
+    let urlOpener: URLOpenerProtocol
 
-    init(authenticationManager: AuthenticationManagerProtocol = AuthenticationManager()) {
+    init(authenticationManager: AuthenticationManagerProtocol = AuthenticationManager(),
+         urlOpener: URLOpenerProtocol = UIApplication.shared)
+    {
         self.authenticationManager = authenticationManager
+        self.urlOpener = urlOpener
     }
 
     public func clear() {
@@ -47,11 +51,11 @@ public class AuthenticationController: ObservableObject {
     /// - URLとして不適切な文字列を渡した場合、何もしない
     /// - Parameter string: URLを示す文字列
     func openURL(string: String) {
-        if string.isEmpty == false {
-            if let openURL = URL(string: string) {
-                UIApplication.shared.open(openURL)
-            }
+        guard let openURL = URL(string: string) else {
+            return
         }
+
+        urlOpener.openURL(openURL)
     }
 
     public func startReading(pin: String, nonce: String, actionURL: String) {

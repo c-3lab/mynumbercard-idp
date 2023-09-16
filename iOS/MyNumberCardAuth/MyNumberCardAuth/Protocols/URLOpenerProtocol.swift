@@ -13,10 +13,10 @@ protocol URLOpenerProtocol {
     func openURL(_ url: URL)
 }
 
-extension UIApplication : URLOpenerProtocol {
+extension UIApplication: URLOpenerProtocol {
     func openURL(_ url: URL) {
-        self.open(url,
-                  options: [:],
-                  completionHandler: nil)
+        open(url,
+             options: [:],
+             completionHandler: nil)
     }
 }
