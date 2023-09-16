@@ -28,7 +28,7 @@ protocol AuthenticationControllerProtocol {
     var inquiryURL:String  { get set }
     
     func clear()
-    func openURLButton(url: String)
+    func openURL(string: String)
     func startReading(pin: String, nonce: String, actionURL: String)
     func getButtonColor(checkStr: String) -> Color
     func setErrorPageURL(queryDict: [String : String])

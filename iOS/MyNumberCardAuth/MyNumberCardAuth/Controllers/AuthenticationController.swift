@@ -43,9 +43,12 @@ public class AuthenticationController: ObservableObject {
         self.isErrorOpenURL = false
     }
     
-    func openURLButton(url: String){
-        if (url.isEmpty == false) {
-            if let openURL = URL(string: url){
+    /// 文字列として渡したURLを開く
+    /// - URLとして不適切な文字列を渡した場合、何もしない
+    /// - Parameter string: URLを示す文字列
+    func openURL(string: String){
+        if (string.isEmpty == false) {
+            if let openURL = URL(string: string){
                 UIApplication.shared.open(openURL)
             }
         }
