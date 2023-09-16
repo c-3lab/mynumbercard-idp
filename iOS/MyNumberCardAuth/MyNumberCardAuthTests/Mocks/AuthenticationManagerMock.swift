@@ -2,7 +2,7 @@
 //  AuthenticationManagerMock.swift
 //  MyNumberCardAuthTests
 //
-//  Created by abelstaff on 2023/09/15.
+//  Created by c3lab on 2023/09/15.
 //
 
 import Foundation
