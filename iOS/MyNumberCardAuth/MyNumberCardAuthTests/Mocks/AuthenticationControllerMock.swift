@@ -36,7 +36,13 @@ class AuthenticationControllerMock: AuthenticationControllerProtocol {
     var messageTitle: String = "" { didSet { messageTitleSetCallCount += 1 } }
 
     private(set) var messageStringSetCallCount = 0
-    var messageString: String = "" { didSet { messageStringSetCallCount += 1 } }
+    var messageStringDidSetHandler: ((String) -> ())?
+    var messageString: String = "" {
+        didSet {
+            messageStringSetCallCount += 1
+            messageStringDidSetHandler?(self.messageString)
+        }
+    }
 
     private(set) var isErrorOpenURLSetCallCount = 0
     var isErrorOpenURL: Bool = false { didSet { isErrorOpenURLSetCallCount += 1 } }
