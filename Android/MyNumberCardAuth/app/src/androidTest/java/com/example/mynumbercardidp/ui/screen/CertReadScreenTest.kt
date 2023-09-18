@@ -20,15 +20,14 @@ import com.example.mynumbercardidp.ui.NfcState
 import com.example.mynumbercardidp.ui.ScreenModeState
 import com.example.mynumbercardidp.ui.UriParameters
 import com.example.mynumbercardidp.ui.viewmodel.StateViewModel
-import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class CertReadScreenTest {
-    var nfcAdapter: NfcAdapter? = null
     val appContext: Context = ApplicationProvider.getApplicationContext()
+    var nfcAdapter: NfcAdapter? = null
     val screenTitle = appContext.getString(R.string.screen_title)
     val operationTextUser = appContext.getString(R.string.description_first_user_verification) +
             appContext.getString(R.string.digital_cert_for_user_verification) +
@@ -86,6 +85,7 @@ class CertReadScreenTest {
         onNodeWithText(message).assertIsDisplayed()
     }
 
+    @Test
     fun certReadScreenTest_userAuthentication() {
         composeTestRule.setContent {
             nfcAdapter = NfcAdapter.getDefaultAdapter(appContext)
@@ -123,6 +123,7 @@ class CertReadScreenTest {
             nfcAdapter = NfcAdapter.getDefaultAdapter(appContext)
             stateViewModel = viewModel(factory = StateViewModel.Factory)
             stateViewModel.changeViewMode(ScreenModeState.SignCertRead)
+
             CertReadScreen(nfcAdapter, stateViewModel)
         }
 
@@ -146,6 +147,180 @@ class CertReadScreenTest {
         val keyCloakState = KeycloakState.Success("https://successfulUrl")
         stateViewModel.setState(keyCloakState, NfcState.Success)
         stateViewModel.updateProgressViewState(false)
+    }
+
+    @Test
+    fun certReadScreenTest_UnRegisterError() {
+        composeTestRule.setContent {
+            nfcAdapter = NfcAdapter.getDefaultAdapter(appContext)
+            stateViewModel = viewModel(factory = StateViewModel.Factory)
+            stateViewModel.changeViewMode(ScreenModeState.UserCertRead)
+            stateViewModel.setUriParameters(createUriParameters("login", "https://actionUrl", "https://errorUrl"))
+
+            CertReadScreen(nfcAdapter, stateViewModel)
+        }
+        stateViewModel.setState(KeycloakState.UnRegisterError, NfcState.Success)
+
+        // errorDialog
+        composeTestRule.assertAlertDialogIsDisplayed(appContext.getString(R.string.auth_failure), appContext.getString(R.string.auth_failure_description))
+        composeTestRule.onNodeWithText(appContext.getString(R.string.ok)).performClick()
+    }
+
+    @Test
+    fun certReadScreenTest_userAuthenticationLapseError() {
+        composeTestRule.setContent {
+            nfcAdapter = NfcAdapter.getDefaultAdapter(appContext)
+            stateViewModel = viewModel(factory = StateViewModel.Factory)
+            stateViewModel.changeViewMode(ScreenModeState.UserCertRead)
+            stateViewModel.setUriParameters(createUriParameters("login", "https://actionUrl", "https://errorUrl"))
+            stateViewModel.setExternalUrls(createExternalUls())
+
+            CertReadScreen(nfcAdapter, stateViewModel)
+        }
+        stateViewModel.setState(KeycloakState.LapseError, NfcState.Success)
+
+        val message = appContext.getString(R.string.user_cert_lapse) + appContext.getString(R.string.lapse_description)
+
+        // errorDialog
+        composeTestRule.assertAlertDialogIsDisplayed(appContext.getString(R.string.auth_failure), message, appContext.getString(R.string.contact_page))
+        composeTestRule.onNodeWithText(appContext.getString(R.string.ok)).performClick()
+    }
+
+    @Test
+    fun certReadScreenTest_authenticationLapseError() {
+        composeTestRule.setContent {
+            nfcAdapter = NfcAdapter.getDefaultAdapter(appContext)
+            stateViewModel = viewModel(factory = StateViewModel.Factory)
+            stateViewModel.changeViewMode(ScreenModeState.SignCertRead)
+            stateViewModel.setUriParameters(createUriParameters("registration", "https://actionUrl", "https://error/test&amp;page"))
+            stateViewModel.setExternalUrls(createExternalUls())
+
+            CertReadScreen(nfcAdapter, stateViewModel)
+        }
+        stateViewModel.setState(KeycloakState.LapseError, NfcState.Success)
+
+        val message = appContext.getString(R.string.sign_cert_lapse) + appContext.getString(R.string.lapse_description)
+
+        // errorDialog
+        composeTestRule.assertAlertDialogIsDisplayed(appContext.getString(R.string.auth_failure), message, appContext.getString(R.string.contact_page))
+        composeTestRule.onNodeWithText(appContext.getString(R.string.contact_page)).performClick()
+    }
+
+    @Test
+    fun certReadScreenTest_InfoChangeError() {
+        composeTestRule.setContent {
+            nfcAdapter = NfcAdapter.getDefaultAdapter(appContext)
+            stateViewModel = viewModel(factory = StateViewModel.Factory)
+            stateViewModel.changeViewMode(ScreenModeState.UserCertRead)
+            stateViewModel.setUriParameters(createUriParameters("login", "https://actionUrl", "https://errorUrl"))
+            stateViewModel.setExternalUrls(createExternalUls())
+
+            CertReadScreen(nfcAdapter, stateViewModel)
+        }
+        // 利用者証明用電子証明書読み取り画面表示
+        composeTestRule.assertInitialScreenIsDisplayed(operationTextUser)
+
+        stateViewModel.setState(KeycloakState.InfoChangeError, NfcState.Success)
+
+        // errorDialog
+        composeTestRule.assertAlertDialogIsDisplayed(appContext.getString(R.string.my_number_card_reload), appContext.getString(R.string.my_number_card_reload_description))
+        composeTestRule.onNodeWithText(appContext.getString(R.string.ok)).performClick()
+
+        // 署名用電子証明書読み取り画面表示
+        composeTestRule.assertInitialScreenIsDisplayed(operationTextDigitalSignature)
+    }
+
+
+    @Test
+    fun certReadScreenTest_userDuplicateError() {
+        composeTestRule.setContent {
+            nfcAdapter = NfcAdapter.getDefaultAdapter(appContext)
+            stateViewModel = viewModel(factory = StateViewModel.Factory)
+            stateViewModel.changeViewMode(ScreenModeState.SignCertRead)
+            stateViewModel.setUriParameters(createUriParameters("registration", "https://actionUrl", "https://error/test&amp;page"))
+            stateViewModel.setExternalUrls(createExternalUls())
+
+            CertReadScreen(nfcAdapter, stateViewModel)
+        }
+        stateViewModel.setState(KeycloakState.UserDuplicateError, NfcState.Success)
+
+        // errorDialog
+        composeTestRule.assertAlertDialogIsDisplayed(appContext.getString(R.string.registration_failure), appContext.getString(R.string.registration_failure_description))
+        composeTestRule.onNodeWithText(appContext.getString(R.string.ok)).performClick()
+    }
+
+    @Test
+    fun certReadScreenTest_IncorrectPin() {
+        composeTestRule.setContent {
+            nfcAdapter = NfcAdapter.getDefaultAdapter(appContext)
+            stateViewModel = viewModel(factory = StateViewModel.Factory)
+            stateViewModel.changeViewMode(ScreenModeState.UserCertRead)
+            stateViewModel.setUriParameters(createUriParameters("login", "https://actionUrl", "https://errorUrl"))
+            stateViewModel.setExternalUrls(createExternalUls())
+
+            CertReadScreen(nfcAdapter, stateViewModel)
+        }
+        stateViewModel.setState(KeycloakState.Error, NfcState.IncorrectPin)
+        stateViewModel.updateProgressViewState(false)
+
+        // errorDialog
+        composeTestRule.assertAlertDialogIsDisplayed(appContext.getString(R.string.failure), appContext.getString(R.string.in_correct_pin))
+        composeTestRule.onNodeWithText(appContext.getString(R.string.ok)).performClick()
+    }
+
+    @Test
+    fun certReadScreenTest_TryCountIsNotLeft() {
+        composeTestRule.setContent {
+            nfcAdapter = NfcAdapter.getDefaultAdapter(appContext)
+            stateViewModel = viewModel(factory = StateViewModel.Factory)
+            stateViewModel.changeViewMode(ScreenModeState.UserCertRead)
+            stateViewModel.setUriParameters(createUriParameters("login", "https://actionUrl", "https://errorUrl"))
+            stateViewModel.setExternalUrls(createExternalUls())
+
+            CertReadScreen(nfcAdapter, stateViewModel)
+        }
+        stateViewModel.setState(KeycloakState.Error, NfcState.TryCountIsNotLeft)
+        stateViewModel.updateProgressViewState(false)
+
+        // errorDialog
+        composeTestRule.assertAlertDialogIsDisplayed(appContext.getString(R.string.failure), appContext.getString(R.string.try_count_Is_not_left))
+        composeTestRule.onNodeWithText(appContext.getString(R.string.ok)).performClick()
+    }
+
+    @Test
+    fun certReadScreenTest_MyNumberCardReadFailure() {
+        composeTestRule.setContent {
+            nfcAdapter = NfcAdapter.getDefaultAdapter(appContext)
+            stateViewModel = viewModel(factory = StateViewModel.Factory)
+            stateViewModel.changeViewMode(ScreenModeState.UserCertRead)
+            stateViewModel.setUriParameters(createUriParameters("login", "https://actionUrl", "https://errorUrl"))
+            stateViewModel.setExternalUrls(createExternalUls())
+            CertReadScreen(nfcAdapter, stateViewModel)
+        }
+        stateViewModel.setState(KeycloakState.Error, NfcState.Failure)
+        stateViewModel.updateProgressViewState(false)
+
+        // errorDialog
+        composeTestRule.assertAlertDialogIsDisplayed(appContext.getString(R.string.failure), appContext.getString(R.string.my_number_card_read_failure))
+        composeTestRule.onNodeWithText(appContext.getString(R.string.ok)).performClick()
+    }
+
+    @Test
+    fun certReadScreenTest_UnexpectedError() {
+        composeTestRule.setContent {
+            nfcAdapter = NfcAdapter.getDefaultAdapter(appContext)
+            stateViewModel = viewModel(factory = StateViewModel.Factory)
+            stateViewModel.changeViewMode(ScreenModeState.UserCertRead)
+            stateViewModel.setUriParameters(createUriParameters("login", "https://actionUrl", "https://errorUrl"))
+            stateViewModel.setExternalUrls(createExternalUls())
+            CertReadScreen(nfcAdapter, stateViewModel)
+        }
+        stateViewModel.setState(KeycloakState.Error, NfcState.None)
+        stateViewModel.updateProgressViewState(false)
+
+        // errorDialog
+        composeTestRule.assertAlertDialogIsDisplayed(appContext.getString(R.string.failure), appContext.getString(R.string.failure_description))
+        composeTestRule.onNodeWithText(appContext.getString(R.string.ok)).performClick()
     }
 
     @Test
