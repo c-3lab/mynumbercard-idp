@@ -14,26 +14,51 @@ class AuthenticationControllerMock: AuthenticationControllerProtocol {
 
     private(set) var viewStateSetCallCount = 0
     private var _viewState: ShowView! { didSet { viewStateSetCallCount += 1 } }
+    var viewStateDidSetHandler: ((ShowView) -> Void)?
     var viewState: ShowView {
         get { return _viewState }
-        set { _viewState = newValue }
+        set {
+            _viewState = newValue
+            viewStateDidSetHandler?(viewState)
+        }
     }
 
     private(set) var runModeSetCallCount = 0
     private var _runMode: Mode! { didSet { runModeSetCallCount += 1 } }
+    var runModeDidSetHandler: ((Mode) -> Void)?
     var runMode: Mode {
         get { return _runMode }
-        set { _runMode = newValue }
+        set { _runMode = newValue
+            runModeDidSetHandler?(runMode)
+        }
     }
 
     private(set) var isAlertSetCallCount = 0
-    var isAlert: Bool = false { didSet { isAlertSetCallCount += 1 } }
+    var isAlertDidSetHandler: ((Bool) -> Void)?
+    var isAlert: Bool = false {
+        didSet {
+            isAlertSetCallCount += 1
+            isAlertDidSetHandler?(isAlert)
+        }
+    }
 
     private(set) var isLinkAlertSetCallCount = 0
-    var isLinkAlert: Bool = false { didSet { isLinkAlertSetCallCount += 1 } }
+    var isLinkAlertDidSetHandler: ((Bool) -> Void)?
+    var isLinkAlert: Bool = false {
+        didSet {
+            isLinkAlertSetCallCount += 1
+            isLinkAlertDidSetHandler?(isLinkAlert)
+        }
+    }
 
     private(set) var messageTitleSetCallCount = 0
-    var messageTitle: String = "" { didSet { messageTitleSetCallCount += 1 } }
+    var messageTitleDidSetHandler: ((String) -> Void)?
+    var messageTitle: String = "" {
+        didSet {
+            messageTitleSetCallCount += 1
+            messageTitleDidSetHandler?(messageString)
+        }
+    }
 
     private(set) var messageStringSetCallCount = 0
     var messageStringDidSetHandler: ((String) -> Void)?
@@ -45,7 +70,13 @@ class AuthenticationControllerMock: AuthenticationControllerProtocol {
     }
 
     private(set) var isErrorOpenURLSetCallCount = 0
-    var isErrorOpenURL: Bool = false { didSet { isErrorOpenURLSetCallCount += 1 } }
+    var isErrorOpenURLDidSetHandler: ((Bool) -> Void)?
+    var isErrorOpenURL: Bool = false {
+        didSet {
+            isErrorOpenURLSetCallCount += 1
+            isErrorOpenURLDidSetHandler?(isErrorOpenURL)
+        }
+    }
 
     private(set) var nonceSetCallCount = 0
     var nonce: String = "" { didSet { nonceSetCallCount += 1 } }
