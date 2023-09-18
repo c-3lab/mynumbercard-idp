@@ -19,6 +19,31 @@ final class HTTPSessionTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+    func testOpenRedirectURLOnSafariError() throws {
+        let controller = AuthenticationControllerMock()
+        let error: Error? = NSError(domain: "NSURLErrorDomain", code: NSURLErrorCannotFindHost)
+        guard let helper = helperForTestingOpenRedirectURLOnSafari(using: controller,
+                                                                   urlString: "https://cannotfindhost.co.jp",
+                                                                   responseStatusCode: nil,
+                                                                   responseHeaderFields: nil,
+                                                                   responseError: error)
+        else {
+            XCTFail()
+            return
+        }
+        ///  実行されないはずのexpectation達が満たすべき条件を反転する
+        helper.expectations
+            .forEach {
+                $0.isInverted = true
+            }
+
+        // ヘルパーが返してきたテストを実行する
+        helper.doTest()
+
+        // expectation達が条件を満たすのを待つ
+        waitForExpectations(timeout: 0.3)
+    }
+
     func testOpenRedirectURLOnSafariStatusCode400_500_503() throws {
         let doTest = { [weak self] (statusCode: Int) in
             guard let self = self else {
@@ -29,7 +54,8 @@ final class HTTPSessionTests: XCTestCase {
             guard let helper = helperForTestingOpenRedirectURLOnSafari(using: controller,
                                                                        urlString: "https://example.com",
                                                                        responseStatusCode: statusCode,
-                                                                       responseHeaderFields: nil)
+                                                                       responseHeaderFields: nil,
+                                                                       responseError: nil)
             else {
                 XCTFail()
                 return
@@ -64,16 +90,238 @@ final class HTTPSessionTests: XCTestCase {
         doTest(503)
     }
 
+    func testOpenRedirectURLOnSafariStatusCode404() throws {
+        let controller = AuthenticationControllerMock()
+        guard let helper = helperForTestingOpenRedirectURLOnSafari(using: controller,
+                                                                   urlString: "https://example.com/ARIENAI",
+                                                                   responseStatusCode: 404,
+                                                                   responseHeaderFields: nil,
+                                                                   responseError: nil)
+        else {
+            XCTFail()
+            return
+        }
+        ///  実行されないはずのexpectation達が満たすべき条件を反転する
+        let fullfillingExpectationDescriptions = [
+            "isAlertDidSet",
+            "isErrorOpenURLDidSet",
+            "messageTitleDidSet",
+            "messageStringDidSet",
+        ]
+        helper.expectations
+            .filter {
+                !fullfillingExpectationDescriptions.contains($0.expectationDescription)
+            }
+            .forEach {
+                $0.isInverted = true
+            }
+
+        // ヘルパーが返してきたテストを実行する
+        helper.doTest()
+
+        // expectation達が条件を満たすのを待つ
+        waitForExpectations(timeout: 0.3)
+        // controllerの中身のAssertion
+        XCTAssertTrue(controller.isAlert)
+        XCTAssertTrue(controller.isErrorOpenURL)
+        XCTAssertFalse(controller.messageTitle.isEmpty)
+        XCTAssertFalse(controller.messageString.isEmpty)
+    }
+
+    func testOpenRedirectURLOnSafariStatusCode401() throws {
+        let doTest = { [weak self] (runMode: Mode) in
+            guard let self = self else {
+                XCTFail()
+                return
+            }
+
+            let controller = AuthenticationControllerMock()
+            controller.runMode = runMode
+            guard let helper = helperForTestingOpenRedirectURLOnSafari(using: controller,
+                                                                       urlString: "https://example.com",
+                                                                       responseStatusCode: 401,
+                                                                       responseHeaderFields: nil,
+                                                                       responseError: nil)
+            else {
+                XCTFail()
+                return
+            }
+            ///  実行されないはずのexpectation達が満たすべき条件を反転する
+            let fullfillingExpectationDescriptions = [
+                "isLinkAlertDidSet",
+                "messageTitleDidSet",
+                "messageStringDidSet",
+            ]
+            helper.expectations
+                .filter {
+                    !fullfillingExpectationDescriptions.contains($0.expectationDescription)
+                }
+                .forEach {
+                    $0.isInverted = true
+                }
+
+            // ヘルパーが返してきたテストを実行する
+            helper.doTest()
+
+            // expectation達が条件を満たすのを待つ
+            waitForExpectations(timeout: 0.3)
+            // controllerの中身のAssertion
+            XCTAssertTrue(controller.isLinkAlert)
+            XCTAssertFalse(controller.messageTitle.isEmpty)
+            XCTAssertFalse(controller.messageString.isEmpty)
+        }
+
+        doTest(.Login)
+        doTest(.Registration)
+        doTest(.Replacement)
+    }
+
+    func testOpenRedirectURLOnSafariStatusCode409() throws {
+        let controller = AuthenticationControllerMock()
+        guard let helper = helperForTestingOpenRedirectURLOnSafari(using: controller,
+                                                                   urlString: "https://example.com",
+                                                                   responseStatusCode: 409,
+                                                                   responseHeaderFields: nil,
+                                                                   responseError: nil)
+        else {
+            XCTFail()
+            return
+        }
+        ///  実行されないはずのexpectation達が満たすべき条件を反転する
+        let fullfillingExpectationDescriptions = [
+            "isAlertDidSet",
+            "isErrorOpenURLDidSet",
+            "messageTitleDidSet",
+            "messageStringDidSet",
+        ]
+        helper.expectations
+            .filter {
+                !fullfillingExpectationDescriptions.contains($0.expectationDescription)
+            }
+            .forEach {
+                $0.isInverted = true
+            }
+
+        // ヘルパーが返してきたテストを実行する
+        helper.doTest()
+
+        // expectation達が条件を満たすのを待つ
+        waitForExpectations(timeout: 0.3)
+        // controllerの中身のAssertion
+        XCTAssertTrue(controller.isAlert)
+        XCTAssertTrue(controller.isErrorOpenURL)
+        XCTAssertFalse(controller.messageTitle.isEmpty)
+        XCTAssertFalse(controller.messageString.isEmpty)
+    }
+
+    func testOpenRedirectURLOnSafariStatusCode410() throws {
+        let doTest = { [weak self] (xActionUrlString: String?) in
+            guard let self = self else {
+                XCTFail()
+                return
+            }
+
+            let controller = AuthenticationControllerMock()
+            controller.controllerForSignature = SignatureViewController()
+            let header: [String: String]?
+            if let xActionUrlString = xActionUrlString {
+                header = ["x-action-url": xActionUrlString,
+                          "status": "410"]
+            } else {
+                header = nil
+            }
+            guard let helper = helperForTestingOpenRedirectURLOnSafari(using: controller,
+                                                                       urlString: "https://example.com",
+                                                                       responseStatusCode: 410,
+                                                                       responseHeaderFields: header,
+                                                                       responseError: nil)
+            else {
+                XCTFail()
+                return
+            }
+            ///  実行されないはずのexpectation達が満たすべき条件を反転する
+            let fullfillingExpectationDescriptions = [
+                "viewStateDidSet",
+                "runModeDidSet",
+                "isAlertDidSet",
+                "messageTitleDidSet",
+                "messageStringDidSet",
+            ]
+            helper.expectations
+                .filter {
+                    !fullfillingExpectationDescriptions.contains($0.expectationDescription)
+                }
+                .forEach {
+                    $0.isInverted = true
+                }
+
+            // ヘルパーが返してきたテストを実行する
+            helper.doTest()
+
+            // expectation達が条件を満たすのを待つ
+            waitForExpectations(timeout: 0.3)
+            // controllerの中身のAssertion
+            XCTAssertEqual(controller.viewState, .SignatureView)
+            XCTAssertEqual(controller.runMode, .Replacement)
+            XCTAssertTrue(controller.isAlert)
+            XCTAssertFalse(controller.messageTitle.isEmpty)
+            XCTAssertFalse(controller.messageString.isEmpty)
+        }
+
+        doTest(nil)
+        doTest("https://example.com/xaction")
+    }
+
+    func testOpenRedirectURLOnSafariStatusCode301() throws {
+        let controller = AuthenticationControllerMock()
+        let header = ["Location": "https://example.com/redirect",
+                      "status": "301"]
+        guard let helper = helperForTestingOpenRedirectURLOnSafari(using: controller,
+                                                                   urlString: "https://example.com",
+                                                                   responseStatusCode: 301,
+                                                                   responseHeaderFields: header,
+                                                                   responseError: nil)
+        else {
+            XCTFail()
+            return
+        }
+        ///  実行されないはずのexpectation達が満たすべき条件を反転する
+        helper.expectations
+            .forEach {
+                $0.isInverted = true
+            }
+        // helperが用意するopenURLHandlerを使わず、
+        // 本メソッド内で用意する
+        // (helperが用意しているopenURLHandlerだと、引数を取れないため)
+        var openURLString: String?
+        let expectation = self.expectation(description: "openURLHandler")
+        controller.openURLHandler = { urlString in
+            openURLString = urlString
+            expectation.fulfill()
+        }
+
+        // ヘルパーが返してきたテストを実行する
+        helper.doTest()
+
+        // expectation達が条件を満たすのを待つ
+        var expectations = helper.expectations
+        expectations.append(expectation)
+        wait(for: expectations, timeout: 0.3)
+        // controllerの中身のAssertion
+        XCTAssertEqual(openURLString, "https://example.com/redirect")
+    }
+
     /// 引数のcontollerを使ってHTTPSessionを生成し、
     /// 引数のurlStringへのリクエストを行うopenRedirectURLOnSafari(request:) を呼び出した場合、
-    /// HTTPサーバーからのレスポンスが responseStatusCode, responseHeaderFields だとして、
+    /// HTTPサーバーからのレスポンスが responseStatusCode, responseHeaderFields, responseError だとして、
     /// 実行すべきテストとcontrollerの主要なプロパティが変更されたことを示す
     /// XCTestExpectation達を返すヘルパーメソッド
     /// - 引数urlStringが不正な場合はnilを返す
     func helperForTestingOpenRedirectURLOnSafari(using controller: AuthenticationControllerMock,
                                                  urlString: String,
-                                                 responseStatusCode statusCode: Int,
-                                                 responseHeaderFields headerFields: [String: String]?)
+                                                 responseStatusCode statusCode: Int?,
+                                                 responseHeaderFields headerFields: [String: String]?,
+                                                 responseError: Error?)
         -> (doTest: () -> Void,
             expectations: [XCTestExpectation])?
     {
@@ -93,46 +341,55 @@ final class HTTPSessionTests: XCTestCase {
         let doTest = {
             var urlSessionMock: URLSessionMock?
             var urlSessionDataTaskMock: URLSessionDataTaskMock?
-            var dataTaskCompletionHandler: ((Data?, URLResponse?, Error?) -> Void)?
-            controller.viewStateDidSetHandler = { _ in
-                viewStateDidSet.fulfill()
-            }
-            controller.runModeDidSetHandler = { _ in
-                runModeDidSet.fulfill()
-            }
-            controller.isAlertDidSetHandler = { _ in
-                isAlertDidSet.fulfill()
-            }
-            controller.isLinkAlertDidSetHandler = { _ in
-                isLinkAlertDidSet.fulfill()
-            }
-            controller.messageTitleDidSetHandler = { _ in
-                messageTitleDidSet.fulfill()
-            }
-            controller.messageStringDidSetHandler = { _ in
-                messageStringDidSet.fulfill()
-            }
-            controller.isErrorOpenURLDidSetHandler = { _ in
-                isErrorOpenURLDidSet.fulfill()
-            }
-            controller.openURLHandler = { _ in
-                openURLCalled.fulfill()
-            }
+            controller.viewStateDidSetHandler =
+                controller.viewStateDidSetHandler ?? { _ in
+                    viewStateDidSet.fulfill()
+                }
+            controller.runModeDidSetHandler =
+                controller.runModeDidSetHandler ?? { _ in
+                    runModeDidSet.fulfill()
+                }
+            controller.isAlertDidSetHandler =
+                controller.isAlertDidSetHandler ?? { _ in
+                    isAlertDidSet.fulfill()
+                }
+            controller.isLinkAlertDidSetHandler =
+                controller.isLinkAlertDidSetHandler ?? { _ in
+                    isLinkAlertDidSet.fulfill()
+                }
+            controller.messageTitleDidSetHandler =
+                controller.messageTitleDidSetHandler ?? { _ in
+                    messageTitleDidSet.fulfill()
+                }
+            controller.messageStringDidSetHandler =
+                controller.messageStringDidSetHandler ?? { _ in
+                    messageStringDidSet.fulfill()
+                }
+            controller.isErrorOpenURLDidSetHandler =
+                controller.isErrorOpenURLDidSetHandler ?? { _ in
+                    isErrorOpenURLDidSet.fulfill()
+                }
+            controller.openURLHandler =
+                controller.openURLHandler ?? { _ in
+                    openURLCalled.fulfill()
+                }
             let session = HTTPSession(authenticationController: controller,
                                       makeURLSession: { _, _, _ in
-                                          urlSessionMock = URLSessionMock()
+                                          urlSessionMock = URLSessionMock(delegate: nil)
                                           urlSessionMock?.dataTaskHandler = { request, completionHandler in
                                               XCTAssertEqual(request.url?.absoluteString, urlString)
                                               XCTAssertEqual(request.httpMethod, "GET")
-                                              dataTaskCompletionHandler = completionHandler
                                               urlSessionDataTaskMock = URLSessionDataTaskMock()
                                               urlSessionDataTaskMock?.resumeHandler = {
-                                                  dataTaskCompletionHandler?(nil,
-                                                                             HTTPURLResponse(url: url,
-                                                                                             statusCode: statusCode,
-                                                                                             httpVersion: nil,
-                                                                                             headerFields: headerFields),
-                                                                             nil)
+                                                  let httpResponse = statusCode.flatMap {
+                                                      HTTPURLResponse(url: url,
+                                                                      statusCode: $0,
+                                                                      httpVersion: nil,
+                                                                      headerFields: headerFields ?? ["status": "\($0)"])
+                                                  }
+                                                  completionHandler(nil,
+                                                                    httpResponse,
+                                                                    responseError)
                                               }
                                               return urlSessionDataTaskMock!
                                           }

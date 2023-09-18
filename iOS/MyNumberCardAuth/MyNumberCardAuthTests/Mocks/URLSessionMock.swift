@@ -9,7 +9,11 @@ import Foundation
 @testable import MyNumberCardAuth
 
 class URLSessionMock: URLSessionProtorol {
-    init() {}
+    init(delegate: URLSessionDelegate? = nil) {
+        self.delegate = delegate
+    }
+
+    var delegate: URLSessionDelegate?
 
     private(set) var dataTaskCallCount = 0
     var dataTaskHandler: ((URLRequest, @escaping @Sendable (Data?, URLResponse?, Error?) -> Void) -> (URLSessionDataTaskProtocol))?
