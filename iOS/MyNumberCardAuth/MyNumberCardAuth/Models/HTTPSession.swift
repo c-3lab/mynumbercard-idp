@@ -30,7 +30,8 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     private func getDataFromServerWithSuccess(request: URLRequest, noRedirect: Bool, success: @escaping (_ response: URLResponse?) -> Void) {
         var HTTPSessionDelegate: HTTPSession? = nil
         if noRedirect {
-            HTTPSessionDelegate = HTTPSession(authenticationController: authenticationController)
+            HTTPSessionDelegate = HTTPSession(authenticationController: authenticationController,
+                                              makeURLSession: makeURLSession)
         }
         let session = makeURLSession(URLSessionConfiguration.default,
                                      HTTPSessionDelegate,
