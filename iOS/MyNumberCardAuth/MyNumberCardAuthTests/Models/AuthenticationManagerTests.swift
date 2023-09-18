@@ -4,20 +4,19 @@
 //
 //  Created by c3lab on 2023/09/12.
 //
-import XCTest
 @testable import MyNumberCardAuth
 import SwiftUI
+import XCTest
 
 final class AuthenticationManagerTests: XCTestCase {
-
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-    
+
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-    
+
     func testAuthenticateForUserVerification() throws {
         var readerMock: IndividualNumberReaderMock?
         let manager = AuthenticationManager { _ in
@@ -28,16 +27,16 @@ final class AuthenticationManagerTests: XCTestCase {
             }
             return readerMock!
         }
-        
+
         manager.authenticateForUserVerification(pin: "1234",
                                                 nonce: "0123456789",
                                                 actionURL: "https://example.com",
                                                 authenticationController: AuthenticationController())
-        
+
         XCTAssertNotNil(readerMock)
         XCTAssertEqual(readerMock?.computeDigitalSignatureForUserAuthenticationCallCount, 1)
     }
-    
+
     func testAuthenticateForSignature() throws {
         var readerMock: IndividualNumberReaderMock?
         let manager = AuthenticationManager { _ in
@@ -48,7 +47,7 @@ final class AuthenticationManagerTests: XCTestCase {
             }
             return readerMock!
         }
-        
+
         manager.authenticateForSignature(pin: "5678",
                                          nonce: "67890012345",
                                          actionURL: "https://example.com/1",

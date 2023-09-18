@@ -6,21 +6,21 @@
 //
 
 import Foundation
-import SwiftUI
 @testable import MyNumberCardAuth
+import SwiftUI
 
 class AuthenticationControllerMock: AuthenticationControllerProtocol {
-    init() { }
+    init() {}
 
     private(set) var viewStateSetCallCount = 0
-    private var _viewState: ShowView!  { didSet { viewStateSetCallCount += 1 } }
+    private var _viewState: ShowView! { didSet { viewStateSetCallCount += 1 } }
     var viewState: ShowView {
         get { return _viewState }
         set { _viewState = newValue }
     }
 
     private(set) var runModeSetCallCount = 0
-    private var _runMode: Mode!  { didSet { runModeSetCallCount += 1 } }
+    private var _runMode: Mode! { didSet { runModeSetCallCount += 1 } }
     var runMode: Mode {
         get { return _runMode }
         set { _runMode = newValue }
@@ -36,11 +36,11 @@ class AuthenticationControllerMock: AuthenticationControllerProtocol {
     var messageTitle: String = "" { didSet { messageTitleSetCallCount += 1 } }
 
     private(set) var messageStringSetCallCount = 0
-    var messageStringDidSetHandler: ((String) -> ())?
+    var messageStringDidSetHandler: ((String) -> Void)?
     var messageString: String = "" {
         didSet {
             messageStringSetCallCount += 1
-            messageStringDidSetHandler?(self.messageString)
+            messageStringDidSetHandler?(messageString)
         }
     }
 
@@ -57,14 +57,14 @@ class AuthenticationControllerMock: AuthenticationControllerProtocol {
     var openURL: String = "" { didSet { openURLSetCallCount += 1 } }
 
     private(set) var controllerForUserVerificationSetCallCount = 0
-    private var _controllerForUserVerification: UserVerificationViewController!  { didSet { controllerForUserVerificationSetCallCount += 1 } }
+    private var _controllerForUserVerification: UserVerificationViewController! { didSet { controllerForUserVerificationSetCallCount += 1 } }
     var controllerForUserVerification: UserVerificationViewController {
         get { return _controllerForUserVerification }
         set { _controllerForUserVerification = newValue }
     }
 
     private(set) var controllerForSignatureSetCallCount = 0
-    private var _controllerForSignature: SignatureViewController!  { didSet { controllerForSignatureSetCallCount += 1 } }
+    private var _controllerForSignature: SignatureViewController! { didSet { controllerForSignatureSetCallCount += 1 } }
     var controllerForSignature: SignatureViewController {
         get { return _controllerForSignature }
         set { _controllerForSignature = newValue }
@@ -83,33 +83,30 @@ class AuthenticationControllerMock: AuthenticationControllerProtocol {
     var inquiryURL: String = "" { didSet { inquiryURLSetCallCount += 1 } }
 
     private(set) var clearCallCount = 0
-    var clearHandler: (() -> ())?
-    func clear()  {
+    var clearHandler: (() -> Void)?
+    func clear() {
         clearCallCount += 1
         if let clearHandler = clearHandler {
             clearHandler()
         }
-        
     }
 
     private(set) var openURLCallCount = 0
-    var openURLHandler: ((String) -> ())?
-    func openURL(string: String)  {
+    var openURLHandler: ((String) -> Void)?
+    func openURL(string: String) {
         openURLCallCount += 1
         if let openURLHandler = openURLHandler {
             openURLHandler(string)
         }
-        
     }
 
     private(set) var startReadingCallCount = 0
-    var startReadingHandler: ((String, String, String) -> ())?
-    func startReading(pin: String, nonce: String, actionURL: String)  {
+    var startReadingHandler: ((String, String, String) -> Void)?
+    func startReading(pin: String, nonce: String, actionURL: String) {
         startReadingCallCount += 1
         if let startReadingHandler = startReadingHandler {
             startReadingHandler(pin, nonce, actionURL)
         }
-        
     }
 
     private(set) var getButtonColorCallCount = 0
@@ -123,22 +120,20 @@ class AuthenticationControllerMock: AuthenticationControllerProtocol {
     }
 
     private(set) var setErrorPageURLCallCount = 0
-    var setErrorPageURLHandler: (([String : String]) -> ())?
-    func setErrorPageURL(queryDict: [String : String])  {
+    var setErrorPageURLHandler: (([String: String]) -> Void)?
+    func setErrorPageURL(queryDict: [String: String]) {
         setErrorPageURLCallCount += 1
         if let setErrorPageURLHandler = setErrorPageURLHandler {
             setErrorPageURLHandler(queryDict)
         }
-        
     }
 
     private(set) var onOpenURLCallCount = 0
-    var onOpenURLHandler: ((URL) -> ())?
-    func onOpenURL(url: URL)  {
+    var onOpenURLHandler: ((URL) -> Void)?
+    func onOpenURL(url: URL) {
         onOpenURLCallCount += 1
         if let onOpenURLHandler = onOpenURLHandler {
             onOpenURLHandler(url)
         }
-        
     }
 }

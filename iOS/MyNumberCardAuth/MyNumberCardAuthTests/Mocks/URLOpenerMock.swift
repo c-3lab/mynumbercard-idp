@@ -9,11 +9,11 @@ import Foundation
 @testable import MyNumberCardAuth
 
 class URLOpenerMock: URLOpenerProtocol {
-    init() { }
+    init() {}
 
     private(set) var openURLCallCount = 0
-    var openURLHandler: ((URL) -> ())?
-    func openURL(_ url: URL)  {
+    var openURLHandler: ((URL) -> Void)?
+    func openURL(_ url: URL) {
         openURLCallCount += 1
         if let openURLHandler = openURLHandler {
             openURLHandler(url)

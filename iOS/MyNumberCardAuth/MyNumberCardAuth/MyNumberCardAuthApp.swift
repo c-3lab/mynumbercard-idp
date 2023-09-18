@@ -8,44 +8,43 @@
 import SwiftUI
 
 enum Mode {
-    case Login         // ログイン
-    case Registration  // 登録
-    case Replacement   // 変更
-    
-    func isMode(queryDict : [String: String]) -> Self {
-        if(((queryDict["mode"]) != nil)){
+    case Login // ログイン
+    case Registration // 登録
+    case Replacement // 変更
+
+    func isMode(queryDict: [String: String]) -> Self {
+        if queryDict["mode"] != nil {
             // 登録時
-            if ((queryDict["mode"]) == "registration"){
+            if queryDict["mode"] == "registration" {
                 return .Registration
             }
             // 変更時
-            if ((queryDict["mode"]) == "replacement"){
+            if queryDict["mode"] == "replacement" {
                 return .Replacement
             }
         }
-        
+
         return .Login
     }
 }
 
 enum ShowView {
     case UserVerificationView // 利用者証明用電子証明書読込View
-    case SignatureView        // 署名用電子証明書読込View
-    case ExplanationView      // アプリ説明画面
-    
-    func isViewMode(queryDict : [String: String]) -> Self {
-        
-        if(((queryDict["mode"]) != nil)){
+    case SignatureView // 署名用電子証明書読込View
+    case ExplanationView // アプリ説明画面
+
+    func isViewMode(queryDict: [String: String]) -> Self {
+        if queryDict["mode"] != nil {
             // 登録時
-            if ((queryDict["mode"]) == "registration"){
+            if queryDict["mode"] == "registration" {
                 return .SignatureView
             }
             // 変更時
-            if ((queryDict["mode"]) == "replacement"){
+            if queryDict["mode"] == "replacement" {
                 return .SignatureView
             }
         }
-        
+
         return .UserVerificationView
     }
 }
@@ -53,12 +52,12 @@ enum ShowView {
 @main
 struct MyNumberCardAuthApp: App {
     @State var urlComponents: URLComponents?
-    @State var queryDict : [String: String]?
-    @State var authenticationController:AuthenticationController = AuthenticationController()
-    
+    @State var queryDict: [String: String]?
+    @State var authenticationController: AuthenticationController = .init()
+
     var body: some Scene {
         WindowGroup {
-            ContentView(authenticationController: authenticationController,controller: self.authenticationController.controllerForUserVerification,controllerForSignature: self.authenticationController.controllerForSignature).onOpenURL(perform: { url in
+            ContentView(authenticationController: authenticationController, controller: self.authenticationController.controllerForUserVerification, controllerForSignature: self.authenticationController.controllerForSignature).onOpenURL(perform: { url in
                 self.authenticationController.onOpenURL(url: url)
             })
         }
