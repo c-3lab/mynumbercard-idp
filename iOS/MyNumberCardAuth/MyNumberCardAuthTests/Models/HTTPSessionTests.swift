@@ -19,39 +19,49 @@ final class HTTPSessionTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testOpenRedirectURLOnSafariStatusCode400() throws {
-        let controller = AuthenticationControllerMock()
-        guard let helper = helperForTestingOpenRedirectURLOnSafari(using: controller,
-                                                                   urlString: "https://example.com",
-                                                                   responseStatusCode: 400,
-                                                                   responseHeaderFields: nil)
-        else {
-            XCTFail()
-            return
+    func testOpenRedirectURLOnSafariStatusCode400_500_503() throws {
+        let doTest = { [weak self] (statusCode: Int) in
+            guard let self = self else {
+                XCTFail()
+                return
+            }
+            let controller = AuthenticationControllerMock()
+            guard let helper = helperForTestingOpenRedirectURLOnSafari(using: controller,
+                                                                       urlString: "https://example.com",
+                                                                       responseStatusCode: statusCode,
+                                                                       responseHeaderFields: nil)
+            else {
+                XCTFail()
+                return
+            }
+            ///  実行されないはずのexpectation達が満たすべき条件を反転する
+            let fullfillingExpectationDescriptions = [
+                "isAlertDidSet",
+                "messageTitleDidSet",
+                "messageStringDidSet",
+            ]
+            helper.expectations
+                .filter {
+                    !fullfillingExpectationDescriptions.contains($0.expectationDescription)
+                }
+                .forEach {
+                    $0.isInverted = true
+                }
+
+            // ヘルパーが返してきたテストを実行する
+            helper.doTest()
+
+            // expectation達が条件を満たすのを待つ
+            waitForExpectations(timeout: 0.3)
+            // controllerのプロパティに値のAssertion
+            XCTAssertTrue(controller.isAlert)
+            XCTAssertFalse(controller.messageTitle.isEmpty)
+            XCTAssertFalse(controller.messageString.isEmpty)
         }
-        ///  実行されないはずのexpectation達が満たすべき条件を反転する
-        let fullfillingExpectationDescriptions = [
-            "isAlertDidSet",
-            "messageTitleDidSet",
-            "messageStringDidSet",
-        ]
-        helper.expectations
-            .filter {
-                !fullfillingExpectationDescriptions.contains($0.expectationDescription)
-            }
-            .forEach {
-                $0.isInverted = true
-            }
 
-        // ヘルパーが返してきたテストを実行する
-        helper.doTest()
-
-        // expectation達が条件を満たすのを待つ
-        waitForExpectations(timeout: 0.3)
-        // controllerのプロパティに値のAssertion
-        XCTAssertTrue(controller.isAlert)
-        XCTAssertFalse(controller.messageTitle.isEmpty)
-        XCTAssertFalse(controller.messageString.isEmpty)
+        doTest(400)
+        doTest(500)
+        doTest(503)
     }
 
     /// 引数のcontollerを使ってHTTPSessionを生成し、
