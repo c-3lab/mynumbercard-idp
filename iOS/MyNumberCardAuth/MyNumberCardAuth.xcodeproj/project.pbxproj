@@ -18,6 +18,7 @@
 		9B59CAD22AB5D39500B5F372 /* URLSessionDataTaskProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B59CAD12AB5D39500B5F372 /* URLSessionDataTaskProtocol.swift */; };
 		9B59CAD42AB5D6DF00B5F372 /* URLSessionMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B59CAD32AB5D6DF00B5F372 /* URLSessionMock.swift */; };
 		9B59CAD62AB5D6EA00B5F372 /* URLSessionDataTaskMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B59CAD52AB5D6EA00B5F372 /* URLSessionDataTaskMock.swift */; };
+		9BCF20172AB92869008EEF8D /* UIApplicationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BCF20162AB92869008EEF8D /* UIApplicationTests.swift */; };
 		9F1F5DD42AADB6A3002FCD23 /* MyNumberCardAuthAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1F5DD32AADB6A3002FCD23 /* MyNumberCardAuthAppTests.swift */; };
 		9F1F5DFB2AADBBF3002FCD23 /* MyNumberCardAuthUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1F5DF02AADBB55002FCD23 /* MyNumberCardAuthUITests.swift */; };
 		9F1F5DFC2AADBBF7002FCD23 /* MyNumberCardAuthUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1F5DF22AADBB55002FCD23 /* MyNumberCardAuthUITestsLaunchTests.swift */; };
@@ -91,6 +92,7 @@
 		9B59CAD12AB5D39500B5F372 /* URLSessionDataTaskProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionDataTaskProtocol.swift; sourceTree = "<group>"; };
 		9B59CAD32AB5D6DF00B5F372 /* URLSessionMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionMock.swift; sourceTree = "<group>"; };
 		9B59CAD52AB5D6EA00B5F372 /* URLSessionDataTaskMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionDataTaskMock.swift; sourceTree = "<group>"; };
+		9BCF20162AB92869008EEF8D /* UIApplicationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplicationTests.swift; sourceTree = "<group>"; };
 		9F1F5DD12AADB6A3002FCD23 /* MyNumberCardAuthTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyNumberCardAuthTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F1F5DD32AADB6A3002FCD23 /* MyNumberCardAuthAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNumberCardAuthAppTests.swift; sourceTree = "<group>"; };
 		9F1F5DDA2AADB70E002FCD23 /* MyNumberCardAuth.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = MyNumberCardAuth.xctestplan; sourceTree = "<group>"; };
@@ -152,9 +154,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9BCF20152AB92853008EEF8D /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				9BCF20162AB92869008EEF8D /* UIApplicationTests.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		9F1F5DD22AADB6A3002FCD23 /* MyNumberCardAuthTests */ = {
 			isa = PBXGroup;
 			children = (
+				9BCF20152AB92853008EEF8D /* Views */,
 				9F6EDCA12AB06CE6000F2EDE /* Models */,
 				9F1F5DFE2AADCD80002FCD23 /* Controllers */,
 				9F1F5DD32AADB6A3002FCD23 /* MyNumberCardAuthAppTests.swift */,
@@ -478,6 +489,7 @@
 				9F6EDCA02AB06609000F2EDE /* SignatureViewControllerTests.swift in Sources */,
 				9B2D454A2AB51DA80018AE9E /* HTTPSessionMock.swift in Sources */,
 				9B59CAD62AB5D6EA00B5F372 /* URLSessionDataTaskMock.swift in Sources */,
+				9BCF20172AB92869008EEF8D /* UIApplicationTests.swift in Sources */,
 				9FB0C5052AB0568D00B970FE /* UserVerificationViewControllerTests.swift in Sources */,
 				9F1F5E002AADCDC4002FCD23 /* AuthenticationControllerTests.swift in Sources */,
 				9F6D48E12AB418E400F64FFC /* AuthenticationManagerMock.swift in Sources */,
