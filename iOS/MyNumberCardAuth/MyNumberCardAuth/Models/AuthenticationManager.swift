@@ -17,17 +17,21 @@ public class AuthenticationManager: IndividualNumberReaderSessionDelegate {
     private let makeReader: (AuthenticationManager) -> IndividualNumberReaderProtocol
     private var reader: IndividualNumberReaderProtocol!
     private let makeHTTPSession: (AuthenticationControllerProtocol) -> HTTPSessionProtocol
+    private let makeURLSession: () -> URLSessionProtocol
 
     convenience init() {
         self.init(makeReader: { IndividualNumberReader(delegate: $0) },
-                  makeHTTPSession: { HTTPSession(authenticationController: $0) })
+                  makeHTTPSession: { HTTPSession(authenticationController: $0) },
+                  makeURLSession: { URLSession.shared })
     }
 
     init(makeReader: @escaping (AuthenticationManager) -> IndividualNumberReaderProtocol,
-         makeHTTPSession: @escaping (AuthenticationControllerProtocol) -> HTTPSessionProtocol)
+         makeHTTPSession: @escaping (AuthenticationControllerProtocol) -> HTTPSessionProtocol,
+         makeURLSession: @escaping () -> URLSessionProtocol)
     {
         self.makeReader = makeReader
         self.makeHTTPSession = makeHTTPSession
+        self.makeURLSession = makeURLSession
     }
 
     /// 本メソッドを呼び出す前に、authenticationController プロパティを設定しておくこと
@@ -165,7 +169,9 @@ public class AuthenticationManager: IndividualNumberReaderSessionDelegate {
         let jwksUrl = strUrl + "/protocol/openid-connect/certs"
 
         let request = URLRequest(url: URL(string: jwksUrl)!)
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let urlSession = makeURLSession()
+        let (data, _) = try await urlSession.data(for: request,
+                                                  delegate: nil)
         let jwks = try JWKSet(data: data)
 
         for jwk in jwks {

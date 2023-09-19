@@ -21,6 +21,8 @@ final class AuthenticationManagerTests: XCTestCase {
 
     func testAuthenticateForUserVerification() throws {
         var readerMock: IndividualNumberReaderMock?
+        var httpSessionMock: HTTPSessionMock?
+        var urlSessionMock: URLSessionMock?
         var manager: AuthenticationManager!
         manager = AuthenticationManager(makeReader: { _ in
                                             readerMock = IndividualNumberReaderMock()
@@ -36,9 +38,22 @@ final class AuthenticationManagerTests: XCTestCase {
                                             return readerMock!
                                         },
                                         makeHTTPSession: { _ in
-                                            HTTPSessionMock()
+                                            httpSessionMock = HTTPSessionMock()
+                                            return httpSessionMock!
+                                        },
+                                        makeURLSession: {
+                                            urlSessionMock = URLSessionMock()
+                                            let dataHandler: ((URLRequest, URLSessionTaskDelegate?) async throws -> (Data, URLResponse))? = {
+                                                request, _ in
+                                                XCTAssertEqual(request.url?.absoluteString, "https://example.com/realms/1")
+                                                return (Data(), URLResponse())
+                                            }
+                                            urlSessionMock?.dataHandler = dataHandler
+                                            return urlSessionMock!
                                         })
         let controller = AuthenticationControllerMock()
+        controller.runMode = .Login
+        controller.viewState = .UserVerificationView
         manager.authenticationController = controller
 
         manager.authenticateForUserVerification(pin: "1234",
@@ -51,6 +66,8 @@ final class AuthenticationManagerTests: XCTestCase {
 
     func testAuthenticateForSignature() throws {
         var readerMock: IndividualNumberReaderMock?
+        var httpSessionMock: HTTPSessionMock?
+        var urlSessionMock: URLSessionMock?
         var manager: AuthenticationManager!
         manager = AuthenticationManager(makeReader: { _ in
                                             readerMock = IndividualNumberReaderMock()
@@ -66,9 +83,20 @@ final class AuthenticationManagerTests: XCTestCase {
                                             return readerMock!
                                         },
                                         makeHTTPSession: { _ in
-                                            HTTPSessionMock()
+                                            httpSessionMock = HTTPSessionMock()
+                                            return httpSessionMock!
+                                        },
+                                        makeURLSession: {
+                                            urlSessionMock = URLSessionMock()
+                                            urlSessionMock?.dataHandler = { request, _ in
+                                                XCTAssertEqual(request.url?.absoluteString, "https://example.com/realms/2")
+                                                return (Data(), URLResponse())
+                                            }
+                                            return urlSessionMock!
                                         })
         let controller = AuthenticationControllerMock()
+        controller.runMode = .Login
+        controller.viewState = .SignatureView
         manager.authenticationController = controller
 
         manager.authenticateForSignature(pin: "5678",

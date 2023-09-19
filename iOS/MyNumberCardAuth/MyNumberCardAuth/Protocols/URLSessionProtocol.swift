@@ -11,6 +11,7 @@ import Foundation
 protocol URLSessionProtocol {
     func dataTask(with request: URLRequest,
                   completionHandler: @escaping @Sendable (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTaskProtocol
+    func data(for request: URLRequest, delegate: URLSessionTaskDelegate?) async throws -> (Data, URLResponse)
 }
 
 extension URLSession: URLSessionProtocol {
