@@ -373,29 +373,49 @@ final class HTTPSessionTests: XCTestCase {
                 controller.openURLHandler ?? { _ in
                     openURLCalled.fulfill()
                 }
-            let session = HTTPSession(authenticationController: controller,
-                                      makeURLSession: { _, _, _ in
-                                          urlSessionMock = URLSessionMock(delegate: nil)
-                                          urlSessionMock?.dataTaskHandler = { request, completionHandler in
-                                              XCTAssertEqual(request.url?.absoluteString, urlString)
-                                              XCTAssertEqual(request.httpMethod, "GET")
-                                              urlSessionDataTaskMock = URLSessionDataTaskMock()
-                                              urlSessionDataTaskMock?.resumeHandler = {
-                                                  let httpResponse = statusCode.flatMap {
-                                                      HTTPURLResponse(url: url,
-                                                                      statusCode: $0,
-                                                                      httpVersion: nil,
-                                                                      headerFields: headerFields ?? ["status": "\($0)"])
+            var session: HTTPSession!
+            session = HTTPSession(authenticationController: controller,
+                                  makeURLSession: { _, _, _ in
+                                      urlSessionMock = URLSessionMock(delegate: nil)
+                                      urlSessionMock?.dataTaskHandler = { request, completionHandler in
+                                          XCTAssertEqual(request.url?.absoluteString, urlString)
+                                          XCTAssertEqual(request.httpMethod, "GET")
+                                          urlSessionDataTaskMock = URLSessionDataTaskMock()
+                                          urlSessionDataTaskMock?.resumeHandler = {
+                                              if [301,
+                                                  302,
+                                                  303,
+                                                  307,
+                                                  308].contains(statusCode),
+                                                  let location = headerFields?["Location"],
+                                                  let newUrl = URL(string: location)
+                                              {
+                                                  var completedURLRequest: URLRequest? = nil
+                                                  session.urlSession(URLSession.shared,
+                                                                     task: URLSessionTask(),
+                                                                     willPerformHTTPRedirection: HTTPURLResponse(),
+                                                                     newRequest: URLRequest(url: newUrl))
+                                                  {
+                                                      completedURLRequest = $0
                                                   }
-                                                  completionHandler(nil,
-                                                                    httpResponse,
-                                                                    responseError)
+                                                  XCTAssertNil(completedURLRequest)
                                               }
-                                              return urlSessionDataTaskMock!
-                                          }
 
-                                          return urlSessionMock!
-                                      })
+                                              let httpResponse = statusCode.flatMap {
+                                                  HTTPURLResponse(url: url,
+                                                                  statusCode: $0,
+                                                                  httpVersion: nil,
+                                                                  headerFields: headerFields ?? ["status": "\($0)"])
+                                              }
+                                              completionHandler(nil,
+                                                                httpResponse,
+                                                                responseError)
+                                          }
+                                          return urlSessionDataTaskMock!
+                                      }
+
+                                      return urlSessionMock!
+                                  })
             let request = URLRequest(url: url)
 
             session.openRedirectURLOnSafari(request: request)
