@@ -11,7 +11,7 @@ import JOSESwift
 import TRETJapanNFCReader_MIFARE_IndividualNumber
 
 public class AuthenticationManager: IndividualNumberReaderSessionDelegate {
-    private var authenticationController: AuthenticationController?
+    weak var authenticationController: AuthenticationControllerProtocol?
     private var individualNumberCardSignatureType: IndividualNumberCardSignatureType?
     private var actionURL: String?
     private let makeReader: (AuthenticationManager) -> IndividualNumberReaderProtocol
@@ -25,18 +25,24 @@ public class AuthenticationManager: IndividualNumberReaderSessionDelegate {
         self.makeReader = makeReader
     }
 
-    public func authenticateForUserVerification(pin: String, nonce: String, actionURL: String, authenticationController: AuthenticationController) {
-        self.authenticationController = authenticationController
+    /// 本メソッドを呼び出す前に、authenticationController プロパティを設定しておくこと
+    public func authenticateForUserVerification(pin: String, nonce: String, actionURL: String) {
+        guard let authenticationController = authenticationController else {
+            return
+        }
         self.actionURL = actionURL
-        self.authenticationController!.nonce = nonce
+        authenticationController.nonce = nonce
         individualNumberCardSignatureType = .userAuthentication
         computeDigitalSignatureForUserVerification(userAuthenticationPIN: pin, dataToSign: nonce)
     }
 
-    public func authenticateForSignature(pin: String, nonce: String, actionURL: String, authenticationController: AuthenticationController) {
-        self.authenticationController = authenticationController
+    /// 本メソッドを呼び出す前に、authenticationController プロパティを設定しておくこと
+    public func authenticateForSignature(pin: String, nonce: String, actionURL: String) {
+        guard let authenticationController = authenticationController else {
+            return
+        }
         self.actionURL = actionURL
-        self.authenticationController!.nonce = nonce
+        authenticationController.nonce = nonce
         individualNumberCardSignatureType = .digitalSignature
         computeDigitalCertificateForSignature(signaturePIN: pin, dataToSign: nonce)
     }
@@ -92,12 +98,16 @@ public class AuthenticationManager: IndividualNumberReaderSessionDelegate {
 
     private func sendVerifySignatureRequest(digitalSignature: String, digitalCertificate: String, actionURL: String) {
         Task {
+            guard let authenticationController = self.authenticationController else {
+                return
+            }
+
             let payload = "{ \"claim\": \"" + digitalCertificate + "\" }"
             let encryptedCertificate = try? await encryptJWE(from: [UInt8](payload.utf8))
             var request = URLRequest(url: URL(string: actionURL)!)
 
             var mode: String = ""
-            switch self.authenticationController!.runMode {
+            switch authenticationController.runMode {
             case .Login:
                 mode = "login"
             case .Registration:
@@ -107,7 +117,7 @@ public class AuthenticationManager: IndividualNumberReaderSessionDelegate {
             }
 
             var certificateName: String = ""
-            switch self.authenticationController!.viewState {
+            switch authenticationController.viewState {
             case .UserVerificationView:
                 certificateName = "encryptedUserAuthenticationCertificate"
             case .SignatureView:
@@ -121,7 +131,7 @@ public class AuthenticationManager: IndividualNumberReaderSessionDelegate {
             var requestBodyComponents = URLComponents()
             requestBodyComponents.queryItems = [URLQueryItem(name: "mode", value: mode),
                                                 URLQueryItem(name: certificateName, value: encryptedCertificate),
-                                                URLQueryItem(name: "applicantData", value: self.authenticationController!.nonce),
+                                                URLQueryItem(name: "applicantData", value: authenticationController.nonce),
                                                 URLQueryItem(name: "sign", value: digitalSignature)]
 
             request.httpBody = requestBodyComponents.query?.data(using: .utf8)

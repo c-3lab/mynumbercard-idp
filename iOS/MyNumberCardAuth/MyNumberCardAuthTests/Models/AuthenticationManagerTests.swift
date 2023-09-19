@@ -28,11 +28,12 @@ final class AuthenticationManagerTests: XCTestCase {
             }
             return readerMock!
         }
+        let controller = AuthenticationControllerMock()
+        manager.authenticationController = controller
 
         manager.authenticateForUserVerification(pin: "1234",
                                                 nonce: "0123456789",
-                                                actionURL: "https://example.com",
-                                                authenticationController: AuthenticationController())
+                                                actionURL: "https://example.com")
 
         XCTAssertNotNil(readerMock)
         XCTAssertEqual(readerMock?.computeDigitalSignatureCallCount, 1)
@@ -49,11 +50,12 @@ final class AuthenticationManagerTests: XCTestCase {
             }
             return readerMock!
         }
+        let controller = AuthenticationControllerMock()
+        manager.authenticationController = controller
 
         manager.authenticateForSignature(pin: "5678",
                                          nonce: "67890012345",
-                                         actionURL: "https://example.com/1",
-                                         authenticationController: AuthenticationController())
+                                         actionURL: "https://example.com/1")
 
         XCTAssertNotNil(readerMock)
         XCTAssertEqual(readerMock?.computeDigitalSignatureCallCount, 1)

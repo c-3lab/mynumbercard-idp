@@ -10,22 +10,32 @@ import Foundation
 
 class AuthenticationManagerMock: AuthenticationManagerProtocol {
     init() {}
+    init(authenticationController: AuthenticationControllerProtocol) {
+        self.authenticationController = authenticationController
+    }
+
+    private(set) var authenticationControllerSetCallCount = 0
+    var authenticationController: AuthenticationControllerProtocol? = nil {
+        didSet {
+            authenticationControllerSetCallCount += 1
+        }
+    }
 
     private(set) var authenticateForSignatureCallCount = 0
-    var authenticateForSignatureHandler: ((String, String, String, AuthenticationController) -> Void)?
-    func authenticateForSignature(pin: String, nonce: String, actionURL: String, authenticationController: AuthenticationController) {
+    var authenticateForSignatureHandler: ((String, String, String) -> Void)?
+    func authenticateForSignature(pin: String, nonce: String, actionURL: String) {
         authenticateForSignatureCallCount += 1
         if let authenticateForSignatureHandler = authenticateForSignatureHandler {
-            authenticateForSignatureHandler(pin, nonce, actionURL, authenticationController)
+            authenticateForSignatureHandler(pin, nonce, actionURL)
         }
     }
 
     private(set) var authenticateForUserVerificationCallCount = 0
-    var authenticateForUserVerificationHandler: ((String, String, String, AuthenticationController) -> Void)?
-    func authenticateForUserVerification(pin: String, nonce: String, actionURL: String, authenticationController: AuthenticationController) {
+    var authenticateForUserVerificationHandler: ((String, String, String) -> Void)?
+    func authenticateForUserVerification(pin: String, nonce: String, actionURL: String) {
         authenticateForUserVerificationCallCount += 1
         if let authenticateForUserVerificationHandler = authenticateForUserVerificationHandler {
-            authenticateForUserVerificationHandler(pin, nonce, actionURL, authenticationController)
+            authenticateForUserVerificationHandler(pin, nonce, actionURL)
         }
     }
 }

@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 /// @mockable(override: name = AuthenticationControllerMock)
-protocol AuthenticationControllerProtocol {
+protocol AuthenticationControllerProtocol: AnyObject {
     var viewState: ShowView { get set }
     var runMode: Mode { get set }
     var isAlert: Bool { get set }

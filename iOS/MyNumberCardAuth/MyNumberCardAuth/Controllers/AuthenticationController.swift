@@ -29,7 +29,7 @@ public class AuthenticationController: ObservableObject {
     // 問い合わせURL
     @Published var inquiryURL: String = Bundle.main.object(forInfoDictionaryKey: "InquiryURL") as! String
 
-    let authenticationManager: AuthenticationManagerProtocol
+    var authenticationManager: AuthenticationManagerProtocol
     let urlOpener: URLOpenerProtocol
 
     init(authenticationManager: AuthenticationManagerProtocol = AuthenticationManager(),
@@ -37,6 +37,9 @@ public class AuthenticationController: ObservableObject {
     {
         self.authenticationManager = authenticationManager
         self.urlOpener = urlOpener
+
+        self.authenticationManager
+            .authenticationController = self
     }
 
     public func clear() {
@@ -61,9 +64,9 @@ public class AuthenticationController: ObservableObject {
     public func startReading(pin: String, nonce: String, actionURL: String) {
         switch viewState {
         case .SignatureView:
-            authenticationManager.authenticateForSignature(pin: pin, nonce: nonce, actionURL: actionURL, authenticationController: self)
+            authenticationManager.authenticateForSignature(pin: pin, nonce: nonce, actionURL: actionURL)
         case .UserVerificationView:
-            authenticationManager.authenticateForUserVerification(pin: pin, nonce: nonce, actionURL: actionURL, authenticationController: self)
+            authenticationManager.authenticateForUserVerification(pin: pin, nonce: nonce, actionURL: actionURL)
         case .ExplanationView:
             break
         }
