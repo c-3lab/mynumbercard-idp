@@ -16,13 +16,18 @@ public class AuthenticationManager: IndividualNumberReaderSessionDelegate {
     private var actionURL: String?
     private let makeReader: (AuthenticationManager) -> IndividualNumberReaderProtocol
     private var reader: IndividualNumberReaderProtocol!
+    private let makeHTTPSession: (AuthenticationControllerProtocol) -> HTTPSessionProtocol
 
     convenience init() {
-        self.init { IndividualNumberReader(delegate: $0) }
+        self.init(makeReader: { IndividualNumberReader(delegate: $0) },
+                  makeHTTPSession: { HTTPSession(authenticationController: $0) })
     }
 
-    init(makeReader: @escaping (AuthenticationManager) -> IndividualNumberReaderProtocol) {
+    init(makeReader: @escaping (AuthenticationManager) -> IndividualNumberReaderProtocol,
+         makeHTTPSession: @escaping (AuthenticationControllerProtocol) -> HTTPSessionProtocol)
+    {
         self.makeReader = makeReader
+        self.makeHTTPSession = makeHTTPSession
     }
 
     /// 本メソッドを呼び出す前に、authenticationController プロパティを設定しておくこと
@@ -136,7 +141,7 @@ public class AuthenticationManager: IndividualNumberReaderSessionDelegate {
 
             request.httpBody = requestBodyComponents.query?.data(using: .utf8)
 
-            let session = HTTPSession(authenticationController: self.authenticationController!)
+            let session = self.makeHTTPSession(authenticationController)
             session.openRedirectURLOnSafari(request: request)
         }
     }

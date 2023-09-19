@@ -19,15 +19,18 @@ final class AuthenticationManagerTests: XCTestCase {
 
     func testAuthenticateForUserVerification() throws {
         var readerMock: IndividualNumberReaderMock?
-        let manager = AuthenticationManager { _ in
-            readerMock = IndividualNumberReaderMock()
-            readerMock!.computeDigitalSignatureHandler = {
-                XCTAssertEqual($0, .userAuthentication)
-                XCTAssertEqual($1, "1234")
-                XCTAssertEqual($2, [UInt8]("0123456789".utf8))
-            }
-            return readerMock!
-        }
+        let manager = AuthenticationManager(makeReader: { _ in
+                                                readerMock = IndividualNumberReaderMock()
+                                                readerMock!.computeDigitalSignatureHandler = {
+                                                    XCTAssertEqual($0, .userAuthentication)
+                                                    XCTAssertEqual($1, "1234")
+                                                    XCTAssertEqual($2, [UInt8]("0123456789".utf8))
+                                                }
+                                                return readerMock!
+                                            },
+                                            makeHTTPSession: { _ in
+                                                HTTPSessionMock()
+                                            })
         let controller = AuthenticationControllerMock()
         manager.authenticationController = controller
 
@@ -41,15 +44,18 @@ final class AuthenticationManagerTests: XCTestCase {
 
     func testAuthenticateForSignature() throws {
         var readerMock: IndividualNumberReaderMock?
-        let manager = AuthenticationManager { _ in
-            readerMock = IndividualNumberReaderMock()
-            readerMock!.computeDigitalSignatureHandler = {
-                XCTAssertEqual($0, .digitalSignature)
-                XCTAssertEqual($1, "5678")
-                XCTAssertEqual($2, [UInt8]("67890012345".utf8))
-            }
-            return readerMock!
-        }
+        let manager = AuthenticationManager(makeReader: { _ in
+                                                readerMock = IndividualNumberReaderMock()
+                                                readerMock!.computeDigitalSignatureHandler = {
+                                                    XCTAssertEqual($0, .digitalSignature)
+                                                    XCTAssertEqual($1, "5678")
+                                                    XCTAssertEqual($2, [UInt8]("67890012345".utf8))
+                                                }
+                                                return readerMock!
+                                            },
+                                            makeHTTPSession: { _ in
+                                                HTTPSessionMock()
+                                            })
         let controller = AuthenticationControllerMock()
         manager.authenticationController = controller
 
