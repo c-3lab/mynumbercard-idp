@@ -7,6 +7,7 @@
 
 import Foundation
 @testable import MyNumberCardAuth
+@testable import TRETJapanNFCReader_Core
 @testable import TRETJapanNFCReader_MIFARE_IndividualNumber
 import XCTest
 
@@ -163,6 +164,118 @@ final class AuthenticationManagerTests: XCTestCase {
                 XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 1)
                 XCTAssertEqual(httpSessionMock.openRedirectURLOnSafariCallCount, 1)
                 XCTAssertEqual(urlSessionMock.dataCallCount, 1)
+        }
+
+        for mode in Mode.allCases {
+            for viewState in ShowView.allCases {
+                for validCertificate in [true, false] {
+                    for validCerts in [true, false] {
+                        doTest(mode, viewState, validCertificate, validCerts)
+                    }
+                }
+            }
+        }
+    }
+
+    func testAuthenticateForUserVerificationAuthenticationControllerNotSet() throws {
+        let readerMock = IndividualNumberReaderMock()
+        let manager = AuthenticationManager(makeReader: { _ in
+                                                readerMock
+                                            },
+                                            makeHTTPSession: { _ in
+                                                HTTPSessionMock()
+                                            },
+                                            makeURLSession: {
+                                                URLSessionMock()
+                                            })
+
+        manager.authenticateForUserVerification(pin: "1234",
+                                                nonce: "0123456789",
+                                                actionURL: "https://example.com/realms/1")
+
+        XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 0)
+    }
+
+    func testAuthenticateForSignatureAuthenticationControllerNotSet() throws {
+        let readerMock = IndividualNumberReaderMock()
+        let manager = AuthenticationManager(makeReader: { _ in
+                                                readerMock
+                                            },
+                                            makeHTTPSession: { _ in
+                                                HTTPSessionMock()
+                                            },
+                                            makeURLSession: {
+                                                URLSessionMock()
+                                            })
+
+        manager.authenticateForSignature(pin: "5678",
+                                         nonce: "5678901234",
+                                         actionURL: "https://example.com/realms/2")
+
+        XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 0)
+    }
+
+    func testAuthenticateForUserVerificationReadingCardFailed() throws {
+        let doTest = { [weak self] (runMode: Mode,
+                                    viewState: ShowView,
+                                    validCertificate: Bool,
+                                    validCerts: Bool) in
+                guard let self = self else {
+                    XCTFail()
+                    return
+                }
+
+                var manager: AuthenticationManager!
+                let readerMock = IndividualNumberReaderMock()
+                let readerJapanNFCReaderSessionExpectation = expectation(description: "reader.japanNFCReaderSession")
+                readerMock.computeDigitalSignatureHandler = {
+                    XCTAssertEqual($0, .userAuthentication)
+                    XCTAssertEqual($1, "1234")
+                    XCTAssertEqual($2, [UInt8]("0123456789".utf8))
+                    var cardData = TRETJapanNFCReader_MIFARE_IndividualNumber.IndividualNumberCardData()
+                    cardData.computeDigitalSignatureForUserAuthentication = Array("5678".utf8)
+                    cardData.userAuthenticationCertificate = validCertificate ? Array(Self.certificate) : [UInt8]("5678901234".utf8)
+                    manager.japanNFCReaderSession(didInvalidateWithError: JapanNFCReaderError.nfcReadingUnavailable)
+                    readerJapanNFCReaderSessionExpectation.fulfill()
+                }
+                let httpSessionMock = HTTPSessionMock()
+                let httpSessionOpenRedirectURLOnSafariExpectation = expectation(description: "httpSession.openRedirectURLOnSafari")
+                httpSessionOpenRedirectURLOnSafariExpectation.isInverted = true
+                httpSessionMock.openRedirectURLOnSafariHandler = { request in
+                    XCTAssertEqual(request.url?.absoluteString, "https://example.com/realms/1")
+                    httpSessionOpenRedirectURLOnSafariExpectation.fulfill()
+                }
+                let urlSessionMock = URLSessionMock()
+                let urlSessionDataExpectation = expectation(description: "urlSession.data")
+                urlSessionDataExpectation.isInverted = true
+                let dataHandler: ((URLRequest, URLSessionTaskDelegate?) async throws -> (Data, URLResponse))? = {
+                    request, _ in
+                    XCTAssertEqual(request.url?.absoluteString, "https://example.com/realms/1/protocol/openid-connect/certs")
+                    urlSessionDataExpectation.fulfill()
+                    return (validCerts ? Self.certs : Data(),
+                            URLResponse())
+                }
+                urlSessionMock.dataHandler = dataHandler
+                manager = AuthenticationManager(makeReader: { _ in
+                                                    readerMock
+                                                },
+                                                makeHTTPSession: { _ in
+                                                    httpSessionMock
+                                                },
+                                                makeURLSession: {
+                                                    urlSessionMock
+                                                })
+                let controller = AuthenticationControllerMock()
+                controller.runMode = runMode
+                controller.viewState = viewState
+                manager.authenticationController = controller
+
+                manager.authenticateForUserVerification(pin: "1234",
+                                                        nonce: "0123456789",
+                                                        actionURL: "https://example.com/realms/1")
+
+                waitForExpectations(timeout: 0.3)
+                XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 1)
         }
 
         for mode in Mode.allCases {
