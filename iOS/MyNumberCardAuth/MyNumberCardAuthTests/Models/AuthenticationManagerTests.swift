@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  AuthenticationManagerTests
+//  AuthenticationManagerTests.swift
+//  MyNumberCardAuth
 //
 //  Created by c3lab on 2023/09/12.
 //
