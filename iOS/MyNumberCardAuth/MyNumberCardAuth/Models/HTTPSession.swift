@@ -28,13 +28,12 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     }
 
     private func getDataFromServerWithSuccess(request: URLRequest, noRedirect: Bool, success: @escaping (_ response: URLResponse?) -> Void) {
-        var HTTPSessionDelegate: HTTPSession? = nil
+        var urlSessionDelegate: URLSessionDelegate? = nil
         if noRedirect {
-            HTTPSessionDelegate = HTTPSession(authenticationController: authenticationController,
-                                              makeURLSession: makeURLSession)
+            urlSessionDelegate = self
         }
         let session = makeURLSession(URLSessionConfiguration.default,
-                                     HTTPSessionDelegate,
+                                     urlSessionDelegate,
                                      nil)
         let task: URLSessionDataTaskProtocol = session.dataTask(with: request) { _, response, error in
             if let error = error {
