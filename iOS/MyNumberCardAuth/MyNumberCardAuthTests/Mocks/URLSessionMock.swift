@@ -24,4 +24,14 @@ class URLSessionMock: URLSessionProtocol {
         }
         return URLSessionDataTaskMock()
     }
+
+    private(set) var dataCallCount = 0
+    var dataHandler: ((URLRequest, URLSessionTaskDelegate?) async throws -> (Data, URLResponse))?
+    func data(for request: URLRequest, delegate: URLSessionTaskDelegate?) async throws -> (Data, URLResponse) {
+        dataCallCount += 1
+        if let dataHandler = dataHandler {
+            return try await dataHandler(request, delegate)
+        }
+        fatalError("dataHandler returns can't have a default value thus its handler must be set")
+    }
 }
