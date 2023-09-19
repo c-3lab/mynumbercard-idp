@@ -14,7 +14,7 @@
 		9B2D454A2AB51DA80018AE9E /* HTTPSessionMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B2D45492AB51DA80018AE9E /* HTTPSessionMock.swift */; };
 		9B59CACC2AB5842900B5F372 /* URLOpenerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B59CACB2AB5842900B5F372 /* URLOpenerProtocol.swift */; };
 		9B59CACE2AB5872700B5F372 /* URLOpenerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B59CACD2AB5872700B5F372 /* URLOpenerMock.swift */; };
-		9B59CAD02AB5C51500B5F372 /* URLSessionProtorol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B59CACF2AB5C51500B5F372 /* URLSessionProtorol.swift */; };
+		9B59CAD02AB5C51500B5F372 /* URLSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B59CACF2AB5C51500B5F372 /* URLSessionProtocol.swift */; };
 		9B59CAD22AB5D39500B5F372 /* URLSessionDataTaskProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B59CAD12AB5D39500B5F372 /* URLSessionDataTaskProtocol.swift */; };
 		9B59CAD42AB5D6DF00B5F372 /* URLSessionMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B59CAD32AB5D6DF00B5F372 /* URLSessionMock.swift */; };
 		9B59CAD62AB5D6EA00B5F372 /* URLSessionDataTaskMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B59CAD52AB5D6EA00B5F372 /* URLSessionDataTaskMock.swift */; };
@@ -88,7 +88,7 @@
 		9B2D45492AB51DA80018AE9E /* HTTPSessionMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPSessionMock.swift; sourceTree = "<group>"; };
 		9B59CACB2AB5842900B5F372 /* URLOpenerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLOpenerProtocol.swift; sourceTree = "<group>"; };
 		9B59CACD2AB5872700B5F372 /* URLOpenerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLOpenerMock.swift; sourceTree = "<group>"; };
-		9B59CACF2AB5C51500B5F372 /* URLSessionProtorol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionProtorol.swift; sourceTree = "<group>"; };
+		9B59CACF2AB5C51500B5F372 /* URLSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionProtocol.swift; sourceTree = "<group>"; };
 		9B59CAD12AB5D39500B5F372 /* URLSessionDataTaskProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionDataTaskProtocol.swift; sourceTree = "<group>"; };
 		9B59CAD32AB5D6DF00B5F372 /* URLSessionMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionMock.swift; sourceTree = "<group>"; };
 		9B59CAD52AB5D6EA00B5F372 /* URLSessionDataTaskMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionDataTaskMock.swift; sourceTree = "<group>"; };
@@ -201,7 +201,7 @@
 				9F6D48DC2AB413E600F64FFC /* AuthenticationManagerProtocol.swift */,
 				9B2D453E2AB329EE0018AE9E /* IndividualNumberReaderProtocol.swift */,
 				9B59CACB2AB5842900B5F372 /* URLOpenerProtocol.swift */,
-				9B59CACF2AB5C51500B5F372 /* URLSessionProtorol.swift */,
+				9B59CACF2AB5C51500B5F372 /* URLSessionProtocol.swift */,
 				9B59CAD12AB5D39500B5F372 /* URLSessionDataTaskProtocol.swift */,
 			);
 			path = Protocols;
@@ -524,7 +524,7 @@
 				AD80228D29F0B402009EA409 /* MyNumberCardAuthApp.swift in Sources */,
 				ADE94AA829F914CB00A98728 /* UserVerificationViewController.swift in Sources */,
 				9F3D97972A5BCE2400FAF526 /* AppExplanationView.swift in Sources */,
-				9B59CAD02AB5C51500B5F372 /* URLSessionProtorol.swift in Sources */,
+				9B59CAD02AB5C51500B5F372 /* URLSessionProtocol.swift in Sources */,
 				9F6D48E82AB42A2A00F64FFC /* IndividualNumberReaderProtocol.swift in Sources */,
 				AD8022A329F0BBBF009EA409 /* NFCReadingForUserVerificationView.swift in Sources */,
 			);

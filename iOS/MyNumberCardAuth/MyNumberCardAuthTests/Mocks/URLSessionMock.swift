@@ -8,7 +8,7 @@
 import Foundation
 @testable import MyNumberCardAuth
 
-class URLSessionMock: URLSessionProtorol {
+class URLSessionMock: URLSessionProtocol {
     init(delegate: URLSessionDelegate? = nil) {
         self.delegate = delegate
     }
