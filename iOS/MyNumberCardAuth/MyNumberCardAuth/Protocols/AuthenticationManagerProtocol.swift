@@ -9,6 +9,8 @@ import Foundation
 
 /// @mockable(override: name = AuthenticationManagerMock)
 protocol AuthenticationManagerProtocol {
-    func authenticateForSignature(pin: String, nonce: String, actionURL: String, authenticationController: AuthenticationController)
-    func authenticateForUserVerification(pin: String, nonce: String, actionURL: String, authenticationController: AuthenticationController)
+    var authenticationController: AuthenticationControllerProtocol? { get set }
+
+    func authenticateForSignature(pin: String, nonce: String, actionURL: String)
+    func authenticateForUserVerification(pin: String, nonce: String, actionURL: String)
 }

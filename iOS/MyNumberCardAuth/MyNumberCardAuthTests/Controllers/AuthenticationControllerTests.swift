@@ -80,12 +80,12 @@ final class AuthenticationControllerTests: XCTestCase {
     func testStartReadingViewStateIsSignatureView() throws {
         let authenticationManagerMock = AuthenticationManagerMock()
         let controller = AuthenticationController(authenticationManager: authenticationManagerMock)
+        authenticationManagerMock.authenticationController = controller
         var handlerCalled = false
         authenticationManagerMock.authenticateForSignatureHandler = {
             XCTAssertEqual($0, "1234")
             XCTAssertEqual($1, "0123456789")
             XCTAssertEqual($2, "https:example.1")
-            XCTAssertTrue($3 === controller)
             handlerCalled = true
         }
 
@@ -100,12 +100,12 @@ final class AuthenticationControllerTests: XCTestCase {
     func testStartReadingViewStateIsUserVerificationView() throws {
         let authenticationManagerMock = AuthenticationManagerMock()
         let controller = AuthenticationController(authenticationManager: authenticationManagerMock)
+        authenticationManagerMock.authenticationController = controller
         var handlerCalled = false
         authenticationManagerMock.authenticateForUserVerificationHandler = {
             XCTAssertEqual($0, "5678")
             XCTAssertEqual($1, "9876543210")
             XCTAssertEqual($2, "https:example.2")
-            XCTAssertTrue($3 === controller)
             handlerCalled = true
         }
 
@@ -120,8 +120,9 @@ final class AuthenticationControllerTests: XCTestCase {
     func testStartReadingViewStateIsExplanationView() throws {
         let authenticationManagerMock = AuthenticationManagerMock()
         let controller = AuthenticationController(authenticationManager: authenticationManagerMock)
+        authenticationManagerMock.authenticationController = controller
         var handlerCalled = false
-        authenticationManagerMock.authenticateForSignatureHandler = { _, _, _, _ in
+        authenticationManagerMock.authenticateForSignatureHandler = { _, _, _ in
             handlerCalled = true
         }
 
