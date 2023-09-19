@@ -30,13 +30,28 @@ public class AuthenticationController: ObservableObject {
     @Published var inquiryURL: String = Bundle.main.object(forInfoDictionaryKey: "InquiryURL") as! String
 
     var authenticationManager: AuthenticationManagerProtocol
-    let urlOpener: URLOpenerProtocol
 
-    init(authenticationManager: AuthenticationManagerProtocol = AuthenticationManager(),
-         urlOpener: URLOpenerProtocol = UIApplication.shared)
+    /// URLをopenするインスタンス
+    /// - URLをopenするインスタンスとして、UIApplication.sharedを使う場合があり、
+    /// アプリ起動直後にUIApplication.sharedが生成されていない場合があり、
+    /// (https://forums.swift.org/t/uiapplication-shared-is-undefined-during-app-launch-but-it-works/60859 参照)
+    /// AuthenticationController は、アプリ起動直後に生成される場合がありえるので、
+    /// AuthenticationController 生成後、初回のURLをopenするタイミングで
+    /// URLをopenするインスタンスを生成している
+    private(set) lazy var urlOpener: URLOpenerProtocol = self.makeURLOpener()
+    /// URLをopenするインスタンスを生成するクロージャ
+    private let makeURLOpener: () -> (URLOpenerProtocol)
+
+    convenience init() {
+        self.init(authenticationManager: AuthenticationManager(),
+                  makeURLOpener: { UIApplication.shared })
+    }
+
+    init(authenticationManager: AuthenticationManagerProtocol,
+         makeURLOpener: @escaping () -> (URLOpenerProtocol))
     {
         self.authenticationManager = authenticationManager
-        self.urlOpener = urlOpener
+        self.makeURLOpener = makeURLOpener
 
         self.authenticationManager
             .authenticationController = self
