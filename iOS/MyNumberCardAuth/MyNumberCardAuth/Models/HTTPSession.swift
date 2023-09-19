@@ -10,7 +10,7 @@ import UIKit
 
 public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     private var authenticationController: AuthenticationControllerProtocol
-    private let makeURLSession: (_ configuration: URLSessionConfiguration, _ delegate: URLSessionDelegate?, _ delegateQueue: OperationQueue?) -> URLSessionProtorol
+    private let makeURLSession: (_ configuration: URLSessionConfiguration, _ delegate: URLSessionDelegate?, _ delegateQueue: OperationQueue?) -> URLSessionProtocol
 
     convenience init(authenticationController: AuthenticationControllerProtocol) {
         self.init(authenticationController: authenticationController, makeURLSession: {
@@ -18,7 +18,7 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
         })
     }
 
-    init(authenticationController: AuthenticationControllerProtocol, makeURLSession: @escaping (_ configuration: URLSessionConfiguration, _ delegate: URLSessionDelegate?, _ delegateQueue: OperationQueue?) -> URLSessionProtorol) {
+    init(authenticationController: AuthenticationControllerProtocol, makeURLSession: @escaping (_ configuration: URLSessionConfiguration, _ delegate: URLSessionDelegate?, _ delegateQueue: OperationQueue?) -> URLSessionProtocol) {
         self.authenticationController = authenticationController
         self.makeURLSession = makeURLSession
     }
