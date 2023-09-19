@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum Mode {
+enum Mode: CaseIterable {
     case Login // ログイン
     case Registration // 登録
     case Replacement // 変更
@@ -28,7 +28,7 @@ enum Mode {
     }
 }
 
-enum ShowView {
+enum ShowView: CaseIterable {
     case UserVerificationView // 利用者証明用電子証明書読込View
     case SignatureView // 署名用電子証明書読込View
     case ExplanationView // アプリ説明画面
