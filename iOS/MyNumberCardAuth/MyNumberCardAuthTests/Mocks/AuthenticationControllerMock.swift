@@ -14,67 +14,68 @@ class AuthenticationControllerMock: AuthenticationControllerProtocol {
 
     private(set) var viewStateSetCallCount = 0
     private var _viewState: ShowView! { didSet { viewStateSetCallCount += 1 } }
-    var viewStateDidSetHandler: ((ShowView) -> Void)?
+    var viewStateSetHandler: ((ShowView) -> Void)?
     var viewState: ShowView {
         get { return _viewState }
         set {
             _viewState = newValue
-            viewStateDidSetHandler?(viewState)
+            viewStateSetHandler?(viewState)
         }
     }
 
     private(set) var runModeSetCallCount = 0
     private var _runMode: Mode! { didSet { runModeSetCallCount += 1 } }
-    var runModeDidSetHandler: ((Mode) -> Void)?
+    var runModeSetHandler: ((Mode) -> Void)?
     var runMode: Mode {
         get { return _runMode }
-        set { _runMode = newValue
-            runModeDidSetHandler?(runMode)
+        set {
+            _runMode = newValue
+            runModeSetHandler?(runMode)
         }
     }
 
     private(set) var isAlertSetCallCount = 0
-    var isAlertDidSetHandler: ((Bool) -> Void)?
+    var isAlertSetHandler: ((Bool) -> Void)?
     var isAlert: Bool = false {
         didSet {
             isAlertSetCallCount += 1
-            isAlertDidSetHandler?(isAlert)
+            isAlertSetHandler?(isAlert)
         }
     }
 
     private(set) var isLinkAlertSetCallCount = 0
-    var isLinkAlertDidSetHandler: ((Bool) -> Void)?
+    var isLinkAlertSetHandler: ((Bool) -> Void)?
     var isLinkAlert: Bool = false {
         didSet {
             isLinkAlertSetCallCount += 1
-            isLinkAlertDidSetHandler?(isLinkAlert)
+            isLinkAlertSetHandler?(isLinkAlert)
         }
     }
 
     private(set) var messageTitleSetCallCount = 0
-    var messageTitleDidSetHandler: ((String) -> Void)?
+    var messageTitleSetHandler: ((String) -> Void)?
     var messageTitle: String = "" {
         didSet {
             messageTitleSetCallCount += 1
-            messageTitleDidSetHandler?(messageString)
+            messageTitleSetHandler?(messageString)
         }
     }
 
     private(set) var messageStringSetCallCount = 0
-    var messageStringDidSetHandler: ((String) -> Void)?
+    var messageStringSetHandler: ((String) -> Void)?
     var messageString: String = "" {
         didSet {
             messageStringSetCallCount += 1
-            messageStringDidSetHandler?(messageString)
+            messageStringSetHandler?(messageString)
         }
     }
 
     private(set) var isErrorOpenURLSetCallCount = 0
-    var isErrorOpenURLDidSetHandler: ((Bool) -> Void)?
+    var isErrorOpenURLSetHandler: ((Bool) -> Void)?
     var isErrorOpenURL: Bool = false {
         didSet {
             isErrorOpenURLSetCallCount += 1
-            isErrorOpenURLDidSetHandler?(isErrorOpenURL)
+            isErrorOpenURLSetHandler?(isErrorOpenURL)
         }
     }
 

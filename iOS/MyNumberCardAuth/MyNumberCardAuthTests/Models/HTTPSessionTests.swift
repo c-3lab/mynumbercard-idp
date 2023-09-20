@@ -341,32 +341,32 @@ final class HTTPSessionTests: XCTestCase {
         let doTest = {
             var urlSessionMock: URLSessionMock?
             var urlSessionDataTaskMock: URLSessionDataTaskMock?
-            controller.viewStateDidSetHandler =
-                controller.viewStateDidSetHandler ?? { _ in
+            controller.viewStateSetHandler =
+                controller.viewStateSetHandler ?? { _ in
                     viewStateDidSet.fulfill()
                 }
-            controller.runModeDidSetHandler =
-                controller.runModeDidSetHandler ?? { _ in
+            controller.runModeSetHandler =
+                controller.runModeSetHandler ?? { _ in
                     runModeDidSet.fulfill()
                 }
-            controller.isAlertDidSetHandler =
-                controller.isAlertDidSetHandler ?? { _ in
+            controller.isAlertSetHandler =
+                controller.isAlertSetHandler ?? { _ in
                     isAlertDidSet.fulfill()
                 }
-            controller.isLinkAlertDidSetHandler =
-                controller.isLinkAlertDidSetHandler ?? { _ in
+            controller.isLinkAlertSetHandler =
+                controller.isLinkAlertSetHandler ?? { _ in
                     isLinkAlertDidSet.fulfill()
                 }
-            controller.messageTitleDidSetHandler =
-                controller.messageTitleDidSetHandler ?? { _ in
+            controller.messageTitleSetHandler =
+                controller.messageTitleSetHandler ?? { _ in
                     messageTitleDidSet.fulfill()
                 }
-            controller.messageStringDidSetHandler =
-                controller.messageStringDidSetHandler ?? { _ in
+            controller.messageStringSetHandler =
+                controller.messageStringSetHandler ?? { _ in
                     messageStringDidSet.fulfill()
                 }
-            controller.isErrorOpenURLDidSetHandler =
-                controller.isErrorOpenURLDidSetHandler ?? { _ in
+            controller.isErrorOpenURLSetHandler =
+                controller.isErrorOpenURLSetHandler ?? { _ in
                     isErrorOpenURLDidSet.fulfill()
                 }
             controller.openHandler =
