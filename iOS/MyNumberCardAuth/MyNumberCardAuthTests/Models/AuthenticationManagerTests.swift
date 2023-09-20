@@ -39,15 +39,16 @@ final class AuthenticationManagerTests: XCTestCase {
 
                 var manager: AuthenticationManager!
                 let readerMock = IndividualNumberReaderMock()
-                let readerComputeDigitalSignatureForUserAuthenticationExpectation = expectation(description: "reader.computeDigitalSignatureForUserAuthentication")
-                readerMock.computeDigitalSignatureForUserAuthenticationHandler = {
-                    XCTAssertEqual($0, "1234")
-                    XCTAssertEqual($1, [UInt8]("0123456789".utf8))
+                let readerComputeDigitalSignatureExpectation = expectation(description: "reader.computeDigitalSignature")
+                readerMock.computeDigitalSignatureHandler = {
+                    XCTAssertEqual($0, .userAuthentication)
+                    XCTAssertEqual($1, "1234")
+                    XCTAssertEqual($2, [UInt8]("0123456789".utf8))
                     var cardData = TRETJapanNFCReader_MIFARE_IndividualNumber.IndividualNumberCardData()
-                    cardData.digitalSignature = Array("5678".utf8)
-                    cardData.digitalCertificate = validCertificate ? Array(Self.certificate) : [UInt8]("5678901234".utf8)
+                    cardData.computeDigitalSignatureForUserAuthentication = Array("5678".utf8)
+                    cardData.userAuthenticationCertificate = validCertificate ? Array(Self.certificate) : [UInt8]("5678901234".utf8)
                     manager.individualNumberReaderSession(didRead: cardData)
-                    readerComputeDigitalSignatureForUserAuthenticationExpectation.fulfill()
+                    readerComputeDigitalSignatureExpectation.fulfill()
                 }
                 let httpSessionMock = HTTPSessionMock()
                 let httpSessionOpenRedirectURLOnSafariExpectation = expectation(description: "httpSession.openRedirectURLOnSafari")
@@ -84,7 +85,7 @@ final class AuthenticationManagerTests: XCTestCase {
                                                         actionURL: "https://example.com/realms/1")
 
                 waitForExpectations(timeout: 0.3)
-                XCTAssertEqual(readerMock.computeDigitalSignatureForUserAuthenticationCallCount, 1)
+                XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 1)
                 XCTAssertEqual(httpSessionMock.openRedirectURLOnSafariCallCount, 1)
                 XCTAssertEqual(urlSessionMock.dataCallCount, 1)
         }
@@ -112,15 +113,16 @@ final class AuthenticationManagerTests: XCTestCase {
 
                 var manager: AuthenticationManager!
                 let readerMock = IndividualNumberReaderMock()
-                let readerComputeDigitalSignatureForSignatureExpectation = expectation(description: "reader.computeDigitalSignatureForSignature")
-                readerMock.computeDigitalSignatureForSignatureHandler = {
-                    XCTAssertEqual($0, "7890cd")
-                    XCTAssertEqual($1, [UInt8]("7890123456".utf8))
+                let readerComputeDigitalSignatureExpectation = expectation(description: "reader.computeDigitalSignature")
+                readerMock.computeDigitalSignatureHandler = {
+                    XCTAssertEqual($0, .digitalSignature)
+                    XCTAssertEqual($1, "7890cd")
+                    XCTAssertEqual($2, [UInt8]("7890123456".utf8))
                     var cardData = TRETJapanNFCReader_MIFARE_IndividualNumber.IndividualNumberCardData()
-                    cardData.digitalSignature = Array("0123".utf8)
-                    cardData.digitalCertificate = validCertificate ? Array(Self.certificate) : [UInt8]("0123456789".utf8)
+                    cardData.computeDigitalSignatureForDigitalSignature = Array("0123".utf8)
+                    cardData.digitalSignatureCertificate = validCertificate ? Array(Self.certificate) : [UInt8]("0123456789".utf8)
                     manager.individualNumberReaderSession(didRead: cardData)
-                    readerComputeDigitalSignatureForSignatureExpectation.fulfill()
+                    readerComputeDigitalSignatureExpectation.fulfill()
                 }
                 let httpSessionMock = HTTPSessionMock()
                 let httpSessionOpenRedirectURLOnSafariExpectation = expectation(description: "httpSession.openRedirectURLOnSafari")
@@ -157,7 +159,7 @@ final class AuthenticationManagerTests: XCTestCase {
                                                  actionURL: "https://example.com/realms/2")
 
                 waitForExpectations(timeout: 0.3)
-                XCTAssertEqual(readerMock.computeDigitalSignatureForSignatureCallCount, 1)
+                XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 1)
                 XCTAssertEqual(httpSessionMock.openRedirectURLOnSafariCallCount, 1)
                 XCTAssertEqual(urlSessionMock.dataCallCount, 1)
         }
@@ -189,7 +191,7 @@ final class AuthenticationManagerTests: XCTestCase {
                                                 nonce: "0123456789",
                                                 actionURL: "https://example.com/realms/1")
 
-        XCTAssertEqual(readerMock.computeDigitalSignatureForUserAuthenticationCallCount, 0)
+        XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 0)
     }
 
     func testAuthenticateForSignatureAuthenticationControllerNotSet() throws {
@@ -208,7 +210,7 @@ final class AuthenticationManagerTests: XCTestCase {
                                          nonce: "5678901234",
                                          actionURL: "https://example.com/realms/2")
 
-        XCTAssertEqual(readerMock.computeDigitalSignatureForSignatureCallCount, 0)
+        XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 0)
     }
 
     func testAuthenticateForUserVerificationReadingCardFailed() throws {
@@ -223,15 +225,16 @@ final class AuthenticationManagerTests: XCTestCase {
 
                 var manager: AuthenticationManager!
                 let readerMock = IndividualNumberReaderMock()
-                let readerJapanNFCReaderSessionExpectation = expectation(description: "reader.japanNFCReaderSession")
-                readerMock.computeDigitalSignatureForUserAuthenticationHandler = {
-                    XCTAssertEqual($0, "1234")
-                    XCTAssertEqual($1, [UInt8]("0123456789".utf8))
+                let readerComputeDigitalSignatureExpectation = expectation(description: "reader.computeDigitalSignature")
+                readerMock.computeDigitalSignatureHandler = {
+                    XCTAssertEqual($0, .userAuthentication)
+                    XCTAssertEqual($1, "1234")
+                    XCTAssertEqual($2, [UInt8]("0123456789".utf8))
                     var cardData = TRETJapanNFCReader_MIFARE_IndividualNumber.IndividualNumberCardData()
-                    cardData.digitalSignature = Array("5678".utf8)
-                    cardData.digitalCertificate = validCertificate ? Array(Self.certificate) : [UInt8]("5678901234".utf8)
+                    cardData.computeDigitalSignatureForUserAuthentication = Array("5678".utf8)
+                    cardData.userAuthenticationCertificate = validCertificate ? Array(Self.certificate) : [UInt8]("5678901234".utf8)
                     manager.japanNFCReaderSession(didInvalidateWithError: JapanNFCReaderError.nfcReadingUnavailable)
-                    readerJapanNFCReaderSessionExpectation.fulfill()
+                    readerComputeDigitalSignatureExpectation.fulfill()
                 }
                 let httpSessionMock = HTTPSessionMock()
                 let httpSessionOpenRedirectURLOnSafariExpectation = expectation(description: "httpSession.openRedirectURLOnSafari")
@@ -270,7 +273,7 @@ final class AuthenticationManagerTests: XCTestCase {
                                                         actionURL: "https://example.com/realms/1")
 
                 waitForExpectations(timeout: 0.3)
-                XCTAssertEqual(readerMock.computeDigitalSignatureForUserAuthenticationCallCount, 1)
+                XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 1)
         }
 
         for mode in Mode.allCases {
