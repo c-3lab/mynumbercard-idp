@@ -11,12 +11,12 @@ import Foundation
 class URLOpenerMock: URLOpenerProtocol {
     init() {}
 
-    private(set) var openURLCallCount = 0
-    var openURLHandler: ((URL) -> Void)?
-    func openURL(_ url: URL) {
-        openURLCallCount += 1
-        if let openURLHandler = openURLHandler {
-            openURLHandler(url)
+    private(set) var openCallCount = 0
+    var openHandler: ((URL) -> Void)?
+    func open(_ url: URL) {
+        openCallCount += 1
+        if let openHandler = openHandler {
+            openHandler(url)
         }
     }
 }

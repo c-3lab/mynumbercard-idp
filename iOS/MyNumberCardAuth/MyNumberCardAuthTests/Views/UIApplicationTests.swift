@@ -37,7 +37,7 @@ final class UIApplicationTests: XCTestCase {
         openedUrl = nil
 
         let url = URL(string: "https://example.com")!
-        (application as URLOpenerProtocol).openURL(url)
+        (application as URLOpenerProtocol).open(url)
 
         XCTAssertEqual(openedUrl?.absoluteString, "https://example.com")
     }

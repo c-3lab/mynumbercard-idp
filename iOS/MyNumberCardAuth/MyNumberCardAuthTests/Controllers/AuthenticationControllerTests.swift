@@ -37,7 +37,7 @@ final class AuthenticationControllerTests: XCTestCase {
     func testOpenURL() throws {
         let urlOpenerMock = URLOpenerMock()
         var handlerCalled = false
-        urlOpenerMock.openURLHandler = {
+        urlOpenerMock.openHandler = {
             XCTAssertEqual($0, URL(string: "https://example.com"))
             handlerCalled = true
         }
@@ -46,14 +46,14 @@ final class AuthenticationControllerTests: XCTestCase {
 
         controller.open(urlString: "https://example.com")
 
-        XCTAssertEqual(urlOpenerMock.openURLCallCount, 1)
+        XCTAssertEqual(urlOpenerMock.openCallCount, 1)
         XCTAssertTrue(handlerCalled)
     }
 
     func testOpenURLURLEmpty() throws {
         let urlOpenerMock = URLOpenerMock()
         var handlerCalled = false
-        urlOpenerMock.openURLHandler = { _ in
+        urlOpenerMock.openHandler = { _ in
             handlerCalled = true
         }
         let controller = AuthenticationController(authenticationManager: AuthenticationManager(),
@@ -61,14 +61,14 @@ final class AuthenticationControllerTests: XCTestCase {
 
         controller.open(urlString: "")
 
-        XCTAssertEqual(urlOpenerMock.openURLCallCount, 0)
+        XCTAssertEqual(urlOpenerMock.openCallCount, 0)
         XCTAssertFalse(handlerCalled)
     }
 
     func testOpenURLInvalidURL() throws {
         let urlOpenerMock = URLOpenerMock()
         var handlerCalled = false
-        urlOpenerMock.openURLHandler = { _ in
+        urlOpenerMock.openHandler = { _ in
             handlerCalled = true
         }
         let controller = AuthenticationController(authenticationManager: AuthenticationManager(),
@@ -76,7 +76,7 @@ final class AuthenticationControllerTests: XCTestCase {
 
         controller.open(urlString: "てすと")
 
-        XCTAssertEqual(urlOpenerMock.openURLCallCount, 0)
+        XCTAssertEqual(urlOpenerMock.openCallCount, 0)
         XCTAssertFalse(handlerCalled)
     }
 

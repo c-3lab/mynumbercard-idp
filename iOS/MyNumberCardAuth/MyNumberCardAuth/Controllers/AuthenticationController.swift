@@ -71,7 +71,7 @@ public class AuthenticationController: ObservableObject {
             return
         }
 
-        urlOpener.openURL(url)
+        urlOpener.open(url)
     }
 
     public func startReading(pin: String, nonce: String, actionURL: String) {
