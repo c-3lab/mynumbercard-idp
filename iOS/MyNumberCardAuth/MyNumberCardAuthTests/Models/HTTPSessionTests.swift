@@ -81,8 +81,9 @@ final class HTTPSessionTests: XCTestCase {
             waitForExpectations(timeout: 0.3)
             // controllerのプロパティに値のAssertion
             XCTAssertTrue(controller.isAlert)
-            XCTAssertFalse(controller.messageTitle.isEmpty)
-            XCTAssertFalse(controller.messageString.isEmpty)
+            XCTAssertEqual(controller.messageTitle, String(localized: "Failure", comment: "失敗"))
+            XCTAssertEqual(controller.messageString,
+                           String(localized: "An unexpected error has occurred.", comment: "予期せぬエラーが発生しました。"))
         }
 
         doTest(400)
@@ -124,8 +125,50 @@ final class HTTPSessionTests: XCTestCase {
         // controllerの中身のAssertion
         XCTAssertTrue(controller.isAlert)
         XCTAssertTrue(controller.isErrorOpenURL)
-        XCTAssertFalse(controller.messageTitle.isEmpty)
-        XCTAssertFalse(controller.messageString.isEmpty)
+        XCTAssertEqual(controller.messageTitle, String(localized: "Authentication failure", comment: "認証失敗"))
+        XCTAssertEqual(controller.messageString,
+                       String(localized: "Since you have not registered as a user, please register as a user.",
+                              comment: "ユーザー未登録のため、利用者登録を行ってください。"))
+    }
+
+    func testOpenRedirectURLOnSafariStatusCode401Login() throws {
+        let controller = AuthenticationControllerMock()
+        controller.runMode = .Login
+        guard let helper = helperForTestingOpenRedirectURLOnSafari(using: controller,
+                                                                   urlString: "https://example.com",
+                                                                   responseStatusCode: 401,
+                                                                   responseHeaderFields: nil,
+                                                                   responseError: nil)
+        else {
+            XCTFail()
+            return
+        }
+        ///  実行されないはずのexpectation達が満たすべき条件を反転する
+        let fullfillingExpectationDescriptions = [
+            "isLinkAlertDidSet",
+            "messageTitleDidSet",
+            "messageStringDidSet",
+        ]
+        helper.expectations
+            .filter {
+                !fullfillingExpectationDescriptions.contains($0.expectationDescription)
+            }
+            .forEach {
+                $0.isInverted = true
+            }
+
+        // ヘルパーが返してきたテストを実行する
+        helper.doTest()
+
+        // expectation達が条件を満たすのを待つ
+        waitForExpectations(timeout: 0.3)
+        // controllerの中身のAssertion
+        XCTAssertTrue(controller.isLinkAlert)
+        XCTAssertEqual(controller.messageString,
+                       String(localized: "The electronic certificate for user certification has been revoked.",
+                              comment: "利用者証明用電子証明書が失効しています。") +
+                           String(localized: "Please contact the window of your municipality, or contact the window of the My Number Card Comprehensive Site from the link below.",
+                                  comment: "お住まいの市区町村の窓口へお問い合わせください。"))
     }
 
     func testOpenRedirectURLOnSafariStatusCode401() throws {
@@ -167,11 +210,13 @@ final class HTTPSessionTests: XCTestCase {
             waitForExpectations(timeout: 0.3)
             // controllerの中身のAssertion
             XCTAssertTrue(controller.isLinkAlert)
-            XCTAssertFalse(controller.messageTitle.isEmpty)
-            XCTAssertFalse(controller.messageString.isEmpty)
+            XCTAssertEqual(controller.messageString,
+                           String(localized: "The electronic signature certificate has expired.",
+                                  comment: "署名用電子証明書が失効しています。") +
+                               String(localized: "Please contact the window of your municipality, or contact the window of the My Number Card Comprehensive Site from the link below.",
+                                      comment: "お住まいの市区町村の窓口へお問い合わせください。"))
         }
 
-        doTest(.Login)
         doTest(.Registration)
         doTest(.Replacement)
     }
@@ -210,8 +255,10 @@ final class HTTPSessionTests: XCTestCase {
         // controllerの中身のAssertion
         XCTAssertTrue(controller.isAlert)
         XCTAssertTrue(controller.isErrorOpenURL)
-        XCTAssertFalse(controller.messageTitle.isEmpty)
-        XCTAssertFalse(controller.messageString.isEmpty)
+        XCTAssertEqual(controller.messageTitle, String(localized: "Registration failed", comment: "登録失敗"))
+        XCTAssertEqual(controller.messageString,
+                       String(localized: "Since the user is already registered, please log in.",
+                              comment: "既にユーザーが登録されているため、ログインを行ってください。"))
     }
 
     func testOpenRedirectURLOnSafariStatusCode410() throws {
@@ -264,8 +311,11 @@ final class HTTPSessionTests: XCTestCase {
             XCTAssertEqual(controller.viewState, .SignatureView)
             XCTAssertEqual(controller.runMode, .Replacement)
             XCTAssertTrue(controller.isAlert)
-            XCTAssertFalse(controller.messageTitle.isEmpty)
-            XCTAssertFalse(controller.messageString.isEmpty)
+            XCTAssertEqual(controller.messageTitle,
+                           String(localized: "Reloading My Number Card", comment: "マイナンバーカードの再読み込み"))
+            XCTAssertEqual(controller.messageString,
+                           String(localized: "I need to change my registration information. Please read the signature digital certificate to make changes.",
+                                  comment: "登録情報の変更が必要です。変更を行うため署名用電子証明書の読み取りを行ってください。"))
         }
 
         doTest(nil)
