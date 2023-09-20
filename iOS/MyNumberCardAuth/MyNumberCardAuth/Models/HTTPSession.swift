@@ -112,7 +112,7 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
                     print("リダイレクト先のURL: \(redirectURL)")
                     DispatchQueue.main.async {
                         self.authenticationController
-                            .openURL(string: redirectURL)
+                            .open(urlString: redirectURL)
                     }
                 }
             }

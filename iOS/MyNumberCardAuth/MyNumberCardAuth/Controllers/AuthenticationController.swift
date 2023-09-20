@@ -67,13 +67,12 @@ public class AuthenticationController: ObservableObject {
 
     /// 文字列として渡したURLを開く
     /// - URLとして不適切な文字列を渡した場合、何もしない
-    /// - Parameter string: URLを示す文字列
-    func openURL(string: String) {
-        guard let openURL = URL(string: string) else {
+    func open(urlString: String) {
+        guard let url = URL(string: urlString) else {
             return
         }
 
-        urlOpener.openURL(openURL)
+        urlOpener.openURL(url)
     }
 
     public func startReading(pin: String, nonce: String, actionURL: String) {
