@@ -339,8 +339,8 @@ final class HTTPSessionTests: XCTestCase {
         let isErrorOpenURLDidSet = expectation(description: "isErrorOpenURLDidSet")
         let openURLCalled = expectation(description: "openURLCalled")
         let doTest = {
-            var urlSessionMock: URLSessionMock?
-            var urlSessionDataTaskMock: URLSessionDataTaskMock?
+            let urlSessionMock = URLSessionMock(delegate: nil)
+            let urlSessionDataTaskMock = URLSessionDataTaskMock()
             controller.viewStateSetHandler =
                 controller.viewStateSetHandler ?? { _ in
                     viewStateDidSet.fulfill()
@@ -376,12 +376,10 @@ final class HTTPSessionTests: XCTestCase {
             var session: HTTPSession!
             session = HTTPSession(authenticationController: controller,
                                   makeURLSession: { _, _, _ in
-                                      urlSessionMock = URLSessionMock(delegate: nil)
-                                      urlSessionMock?.dataTaskHandler = { request, completionHandler in
+                                      urlSessionMock.dataTaskHandler = { request, completionHandler in
                                           XCTAssertEqual(request.url?.absoluteString, urlString)
                                           XCTAssertEqual(request.httpMethod, "GET")
-                                          urlSessionDataTaskMock = URLSessionDataTaskMock()
-                                          urlSessionDataTaskMock?.resumeHandler = {
+                                          urlSessionDataTaskMock.resumeHandler = {
                                               if [301,
                                                   302,
                                                   303,
@@ -411,19 +409,17 @@ final class HTTPSessionTests: XCTestCase {
                                                                 httpResponse,
                                                                 responseError)
                                           }
-                                          return urlSessionDataTaskMock!
+                                          return urlSessionDataTaskMock
                                       }
 
-                                      return urlSessionMock!
+                                      return urlSessionMock
                                   })
             let request = URLRequest(url: url)
 
             session.openRedirectURLOnSafari(request: request)
 
-            XCTAssertNotNil(urlSessionMock)
-            XCTAssertEqual(urlSessionMock?.dataTaskCallCount, 1)
-            XCTAssertNotNil(urlSessionDataTaskMock)
-            XCTAssertEqual(urlSessionDataTaskMock?.resumeCallCount, 1)
+            XCTAssertEqual(urlSessionMock.dataTaskCallCount, 1)
+            XCTAssertEqual(urlSessionDataTaskMock.resumeCallCount, 1)
         }
         return (doTest: doTest,
                 expectations: [viewStateDidSet,
