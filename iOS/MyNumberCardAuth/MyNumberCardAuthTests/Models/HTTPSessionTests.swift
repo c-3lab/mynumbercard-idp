@@ -438,11 +438,12 @@ final class HTTPSessionTests: XCTestCase {
                                                   let location = headerFields?["Location"],
                                                   let newUrl = URL(string: location)
                                               {
-                                                  var completedURLRequest: URLRequest? = nil
+                                                  let newRequest = URLRequest(url: newUrl)
+                                                  var completedURLRequest: URLRequest? = newRequest
                                                   session.urlSession(URLSession.shared,
                                                                      task: URLSessionTask(),
                                                                      willPerformHTTPRedirection: HTTPURLResponse(),
-                                                                     newRequest: URLRequest(url: newUrl))
+                                                                     newRequest: newRequest)
                                                   {
                                                       completedURLRequest = $0
                                                   }
