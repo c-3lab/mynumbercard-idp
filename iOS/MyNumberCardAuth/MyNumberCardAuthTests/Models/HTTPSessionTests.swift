@@ -61,14 +61,14 @@ final class HTTPSessionTests: XCTestCase {
                 return
             }
             ///  実行されないはずのexpectation達が満たすべき条件を反転する
-            let fullfillingExpectationDescriptions = [
+            let fulfillingExpectationDescriptions = [
                 "isAlertDidSet",
                 "messageTitleDidSet",
                 "messageStringDidSet",
             ]
             helper.expectations
                 .filter {
-                    !fullfillingExpectationDescriptions.contains($0.expectationDescription)
+                    !fulfillingExpectationDescriptions.contains($0.expectationDescription)
                 }
                 .forEach {
                     $0.isInverted = true
@@ -103,7 +103,7 @@ final class HTTPSessionTests: XCTestCase {
             return
         }
         ///  実行されないはずのexpectation達が満たすべき条件を反転する
-        let fullfillingExpectationDescriptions = [
+        let fulfillingExpectationDescriptions = [
             "isAlertDidSet",
             "isErrorOpenURLDidSet",
             "messageTitleDidSet",
@@ -111,7 +111,7 @@ final class HTTPSessionTests: XCTestCase {
         ]
         helper.expectations
             .filter {
-                !fullfillingExpectationDescriptions.contains($0.expectationDescription)
+                !fulfillingExpectationDescriptions.contains($0.expectationDescription)
             }
             .forEach {
                 $0.isInverted = true
@@ -144,14 +144,14 @@ final class HTTPSessionTests: XCTestCase {
             return
         }
         ///  実行されないはずのexpectation達が満たすべき条件を反転する
-        let fullfillingExpectationDescriptions = [
+        let fulfillingExpectationDescriptions = [
             "isLinkAlertDidSet",
             "messageTitleDidSet",
             "messageStringDidSet",
         ]
         helper.expectations
             .filter {
-                !fullfillingExpectationDescriptions.contains($0.expectationDescription)
+                !fulfillingExpectationDescriptions.contains($0.expectationDescription)
             }
             .forEach {
                 $0.isInverted = true
@@ -190,14 +190,14 @@ final class HTTPSessionTests: XCTestCase {
                 return
             }
             ///  実行されないはずのexpectation達が満たすべき条件を反転する
-            let fullfillingExpectationDescriptions = [
+            let fulfillingExpectationDescriptions = [
                 "isLinkAlertDidSet",
                 "messageTitleDidSet",
                 "messageStringDidSet",
             ]
             helper.expectations
                 .filter {
-                    !fullfillingExpectationDescriptions.contains($0.expectationDescription)
+                    !fulfillingExpectationDescriptions.contains($0.expectationDescription)
                 }
                 .forEach {
                     $0.isInverted = true
@@ -233,7 +233,7 @@ final class HTTPSessionTests: XCTestCase {
             return
         }
         ///  実行されないはずのexpectation達が満たすべき条件を反転する
-        let fullfillingExpectationDescriptions = [
+        let fulfillingExpectationDescriptions = [
             "isAlertDidSet",
             "isErrorOpenURLDidSet",
             "messageTitleDidSet",
@@ -241,7 +241,7 @@ final class HTTPSessionTests: XCTestCase {
         ]
         helper.expectations
             .filter {
-                !fullfillingExpectationDescriptions.contains($0.expectationDescription)
+                !fulfillingExpectationDescriptions.contains($0.expectationDescription)
             }
             .forEach {
                 $0.isInverted = true
@@ -287,7 +287,7 @@ final class HTTPSessionTests: XCTestCase {
                 return
             }
             ///  実行されないはずのexpectation達が満たすべき条件を反転する
-            let fullfillingExpectationDescriptions = [
+            let fulfillingExpectationDescriptions = [
                 "viewStateDidSet",
                 "runModeDidSet",
                 "isAlertDidSet",
@@ -296,7 +296,7 @@ final class HTTPSessionTests: XCTestCase {
             ]
             helper.expectations
                 .filter {
-                    !fullfillingExpectationDescriptions.contains($0.expectationDescription)
+                    !fulfillingExpectationDescriptions.contains($0.expectationDescription)
                 }
                 .forEach {
                     $0.isInverted = true
