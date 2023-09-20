@@ -115,7 +115,7 @@ final class AuthenticationManagerTests: XCTestCase {
                 let readerComputeDigitalSignatureForSignatureExpectation = expectation(description: "reader.computeDigitalSignatureForSignature")
                 readerMock.computeDigitalSignatureHandler = {
                     XCTAssertEqual($0, .digitalSignature)
-                    XCTAssertEqual($1, "7890")
+                    XCTAssertEqual($1, "7890cd")
                     XCTAssertEqual($2, [UInt8]("7890123456".utf8))
                     var cardData = TRETJapanNFCReader_MIFARE_IndividualNumber.IndividualNumberCardData()
                     cardData.computeDigitalSignatureForDigitalSignature = Array("0123".utf8)
@@ -153,7 +153,7 @@ final class AuthenticationManagerTests: XCTestCase {
                 controller.viewState = viewState
                 manager.authenticationController = controller
 
-                manager.authenticateForSignature(pin: "7890", nonce: "7890123456",
+                manager.authenticateForSignature(pin: "7890cd", nonce: "7890123456",
                                                  actionURL: "https://example.com/realms/2")
 
                 waitForExpectations(timeout: 0.3)
@@ -203,7 +203,7 @@ final class AuthenticationManagerTests: XCTestCase {
                                                 URLSessionMock()
                                             })
 
-        manager.authenticateForSignature(pin: "5678", nonce: "5678901234", actionURL: "https://example.com/realms/2")
+        manager.authenticateForSignature(pin: "5678cd", nonce: "5678901234", actionURL: "https://example.com/realms/2")
 
         XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 0)
     }

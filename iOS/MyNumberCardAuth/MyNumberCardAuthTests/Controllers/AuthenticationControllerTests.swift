@@ -88,14 +88,14 @@ final class AuthenticationControllerTests: XCTestCase {
         authenticationManagerMock.authenticationController = controller
         var handlerCalled = false
         authenticationManagerMock.authenticateForSignatureHandler = {
-            XCTAssertEqual($0, "1234")
+            XCTAssertEqual($0, "1234ab")
             XCTAssertEqual($1, "0123456789")
             XCTAssertEqual($2, "https:example.1")
             handlerCalled = true
         }
 
         controller.viewState = .SignatureView
-        controller.startReading(pin: "1234", nonce: "0123456789", actionURL: "https:example.1")
+        controller.startReading(pin: "1234ab", nonce: "0123456789", actionURL: "https:example.1")
 
         XCTAssertEqual(authenticationManagerMock.authenticateForSignatureCallCount, 1)
         XCTAssertEqual(authenticationManagerMock.authenticateForUserVerificationCallCount, 0)
@@ -136,7 +136,7 @@ final class AuthenticationControllerTests: XCTestCase {
         }
 
         controller.viewState = .ExplanationView
-        controller.startReading(pin: "9012", nonce: "9876501234", actionURL: "https:example.3")
+        controller.startReading(pin: "9012ef", nonce: "9876501234", actionURL: "https:example.3")
 
         XCTAssertEqual(authenticationManagerMock.authenticateForSignatureCallCount, 0)
         XCTAssertEqual(authenticationManagerMock.authenticateForUserVerificationCallCount, 0)
