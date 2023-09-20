@@ -14,12 +14,10 @@ import XCTest
 final class AuthenticationManagerTests: XCTestCase {
     private static var certificate: Data! =
         AuthenticationManagerTests.loadStringFromBundle(forResource: "AuthenticationManagerCertificate",
-                                                        withExtension: "txt")
-        .flatMap { Data(base64URLEncoded: $0) }
+                                                        withExtension: "txt").flatMap { Data(base64URLEncoded: $0) }
 
     private static let certs: Data! =
-        AuthenticationManagerTests.loadDataFromBundle(forResource: "AuthenticationManagerCerts",
-                                                      withExtension: "json")
+        AuthenticationManagerTests.loadDataFromBundle(forResource: "AuthenticationManagerCerts", withExtension: "json")
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -83,8 +81,7 @@ final class AuthenticationManagerTests: XCTestCase {
                 manager.authenticationController = controller
 
                 manager.authenticateForUserVerification(pin: "1234",
-                                                        nonce: "0123456789",
-                                                        actionURL: "https://example.com/realms/1")
+                                                        nonce: "0123456789", actionURL: "https://example.com/realms/1")
 
                 waitForExpectations(timeout: 0.3)
                 XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 1)
@@ -156,8 +153,7 @@ final class AuthenticationManagerTests: XCTestCase {
                 controller.viewState = viewState
                 manager.authenticationController = controller
 
-                manager.authenticateForSignature(pin: "7890",
-                                                 nonce: "7890123456",
+                manager.authenticateForSignature(pin: "7890", nonce: "7890123456",
                                                  actionURL: "https://example.com/realms/2")
 
                 waitForExpectations(timeout: 0.3)
@@ -189,8 +185,7 @@ final class AuthenticationManagerTests: XCTestCase {
                                                 URLSessionMock()
                                             })
 
-        manager.authenticateForUserVerification(pin: "1234",
-                                                nonce: "0123456789",
+        manager.authenticateForUserVerification(pin: "1234", nonce: "0123456789",
                                                 actionURL: "https://example.com/realms/1")
 
         XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 0)
@@ -208,9 +203,7 @@ final class AuthenticationManagerTests: XCTestCase {
                                                 URLSessionMock()
                                             })
 
-        manager.authenticateForSignature(pin: "5678",
-                                         nonce: "5678901234",
-                                         actionURL: "https://example.com/realms/2")
+        manager.authenticateForSignature(pin: "5678", nonce: "5678901234", actionURL: "https://example.com/realms/2")
 
         XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 0)
     }
@@ -270,8 +263,7 @@ final class AuthenticationManagerTests: XCTestCase {
                 controller.viewState = viewState
                 manager.authenticationController = controller
 
-                manager.authenticateForUserVerification(pin: "1234",
-                                                        nonce: "0123456789",
+                manager.authenticateForUserVerification(pin: "1234", nonce: "0123456789",
                                                         actionURL: "https://example.com/realms/1")
 
                 waitForExpectations(timeout: 0.3)
@@ -292,18 +284,14 @@ final class AuthenticationManagerTests: XCTestCase {
     private static func loadDataFromBundle(forResource resource: String,
                                            withExtension extension: String) -> Data?
     {
-        return Bundle(for: self)
-            .url(forResource: resource,
-                 withExtension: `extension`)
+        return Bundle(for: self).url(forResource: resource, withExtension: `extension`)
             .flatMap { try? Data(contentsOf: $0) }
     }
 
     private static func loadStringFromBundle(forResource resource: String,
                                              withExtension extension: String) -> String?
     {
-        return loadDataFromBundle(forResource: resource,
-                                  withExtension: `extension`)
-            .flatMap { String(data: $0,
-                              encoding: .utf8) }
+        return loadDataFromBundle(forResource: resource, withExtension: `extension`)
+            .flatMap { String(data: $0, encoding: .utf8) }
     }
 }

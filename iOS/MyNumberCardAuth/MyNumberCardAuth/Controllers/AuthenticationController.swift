@@ -53,8 +53,7 @@ public class AuthenticationController: ObservableObject {
         self.authenticationManager = authenticationManager
         self.makeURLOpener = makeURLOpener
 
-        self.authenticationManager
-            .authenticationController = self
+        self.authenticationManager.authenticationController = self
     }
 
     public func clear() {

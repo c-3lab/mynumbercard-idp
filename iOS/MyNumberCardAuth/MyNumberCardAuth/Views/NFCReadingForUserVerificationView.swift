@@ -50,8 +50,7 @@ struct NFCReadingForUserVerificationView: View {
                 .alert(isPresented: self.$authenticationController.isAlert) {
                     Alert(title: Text(self.authenticationController.messageTitle), message: Text(self.authenticationController.messageString), dismissButton: .default(Text("OK"), action: {
                         if self.authenticationController.isErrorOpenURL {
-                            self.authenticationController
-                                .open(urlString: self.authenticationController.openURL)
+                            self.authenticationController.open(urlString: self.authenticationController.openURL)
                         }
                     }))
                 }
