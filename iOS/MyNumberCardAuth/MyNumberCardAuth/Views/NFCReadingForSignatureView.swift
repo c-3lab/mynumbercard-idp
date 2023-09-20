@@ -50,7 +50,7 @@ struct NFCReadingForSignatureView: View {
                     Alert(title: Text(self.authenticationController.messageTitle), message: Text(self.authenticationController.messageString), dismissButton: .default(Text("OK"), action: {
                         if self.authenticationController.isErrorOpenURL {
                             self.authenticationController
-                                .openURL(string: self.authenticationController.openURL)
+                                .open(urlString: self.authenticationController.openURL)
                         }
                     }))
                 }
@@ -63,7 +63,7 @@ struct NFCReadingForSignatureView: View {
                 .alert(isPresented: self.$authenticationController.isLinkAlert) {
                     Alert(title: Text(self.authenticationController.messageTitle), message: Text(self.authenticationController.messageString), primaryButton: .default(Text("Contact page"), action: {
                         self.authenticationController
-                            .openURL(string: self.authenticationController.inquiryURL)
+                            .open(urlString: self.authenticationController.inquiryURL)
                     }), secondaryButton: .default(Text("OK"), action: {}))
                 }
         }

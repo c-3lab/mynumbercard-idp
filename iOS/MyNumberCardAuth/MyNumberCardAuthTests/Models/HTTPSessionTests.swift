@@ -295,7 +295,7 @@ final class HTTPSessionTests: XCTestCase {
         // (helperが用意しているopenURLHandlerだと、引数を取れないため)
         var openURLString: String?
         let expectation = self.expectation(description: "openURLHandler")
-        controller.openURLHandler = { urlString in
+        controller.openHandler = { urlString in
             openURLString = urlString
             expectation.fulfill()
         }
@@ -369,8 +369,8 @@ final class HTTPSessionTests: XCTestCase {
                 controller.isErrorOpenURLDidSetHandler ?? { _ in
                     isErrorOpenURLDidSet.fulfill()
                 }
-            controller.openURLHandler =
-                controller.openURLHandler ?? { _ in
+            controller.openHandler =
+                controller.openHandler ?? { _ in
                     openURLCalled.fulfill()
                 }
             var session: HTTPSession!

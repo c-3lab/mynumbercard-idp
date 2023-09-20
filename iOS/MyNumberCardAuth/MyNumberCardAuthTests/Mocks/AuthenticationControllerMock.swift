@@ -122,12 +122,12 @@ class AuthenticationControllerMock: AuthenticationControllerProtocol {
         }
     }
 
-    private(set) var openURLCallCount = 0
-    var openURLHandler: ((String) -> Void)?
-    func openURL(string: String) {
-        openURLCallCount += 1
-        if let openURLHandler = openURLHandler {
-            openURLHandler(string)
+    private(set) var openCallCount = 0
+    var openHandler: ((String) -> Void)?
+    func open(urlString: String) {
+        openCallCount += 1
+        if let openHandler = openHandler {
+            openHandler(urlString)
         }
     }
 
