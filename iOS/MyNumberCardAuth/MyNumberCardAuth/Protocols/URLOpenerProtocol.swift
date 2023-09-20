@@ -10,11 +10,11 @@ import UIKit.UIApplication
 
 /// @mockable(override: name = URLOpenerMock)
 protocol URLOpenerProtocol {
-    func openURL(_ url: URL)
+    func open(_ url: URL)
 }
 
 extension UIApplication: URLOpenerProtocol {
-    func openURL(_ url: URL) {
+    func open(_ url: URL) {
         open(url,
              options: [:],
              completionHandler: nil)
