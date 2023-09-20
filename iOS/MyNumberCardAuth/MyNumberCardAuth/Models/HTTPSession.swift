@@ -111,8 +111,7 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
                 if let redirectURL = httpResponse.allHeaderFields["Location"] as? String {
                     print("リダイレクト先のURL: \(redirectURL)")
                     DispatchQueue.main.async {
-                        self.authenticationController
-                            .open(urlString: redirectURL)
+                        self.authenticationController.open(urlString: redirectURL)
                     }
                 }
             }

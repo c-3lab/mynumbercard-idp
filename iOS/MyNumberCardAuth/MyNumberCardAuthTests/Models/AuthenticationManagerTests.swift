@@ -14,12 +14,10 @@ import XCTest
 final class AuthenticationManagerTests: XCTestCase {
     private static var certificate: Data! =
         AuthenticationManagerTests.loadStringFromBundle(forResource: "AuthenticationManagerCertificate",
-                                                        withExtension: "txt")
-        .flatMap { Data(base64URLEncoded: $0) }
+                                                        withExtension: "txt").flatMap { Data(base64URLEncoded: $0) }
 
     private static let certs: Data! =
-        AuthenticationManagerTests.loadDataFromBundle(forResource: "AuthenticationManagerCerts",
-                                                      withExtension: "json")
+        AuthenticationManagerTests.loadDataFromBundle(forResource: "AuthenticationManagerCerts", withExtension: "json")
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -289,18 +287,14 @@ final class AuthenticationManagerTests: XCTestCase {
     private static func loadDataFromBundle(forResource resource: String,
                                            withExtension extension: String) -> Data?
     {
-        return Bundle(for: self)
-            .url(forResource: resource,
-                 withExtension: `extension`)
+        return Bundle(for: self).url(forResource: resource, withExtension: `extension`)
             .flatMap { try? Data(contentsOf: $0) }
     }
 
     private static func loadStringFromBundle(forResource resource: String,
                                              withExtension extension: String) -> String?
     {
-        return loadDataFromBundle(forResource: resource,
-                                  withExtension: `extension`)
-            .flatMap { String(data: $0,
-                              encoding: .utf8) }
+        return loadDataFromBundle(forResource: resource, withExtension: `extension`)
+            .flatMap { String(data: $0, encoding: .utf8) }
     }
 }
