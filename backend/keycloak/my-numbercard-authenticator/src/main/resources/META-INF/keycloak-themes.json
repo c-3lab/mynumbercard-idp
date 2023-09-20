@@ -1,0 +1,9 @@
+{
+    "themes": [
+	{
+            "name" : "mynumbercard-auth",
+            "types": [ "login" ]
+	}
+    ]
+}
+

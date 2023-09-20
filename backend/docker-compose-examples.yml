@@ -13,6 +13,7 @@ services:
     container_name: platform-gateway
     hostname: platform-gateway
     volumes:
+      - ./examples/platform-gateway/html/key:/usr/share/nginx/html/key
       - ./examples/platform-gateway/conf.d:/etc/nginx/conf.d
     environment:
       - TZ=Asia/Tokyo
