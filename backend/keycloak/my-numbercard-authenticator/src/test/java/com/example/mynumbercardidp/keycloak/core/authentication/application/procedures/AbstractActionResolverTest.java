@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.Field;
 
@@ -76,6 +77,7 @@ public class AbstractActionResolverTest {
 
       // 検証
       currentConfigMock.verify(() -> CurrentConfig.getValue(any(), any()), times(3));
+      verify(platformResolver, times(1)).createPlatform(any(), any(), any(), any());
       assertEquals(expected, result);
 
     }
