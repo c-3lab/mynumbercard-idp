@@ -1,0 +1,4 @@
+# file options
+--symlinks ignore
+--swiftversion 5.7
+# rules
