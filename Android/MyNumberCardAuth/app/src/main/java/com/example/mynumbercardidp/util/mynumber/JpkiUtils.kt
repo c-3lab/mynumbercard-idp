@@ -1,12 +1,12 @@
 package com.example.mynumbercardidp.util.mynumber
 
 import com.example.mynumbercardidp.util.hexToByteArray
-import com.example.mynumbercardidp.util.toHexString
+import java.nio.ByteBuffer
 
 class JpkiUtils(private val reader: NfcReader) {
     companion object {
         private const val logTag = "JpkiUtils"
-        private const val offset = 4 //読み込むべきサイズを取得するための情報部が格納されているバイト数
+        private const val headerSize = 4 //データサイズなどの情報部が格納されている先頭部のバイト数
     }
 
     fun lookupAuthPin(): Int {
@@ -49,13 +49,27 @@ class JpkiUtils(private val reader: NfcReader) {
         reader.selectEF(efid)
 
         // 読み込むべきサイズを取得するため、先頭4バイト取得
-        val header = reader.readBinary(offset)
+        val header = reader.readBinary(headerSize)
+        if (header.isEmpty()) { return byteArrayOf() }
+
         // 読み込んだデータから、データ全体量の格納部分を抽出
-        val sizeToReadHex = header.toHexString().substring(4,8)
-        val sizeToRead = Integer.parseInt(sizeToReadHex, 16) + offset
+        val bodySize = ByteBuffer.wrap(header, 2, 2).short
 
         // 全体を読み込み、データを返却する
-        return reader.readBinary(sizeToRead)
+        return readBinary(headerSize + bodySize)
+    }
+
+    private fun readBinary(expectedSize: Int): ByteArray {
+        var data = byteArrayOf()
+
+        // 不足サイズ分が取り切れるまでREAD BINARYを繰り返す
+        while (data.size < expectedSize) {
+            var currentData = reader.readBinary(expectedSize - data.size, data.size.toUShort())
+            if (currentData.isEmpty()) { break }
+            data += currentData
+        }
+
+        return data
     }
 
     fun authSignature(nonce: ByteArray): ByteArray {

@@ -92,12 +92,13 @@ class NfcReader(nfcTag: Tag) {
         return Triple(0, 0, byteArrayOf())
     }
 
-    fun readBinary(size: Int): ByteArray {
-        val apduCommand = APDUCommand.apduCase2(0x00, 0xB0.toByte(), 0, 0, size)
-        val (sw1, sw2, data) = transceiver(apduCommand)
-        if (sw1 != 0x90.toByte() || sw2 != 0x00.toByte()) {
-            return byteArrayOf()
-        }
+    fun readBinary(size: Int, offset: UShort = 0u): ByteArray {
+        // オフセットの指定値を上位バイトと、下位バイトに変換
+        val p1 = ((offset.toULong() shr 8) and 0xFFu).toByte()
+        val p2 = (offset.toULong() and 0xFFu).toByte()
+
+        val apduCommand = APDUCommand.apduCase2(0x00, 0xB0.toByte(), p1, p2, size)
+        val (_, _, data) = transceiver(apduCommand)
         return data
     }
 
