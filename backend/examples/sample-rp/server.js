@@ -1,8 +1,10 @@
 const express = require("express");
 const axios = require('axios');
 const { auth, requiresAuth } = require('express-openid-connect')
+const useragent = require('express-useragent');
 
 const app = express();
+app.use(useragent.express());
 app.set('trust proxy', 'uniquelocal');
 app.set("view engine", "ejs");
 app.use(express.static('public'));
@@ -70,6 +72,15 @@ app.get("/", (req, res) => {
   res.render("index", { user: getUser(req) })
 });
 
+app.get("/reset", requiresAuth(), async (req, res, next) => {
+  try {
+    await req.oidc.accessToken.refresh()
+    res.redirect(303, "/")
+  } catch (error) {
+    next(error)
+  }
+});
+
 app.post("/assign", requiresAuth(), async (req, res, next) => {
   try {
     const serviceIdValue = process.env.SERVICE_ID
@@ -94,6 +105,32 @@ app.post("/assign", requiresAuth(), async (req, res, next) => {
 
     await req.oidc.accessToken.refresh()
     res.redirect(303, "/")
+  } catch (error) {
+    next(error)
+  }
+});
+
+app.post("/reset", requiresAuth(), async (req, res, next) => {
+  try {
+    const resetAPIURL =  process.env.KEYCLOAK_URL + "/realms/" + process.env.KEYCLOAK_REALM + "/userinfo-replacement/login" + "?redirect_uri=" + encodeURIComponent(process.env.BASE_URL + "/reset") + "&scope=openid&response_type=code"
+
+    const postRes = await axios({
+      method: 'post',
+      url: resetAPIURL,
+      headers: {
+        "Content-type": "application/x-www-form-urlencoded",
+        "Authorization": "Bearer " + req.oidc.accessToken.access_token,
+        "User-Agent": req.useragent.source
+      },
+      data: {
+      },
+      maxRedirects: 0, 
+      validateStatus: function (status) {
+        return status >= 200 && status <= 302
+      }
+    });
+    
+    res.redirect(postRes.headers['location'])
   } catch (error) {
     next(error)
   }
