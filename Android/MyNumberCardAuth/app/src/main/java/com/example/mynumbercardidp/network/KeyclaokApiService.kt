@@ -11,7 +11,7 @@ interface KeycloakApiService {
     @POST()
     suspend fun authenticate(@Url url: String,
                              @Field("mode") mode: String,
-                             @Field("userAuthenticationCertificate") certificate: String,
+                             @Field("encryptedUserAuthenticationCertificate") certificate: String,
                              @Field("applicantData") applicantData: String,
                              @Field("sign") sign: String,
     ): Response<Void>
