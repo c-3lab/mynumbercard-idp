@@ -11,7 +11,7 @@ import CryptoKit
 
 public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
     private var authenticationController:AuthenticationController
-    private var individualNumberCardExecuteType: IndividualNumberCardExecuteType?
+    private var individualNumberCardSignatureType: IndividualNumberCardSignatureType?
     private var actionURL: String?
     private var reader: IndividualNumberReader!
 
@@ -26,31 +26,26 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
     
     public func authenticateForSignature(pin: String, nonce: String, actionURL: String){
         self.actionURL = actionURL
-        self.computeDigitalCertificateForSignature(SignaturePIN: pin, dataToSign: nonce)
+        self.computeDigitalCertificateForSignature(signaturePIN: pin, dataToSign: nonce)
     }
     
-    public func getDigitalCertificate(){
-        self.getDigitalCertificateForUserVerification()
-    }
-
     public func individualNumberReaderSession(didRead individualNumberCardData: TRETJapanNFCReader_MIFARE_IndividualNumber.IndividualNumberCardData) {
-        switch self.individualNumberCardExecuteType {
-        case .computeDigitalSignature, .computeDigitalSignatureForSignature:
-            if let digitalSignature = individualNumberCardData.digitalSignatureForUserVerification,
-               let digitalCertificate = individualNumberCardData.digitalCertificateForUserVerification,
+        switch self.individualNumberCardSignatureType {
+        case .userAuthentication:
+            if let digitalSignature = individualNumberCardData.computeDigitalSignatureForUserAuthentication,
+               let digitalCertificate = individualNumberCardData.userAuthenticationCertificate,
                let actionURL = self.actionURL
             {
                 self.verifySignature(digitalSignature: digitalSignature, digitalCertificate: digitalCertificate, actionURL: actionURL)
             }
             break
-        case .getCardInfoInput:
-            break
-        case .getDigitalCertificateForUserVerification:
-            if let digitalCertificate = individualNumberCardData.digitalCertificateForUserVerification {
-                print(digitalCertificate)
+        case .digitalSignature:
+            if let digitalSignature = individualNumberCardData.computeDigitalSignatureForDigitalSignature,
+               let digitalCertificate = individualNumberCardData.digitalSignatureCertificate,
+               let actionURL = self.actionURL
+            {
+                self.verifySignature(digitalSignature: digitalSignature, digitalCertificate: digitalCertificate, actionURL: actionURL)
             }
-            break
-        case .lookupRemainingPIN:
             break
         case .none:
             break
@@ -62,7 +57,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
     }
     
     private func conputeDigitalSignatureForUserVerification(userAuthenticationPIN: String, dataToSign: String) {
-        self.individualNumberCardExecuteType = .computeDigitalSignature
+        self.individualNumberCardSignatureType = .userAuthentication
 
         let data = dataToSign.data(using: .utf8)
         let nonceStr = (SHA256.hash(data: data!).description)
@@ -72,29 +67,23 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate{
         let dataToSignByteArray = [UInt8](dataToSign.utf8)
         self.reader = IndividualNumberReader(delegate: self)
         // 以下処理はNFC読み取りが非同期で行われ、完了するとindividualNumberReaderSessionが呼び出される
-        self.reader.computeDigitalSignatureForUserAuthentication(userAuthenticationPIN: userAuthenticationPIN,dataToSign: dataToSignByteArray)
+        self.reader.computeDigitalSignature(signatureType: self.individualNumberCardSignatureType!, pin: userAuthenticationPIN, dataToSign: dataToSignByteArray)
     }
     
-    private func computeDigitalCertificateForSignature(SignaturePIN: String, dataToSign: String) {
-        self.individualNumberCardExecuteType = .computeDigitalSignatureForSignature
+    private func computeDigitalCertificateForSignature(signaturePIN: String, dataToSign: String) {
+        self.individualNumberCardSignatureType = .digitalSignature
         
         let data = dataToSign.data(using: .utf8)
         let nonceStr = (SHA256.hash(data: data!).description)
         
         self.authenticationController.nonceHash = String(nonceStr.dropFirst(15))
-        
+
         let dataToSignByteArray = [UInt8](dataToSign.utf8)
         self.reader = IndividualNumberReader(delegate: self)
         // 以下処理はNFC読み取りが非同期で行われ、完了するとindividualNumberReaderSessionが呼び出される
-        self.reader.computeDigitalSignatureForSignature(SignaturePIN: SignaturePIN,dataToSign: dataToSignByteArray)
+        self.reader.computeDigitalSignature(signatureType: self.individualNumberCardSignatureType!, pin: signaturePIN, dataToSign: dataToSignByteArray)
     }
-    
-    private func getDigitalCertificateForUserVerification(){
-        self.individualNumberCardExecuteType = .getDigitalCertificateForUserVerification
-        self.reader = IndividualNumberReader(delegate: self)
-        self.reader.getDigitalCertificateForUserVerification()
-    }
-    
+        
     private func verifySignature(digitalSignature: [UInt8], digitalCertificate: [UInt8], actionURL: String){
         
         guard let digitalSignatureBase64URLEncoded = encodingBase64URL(from: digitalSignature) else {

@@ -15,6 +15,11 @@
 	</array>
 	<key>InquiryURL</key>
 	<string>https://www.kojinbango-card.go.jp/contact/</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>PrivacyPolicyURL</key>
 	<string>https://example.com/open-id/privacy-policy.html</string>
 	<key>ProtectionPolicyURL</key>
