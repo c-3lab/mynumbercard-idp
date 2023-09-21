@@ -119,10 +119,11 @@ class StateViewModel(
                         HttPStatusCode.Unauthorized.value -> KeycloakState.LapseError
                         HttPStatusCode.Conflict.value -> KeycloakState.UserDuplicateError
                         HttPStatusCode.Gone.value -> {
+                            val xActionUrl = requestResult.headers()["X-Action-URL"]
                             setUriParameters(
                                 _uiState.value.uriParameters?.nonce!!,
                                 "replacement",
-                                _uiState.value.uriParameters?.action_url!!,
+                                xActionUrl!!,
                                 _uiState.value.uriParameters?.error_url!!
                             )
                             KeycloakState.InfoChangeError
