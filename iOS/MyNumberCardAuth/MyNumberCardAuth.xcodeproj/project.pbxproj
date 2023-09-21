@@ -13,6 +13,7 @@
 		9F931D902AA6FE1A009BA06A /* TRETJapanNFCReader-MIFARE-IndividualNumber in Frameworks */ = {isa = PBXBuildFile; productRef = 9F931D8F2AA6FE1A009BA06A /* TRETJapanNFCReader-MIFARE-IndividualNumber */; };
 		9FCA69B32A4BEE24008AC285 /* NFCReadingForSignatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCA69B22A4BEE24008AC285 /* NFCReadingForSignatureView.swift */; };
 		9FE5928D2A57E91B000C3569 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9FE5928F2A57E91B000C3569 /* Localizable.strings */; };
+		9FF1B6F62AAD9E9200793DD6 /* JOSESwift in Frameworks */ = {isa = PBXBuildFile; productRef = 9FF1B6F52AAD9E9200793DD6 /* JOSESwift */; };
 		AD80228D29F0B402009EA409 /* MyNumberCardAuthApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD80228C29F0B402009EA409 /* MyNumberCardAuthApp.swift */; };
 		AD80228F29F0B402009EA409 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD80228E29F0B402009EA409 /* ContentView.swift */; };
 		AD80229129F0B403009EA409 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD80229029F0B403009EA409 /* Assets.xcassets */; };
@@ -64,6 +65,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9F931D902AA6FE1A009BA06A /* TRETJapanNFCReader-MIFARE-IndividualNumber in Frameworks */,
+				9FF1B6F62AAD9E9200793DD6 /* JOSESwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,6 +170,7 @@
 			name = MyNumberCardAuth;
 			packageProductDependencies = (
 				9F931D8F2AA6FE1A009BA06A /* TRETJapanNFCReader-MIFARE-IndividualNumber */,
+				9FF1B6F52AAD9E9200793DD6 /* JOSESwift */,
 			);
 			productName = MyNumberCardAuth;
 			productReference = 9FF1B6F22AAD83FF00793DD6 /* MyNumberCardAuth.app */;
@@ -200,8 +203,9 @@
 			mainGroup = AD80228029F0B402009EA409;
 			packageReferences = (
 				9FF1B6F12AAD83C900793DD6 /* XCRemoteSwiftPackageReference "TRETJapanNFCReader" */,
+				9FF1B6F42AAD9E9200793DD6 /* XCRemoteSwiftPackageReference "JOSESwift" */,
 			);
-			productRefGroup = AD80228029F0B402009EA409;
+			productRefGroup = AD80228A29F0B402009EA409 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -469,12 +473,25 @@
 				kind = branch;
 			};
 		};
+		9FF1B6F42AAD9E9200793DD6 /* XCRemoteSwiftPackageReference "JOSESwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airsidemobile/JOSESwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		9F931D8F2AA6FE1A009BA06A /* TRETJapanNFCReader-MIFARE-IndividualNumber */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = "TRETJapanNFCReader-MIFARE-IndividualNumber";
+		};
+		9FF1B6F52AAD9E9200793DD6 /* JOSESwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9FF1B6F42AAD9E9200793DD6 /* XCRemoteSwiftPackageReference "JOSESwift" */;
+			productName = JOSESwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

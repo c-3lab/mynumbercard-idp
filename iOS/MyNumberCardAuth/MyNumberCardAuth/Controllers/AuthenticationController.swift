@@ -16,7 +16,7 @@ class AuthenticationController: ObservableObject {
     @Published var messageTitle:String = ""
     @Published var messageString:String = ""
     @Published var isErrorOpenURL:Bool = false
-    @Published var nonceHash:String = ""
+    @Published var nonce:String = ""
     @Published var queryDict:[String: String]?
     @Published var openURL:String = ""
     @Published var controller:ViewController = ViewController()
