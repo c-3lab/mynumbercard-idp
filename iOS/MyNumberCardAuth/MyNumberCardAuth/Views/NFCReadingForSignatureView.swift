@@ -9,7 +9,6 @@ import Combine
 import SwiftUI
 
 struct NFCReadingForSignatureView: View {
-    @Binding var queryDict: [String: String]?
     @ObservedObject var authenticationController: AuthenticationController
     @FocusState private var isActive: Bool
     @ObservedObject var controller: SignatureViewController
@@ -49,12 +48,8 @@ struct NFCReadingForSignatureView: View {
                 }
                 .alert(isPresented: $authenticationController.isAlert) {
                     Alert(title: Text(self.authenticationController.messageTitle), message: Text(self.authenticationController.messageString), dismissButton: .default(Text("OK"), action: {
-                        if self.authenticationController.isErrorOpenURL == true {
-                            if self.authenticationController.openURL.isEmpty == false {
-                                if let openURL = URL(string: self.authenticationController.openURL) {
-                                    UIApplication.shared.open(openURL)
-                                }
-                            }
+                        if self.authenticationController.isErrorOpenURL {
+                            self.authenticationController.open(urlString: self.authenticationController.openURL)
                         }
                     }))
                 }
@@ -66,11 +61,7 @@ struct NFCReadingForSignatureView: View {
             }.modifier(SmallButtonModifier(color: controller.getButtonColor()))
                 .alert(isPresented: self.$authenticationController.isLinkAlert) {
                     Alert(title: Text(self.authenticationController.messageTitle), message: Text(self.authenticationController.messageString), primaryButton: .default(Text("Contact page"), action: {
-                        if self.authenticationController.inquiryURL.isEmpty == false {
-                            if let openURL = URL(string: self.authenticationController.inquiryURL) {
-                                UIApplication.shared.open(openURL)
-                            }
-                        }
+                        self.authenticationController.open(urlString: self.authenticationController.inquiryURL)
                     }), secondaryButton: .default(Text("OK"), action: {}))
                 }
         }
@@ -81,6 +72,6 @@ struct NFCReadingForSignatureView_Previews: PreviewProvider {
     @ObservedObject static var authenticationController: AuthenticationController = .init()
     @ObservedObject static var signatureController: SignatureViewController = .init()
     static var previews: some View {
-        NFCReadingForSignatureView(queryDict: .constant([:]), authenticationController: authenticationController, controller: signatureController)
+        NFCReadingForSignatureView(authenticationController: authenticationController, controller: signatureController)
     }
 }

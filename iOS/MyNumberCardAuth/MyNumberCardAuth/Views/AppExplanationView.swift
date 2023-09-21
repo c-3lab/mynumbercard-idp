@@ -25,17 +25,17 @@ struct AppExplanationView: View {
                 .frame(height: 120.0)
 
             Button("Terms Of Service") {
-                self.authenticationController.openURLButton(url: authenticationController.termsOfUseURL)
+                self.authenticationController.open(urlString: authenticationController.termsOfUseURL)
 
             }.modifier(SmallButtonModifier(color: self.authenticationController.getButtonColor(checkStr: self.authenticationController.termsOfUseURL)))
 
             Button("Privacy Policy") {
-                self.authenticationController.openURLButton(url: self.authenticationController.privacyPolicyURL)
+                self.authenticationController.open(urlString: self.authenticationController.privacyPolicyURL)
 
             }.modifier(SmallButtonModifier(color: self.authenticationController.getButtonColor(checkStr: self.authenticationController.privacyPolicyURL)))
 
             Button("Personal Data Protection Policy") {
-                self.authenticationController.openURLButton(url: self.authenticationController.protectionPolicyURL)
+                self.authenticationController.open(urlString: self.authenticationController.protectionPolicyURL)
 
             }.modifier(SmallButtonModifier(color: self.authenticationController.getButtonColor(checkStr: self.authenticationController.protectionPolicyURL)))
         }
