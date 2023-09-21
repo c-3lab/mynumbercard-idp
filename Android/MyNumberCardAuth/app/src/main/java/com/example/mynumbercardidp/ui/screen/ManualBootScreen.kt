@@ -29,6 +29,8 @@ fun ManualBootScreen(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         ){
+        Text(stringResource(R.string.title))
+
         Text(stringResource(R.string.about_this_app),modifier = Modifier.padding(50.dp))
 
         Text(stringResource(R.string.about_this_app_detail))
