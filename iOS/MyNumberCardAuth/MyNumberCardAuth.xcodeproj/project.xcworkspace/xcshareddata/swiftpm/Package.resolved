@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "joseswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/airsidemobile/JOSESwift.git",
+      "state" : {
+        "revision" : "10ed3b6736def7c26eb87135466b1cb46ea7e37f",
+        "version" : "2.4.0"
+      }
+    },
+    {
+      "identity" : "tretjapannfcreader",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/c-3lab/TRETJapanNFCReader.git",
+      "state" : {
+        "branch" : "ios/fix/lib",
+        "revision" : "c2eefc30d82c3585b6bbf85e656323a24093c626"
+      }
+    }
+  ],
+  "version" : 2
+}
