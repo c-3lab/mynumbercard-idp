@@ -110,13 +110,13 @@ app.post("/assign", requiresAuth(), async (req, res, next) => {
   }
 });
 
-app.post("/reset", requiresAuth(), async (req, res, next) => {
+app.post("/replace", requiresAuth(), async (req, res, next) => {
   try {
-    const resetAPIURL =  process.env.KEYCLOAK_URL + "/realms/" + process.env.KEYCLOAK_REALM + "/userinfo-replacement/login" + "?redirect_uri=" + encodeURIComponent(process.env.BASE_URL + "/reset") + "&scope=openid&response_type=code"
+    const replaceAPIURL =  process.env.KEYCLOAK_URL + "/realms/" + process.env.KEYCLOAK_REALM + "/userinfo-replacement/login" + "?redirect_uri=" + encodeURIComponent(process.env.BASE_URL + "/reset") + "&scope=openid&response_type=code"
 
     const { headers } = await axios({
       method: 'post',
-      url: resetAPIURL,
+      url: replaceAPIURL,
       headers: {
         "Content-type": "application/x-www-form-urlencoded",
         "Authorization": "Bearer " + req.oidc.accessToken.access_token,
