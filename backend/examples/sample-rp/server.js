@@ -114,7 +114,7 @@ app.post("/reset", requiresAuth(), async (req, res, next) => {
   try {
     const resetAPIURL =  process.env.KEYCLOAK_URL + "/realms/" + process.env.KEYCLOAK_REALM + "/userinfo-replacement/login" + "?redirect_uri=" + encodeURIComponent(process.env.BASE_URL + "/reset") + "&scope=openid&response_type=code"
 
-    const postRes = await axios({
+    const { headers } = await axios({
       method: 'post',
       url: resetAPIURL,
       headers: {
@@ -130,7 +130,7 @@ app.post("/reset", requiresAuth(), async (req, res, next) => {
       }
     });
     
-    res.redirect(postRes.headers['location'])
+    res.redirect(headers['location'])
   } catch (error) {
     next(error)
   }
