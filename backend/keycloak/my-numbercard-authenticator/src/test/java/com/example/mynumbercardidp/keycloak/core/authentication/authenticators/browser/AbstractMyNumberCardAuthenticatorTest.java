@@ -14,7 +14,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+import org.junit.jupiter.api.AfterEach;
+
 public class AbstractMyNumberCardAuthenticatorTest {
+    private AutoCloseable closeable;
 
     // 抽象クラステストの為、ダミーの実装クラスを作成
     public class ConcreteImpl extends AbstractMyNumberCardAuthenticator {}
@@ -33,7 +36,12 @@ public class AbstractMyNumberCardAuthenticatorTest {
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.openMocks(this);
+        closeable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        closeable.close();
     }
 
     @Test

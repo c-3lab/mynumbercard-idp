@@ -3,18 +3,19 @@ package com.example.mynumbercardidp.keycloak.authentication.authenticators.brows
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.models.AuthenticatorConfigModel;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+import static org.mockito.Mockito.doReturn;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class SpiConfigPropertyTest {
+    private AutoCloseable closeable;
 
     @Mock
     AuthenticationFlowContext context;
@@ -23,7 +24,7 @@ public class SpiConfigPropertyTest {
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.openMocks(this);
+        closeable = MockitoAnnotations.openMocks(this);
         Map<String, String> config = Map.of(
             "my-num-cd-auth.platform-class", "PlatformApiClientClassFqdn",
             "NAME", "my-num-cd-auth.platform-class",
@@ -32,8 +33,13 @@ public class SpiConfigPropertyTest {
             "TYPE", "String",
             "DEFAULT_VALUE", "com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClient"
         );
-        Mockito.when(context.getAuthenticatorConfig()).thenReturn(authenticatorConfig);
-        Mockito.when(authenticatorConfig.getConfig()).thenReturn(config);
+        doReturn(authenticatorConfig).when(context).getAuthenticatorConfig();
+        doReturn(config).when(authenticatorConfig).getConfig();
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        closeable.close();
     }
 
     @Test

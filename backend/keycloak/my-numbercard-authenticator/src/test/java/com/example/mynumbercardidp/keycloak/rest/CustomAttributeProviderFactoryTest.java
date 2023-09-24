@@ -3,17 +3,22 @@ package com.example.mynumbercardidp.keycloak.rest;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.keycloak.Config.Scope;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 public class CustomAttributeProviderFactoryTest {
+    private AutoCloseable closeable;
 
-    CustomAttributeProviderFactory customAttributeProviderFactory = new CustomAttributeProviderFactory();
+    @InjectMocks
+    CustomAttributeProviderFactory customAttributeProviderFactory;
+    
     @Mock
     KeycloakSession session;
     @Mock
@@ -22,7 +27,12 @@ public class CustomAttributeProviderFactoryTest {
     KeycloakSessionFactory factory;
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.openMocks(this);
+        closeable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        closeable.close();
     }
 
     @Test
