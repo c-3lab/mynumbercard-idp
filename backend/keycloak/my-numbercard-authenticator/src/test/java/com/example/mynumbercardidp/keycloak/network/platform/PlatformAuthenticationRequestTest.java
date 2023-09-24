@@ -8,7 +8,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Field;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PlatformAuthenticationRequestTest {
     private PlatformAuthenticationRequest platformAuthenticationRequest = new PlatformAuthenticationRequest("sender");

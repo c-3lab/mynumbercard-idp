@@ -1,7 +1,7 @@
 package com.example.mynumbercardidp.keycloak.core.network.platform;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -53,7 +53,7 @@ public class AbstractPlatformApiClientTest {
 
     private MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
         formData.putSingle("mode", "login");

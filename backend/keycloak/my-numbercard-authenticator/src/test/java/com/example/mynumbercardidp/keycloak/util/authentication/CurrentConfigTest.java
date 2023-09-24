@@ -1,7 +1,7 @@
 package com.example.mynumbercardidp.keycloak.util.authentication;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.models.AuthenticatorConfigModel;
 import org.mockito.Mock;
@@ -22,7 +22,7 @@ public class CurrentConfigTest {
     @Mock
     AuthenticatorConfigModel authenticatorConfig;
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
         Map<String, String> config = Map.of(

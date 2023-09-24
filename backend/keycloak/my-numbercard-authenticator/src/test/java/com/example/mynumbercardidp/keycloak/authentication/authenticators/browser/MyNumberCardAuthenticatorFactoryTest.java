@@ -1,7 +1,7 @@
 package com.example.mynumbercardidp.keycloak.authentication.authenticators.browser;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.keycloak.Config.Scope;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
@@ -22,7 +22,7 @@ public class MyNumberCardAuthenticatorFactoryTest {
     Scope config;
     @Mock
     KeycloakSessionFactory factory;
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
     }
