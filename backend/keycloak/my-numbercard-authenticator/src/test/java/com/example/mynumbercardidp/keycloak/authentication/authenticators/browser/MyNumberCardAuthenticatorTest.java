@@ -1,7 +1,7 @@
 package com.example.mynumbercardidp.keycloak.authentication.authenticators.browser;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.FlowStatus;
 import org.keycloak.forms.login.LoginFormsProvider;
@@ -54,7 +54,7 @@ public class MyNumberCardAuthenticatorTest {
     @InjectMocks
     MyNumberCardAuthenticator myNumberCardAuthenticator;
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
         uri = URI.create("https://9e56-118-238-7-66.ngrok-free.app/realms/OIdp/login-actions/authenticate?session_code=b3APQO3L41gM9yX8p8ovcA2SqwWJ8prkVi9ZIdKnlhI&execution=19ca82cd-d3ab-44ab-8732-ac3af3656c6a&client_id=sample-client&tab_id=n2zdEv2oWSQ&auth_session_id=df4fafea-fc51-4037-999e-2546c66ff913");

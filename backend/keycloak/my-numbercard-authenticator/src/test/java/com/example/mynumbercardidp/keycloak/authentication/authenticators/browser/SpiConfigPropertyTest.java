@@ -1,6 +1,5 @@
 package com.example.mynumbercardidp.keycloak.authentication.authenticators.browser;
 
-import org.junit.Test;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.models.AuthenticatorConfigModel;
 import org.mockito.Mock;
@@ -12,7 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Map;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SpiConfigPropertyTest {
 
@@ -21,7 +21,7 @@ public class SpiConfigPropertyTest {
     @Mock
     AuthenticatorConfigModel authenticatorConfig;
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
         Map<String, String> config = Map.of(

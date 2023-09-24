@@ -2,7 +2,7 @@ package com.example.mynumbercardidp.keycloak.authentication.application.procedur
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ActionTypeTest {
 

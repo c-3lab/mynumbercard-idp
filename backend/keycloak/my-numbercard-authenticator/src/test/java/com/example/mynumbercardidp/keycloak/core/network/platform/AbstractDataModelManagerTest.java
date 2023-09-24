@@ -5,8 +5,8 @@ import com.example.mynumbercardidp.keycloak.network.platform.PlatformAuthenticat
 
 import org.apache.http.client.methods.CloseableHttpResponse;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -51,7 +51,7 @@ public class AbstractDataModelManagerTest {
     @Mock
     PlatformAuthenticationResponseStructure platformAuthenticationResponseStructure;
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
 

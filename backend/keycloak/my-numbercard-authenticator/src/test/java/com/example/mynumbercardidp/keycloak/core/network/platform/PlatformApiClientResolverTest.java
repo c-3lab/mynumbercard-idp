@@ -1,7 +1,7 @@
 package com.example.mynumbercardidp.keycloak.core.network.platform;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.http.HttpRequest;
 import org.mockito.Mock;
@@ -21,7 +21,7 @@ public class PlatformApiClientResolverTest {
     @Mock
     HttpRequest httpRequest;
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
         MultivaluedMap<String, String> decodedParams = new MultivaluedHashMap<>();

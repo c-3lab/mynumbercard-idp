@@ -1,7 +1,7 @@
 package com.example.mynumbercardidp.keycloak.core.authentication.authenticators.browser;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
@@ -31,7 +31,7 @@ public class AbstractMyNumberCardAuthenticatorTest {
     @Mock
     UserModel user;
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
     }
