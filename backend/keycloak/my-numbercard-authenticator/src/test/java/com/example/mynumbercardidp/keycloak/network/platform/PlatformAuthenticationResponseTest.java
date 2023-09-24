@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.Field;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.keycloak.models.UserModel;
@@ -14,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 
 public class PlatformAuthenticationResponseTest {
 
+    private AutoCloseable closeable;
     PlatformAuthenticationResponse platformAuthenticationResponse = new PlatformAuthenticationResponse();
     private PlatformAuthenticationResponse.IdentityInfo identityInfo = new PlatformAuthenticationResponse.IdentityInfo();
     @Mock
@@ -21,7 +23,12 @@ public class PlatformAuthenticationResponseTest {
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.openMocks(this);
+        closeable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        closeable.close();
     }
 
     @Test

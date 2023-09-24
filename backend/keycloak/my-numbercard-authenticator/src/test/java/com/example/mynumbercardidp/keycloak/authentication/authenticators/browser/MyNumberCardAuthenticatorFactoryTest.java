@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.keycloak.Config.Scope;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -13,18 +14,29 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-public class MyNumberCardAuthenticatorFactoryTest {
+import org.junit.jupiter.api.AfterEach;
 
-    MyNumberCardAuthenticatorFactory myNumberCardAuthenticatorFactory = new MyNumberCardAuthenticatorFactory();
+public class MyNumberCardAuthenticatorFactoryTest {
+    private AutoCloseable closeable;
+
+    @InjectMocks
+    MyNumberCardAuthenticatorFactory myNumberCardAuthenticatorFactory;
+
     @Mock
     KeycloakSession session;
     @Mock
     Scope config;
     @Mock
     KeycloakSessionFactory factory;
+
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.openMocks(this);
+        closeable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        closeable.close();
     }
 
     @Test
@@ -60,7 +72,7 @@ public class MyNumberCardAuthenticatorFactoryTest {
 
     @Test
     public void testGetDisplayType() {
-       assertNotNull(myNumberCardAuthenticatorFactory.getDisplayType());
+        assertNotNull(myNumberCardAuthenticatorFactory.getDisplayType());
     }
 
     @Test
