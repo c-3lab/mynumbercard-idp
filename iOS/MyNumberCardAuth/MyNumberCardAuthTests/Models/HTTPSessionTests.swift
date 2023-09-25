@@ -359,9 +359,7 @@ final class HTTPSessionTests: XCTestCase {
         helper.doTest()
 
         // expectation達が条件を満たすのを待つ
-        var expectations = helper.expectations
-        expectations.append(expectation)
-        wait(for: expectations, timeout: 0.3)
+        waitForExpectations(timeout: 0.3)
         // controllerの中身のAssertion
         XCTAssertEqual(openURLString, "https://example.com/redirect")
     }
