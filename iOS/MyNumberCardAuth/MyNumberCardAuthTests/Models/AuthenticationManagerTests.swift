@@ -292,16 +292,14 @@ final class AuthenticationManagerTests: XCTestCase {
                 let httpSessionMock = HTTPSessionMock()
                 let httpSessionOpenRedirectURLOnSafariExpectation = expectation(description: "httpSession.openRedirectURLOnSafari")
                 httpSessionOpenRedirectURLOnSafariExpectation.isInverted = true
-                httpSessionMock.openRedirectURLOnSafariHandler = { request in
-                    XCTAssertEqual(request.url?.absoluteString, "https://example.com/realms/1")
+                httpSessionMock.openRedirectURLOnSafariHandler = { _ in
                     httpSessionOpenRedirectURLOnSafariExpectation.fulfill()
                 }
                 let urlSessionMock = URLSessionMock()
                 let urlSessionDataExpectation = expectation(description: "urlSession.data")
                 urlSessionDataExpectation.isInverted = true
                 let dataHandler: ((URLRequest, URLSessionTaskDelegate?) async throws -> (Data, URLResponse))? = {
-                    request, _ in
-                    XCTAssertEqual(request.url?.absoluteString, "https://example.com/realms/1/protocol/openid-connect/certs")
+                    _, _ in
                     urlSessionDataExpectation.fulfill()
                     return (validCerts ? Self.jwkSet : Data(),
                             URLResponse())
