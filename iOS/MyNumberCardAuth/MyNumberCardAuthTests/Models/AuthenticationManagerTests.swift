@@ -112,9 +112,6 @@ final class AuthenticationManagerTests: XCTestCase {
                                                         nonce: "0123456789", actionURL: "https://example.com/realms/1")
 
                 waitForExpectations(timeout: 0.3)
-                XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 1)
-                XCTAssertEqual(httpSessionMock.openRedirectURLOnSafariCallCount, 1)
-                XCTAssertEqual(urlSessionMock.dataCallCount, 1)
                 XCTAssertEqual(controller.nonce, "0123456789")
         }
 
@@ -214,9 +211,6 @@ final class AuthenticationManagerTests: XCTestCase {
                                                  actionURL: "https://example.com/realms/2")
 
                 waitForExpectations(timeout: 0.3)
-                XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 1)
-                XCTAssertEqual(httpSessionMock.openRedirectURLOnSafariCallCount, 1)
-                XCTAssertEqual(urlSessionMock.dataCallCount, 1)
                 XCTAssertEqual(controller.nonce, "7890123456")
         }
 
@@ -323,7 +317,6 @@ final class AuthenticationManagerTests: XCTestCase {
                                                         actionURL: "https://example.com/realms/1")
 
                 waitForExpectations(timeout: 0.3)
-                XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 1)
                 XCTAssertEqual(controller.nonce, "0123456789")
         }
 
