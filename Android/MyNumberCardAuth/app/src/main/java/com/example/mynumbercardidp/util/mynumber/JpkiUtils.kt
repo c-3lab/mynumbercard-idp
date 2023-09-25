@@ -9,44 +9,18 @@ class JpkiUtils(private val reader: NfcReader) {
         private const val headerSize = 4 //データサイズなどの情報部が格納されている先頭部のバイト数
     }
 
-    fun lookupAuthPin(): Int {
-        reader.selectEF("0018".hexToByteArray())
+    fun lookupPin(efid: String): Int {
+        reader.selectEF(efid.hexToByteArray())
         return reader.lookupPin()
     }
 
-    fun verifyAuthPin(pin: String): Boolean {
-        reader.selectEF("0018".hexToByteArray())
+    fun verifyPin(efid: String, pin: String): Boolean {
+        reader.selectEF(efid.hexToByteArray())
         return reader.verify(pin)
     }
 
-    fun lookupSignPin(): Int {
-        reader.selectEF("001B".hexToByteArray())
-        return reader.lookupPin()
-    }
-
-    fun verifySignPin(pin: String): Boolean {
-        reader.selectEF("001B".hexToByteArray())
-        return reader.verify(pin)
-    }
-
-    fun readCertificateUserVerification(): ByteArray {
-        return readCertificate("000A".hexToByteArray())
-    }
-
-    fun readCertificateUserVerificationCA(): ByteArray {
-        return readCertificate("000B".hexToByteArray())
-    }
-
-    fun readCertificateSign(): ByteArray {
-        return readCertificate("0001".hexToByteArray())
-    }
-
-    fun readCertificateSignCA(): ByteArray {
-        return readCertificate("0001".hexToByteArray())
-    }
-
-    private fun readCertificate(efid: ByteArray): ByteArray {
-        reader.selectEF(efid)
+    fun readCertificate(efid: String): ByteArray {
+        reader.selectEF(efid.hexToByteArray())
 
         // 読み込むべきサイズを取得するため、先頭4バイト取得
         val header = reader.readBinary(headerSize)
@@ -72,13 +46,8 @@ class JpkiUtils(private val reader: NfcReader) {
         return data
     }
 
-    fun authSignature(nonce: ByteArray): ByteArray {
-        reader.selectEF("0017".hexToByteArray())
-        return reader.signature(nonce)
-    }
-
-    fun signCertSignature(nonce: ByteArray): ByteArray {
-        reader.selectEF("001A".hexToByteArray())
-        return reader.signature(nonce)
+    fun computeSignature(efid: String, commandArg: String, nonce: ByteArray): ByteArray {
+        reader.selectEF(efid.hexToByteArray())
+        return reader.computeSignature(commandArg.toUShort(16), nonce)
     }
 }

@@ -20,6 +20,17 @@ import com.example.mynumbercardidp.ui.theme.MyNumberCardAuthTheme
 import com.example.mynumbercardidp.ui.viewmodel.StateViewModel
 import java.util.Properties
 
+object ApduCommands {
+    var jpkiAp: String = ""
+    var userAuthenticationPin: String = ""
+    var digitalSignaturePin: String = ""
+    var computeDigitalSignature: String = ""
+    var userAuthenticationPrivate: String = ""
+    var digitalSignaturePrivate: String = ""
+    var userAuthenticationCertificate: String = ""
+    var digitalSignatureCertificate: String = ""
+}
+
 class MainActivity : ComponentActivity() {
     var nfcAdapter: NfcAdapter? = null
     private val logTag = "MainActivity"
@@ -35,6 +46,8 @@ class MainActivity : ComponentActivity() {
         Log.i(logTag, "screenMode: $screenMode")
         var externalUrls = getExternalUrls()
         Log.i(logTag, "externalUrls: $externalUrls")
+        loadApduCommands()
+        Log.i(logTag, "apduCommands: $ApduCommands")
 
         setContent {
             MyNumberCardAuthTheme {
@@ -96,5 +109,21 @@ class MainActivity : ComponentActivity() {
             properties.getProperty("protectionPolicyUrl"),
             properties.getProperty("termsOfUseUrl")
         )
+    }
+
+    private fun loadApduCommands(){
+        val properties = Properties()
+        val inputStream = assets.open("apdu_commands.properties")
+        properties.load(inputStream)
+        inputStream.close()
+
+        ApduCommands.jpkiAp = properties.getProperty("jpkiAp")
+        ApduCommands.userAuthenticationPin = properties.getProperty("userAuthenticationPin")
+        ApduCommands.digitalSignaturePin = properties.getProperty("digitalSignaturePin")
+        ApduCommands.computeDigitalSignature = properties.getProperty("computeDigitalSignature")
+        ApduCommands.userAuthenticationPrivate = properties.getProperty("userAuthenticationPrivate")
+        ApduCommands.digitalSignaturePrivate = properties.getProperty("digitalSignaturePrivate")
+        ApduCommands.userAuthenticationCertificate = properties.getProperty("userAuthenticationCertificate")
+        ApduCommands.digitalSignatureCertificate = properties.getProperty("digitalSignatureCertificate")
     }
 }
