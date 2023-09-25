@@ -22,8 +22,6 @@
 		9BCF201B2AB9C031008EEF8D /* AuthenticationManagerCerts.json in Resources */ = {isa = PBXBuildFile; fileRef = 9BCF201A2AB9C031008EEF8D /* AuthenticationManagerCerts.json */; };
 		9BCF201E2ABA36BA008EEF8D /* AuthenticationManagerCertificate.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9BCF201D2ABA36BA008EEF8D /* AuthenticationManagerCertificate.txt */; };
 		9F1F5DD42AADB6A3002FCD23 /* MyNumberCardAuthAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1F5DD32AADB6A3002FCD23 /* MyNumberCardAuthAppTests.swift */; };
-		9F1F5DFB2AADBBF3002FCD23 /* MyNumberCardAuthUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1F5DF02AADBB55002FCD23 /* MyNumberCardAuthUITests.swift */; };
-		9F1F5DFC2AADBBF7002FCD23 /* MyNumberCardAuthUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1F5DF22AADBB55002FCD23 /* MyNumberCardAuthUITestsLaunchTests.swift */; };
 		9F1F5E002AADCDC4002FCD23 /* AuthenticationControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1F5DFF2AADCDC4002FCD23 /* AuthenticationControllerTests.swift */; };
 		9F3D97972A5BCE2400FAF526 /* AppExplanationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3D97962A5BCE2400FAF526 /* AppExplanationView.swift */; };
 		9F41DCD12A550C7F0078FD7C /* AuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F41DCD02A550C7F0078FD7C /* AuthenticationController.swift */; };
@@ -100,9 +98,6 @@
 		9F1F5DD12AADB6A3002FCD23 /* MyNumberCardAuthTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyNumberCardAuthTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F1F5DD32AADB6A3002FCD23 /* MyNumberCardAuthAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNumberCardAuthAppTests.swift; sourceTree = "<group>"; };
 		9F1F5DDA2AADB70E002FCD23 /* MyNumberCardAuth.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = MyNumberCardAuth.xctestplan; sourceTree = "<group>"; };
-		9F1F5DEE2AADBB55002FCD23 /* MyNumberCardAuthUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyNumberCardAuthUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		9F1F5DF02AADBB55002FCD23 /* MyNumberCardAuthUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNumberCardAuthUITests.swift; sourceTree = "<group>"; };
-		9F1F5DF22AADBB55002FCD23 /* MyNumberCardAuthUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNumberCardAuthUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		9F1F5DFF2AADCDC4002FCD23 /* AuthenticationControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationControllerTests.swift; sourceTree = "<group>"; };
 		9F3D97962A5BCE2400FAF526 /* AppExplanationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppExplanationView.swift; sourceTree = "<group>"; };
 		9F41DCD02A550C7F0078FD7C /* AuthenticationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationController.swift; sourceTree = "<group>"; };
@@ -178,15 +173,6 @@
 			path = MyNumberCardAuthTests;
 			sourceTree = "<group>";
 		};
-		9F1F5DEF2AADBB55002FCD23 /* MyNumberCardAuthUITests */ = {
-			isa = PBXGroup;
-			children = (
-				9F1F5DF02AADBB55002FCD23 /* MyNumberCardAuthUITests.swift */,
-				9F1F5DF22AADBB55002FCD23 /* MyNumberCardAuthUITestsLaunchTests.swift */,
-			);
-			path = MyNumberCardAuthUITests;
-			sourceTree = "<group>";
-		};
 		9F1F5DFE2AADCD80002FCD23 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -250,11 +236,9 @@
 				9F1F5DDA2AADB70E002FCD23 /* MyNumberCardAuth.xctestplan */,
 				AD80228B29F0B402009EA409 /* MyNumberCardAuth */,
 				9F1F5DD22AADB6A3002FCD23 /* MyNumberCardAuthTests */,
-				9F1F5DEF2AADBB55002FCD23 /* MyNumberCardAuthUITests */,
 				AD80229D29F0B666009EA409 /* Frameworks */,
 				9FF1B6F72AAD9EB100793DD6 /* MyNumberCardAuth.app */,
 				9F1F5DD12AADB6A3002FCD23 /* MyNumberCardAuthTests.xctest */,
-				9F1F5DEE2AADBB55002FCD23 /* MyNumberCardAuthUITests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -508,8 +492,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9F1F5DFB2AADBBF3002FCD23 /* MyNumberCardAuthUITests.swift in Sources */,
-				9F1F5DFC2AADBBF7002FCD23 /* MyNumberCardAuthUITestsLaunchTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
