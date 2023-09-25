@@ -1,4 +1,5 @@
 <resources>
+    <string name="title">[Android] MyNumberCard Authorization App</string>
     <string name="about_this_app">About this app</string>
     <string name="terms_of_use">Terms Of Service</string>
     <string name="privacy_policy">Privacy Policy</string>
