@@ -54,6 +54,34 @@ final class AuthenticationManagerTests: XCTestCase {
                 let httpSessionOpenRedirectURLOnSafariExpectation = expectation(description: "httpSession.openRedirectURLOnSafari")
                 httpSessionMock.openRedirectURLOnSafariHandler = { request in
                     XCTAssertEqual(request.url?.absoluteString, "https://example.com/realms/1")
+
+                    guard let httpBody = request.httpBody else {
+                        XCTFail()
+                        return
+                    }
+                    guard let formItems = Self.decodeFormItems(from: httpBody) else {
+                        XCTFail()
+                        return
+                    }
+                    switch runMode {
+                    case .Login:
+                        XCTAssertEqual(formItems["mode"], "login")
+                    case .Registration:
+                        XCTAssertEqual(formItems["mode"], "registration")
+                    case .Replacement:
+                        XCTAssertEqual(formItems["mode"], "replacement")
+                    }
+                    switch viewState {
+                    case .UserVerificationView:
+                        XCTAssertNotNil(formItems["encryptedUserAuthenticationCertificate"])
+                    case .SignatureView:
+                        XCTAssertNotNil(formItems["encryptedDigitalSignatureCertificate"])
+                    case .ExplanationView:
+                        break
+                    }
+                    XCTAssertEqual(formItems["applicantData"], "0123456789")
+                    XCTAssertEqual(formItems["sign"], Data([UInt8]("5678".utf8)).base64EncodedString())
+
                     httpSessionOpenRedirectURLOnSafariExpectation.fulfill()
                 }
                 let urlSessionMock = URLSessionMock()
@@ -128,6 +156,34 @@ final class AuthenticationManagerTests: XCTestCase {
                 let httpSessionOpenRedirectURLOnSafariExpectation = expectation(description: "httpSession.openRedirectURLOnSafari")
                 httpSessionMock.openRedirectURLOnSafariHandler = { request in
                     XCTAssertEqual(request.url?.absoluteString, "https://example.com/realms/2")
+
+                    guard let httpBody = request.httpBody else {
+                        XCTFail()
+                        return
+                    }
+                    guard let formItems = Self.decodeFormItems(from: httpBody) else {
+                        XCTFail()
+                        return
+                    }
+                    switch runMode {
+                    case .Login:
+                        XCTAssertEqual(formItems["mode"], "login")
+                    case .Registration:
+                        XCTAssertEqual(formItems["mode"], "registration")
+                    case .Replacement:
+                        XCTAssertEqual(formItems["mode"], "replacement")
+                    }
+                    switch viewState {
+                    case .UserVerificationView:
+                        XCTAssertNotNil(formItems["encryptedUserAuthenticationCertificate"])
+                    case .SignatureView:
+                        XCTAssertNotNil(formItems["encryptedDigitalSignatureCertificate"])
+                    case .ExplanationView:
+                        break
+                    }
+                    XCTAssertEqual(formItems["applicantData"], "7890123456")
+                    XCTAssertEqual(formItems["sign"], Data([UInt8]("0123".utf8)).base64EncodedString())
+
                     httpSessionOpenRedirectURLOnSafariExpectation.fulfill()
                 }
                 let urlSessionMock = URLSessionMock()
@@ -282,6 +338,17 @@ final class AuthenticationManagerTests: XCTestCase {
                 }
             }
         }
+    }
+
+    private static func decodeFormItems(from encodedData: Data) -> [String: String]? {
+        guard let string = String(data: encodedData, encoding: .utf8),
+              let components = URLComponents(string: "?" + string),
+              let queryItems = components.queryItems
+        else {
+            return nil
+        }
+
+        return Dictionary(uniqueKeysWithValues: queryItems.map { ($0.name, $0.value ?? "") })
     }
 
     private static func loadDataFromBundle(forResource resource: String,
