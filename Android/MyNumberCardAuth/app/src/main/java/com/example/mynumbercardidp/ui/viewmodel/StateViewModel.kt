@@ -2,7 +2,6 @@ package com.example.mynumbercardidp.ui.viewmodel
 
 import android.nfc.TagLostException
 import android.os.Build
-import java.util.Base64
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
@@ -28,6 +27,15 @@ import com.example.mynumbercardidp.util.hexToByteArray
 import com.example.mynumbercardidp.util.mynumber.APDUException
 import com.example.mynumbercardidp.util.mynumber.NfcReader
 import com.example.mynumbercardidp.util.toHexString
+import com.nimbusds.jose.EncryptionMethod
+import com.nimbusds.jose.JWEAlgorithm
+import com.nimbusds.jose.JWEHeader
+import com.nimbusds.jose.crypto.RSAEncrypter
+import com.nimbusds.jose.jwk.JWKMatcher
+import com.nimbusds.jose.jwk.JWKSelector
+import com.nimbusds.jose.jwk.JWKSet
+import com.nimbusds.jwt.EncryptedJWT
+import com.nimbusds.jwt.JWTClaimsSet
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,9 +43,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+import java.net.URL
 import java.net.URLEncoder
 import java.nio.charset.Charset
 import java.security.MessageDigest
+import java.util.Base64
+import java.util.Date
+
 
 class StateViewModel(
     private val keycloakRepository: KeycloakRepository,
@@ -155,29 +167,36 @@ class StateViewModel(
     @RequiresApi(Build.VERSION_CODES.O)
     fun myNumberCardAuth(reader: NfcReader, inputPin: String) {
         try {
-            var readCertResult = readCertificate(reader, inputPin)
-            if (readCertResult.status != NfcState.Success){
-                setState(KeycloakState.Error, readCertResult.status)
+            var readCertificateResult = readCertificate(reader, inputPin)
+            if (readCertificateResult.status != NfcState.Success){
+                setState(KeycloakState.Error, readCertificateResult.status)
                 updateProgressViewState(false)
                 return
             }
 
-            var signCertResult = computeSignature(reader, inputPin)
-            if (signCertResult.status != NfcState.Success){
-                setState(KeycloakState.Error, signCertResult.status)
+            var signCertificateResult = computeSignature(reader, inputPin)
+            if (signCertificateResult.status != NfcState.Success){
+                setState(KeycloakState.Error, signCertificateResult.status)
                 updateProgressViewState(false)
                 return
             }
 
             val url = _uiState.value.uriParameters?.action_url!!
-            val certificate = Base64.getEncoder().encodeToString(readCertResult?.retData)
-            val sign = Base64.getEncoder().encodeToString(signCertResult?.retData)
             val mode = URLEncoder.encode(_uiState.value.uriParameters?.mode!!, "UTF-8")
-            val applicantData = URLEncoder.encode(
-                MessageDigest.getInstance("SHA-256").digest(_uiState.value.uriParameters?.nonce!!.toByteArray()).toHexString(),
-                "UTF-8")
 
-            authenticate(url, mode, certificate, applicantData, sign)
+            // 証明書データ(DER形式)をPEM形式に変換
+            val certificate = readCertificateResult?.retData!!
+            val base64Certificate = Base64.getEncoder().encodeToString(certificate)
+            val pemCertificate = "-----BEGIN CERTIFICATE-----\n$base64Certificate\n-----END CERTIFICATE-----"
+            // Keycloakから渡されたactionUrlからjwksの配置URLを生成
+            val regex = "^https?://[^/]+/realms/[^/]+".toRegex()
+            val jwksUrl = regex.find(url)?.value + "/protocol/openid-connect/certs"
+            val jweCertificate = encrypt(pemCertificate, jwksUrl)
+
+            val applicantData = _uiState.value.uriParameters?.nonce!!
+            val sign = Base64.getEncoder().encodeToString(signCertificateResult?.retData)
+
+            authenticate(url, mode, jweCertificate, applicantData, sign)
 
         } catch (e: APDUException) {
             Log.e(logTag, "APDUException occurred. cause: ${e.message}")
@@ -235,6 +254,32 @@ class StateViewModel(
         viewModelScope.launch {
             _uiState.update { _uiState.value.copy(externalUrls = externalUrls) }
         }
+    }
+
+    private fun encrypt(content: String, jwksUrl: String): String {
+        val now = Date()
+
+        // JWT作成
+        val jwtClaims = JWTClaimsSet.Builder()
+            .claim("claim", content)
+            .expirationTime(Date(now.time + 1000 * 60 * 5)) // expires in 5 minutes
+            .build()
+        val header = JWEHeader(
+            JWEAlgorithm.RSA_OAEP_256,
+            EncryptionMethod.A128CBC_HS256
+        )
+        val jwt = EncryptedJWT(header, jwtClaims)
+
+        // 公開鍵を取得
+        val jwkSet = JWKSet.load(URL(jwksUrl))
+        val matches = JWKSelector(JWKMatcher.forJWEHeader(header)).select(jwkSet)
+        val publicKey = matches[0].toRSAKey()
+        val encrypter = RSAEncrypter(publicKey)
+
+        // 暗号化に使用した共通鍵を、公開鍵を用いて暗号化
+        jwt.encrypt(encrypter)
+
+        return jwt.serialize()
     }
 
     private fun readCertificate(reader: NfcReader, inputPin: String): StateViewModel.NfcResult {
@@ -304,8 +349,8 @@ class StateViewModel(
         }
 
         // 署名対象のデータをハッシュ化
-        val digest = MessageDigest.getInstance("SHA-256").digest(_uiState.value.uriParameters?.nonce!!.toByteArray(Charsets.UTF_8))
-        Log.d(logTag, "digest: ${digest.toHexString()}")
+        val digest = MessageDigest.getInstance("SHA-256").digest(_uiState.value.uriParameters?.nonce!!.toByteArray(Charset.defaultCharset()))
+        Log.d(logTag, "nonceHash: ${digest.toHexString()}")
 
         //RSA署名のハッシュプレフィックス
         val hashPrefix = Rfc3447HashPrefix.SHA256.toString()
