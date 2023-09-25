@@ -87,6 +87,7 @@ final class AuthenticationManagerTests: XCTestCase {
                 XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 1)
                 XCTAssertEqual(httpSessionMock.openRedirectURLOnSafariCallCount, 1)
                 XCTAssertEqual(urlSessionMock.dataCallCount, 1)
+                XCTAssertEqual(controller.nonce, "0123456789")
         }
 
         for mode in Mode.allCases {
@@ -160,6 +161,7 @@ final class AuthenticationManagerTests: XCTestCase {
                 XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 1)
                 XCTAssertEqual(httpSessionMock.openRedirectURLOnSafariCallCount, 1)
                 XCTAssertEqual(urlSessionMock.dataCallCount, 1)
+                XCTAssertEqual(controller.nonce, "7890123456")
         }
 
         for mode in Mode.allCases {
@@ -268,6 +270,7 @@ final class AuthenticationManagerTests: XCTestCase {
 
                 waitForExpectations(timeout: 0.3)
                 XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 1)
+                XCTAssertEqual(controller.nonce, "0123456789")
         }
 
         for mode in Mode.allCases {
