@@ -38,5 +38,19 @@
 		<string>D3921000310001010100</string>
 		<string>D3921000310001010401</string>
 	</array>
+	<key>computeDigitalSignature</key>
+	<string>0080</string>
+	<key>digitalSignatureCertificate</key>
+	<string>0001</string>
+	<key>digitalSignaturePin</key>
+	<string>001B</string>
+	<key>digitalSignaturePrivate</key>
+	<string>001A</string>
+	<key>userAuthenticationCertificate</key>
+	<string>000A</string>
+	<key>userAuthenticationPin</key>
+	<string>0018</string>
+	<key>userAuthenticationPrivate</key>
+	<string>0017</string>
 </dict>
 </plist>
