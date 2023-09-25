@@ -16,8 +16,8 @@ final class AuthenticationManagerTests: XCTestCase {
         AuthenticationManagerTests.loadStringFromBundle(forResource: "AuthenticationManagerCertificate",
                                                         withExtension: "txt").flatMap { Data(base64URLEncoded: $0) }
 
-    private static let certs: Data! =
-        AuthenticationManagerTests.loadDataFromBundle(forResource: "AuthenticationManagerCerts", withExtension: "json")
+    private static let jwkSet: Data! =
+        AuthenticationManagerTests.loadDataFromBundle(forResource: "AuthenticationManagerJwkSet", withExtension: "json")
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -62,7 +62,7 @@ final class AuthenticationManagerTests: XCTestCase {
                     request, _ in
                     XCTAssertEqual(request.url?.absoluteString, "https://example.com/realms/1/protocol/openid-connect/certs")
                     urlSessionDataExpectation.fulfill()
-                    return (validCerts ? Self.certs : Data(),
+                    return (validCerts ? Self.jwkSet : Data(),
                             URLResponse())
                 }
                 urlSessionMock.dataHandler = dataHandler
@@ -136,7 +136,7 @@ final class AuthenticationManagerTests: XCTestCase {
                     request, _ in
                     XCTAssertEqual(request.url?.absoluteString, "https://example.com/realms/2/protocol/openid-connect/certs")
                     urlSessionDataExpectation.fulfill()
-                    return (validCerts ? Self.certs : Data(),
+                    return (validCerts ? Self.jwkSet : Data(),
                             URLResponse())
                 }
                 urlSessionMock.dataHandler = dataHandler
@@ -247,7 +247,7 @@ final class AuthenticationManagerTests: XCTestCase {
                     request, _ in
                     XCTAssertEqual(request.url?.absoluteString, "https://example.com/realms/1/protocol/openid-connect/certs")
                     urlSessionDataExpectation.fulfill()
-                    return (validCerts ? Self.certs : Data(),
+                    return (validCerts ? Self.jwkSet : Data(),
                             URLResponse())
                 }
                 urlSessionMock.dataHandler = dataHandler
