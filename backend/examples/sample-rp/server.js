@@ -72,7 +72,7 @@ app.get("/", (req, res) => {
   res.render("index", { user: getUser(req) })
 });
 
-app.get("/reset", requiresAuth(), async (req, res, next) => {
+app.get("/refresh", requiresAuth(), async (req, res, next) => {
   try {
     await req.oidc.accessToken.refresh()
     res.redirect(303, "/")
@@ -110,13 +110,13 @@ app.post("/assign", requiresAuth(), async (req, res, next) => {
   }
 });
 
-app.post("/reset", requiresAuth(), async (req, res, next) => {
+app.post("/replace", requiresAuth(), async (req, res, next) => {
   try {
-    const resetAPIURL =  process.env.KEYCLOAK_URL + "/realms/" + process.env.KEYCLOAK_REALM + "/userinfo-replacement/login" + "?redirect_uri=" + encodeURIComponent(process.env.BASE_URL + "/reset") + "&scope=openid&response_type=code"
+    const replaceAPIURL =  process.env.KEYCLOAK_URL + "/realms/" + process.env.KEYCLOAK_REALM + "/userinfo-replacement/login" + "?redirect_uri=" + encodeURIComponent(process.env.BASE_URL + "/refresh") + "&scope=openid&response_type=code"
 
-    const postRes = await axios({
+    const { headers } = await axios({
       method: 'post',
-      url: resetAPIURL,
+      url: replaceAPIURL,
       headers: {
         "Content-type": "application/x-www-form-urlencoded",
         "Authorization": "Bearer " + req.oidc.accessToken.access_token,
@@ -129,8 +129,8 @@ app.post("/reset", requiresAuth(), async (req, res, next) => {
         return status >= 200 && status <= 302
       }
     });
-    
-    res.redirect(postRes.headers['location'])
+
+    res.redirect(headers['location'])
   } catch (error) {
     next(error)
   }
