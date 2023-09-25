@@ -311,6 +311,11 @@ final class HTTPSessionTests: XCTestCase {
             XCTAssertEqual(controller.viewState, .SignatureView)
             XCTAssertEqual(controller.runMode, .Replacement)
             XCTAssertTrue(controller.isAlert)
+            if xActionUrlString == nil {
+                XCTAssertEqual(controller.controllerForSignature.actionURL, "")
+            } else {
+                XCTAssertEqual(controller.controllerForSignature.actionURL, xActionUrlString)
+            }
             XCTAssertEqual(controller.messageTitle,
                            String(localized: "Reloading My Number Card", comment: "マイナンバーカードの再読み込み"))
             XCTAssertEqual(controller.messageString,
