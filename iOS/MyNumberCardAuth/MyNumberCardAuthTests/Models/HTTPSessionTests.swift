@@ -23,7 +23,7 @@ final class HTTPSessionTests: XCTestCase {
         let controller = AuthenticationControllerMock()
         let error: Error? = NSError(domain: "NSURLErrorDomain", code: NSURLErrorCannotFindHost)
         guard let helper = helperForTestingOpenRedirectURLOnSafari(using: controller,
-                                                                   urlString: "https://cannotfindhost.co.jp",
+                                                                   urlString: "https://cannotfindhost.example.co.jp",
                                                                    responseStatusCode: nil,
                                                                    responseHeaderFields: nil,
                                                                    responseError: error)
