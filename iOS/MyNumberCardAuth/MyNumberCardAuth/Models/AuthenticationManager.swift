@@ -23,15 +23,15 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
     public func authenticateForUserVerification(pin: String, nonce: String, actionURL: String) {
         self.actionURL = actionURL
         self.authenticationController.nonce = nonce
-        self.individualNumberCardExecuteType = .computeDigitalSignatureForUserAuthentication
-        self.computeDigitalSignatureForUserVerification(userAuthenticationPIN: pin, dataToSign: nonce)
+        individualNumberCardSignatureType = .userAuthentication
+        computeDigitalSignatureForUserVerification(userAuthenticationPIN: pin, dataToSign: nonce)
     }
     
     public func authenticateForSignature(pin: String, nonce: String, actionURL: String) {
         self.actionURL = actionURL
         self.authenticationController.nonce = nonce
-        self.individualNumberCardExecuteType = .computeDigitalSignatureForSignature
-        self.computeDigitalCertificateForSignature(signaturePIN: pin, dataToSign: nonce)
+        individualNumberCardSignatureType = .digitalSignature
+        computeDigitalCertificateForSignature(signaturePIN: pin, dataToSign: nonce)
     }
     
     public func individualNumberReaderSession(didRead individualNumberCardData: TRETJapanNFCReader_MIFARE_IndividualNumber.IndividualNumberCardData) {
@@ -41,7 +41,11 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
                let digitalCertificate = individualNumberCardData.userAuthenticationCertificate,
                let actionURL = self.actionURL
             {
-                self.verifySignature(digitalSignature: digitalSignature, digitalCertificate: digitalCertificate, actionURL: actionURL)
+                let digitalSignatureBase64URLEncoded = encodingBase64URL(from: digitalSignature)!
+                let base64DigitalCertificate = Data(digitalCertificate).base64EncodedString()
+                let pemDigitalCertificate = "-----BEGIN CERTIFICATE-----\\n" + base64DigitalCertificate + "\\n-----END CERTIFICATE-----"
+
+                sendVerifySignatureRequest(digitalSignature: digitalSignatureBase64URLEncoded, digitalCertificate: pemDigitalCertificate, actionURL: actionURL)
             }
             break
         case .digitalSignature:
@@ -65,30 +69,22 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
         
     }
     
-    private func conputeDigitalSignatureForUserVerification(userAuthenticationPIN: String, dataToSign: String) {
-        self.individualNumberCardSignatureType = .userAuthentication
-
-        let data = dataToSign.data(using: .utf8)
-        let nonceStr = (SHA256.hash(data: data!).description)
-        
-        self.authenticationController.nonceHash = String(nonceStr.dropFirst(15))
-
-        // generateDigestInfoメソッドでハッシュ化を行なっているが、keycloakのハッシュ化チェックでは
-        // 未ハッシュ判定となるため、下記でハッシュ化したものを使用する
-        let dataToSignByteArray = [UInt8](self.authenticationController.nonceHash.utf8)
-        self.reader = IndividualNumberReaderExtension(delegate: self)
-        // 以下処理はNFC読み取りが非同期で行われ、完了するとindividualNumberReaderSessionが呼び出される
-        self.reader.computeDigitalSignature(signatureType: self.individualNumberCardSignatureType!, pin: userAuthenticationPIN, dataToSign: dataToSignByteArray)
-    }
-    
-    private func computeDigitalCertificateForSignature(signaturePIN: String, dataToSign: String) {
-        self.individualNumberCardSignatureType = .digitalSignature
-        
-        self.authenticationController.nonce = dataToSign
+    private func computeDigitalSignatureForUserVerification(userAuthenticationPIN: String, dataToSign: String) {
         let dataToSignByteArray = [UInt8](dataToSign.utf8)
         self.reader = IndividualNumberReader(delegate: self)
         // 以下処理はNFC読み取りが非同期で行われ、完了するとindividualNumberReaderSessionが呼び出される
-        self.reader.computeDigitalSignature(signatureType: self.individualNumberCardSignatureType!, pin: signaturePIN, dataToSign: dataToSignByteArray)
+        reader.computeDigitalSignature(signatureType: individualNumberCardSignatureType!,
+                                       pin: userAuthenticationPIN,
+                                       dataToSign: dataToSignByteArray)
+    }
+    
+    private func computeDigitalCertificateForSignature(signaturePIN: String, dataToSign: String) {
+        let dataToSignByteArray = [UInt8](dataToSign.utf8)
+        self.reader = IndividualNumberReader(delegate: self)
+        // 以下処理はNFC読み取りが非同期で行われ、完了するとindividualNumberReaderSessionが呼び出される
+        reader.computeDigitalSignature(signatureType: individualNumberCardSignatureType!,
+                                       pin: signaturePIN,
+                                       dataToSign: dataToSignByteArray)
     }
     
     private func sendVerifySignatureRequest(digitalSignature: String, digitalCertificate: String, actionURL: String) {
