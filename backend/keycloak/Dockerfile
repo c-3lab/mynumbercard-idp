@@ -10,14 +10,20 @@ RUN npm install && \
 # -----
 FROM maven:3.8.6-openjdk-11-slim as spi-build-stage
 
-WORKDIR /opt
-COPY ./x509-relay-authenticator /opt
-COPY --from=js-build-stage /usr/local/src/forge/dist/forge.min.js /opt/src/main/resources/theme/call-native-app/login/resources/js
-COPY --from=js-build-stage /usr/local/src/forge/dist/forge.min.js.map /opt/src/main/resources/theme/call-native-app/login/resources/js
+WORKDIR /opt/my-numbercard-authenticator
+# 依存関係のダウンロード
+ARG MAVEN_CACHE_SETTINGS_PATH=/usr/share/maven/ref/settings-docker.xml
+COPY ./my-numbercard-authenticator/pom.xml .
+RUN mvn -B -f pom.xml -s $MAVEN_CACHE_SETTINGS_PATH dependency:resolve
 
-RUN mvn clean package
+# パッケージの生成
+COPY ./my-numbercard-authenticator .
+COPY --from=js-build-stage /usr/local/src/forge/dist/forge.min.js /opt/my-numbercard-authenticator/src/main/resources/theme/mynumbercard-auth/login/resources/js
+COPY --from=js-build-stage /usr/local/src/forge/dist/forge.min.js.map /opt/my-numbercard-authenticator/src/main/resources/theme/mynumbercard-auth/login/resources/js
+RUN mvn -B -s $MAVEN_CACHE_SETTINGS_PATH clean package
 
 # -----
-FROM quay.io/keycloak/keycloak:21.0.1 as production-stage
+FROM quay.io/keycloak/keycloak:21.0.1 as development-stage
 
-COPY --from=spi-build-stage /opt/target/x509-relay-authenticator-jar-with-dependencies.jar /opt/keycloak/providers
+WORKDIR /opt/keycloak
+COPY --from=spi-build-stage /opt/my-numbercard-authenticator/target/my-numbercard-authenticator.jar providers

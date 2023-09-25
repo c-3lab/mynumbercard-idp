@@ -191,7 +191,7 @@ paths:
                 recipient: JPKI
                 sender: ID123
                 ts: 2023-06-16 17:30:00.123
-              userAuthenticationCertificate: -----BEGIN CERTIFICATE----\nMIIljhalaHJakkSifksSSDlsnskDkJLlj....\n-----END CERTIFICATE----
+              encryptedUserAuthenticationCertificate: -----BEGIN CERTIFICATE----\nMIIljhalaHJakkSifksSSDlsnskDkJLlj....\n-----END CERTIFICATE----
               applicantData: c7fdd0dc199fd75a790a1f74183a2b34906f1efae4a0419333daa729f5358f5c
               sign: YzdmZGQwZGMxOTlmZDc1YTc5MGExZjc0MTgzYTJiMzQ5MDZmMWVmYWU0YTA0MTkzMzNkYWE3MjlmNTM1OGY1Yw==
       responses:
@@ -519,7 +519,7 @@ components:
           description: 署名用電子証明書のJWE
         applicantData:
           type: string
-          description: nonceをSHA256でハッシュ化した文字列データ
+          description: nonce文字列データ
         sign:
           type: string
           description: applicantDataを署名用電子証明書の秘密鍵で暗号化した署名データのbase64文字列データ
@@ -528,7 +528,7 @@ components:
       description: 利用者証明用電子証明書を利用するリクエスト時に送る情報
       required:
         - requestInfo
-        - userAuthenticationCertificate
+        - encryptedUserAuthenticationCertificate
         - applicantData
         - sign
       properties:
@@ -553,12 +553,12 @@ components:
             ts:
               type: string
               description: 送信時のシステム日時
-        userAuthenticationCertificate:
+        encryptedUserAuthenticationCertificate:
           type: string
           description: 利用者証明用電子証明書
         applicantData:
           type: string
-          description: nonceをSHA256でハッシュ化した文字列データ
+          description: nonce文字列データ
         sign:
           type: string
           description: applicantDataを利用者証明用電子証明書の秘密鍵で暗号化した署名データのbase64文字列データ
