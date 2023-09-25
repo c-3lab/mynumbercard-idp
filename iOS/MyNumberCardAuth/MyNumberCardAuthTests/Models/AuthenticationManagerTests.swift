@@ -45,8 +45,8 @@ final class AuthenticationManagerTests: XCTestCase {
                     XCTAssertEqual($1, "1234")
                     XCTAssertEqual($2, [UInt8]("0123456789".utf8))
                     var cardData = TRETJapanNFCReader_MIFARE_IndividualNumber.IndividualNumberCardData()
-                    cardData.computeDigitalSignatureForUserAuthentication = Array("5678".utf8)
-                    cardData.userAuthenticationCertificate = validCertificate ? Array(Self.certificate) : [UInt8]("5678901234".utf8)
+                    cardData.computeDigitalSignatureForUserAuthentication = [UInt8]("5678".utf8)
+                    cardData.userAuthenticationCertificate = validCertificate ? [UInt8](Self.certificate) : [UInt8]("5678901234".utf8)
                     manager.individualNumberReaderSession(didRead: cardData)
                     readerComputeDigitalSignatureForUserAuthenticationExpectation.fulfill()
                 }
@@ -119,8 +119,8 @@ final class AuthenticationManagerTests: XCTestCase {
                     XCTAssertEqual($1, "7890cd")
                     XCTAssertEqual($2, [UInt8]("7890123456".utf8))
                     var cardData = TRETJapanNFCReader_MIFARE_IndividualNumber.IndividualNumberCardData()
-                    cardData.computeDigitalSignatureForDigitalSignature = Array("0123".utf8)
-                    cardData.digitalSignatureCertificate = validCertificate ? Array(Self.certificate) : [UInt8]("0123456789".utf8)
+                    cardData.computeDigitalSignatureForDigitalSignature = [UInt8]("0123".utf8)
+                    cardData.digitalSignatureCertificate = validCertificate ? [UInt8](Self.certificate) : [UInt8]("0123456789".utf8)
                     manager.individualNumberReaderSession(didRead: cardData)
                     readerComputeDigitalSignatureForSignatureExpectation.fulfill()
                 }
@@ -228,8 +228,8 @@ final class AuthenticationManagerTests: XCTestCase {
                     XCTAssertEqual($1, "1234")
                     XCTAssertEqual($2, [UInt8]("0123456789".utf8))
                     var cardData = TRETJapanNFCReader_MIFARE_IndividualNumber.IndividualNumberCardData()
-                    cardData.computeDigitalSignatureForUserAuthentication = Array("5678".utf8)
-                    cardData.userAuthenticationCertificate = validCertificate ? Array(Self.certificate) : [UInt8]("5678901234".utf8)
+                    cardData.computeDigitalSignatureForUserAuthentication = [UInt8]("5678".utf8)
+                    cardData.userAuthenticationCertificate = validCertificate ? [UInt8](Self.certificate) : [UInt8]("5678901234".utf8)
                     manager.japanNFCReaderSession(didInvalidateWithError: JapanNFCReaderError.nfcReadingUnavailable)
                     readerJapanNFCReaderSessionExpectation.fulfill()
                 }
