@@ -268,6 +268,21 @@ public class UserInfoReplacementProviderTest {
 
         }
     }
+
+    @Test
+    public void testAuthenticateWithInternalServerError() throws Exception {
+        try (
+            MockedConstruction<JWSInput> JWSInput = mockConstruction(JWSInput.class,
+                                                    (mock, ctx) -> {
+                                                        doReturn("{\"user_attributes\":{\"service_id\"\"example@example.com\",\"notes\"\"RP1\"}}").when(mock).readJsonContent(any());
+                                                    });
+        ) {
+            expected = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            Response result = userInfoReplacementProvider.authenticate("{\"user_attributes\":{\"service_id\":\"example@example.com\",\"notes\":\"RP1\"}}");
+            assertEquals(expected.getStatus(), result.getStatus());
+            assertEquals(expected instanceof Response, result instanceof Response);
+        }
+    }
     
     @ParameterizedTest
     @ValueSource(booleans = {false, true})
@@ -296,6 +311,21 @@ public class UserInfoReplacementProviderTest {
                 Response result = userInfoReplacementProvider.replace("{\"user_attributes\":{\"service_id\":\"example@example.com\",\"notes\":\"RP1\"}}");
                 assertEquals(expected, result);
             }
+        }
+    }
+
+    @Test
+    public void testReplaceWithInternalServerError() {
+        try (
+            MockedConstruction<ReplacementActionAdapter> replacementActionAdapter = mockConstruction(ReplacementActionAdapter.class,
+                                                    (mock, ctx) -> {
+                                                        doReturn(responseData).when(mock).replace(any());
+                                                    });
+        ) {
+            expected = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            Response result = userInfoReplacementProvider.replace("{\"user_attributes\":{\"service_id\"\"example@example.com\",\"notes\"\"RP1\"}}");
+            assertEquals(expected.getStatus(), result.getStatus());
+            assertEquals(expected instanceof Response, result instanceof Response);
         }
     }
 
