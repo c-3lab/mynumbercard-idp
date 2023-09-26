@@ -127,7 +127,6 @@ public class CustomAttributeProvider implements RealmResourceProvider {
             ObjectNode tokens = (ObjectNode)objectMapper.readTree(objectMapper.writeValueAsString(accessTokenResponseBuilder));
             newTokens = objectMapper.writeValueAsString(tokens.remove(removeKeys));
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
             return ResponseMessage.getErrorResponse(ResponseMessage.ERROR_TYPE.INTERNAL_SERVER_ERROR);
         }
 
@@ -162,7 +161,7 @@ public class CustomAttributeProvider implements RealmResourceProvider {
             JWSInput input = new JWSInput(tokenString);
             this.token = input.readJsonContent(AccessToken.class);
         } catch (JWSInputException e) {
-            e.printStackTrace();
+            return null;
         }
 
         String realmName = token.getIssuer().substring(token.getIssuer().lastIndexOf('/') + 1);
