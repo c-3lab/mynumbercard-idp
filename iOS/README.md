@@ -54,7 +54,7 @@ Universal Links
 
 1. Windows、WSL内のLinux両方のIPアドレスを調べ、以下のnetshコマンドをWindowsのコマンドプロンプト、もしくはPowerShellで実行します。（管理者権限が必要）  
 ※「Windows側で受け付けるポート」については、他の通信で使われていないポートであれば自由に決めて問題ありません。  
-netsh.exe interface portproxy add v4tov4 listenaddress=WindowsのIPアドレス listenport=Windows側で受け付けるポートconnectaddress=LinuxのIPアドレス connectport=コンテナのポート（3000）
+netsh.exe interface portproxy add v4tov4 listenaddress=WindowsのIPアドレス listenport=Windows側で受け付けるポート connectaddress=LinuxのIPアドレス connectport=コンテナのポート（3000）
 
 1. コンテナのポートを8080に、Windows側で受け付けるポートを変えて、上記コマンドをもう一度実行する（8080、3000の順番は問わない）
 
@@ -100,7 +100,7 @@ Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:80
 
 ・Keycloak管理コンソールを開き、以下の設定を行います。  
 realm Oidp＞Configure＞realm-settings＞General>Frontend URL   
-「netshコマンド」でポートフォワーディングするよう設定した「WindowsのIPアドレス：Windows側で受け付けるポート」
+ポート8080の「netshコマンド」でポートフォワーディングするよう設定した「WindowsのIPアドレス：Windows側で受け付けるポート」を設定します。
 
 realm Oidp＞Configure＞Authentication＞my number card>X509 Relay Authenticatorの右にあるSettings（歯車のアイコン）＞Run URI of iOS application  
 ポート80の`https://XXXXXXXXXX.XXXXX.XXX`
