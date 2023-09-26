@@ -105,7 +105,7 @@ public class MyNumberCardAuthenticatorTest {
     }
 
     @Test
-    public void authenticate() {
+    public void testAuthenticate() {
         assertDoesNotThrow(() -> {
             myNumberCardAuthenticator.authenticate(context);
         });

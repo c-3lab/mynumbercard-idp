@@ -175,6 +175,7 @@ public class CustomAttributeProviderTest {
             defaultClientSessionContextStatic.when(() -> DefaultClientSessionContext.fromClientSessionScopeParameter(any(), any())).thenReturn(defaultClientSessionContext);
             assertNotNull(customAttributeProvider.setAttributes("{\"user_attributes\":{\"service_id\":\"example@example.com\",\"notes\":\"RP1\"}}"));
             appAuthManagerStatic.verify(() -> AppAuthManager.extractAuthorizationHeaderToken(any()), times(1));
+            defaultClientSessionContextStatic.verify(() -> DefaultClientSessionContext.fromClientSessionScopeParameter(any(), any()), times(1));
         }
     }
 
@@ -238,9 +239,7 @@ public class CustomAttributeProviderTest {
             MockedStatic<AppAuthManager> appAuthManagerStatic = mockStatic(AppAuthManager.class);
         ) {
             appAuthManagerStatic.when(() -> AppAuthManager.extractAuthorizationHeaderToken(any())).thenReturn("e");
-            assertThrows(NullPointerException.class,() -> {
-                customAttributeProvider.setAttributes("{\"user_attributes\"\"service_id\"\"example@example.com\",\"notes\":\"RP1\"}");
-            });
+            assertNotNull(customAttributeProvider.setAttributes("{\"user_attributes\"\"service_id\"\"example@example.com\",\"notes\":\"RP1\"}"));
             appAuthManagerStatic.verify(() -> AppAuthManager.extractAuthorizationHeaderToken(any()), times(1));
         }
     }
@@ -285,7 +284,7 @@ public class CustomAttributeProviderTest {
                                                         doReturn(mock).when(mock).setTokenString(any());
                                                         doReturn(mock).when(mock).setConnection(any());
                                                         doReturn(mock).when(mock).setHeaders(any());
-                                                        doReturn(authResult).when(mock).authenticate();
+                                                        doReturn(null).when(mock).authenticate();
                                                     });
         ) {
             appAuthManagerStatic.when(() -> AppAuthManager.extractAuthorizationHeaderToken(any())).thenReturn("eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJrMTVBeF8tc0pCVWNlZzRnbDZXajRnVVd3aHFjcjhJUkNsUFFCeFhFTEFnIn0.eyJleHAiOjE2OTUwNDQ4NTIsImlhdCI6MTY5NTA0NDU1MiwiYXV0aF90aW1lIjoxNjk1MDQ0NTUxLCJqdGkiOiI0Zjk0ZWEzNC1jYmE0LTQ5MDEtOGE0ZS1iN2FmYzNmOTI4YzYiLCJpc3MiOiJodHRwczovLzhmZWUtMTE4LTIzOC03LTY5Lm5ncm9rLWZyZWUuYXBwL3JlYWxtcy9PSWRwIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6ImM5ZTgxNWM4LTRhYzYtNDIwOS1iZTYzLTVlMmY1YzY0NzNkOSIsInR5cCI6IkJlYXJlciIsImF6cCI6InNhbXBsZS1jbGllbnQiLCJzZXNzaW9uX3N0YXRlIjoiMGE0ZDU3NjYtZmZjMy00MWVjLTliOWYtNGMxZTYzYzQ5MDVhIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiZGVmYXVsdC1yb2xlcy1vaWRwIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgYWRkcmVzcyBlbWFpbCBwcm9maWxlIiwic2lkIjoiMGE0ZDU3NjYtZmZjMy00MWVjLTliOWYtNGMxZTYzYzQ5MDVhIiwidW5pcXVlX2lkIjoiNzkxMGFlNWYtYTZjMS00MTE3LWI4OTAtZmMyZGYyZGI2M2YxIiwiYWRkcmVzcyI6e30sImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwidXNlcl9hZGRyZXNzIjoi5p2x5Lqs6YO95Y2D5Luj55Sw5Yy65Y2D5Luj55SwMS0xIiwiYmlydGhfZGF0ZSI6IjE5NzAtMDEtMzEiLCJuYW1lIjoi5L2Q6JekIOWkqumDjiIsImdlbmRlcl9jb2RlIjoiMCIsInByZWZlcnJlZF91c2VybmFtZSI6Ijc5MTBhZTVmLWE2YzEtNDExNy1iODkwLWZjMmRmMmRiNjNmMSJ9.LD6Pg76hBFePAP69tzW3Sg1asP89sVZop7NnW9BlH1smHmPn-UifCq2NNmjA7KrEGSuf9rqWp_6lQ_L6osdBxBvu1S1bearjzeME8h6rWSqcyvzrdaVaGZd5Xzchl5ULZfmeNP_X1yQEIHCWvko-03X3yE5gJ3H33JHrAsf7isFo-B_qhZDv77zAr4uNJYt9wzlC7jsq39G0sKrxjGquqG1dJpoOxARVAO0pKzemr2SzzvDJfn2sMch1F-Lz8ZI60qxZ5wXRPPJMjM1WP65oEGuJLRFStDdbM_s9Avue2ErEuPztqyaDFdOhpgm8YKScrYi_mcT5LBY0evOsU-rPKw");
