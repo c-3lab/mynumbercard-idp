@@ -49,19 +49,31 @@ Universal Links
     `applinks:example.com?mode=developer`  
 
 ## ngrokの設定(ローカルで動作確認をする場合)
-ローカルで動作確認をする場合、iOS端末からlocalhost環境にアクセスする方法としてngrokを使用することを想定しています。　　
+ローカルで動作確認をする場合、iOS端末からlocalhost環境にアクセスする方法としてngrokを使用することを想定しています。また、同じLAN下であっても、WSLのホストPC以外はWSL内に直接通信できないので、Windowsに来た通信をWSLにポートフォワーディングする設定が必要になります。Windowsにポートフォワーディングの設定を追加するため、「netsh」コマンドを実行します。  
+※以下の手順はWindowsのWSL内でDockerを立ち上げ、スマートフォンがそのPCと同一のネットワークに接続された環境で動作確認をした手順になります。また、スマートフォンからPCへの通信はファイアウォールでブロックされる可能性が高いため、PCのファイアウォール設定でスマートフォンのIPアドレスからの通信を許可してください。
+
+1. Windows、WSL内のLinux両方のIPアドレスを調べ、以下のnetshコマンドをWindowsのコマンドプロンプト、もしくはPowerShellで実行します。（管理者権限が必要）  
+※「Windows側で受け付けるポート」については、他の通信で使われていないポートであれば自由に決めて問題ありません。  
+netsh.exe interface portproxy add v4tov4 listenaddress=WindowsのIPアドレス listenport=Windows側で受け付けるポートconnectaddress=LinuxのIPアドレス connectport=コンテナのポート（3000）
+
+1. コンテナのポートを8080に、Windows側で受け付けるポートを変えて、上記コマンドをもう一度実行する（8080、3000の順番は問わない）
+
+1. 上記の設定ができているか以下のコマンドで確認します。  
+   netsh.exe interface portproxy show v4tov4  
+   ※Windows、もしくはLinuxのIPアドレスが変わった場合は、以下コマンドで設定を削除し、上記の手順をやり直す必要があります。  
+   netsh.exe interface portproxy delete v4tov4 listenport=Windows側で受け付けるポート listenaddress=WindowsのIPアドレス
+
 
 #### 前提条件
 1. http://[DockerホストのIPアドレス]:8080/より、Keycloak管理コンソールが開ける状態で以降の手順を実施してください。
 1. [ngrok公式](https://ngrok.com/)より、ダウンロードを行い、ngrok.exeを任意のフォルダに配置してください。
 1. サインアップを行ってください。  
-**※有料アカウントの登録が必要になります。**  
-(ユニバーサルリンクを用いてアプリを起動しますが、無料アカウントの場合、Webサービスがapple-app-site-associationをダウンロードする際に確認画面が出てしまい、jsonがダウンロードできないため。)  
 1. Authtokenを取得してください。([ngrok公式](https://ngrok.com/)よりログイン後、左側のメニューに「Your Authtoken」という項目があるのでクリックすると、Authtokenが表示されるのでコピーできます。)
 1. コマンドプロンプトでngrok.exeを配置したディレクトリに移動し、`ngrok authtoken xxxxxxxxxxxxxxxxxxxxxxxxx`を実行後、以下のファイルが作成されていることを確認してください。  
 `上記コマンド実行後に表示されたディレクトリ/ngrok.yml`
 
 #### 設定
+
 ・sample-rpを使用するため、使用可能なIPアドレスを取得します。  
 （※ [DockerホストのIPアドレス]を指定してください。ただし、127.0.0.1は使用できません。）
 
@@ -72,12 +84,6 @@ authtoken: XXXXXXXXX
 
 // 以下を追加してください
 tunnels:
-  samplerp:
-    proto: http
-    addr: [DockerホストのIPアドレス]:3000
-  keycloak:	
-    proto: http	
-    addr: [DockerホストのIPアドレス]:8080	
   nativeapp:	
     proto: http	
     addr: [DockerホストのIPアドレス]:80
@@ -85,26 +91,24 @@ tunnels:
 
 ・コマンドプロンプトを開き、ngrok.exeを配置したディレクトリに移動し、以下を実行します。  
 `ngrok start --all`  または  
-`ngrok start samplerp keycloak nativeapp`  (samplerp/keycloak/nativeapp以外にもポートを記載している場合は明示的に指定する必要があります。)  
+`ngrok start nativeapp` 
 
 ・以下のような実行結果が表示されます。  
 ```shell
 Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:80
-Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:3000
-Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:8080
 ```
 ポート80の`https://XXXXXXXXXX.XXXXX.XXX` が、iOSがWebサービスからアプリを起動する時のホスト名となりますのでAssociated DomainsのDomainsに設定してください。  
 
 ・Keycloak管理コンソールを開き、以下の設定を行います。  
 realm Oidp＞Configure＞realm-settings＞General>Frontend URL   
-ポート8080の`https://XXXXXXXXXX.XXXXX.XXX`
+「netshコマンド」でポートフォワーディングするよう設定した「WindowsのIPアドレス：Windows側で受け付けるポート」
 
 realm Oidp＞Configure＞Authentication＞my number card>X509 Relay Authenticatorの右にあるSettings（歯車のアイコン）＞Run URI of iOS application  
 ポート80の`https://XXXXXXXXXX.XXXXX.XXX`
 
 ・.envを設定します。  
 ../backend/.env   
-を開き、RP1_BASEURLにポート3000、RP2_BASEURLにポート3001、KEYCLOAK_URLにポート8080の`https://XXXXXXXXXX.XXXXX.XXX` を設定します。
+を開き、RP1_BASEURLにポート3000、RP2_BASEURLにポート3001、KEYCLOAK_URLにポート8080の「netshコマンド」でポートフォワーディングするよう設定した「WindowsのIPアドレス：Windows側で受け付けるポート」を設定します。
 
 ```shell
   RP1_BASEURL=https://XXXXXXXXXX.XXXXX.XXX
@@ -158,7 +162,8 @@ Webサービスからログイン処理を行い、認証成功画面を開く�
 認証基盤については、mynumbercard-idp/backend/README.md を参照ください。  
 
 
-1. SafariからWebサービスへ接続します。
+1. SafariからWebサービスへ接続します。  
+   ※Windows側で3000ポートのコンテナにポートフォワーディングするよう設定したIPアドレス：ポート番号で接続します。
 1. 画面右上部にある `ログイン` リンクをタップします。
 1. 画面にある `ログイン` ボタンをタップします。
 1. 本iOSアプリが起動し、トップ画面が表示されます。
