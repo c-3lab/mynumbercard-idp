@@ -81,8 +81,6 @@
                 <input tabindex="4" class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}" name="login" id="kc-login" type="button" value="${msg("doLogIn")}"/>
                 <label for="openRegistration" class="${properties.kcLabelClass!}">${msg("registrationLabel")}</label>
                 <input tabindex="4" class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}" name="openRegistration" id="kc-openRegistration" type="button" value="${msg("doRegistration")}"/>
-                <label for="replacement" class="${properties.kcLabelClass!}">${msg("replacementLabel")}</label>
-                <input tabindex="4" class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}" name="replacement" id="kc-replacement" type="button" value="${msg("doReplacement")}"/>
             </div>
         </div>
         <div id="userRegistration" style="display: none;">
