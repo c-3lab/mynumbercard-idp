@@ -73,7 +73,6 @@ netsh.exe interface portproxy add v4tov4 listenaddress=WindowsのIPアドレス 
 `上記コマンド実行後に表示されたディレクトリ/ngrok.yml`
 
 #### 設定
-
 ・sample-rpを使用するため、使用可能なIPアドレスを取得します。  
 （※ [DockerホストのIPアドレス]を指定してください。ただし、127.0.0.1は使用できません。）
 
