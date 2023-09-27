@@ -47,7 +47,7 @@ public class PlatformAuthenticationResponse implements PlatformAuthenticationRes
     @Override
     @JsonIgnore
     public String getUniqueId() {
-        return this.identityInfo.uniqueId;
+        return this.identityInfo.tisUserId;
     }
 
     public PlatformAuthenticationResponse.IdentityInfo getIdentityInfo() {
@@ -73,14 +73,14 @@ public class PlatformAuthenticationResponse implements PlatformAuthenticationRes
 
     @JsonAutoDetect(fieldVisibility = Visibility.ANY)
     public static class IdentityInfo {
-        private String uniqueId;
+        private String tisUserId;
         private String name;
         private String dateOfBirth;
         private String gender;
         private String address;
 
         public String getUniqueId() {
-            return this.uniqueId;
+            return this.tisUserId;
         }
 
         public String getName() {

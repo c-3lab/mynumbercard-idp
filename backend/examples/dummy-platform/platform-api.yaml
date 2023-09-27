@@ -38,7 +38,7 @@ paths:
                 recipient: JPKI
                 sender: ID123
                 ts: 2023-06-16 17:30:00.123
-              encryptedDigitalSignatureCertificate: eyJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAtMjU2In0.O01BFr_XxGzKEUb_Z9vQOW3DX2cQFxojrRy2JyM5_nqKnrpAa0rvcPI_ViT2PdPRogBwjHGRDM2uNLd1BberKQlaZYuqPGXnpzDQjosF0tQlgdtY3uEZUMT-9WPP8jCxxQg0AGIm4abkp1cgzAWBQzm1QYL8fwaz16MS48ExRz41dLhA0aEWE4e7TYzjrfaK8M4wIUlQCFIl-wS1N3U8W2XeUc9MLYGmHft_Rd9KJs1c-9KKdUQf6tEzJ92TGEC7TRZX4hGdtszIq3GGGBQaW8P9jPozqaDdrikF18D0btRHNf3_57sR_CPEGYX0O4mY775CLWqB4Y1adNn-fZ0xoA.ln7IYZDF9TdBIK6i.ZhQ3Q5TY827KFQw8DdRRzQVJVFdIE03B6AxMNZ1sQIjlUB4QUxg-UYqjPJESPUmFsODeshGWLa5t4tUri5j6uC4mFDbkbemPmNKIQiY5m8yc.5KKhrggMRm7ydVRQKJaT0g
+              encryptedCertificateForSign: eyJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAtMjU2In0.O01BFr_XxGzKEUb_Z9vQOW3DX2cQFxojrRy2JyM5_nqKnrpAa0rvcPI_ViT2PdPRogBwjHGRDM2uNLd1BberKQlaZYuqPGXnpzDQjosF0tQlgdtY3uEZUMT-9WPP8jCxxQg0AGIm4abkp1cgzAWBQzm1QYL8fwaz16MS48ExRz41dLhA0aEWE4e7TYzjrfaK8M4wIUlQCFIl-wS1N3U8W2XeUc9MLYGmHft_Rd9KJs1c-9KKdUQf6tEzJ92TGEC7TRZX4hGdtszIq3GGGBQaW8P9jPozqaDdrikF18D0btRHNf3_57sR_CPEGYX0O4mY775CLWqB4Y1adNn-fZ0xoA.ln7IYZDF9TdBIK6i.ZhQ3Q5TY827KFQw8DdRRzQVJVFdIE03B6AxMNZ1sQIjlUB4QUxg-UYqjPJESPUmFsODeshGWLa5t4tUri5j6uC4mFDbkbemPmNKIQiY5m8yc.5KKhrggMRm7ydVRQKJaT0g
               applicantData: c7fdd0dc199fd75a790a1f74183a2b34906f1efae4a0419333daa729f5358f5c
               sign: YzdmZGQwZGMxOTlmZDc1YTc5MGExZjc0MTgzYTJiMzQ5MDZmMWVmYWU0YTA0MTkzMzNkYWE3MjlmNTM1OGY1Yw==
       responses:
@@ -58,7 +58,7 @@ paths:
                   status: SUCCESS
                 applicantId: JPKI202306169f03fb0acb9a4cc2971c9fa144586ba3
                 identityInfo:
-                  uniqueId: 7910ae5f-a6c1-4117-b890-fc2df2db63f1
+                  tisUserId: 7910ae5f-a6c1-4117-b890-fc2df2db63f1
                   name: 佐藤 太郎
                   dateOfBirth: 1970-01-31
                   gender: "0"
@@ -191,9 +191,9 @@ paths:
                 recipient: JPKI
                 sender: ID123
                 ts: 2023-06-16 17:30:00.123
-              encryptedUserAuthenticationCertificate: -----BEGIN CERTIFICATE----\nMIIljhalaHJakkSifksSSDlsnskDkJLlj....\n-----END CERTIFICATE----
-              applicantData: c7fdd0dc199fd75a790a1f74183a2b34906f1efae4a0419333daa729f5358f5c
-              sign: YzdmZGQwZGMxOTlmZDc1YTc5MGExZjc0MTgzYTJiMzQ5MDZmMWVmYWU0YTA0MTkzMzNkYWE3MjlmNTM1OGY1Yw==
+              encryptedCertificateForUser: -----BEGIN CERTIFICATE----\nMIIljhalaHJakkSifksSSDlsnskDkJLlj....\n-----END CERTIFICATE----
+              nonceData: c7fdd0dc199fd75a790a1f74183a2b34906f1efae4a0419333daa729f5358f5c
+              nonceSign: YzdmZGQwZGMxOTlmZDc1YTc5MGExZjc0MTgzYTJiMzQ5MDZmMWVmYWU0YTA0MTkzMzNkYWE3MjlmNTM1OGY1Yw==
       responses:
         '200':
           description: 検証処理が成功した
@@ -211,7 +211,7 @@ paths:
                   status: SUCCESS
                 applicantId: JPKI202306169f03fb0acb9a4cc2971c9fa144586ba3
                 identityInfo:
-                  uniqueId: 7910ae5f-a6c1-4117-b890-fc2df2db63f1
+                  tisUserId: 7910ae5f-a6c1-4117-b890-fc2df2db63f1
                   name: 佐藤 太郎
                   dateOfBirth: 1970-01-31
                   gender: "0"
@@ -361,7 +361,7 @@ paths:
                 recipient: JPKI
                 sender: ID123
                 ts: 2023-06-16 17:30:00.123
-              encryptedDigitalSignatureCertificate: eyJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAtMjU2In0.O01BFr_XxGzKEUb_Z9vQOW3DX2cQFxojrRy2JyM5_nqKnrpAa0rvcPI_ViT2PdPRogBwjHGRDM2uNLd1BberKQlaZYuqPGXnpzDQjosF0tQlgdtY3uEZUMT-9WPP8jCxxQg0AGIm4abkp1cgzAWBQzm1QYL8fwaz16MS48ExRz41dLhA0aEWE4e7TYzjrfaK8M4wIUlQCFIl-wS1N3U8W2XeUc9MLYGmHft_Rd9KJs1c-9KKdUQf6tEzJ92TGEC7TRZX4hGdtszIq3GGGBQaW8P9jPozqaDdrikF18D0btRHNf3_57sR_CPEGYX0O4mY775CLWqB4Y1adNn-fZ0xoA.ln7IYZDF9TdBIK6i.ZhQ3Q5TY827KFQw8DdRRzQVJVFdIE03B6AxMNZ1sQIjlUB4QUxg-UYqjPJESPUmFsODeshGWLa5t4tUri5j6uC4mFDbkbemPmNKIQiY5m8yc.5KKhrggMRm7ydVRQKJaT0g
+              encryptedCertificateForSign: eyJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAtMjU2In0.O01BFr_XxGzKEUb_Z9vQOW3DX2cQFxojrRy2JyM5_nqKnrpAa0rvcPI_ViT2PdPRogBwjHGRDM2uNLd1BberKQlaZYuqPGXnpzDQjosF0tQlgdtY3uEZUMT-9WPP8jCxxQg0AGIm4abkp1cgzAWBQzm1QYL8fwaz16MS48ExRz41dLhA0aEWE4e7TYzjrfaK8M4wIUlQCFIl-wS1N3U8W2XeUc9MLYGmHft_Rd9KJs1c-9KKdUQf6tEzJ92TGEC7TRZX4hGdtszIq3GGGBQaW8P9jPozqaDdrikF18D0btRHNf3_57sR_CPEGYX0O4mY775CLWqB4Y1adNn-fZ0xoA.ln7IYZDF9TdBIK6i.ZhQ3Q5TY827KFQw8DdRRzQVJVFdIE03B6AxMNZ1sQIjlUB4QUxg-UYqjPJESPUmFsODeshGWLa5t4tUri5j6uC4mFDbkbemPmNKIQiY5m8yc.5KKhrggMRm7ydVRQKJaT0g
               applicantData: c7fdd0dc199fd75a790a1f74183a2b34906f1efae4a0419333daa729f5358f5c
               sign: YzdmZGQwZGMxOTlmZDc1YTc5MGExZjc0MTgzYTJiMzQ5MDZmMWVmYWU0YTA0MTkzMzNkYWE3MjlmNTM1OGY1Yw==
       responses:
@@ -381,7 +381,7 @@ paths:
                   status: SUCCESS
                 applicantId: JPKI202306169f03fb0acb9a4cc2971c9fa144586ba3
                 identityInfo:
-                  uniqueId: 7910ae5f-a6c1-4117-b890-fc2df2db63f1
+                  tisUserId: 7910ae5f-a6c1-4117-b890-fc2df2db63f1
                   name: 佐藤 太郎
                   dateOfBirth: 1970-01-31
                   gender: "0"
@@ -489,7 +489,7 @@ components:
       description: 署名用電子証明書を利用するリクエスト時に送る情報
       required:
         - requestInfo
-        - encryptedDigitalSignatureCertificate
+        - encryptedCertificateForSign
         - applicantData
         - sign
       properties:
@@ -514,7 +514,7 @@ components:
             ts:
               type: string
               description: 送信時のシステム日時
-        encryptedDigitalSignatureCertificate:
+        encryptedCertificateForSign:
           type: string
           description: 署名用電子証明書のJWE
         applicantData:
@@ -528,9 +528,9 @@ components:
       description: 利用者証明用電子証明書を利用するリクエスト時に送る情報
       required:
         - requestInfo
-        - encryptedUserAuthenticationCertificate
-        - applicantData
-        - sign
+        - encryptedCertificateForUser
+        - nonceData
+        - nonceSign
       properties:
         requestInfo:
           type: object
@@ -553,15 +553,15 @@ components:
             ts:
               type: string
               description: 送信時のシステム日時
-        encryptedUserAuthenticationCertificate:
+        encryptedCertificateForUser:
           type: string
           description: 利用者証明用電子証明書
-        applicantData:
+        nonceData:
           type: string
           description: nonce文字列データ
-        sign:
+        nonceSign:
           type: string
-          description: applicantDataを利用者証明用電子証明書の秘密鍵で暗号化した署名データのbase64文字列データ
+          description: nonceDataを利用者証明用電子証明書の秘密鍵で暗号化した署名データのbase64文字列データ
     SignVerificationResponse:
       type: object
       description: レスポンスと発生したエラー情報
@@ -617,13 +617,13 @@ components:
           type: object
           description: ユーザー情報
           required:
-            - uniqueId
+            - tisUserId
             - name
             - dateOfBirth
             - gender
             - address
           properties:
-            uniqueId:
+            tisUserId:
               type: string
               description: シリアル番号に対応したユニークID
             name:
