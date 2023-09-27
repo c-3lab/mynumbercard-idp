@@ -14,11 +14,16 @@ iOS 16.4ではユニバーサルリンクが動作しないことを確認しま
 - 16.2
 - 16.3
 - 16.5
-### iOSアプリのテストについて
-本アプリのテストにXCTestを使用しています、このテストのカバレッジが100％ではないのは下記の理由となります。
-- `iOS/MyNumberCardAuth/MyNumberCardAuth/Views/`に格納されているファイルについてはUIの確認のため、
-結合テストにて確認を行なっております。そのため、XCTestの対象外とし、カバレッジが100%以外となっております。
-- `iOS/MyNumberCardAuth/MyNumberCardAuth/Views/`に格納されているファイル以外にカバレッジが100％ではないファイルについては、テストコードでは動作しない処理が含まれているため、結合テストにて確認としております。
+### iOSアプリのテストカバレッジについて
+以下のファイルはユニットテスト(XCTest)ではなく結合テストで確認を行なっています。そのため、ユニットテストにおけるカバレッジは100%を下回ります。  
+- `iOS/MyNumberCardAuth/MyNumberCardAuth/Views/`以下のファイル  
+・UIに対する確認が必要なため  
+- `iOS/MyNumberCardAuth/MyNumberCardAuth/Controllers/AuthenticationController.swift`
+- `iOS/MyNumberCardAuth/MyNumberCardAuth/Models/HTTPSession.swift`  
+- `iOS/MyNumberCardAuth/MyNumberCardAuth/Models/AuthenticationManager.swift`
+- `iOS/MyNumberCardAuth/MyNumberCardAuth/MyNumberCardAuthApp.swift`
+- `iOS/MyNumberCardAuth/MyNumberCardAuth/Protocols/URLSessionProtocol.swift`  
+・テストコードでは動作しない処理が含まれているため
 
 ## 構築手順
 以下クローン後の手順になります。
@@ -49,20 +54,22 @@ Universal Links
     `applinks:example.com?mode=developer`  
 
 ## ngrokの設定(ローカルで動作確認をする場合)
-ローカルで動作確認をする場合、iOS端末からlocalhost環境にアクセスする方法としてngrokを使用することを想定しています。  
+ローカルで動作確認をする場合、80番ポートについてはiOS端末からlocalhost環境にアクセスする方法としてngrokを使用することを想定しています。  
 PCのファイアウォールによってはiPhoneとの通信をブロックする場合があるので、必要に応じてファイアウォールの設定を変更してください。  
 また、WindowsのWSL内でDockerを立ち上げている場合は、ポートフォワーディングの設定が必要なため以下のコマンドを実行してください。
 
-1. Windows、WSL内のLinux両方のIPアドレスを調べ、以下のnetshコマンドをWindowsのコマンドプロンプト、もしくはPowerShellで実行します。（管理者権限が必要）  
-※「Windows側で受け付けるポート」については、他の通信で使われていないポートであれば自由に決めて問題ありません。  
-netsh.exe interface portproxy add v4tov4 listenaddress=WindowsのIPアドレス listenport=Windows側で受け付けるポート connectaddress=LinuxのIPアドレス connectport=コンテナのポート（3000）
-
-1. コンテナのポートを8080に、Windows側で受け付けるポートを変えて、上記コマンドをもう一度実行する（8080、3000の順番は問わない）
-
+1. Windows、WSL内のLinux両方のIPアドレスを調べてメモしておきます。
+1. Windowsのコマンドプロンプト、もしくはPowerShellを管理者として実行します。
+1. 以下のコマンドを実行しサンプルRP（3000番ポート）への通信を転送するように設定します。  
+`netsh.exe interface portproxy add v4tov4 listenaddress=WindowsのIPアドレス listenport=Windows側で受け付けるポート※ connectaddress=LinuxのIPアドレス connectport=3000`
+1. 以下のコマンドを実行しKeycloak（8080番ポート）への通信を転送するように設定します。  
+`netsh.exe interface portproxy add v4tov4 listenaddress=WindowsのIPアドレス listenport=Windows側で受け付けるポート※ connectaddress=LinuxのIPアドレス connectport=8080`
 1. 上記の設定ができているか以下のコマンドで確認します。  
-   netsh.exe interface portproxy show v4tov4  
-   ※Windows、もしくはLinuxのIPアドレスが変わった場合は、以下コマンドで設定を削除し、上記の手順をやり直す必要があります。  
-   netsh.exe interface portproxy delete v4tov4 listenport=Windows側で受け付けるポート listenaddress=WindowsのIPアドレス
+`netsh.exe interface portproxy show v4tov4`  
+
+※ 「Windows側で受け付けるポート」は、他の通信で使われていないポートを指定してください。  
+※ Windows、もしくはLinuxのIPアドレスが変わった場合は、以下コマンドで設定を削除し、上記の手順をやり直す必要があります。  
+`netsh.exe interface portproxy delete v4tov4 listenport=Windows側で受け付けるポート listenaddress=WindowsのIPアドレス`
 
 
 #### 前提条件
@@ -108,11 +115,10 @@ realm Oidp＞Configure＞Authentication＞my number card>X509 Relay Authenticato
 
 ・.envを設定します。  
 ../backend/.env   
-を開き、RP1_BASEURLにポート3000、RP2_BASEURLにポート3001、KEYCLOAK_URLにポート8080の「netshコマンド」でポートフォワーディングするよう設定した「WindowsのIPアドレス：Windows側で受け付けるポート」を設定します。
+を開き、RP1_BASEURLにポート3000、KEYCLOAK_URLにポート8080の「netshコマンド」でポートフォワーディングするよう設定した「WindowsのIPアドレス：Windows側で受け付けるポート」を設定します。
 
 ```shell
   RP1_BASEURL=https://XXXXXXXXXX.XXXXX.XXX
-  RP2_BASEURL=https://XXXXXXXXXX.XXXXX.XXX
   KEYCLOAK_URL=https://XXXXXXXXXX.XXXXX.XXX
 ```
 
