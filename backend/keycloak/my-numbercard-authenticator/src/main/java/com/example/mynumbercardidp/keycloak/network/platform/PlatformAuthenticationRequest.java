@@ -20,7 +20,9 @@ public class PlatformAuthenticationRequest {
     @JsonIgnore
     private String certificate;
     private String applicantData;
+    private String nonceData;
     private String sign;
+    private String nonceSign;
     @JsonProperty("requestInfo")
     private RequestInfo requestInfo;
 
@@ -40,8 +42,16 @@ public class PlatformAuthenticationRequest {
         return this.applicantData;
     }
 
+    public String getNonceData() {
+        return this.nonceData;
+    }
+
     public String getSign() {
         return this.sign;
+    }
+
+    public String getNonceSign() {
+        return this.nonceSign;
     }
 
     public RequestInfo getRequestInfo() {
@@ -63,8 +73,18 @@ public class PlatformAuthenticationRequest {
         return this;
     }
 
+    protected PlatformAuthenticationRequest setNonceData(final String nonceData) {
+        this.nonceData = nonceData;
+        return this;
+    }
+
     protected PlatformAuthenticationRequest setSign(final String sign) {
         this.sign = sign;
+        return this;
+    }
+
+    protected PlatformAuthenticationRequest setNonceSign(final String nonceSign) {
+        this.nonceSign = nonceSign;
         return this;
     }
 

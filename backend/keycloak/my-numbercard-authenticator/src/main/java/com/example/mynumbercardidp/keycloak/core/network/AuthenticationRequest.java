@@ -13,7 +13,9 @@ public class AuthenticationRequest {
     private CertificateType certificateType;
     private String certificate;
     private String applicantData;
+    private String nonceData;
     private String sign;
+    private String nonceSign;
     private String actionMode;
 
     public CertificateType getCertificateType() {
@@ -28,8 +30,16 @@ public class AuthenticationRequest {
         return this.applicantData;
     }
 
+    public String getNonceData() {
+        return this.nonceData;
+    }
+
     public String getSign() {
         return this.sign;
+    }
+
+    public String getNonceSign() {
+        return this.nonceSign;
     }
 
     public AuthenticationRequest setCertificateType(final CertificateType certificateType) {
@@ -47,8 +57,18 @@ public class AuthenticationRequest {
         return this;
     }
 
+    public AuthenticationRequest setNonceData(final String nonceData) {
+        this.nonceData = nonceData;
+        return this;
+    }
+
     public AuthenticationRequest setSign(final String sign) {
         this.sign = sign;
+        return this;
+    }
+
+    public AuthenticationRequest setNonceSign(final String nonceSign) {
+        this.nonceSign = nonceSign;
         return this;
     }
 
@@ -71,8 +91,10 @@ public class AuthenticationRequest {
         if (Objects.isNull(this.certificateType) ||
                 StringUtil.isEmpty(this.actionMode) ||
                 StringUtil.isEmpty(this.certificate) ||
-                StringUtil.isEmpty(this.applicantData) ||
-                StringUtil.isEmpty(this.sign)) {
+                (StringUtil.isEmpty(this.applicantData) &&
+                StringUtil.isEmpty(this.nonceData)) ||
+                (StringUtil.isEmpty(this.sign) &&
+                StringUtil.isEmpty(this.nonceSign))) {
             throw new IllegalStateException("One or more values were not set.");
         }
     }
