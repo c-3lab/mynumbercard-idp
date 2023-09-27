@@ -39,3 +39,5 @@ Carthage/Build/
 xcuserdata/
 *.moved-aside
 !.gitkeep
+BuildTools/.build
+BuildTools/.swiftpm
