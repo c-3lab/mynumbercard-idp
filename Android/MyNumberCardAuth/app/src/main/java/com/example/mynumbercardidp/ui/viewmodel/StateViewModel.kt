@@ -93,6 +93,7 @@ class StateViewModel(
         }
     }
 
+    // 現状androidTest内でモック化をできる手段が無いため、myNumberCardAuth()とその他プライベートメソッドは未カバレッジ
     private fun authenticate(url: String, mode: String, certificate: String, applicantData: String, sign: String) {
 
         viewModelScope.launch {
