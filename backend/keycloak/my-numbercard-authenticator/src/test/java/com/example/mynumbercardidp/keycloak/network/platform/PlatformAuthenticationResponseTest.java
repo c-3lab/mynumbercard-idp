@@ -42,7 +42,7 @@ public class PlatformAuthenticationResponseTest {
     @Test
     public void testToUserModelAttributes() {
         platformAuthenticationResponse.toUserModelAttributes(user);
-        assertNull(user.getFirstAttribute("uniqueiId"));
+        assertNull(user.getFirstAttribute("uniqueId"));
         assertNull(user.getFirstAttribute("name"));
         assertNull(user.getFirstAttribute("gender_code"));
         assertNull(user.getFirstAttribute("user_address"));
@@ -67,7 +67,7 @@ public class PlatformAuthenticationResponseTest {
         
     @Test
     public void testGetIndentityInfoUniqueId() throws Exception {
-        Field field = identityInfo.getClass().getDeclaredField("uniqueId");
+        Field field = identityInfo.getClass().getDeclaredField("tisUserId");
         field.setAccessible(true);
         field.set(identityInfo, "c610e161-90ce-4a31-ab84-9429dd484e83");
         assertEquals("c610e161-90ce-4a31-ab84-9429dd484e83", identityInfo.getUniqueId());
