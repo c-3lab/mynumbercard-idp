@@ -137,9 +137,6 @@ function addEventListeners() {
     let loginButton = document.querySelector('input[name="login"][type="button"]');
     loginButton.addEventListener('click', () => { onClickActionButton('login'); });
 
-    let replacementButton = document.querySelector('input[name="replacement"][type="button"]');
-    replacementButton.addEventListener('click', () => { onClickActionButton('replacement'); });
-
     let agreeTosButton = document.querySelector('input[name="agree-tos"]');
     agreeTosButton.addEventListener('input', (event) => { switchEnableActionRegistrationButtons(); });
     let agreePpButton = document.querySelector('input[name="agree-pp"]');
