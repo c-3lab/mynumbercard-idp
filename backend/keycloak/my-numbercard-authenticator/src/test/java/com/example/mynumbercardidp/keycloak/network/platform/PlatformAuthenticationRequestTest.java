@@ -51,11 +51,27 @@ public class PlatformAuthenticationRequestTest {
     }
 
     @Test
+    public void testGetNonceData() throws Exception {
+        Field field = platformAuthenticationRequest.getClass().getDeclaredField("nonceData");
+        field.setAccessible(true);
+        field.set(platformAuthenticationRequest, "nonceData");
+        assertEquals("nonceData", platformAuthenticationRequest.getNonceData());
+    }
+
+    @Test
     public void testGetSign() throws Exception {
         Field field = platformAuthenticationRequest.getClass().getDeclaredField("sign");
         field.setAccessible(true);
         field.set(platformAuthenticationRequest, "sign");
         assertEquals("sign", platformAuthenticationRequest.getSign());
+    }
+
+    @Test
+    public void testGetNonceSign() throws Exception {
+        Field field = platformAuthenticationRequest.getClass().getDeclaredField("nonceSign");
+        field.setAccessible(true);
+        field.set(platformAuthenticationRequest, "nonceSign");
+        assertEquals("nonceSign", platformAuthenticationRequest.getNonceSign());
     }
 
     @Test
