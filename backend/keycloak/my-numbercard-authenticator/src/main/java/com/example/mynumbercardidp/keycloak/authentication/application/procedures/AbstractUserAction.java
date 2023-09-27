@@ -164,7 +164,7 @@ public abstract class AbstractUserAction {
     private static class UserIdentityToModelMapperBuilder {
 
         private static UserIdentityToModelMapper fromUniqueId() {
-            String attributeName = "uniqueId";
+            String attributeName = "uniqueid";
             return fromString(attributeName);
         }
 
