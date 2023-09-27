@@ -53,7 +53,11 @@ public class DataModelManager extends AbstractDataModelManager {
                 userRequest.setCertificateType(CertificateType.ENCRYPTED_USER_AUTHENTICATION);
                 break;
             case "registration":
-                // フォールスルー
+                userRequest.setCertificateType(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE);
+                break;
+            case "replacement":
+                userRequest.setCertificateType(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE);
+                break;
         }
         String certificateTypeName = userRequest.getCertificateType().getName();
         // プラットフォーム通信時に証明書の元データを利用するため、decrypt済みのデータを別で保管しておく
