@@ -9,10 +9,18 @@ import Foundation
 import UIKit
 
 public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
-    private var authenticationController: AuthenticationController
+    private var authenticationController: AuthenticationControllerProtocol
+    private let makeURLSession: (_ configuration: URLSessionConfiguration, _ delegate: URLSessionDelegate?, _ delegateQueue: OperationQueue?) -> URLSessionProtocol
 
-    init(authenticationController: AuthenticationController) {
+    convenience init(authenticationController: AuthenticationControllerProtocol) {
+        self.init(authenticationController: authenticationController, makeURLSession: {
+            URLSession(configuration: $0, delegate: $1, delegateQueue: $2)
+        })
+    }
+
+    init(authenticationController: AuthenticationControllerProtocol, makeURLSession: @escaping (_ configuration: URLSessionConfiguration, _ delegate: URLSessionDelegate?, _ delegateQueue: OperationQueue?) -> URLSessionProtocol) {
         self.authenticationController = authenticationController
+        self.makeURLSession = makeURLSession
     }
 
     public func urlSession(_: URLSession, task _: URLSessionTask, willPerformHTTPRedirection _: HTTPURLResponse, newRequest _: URLRequest, completionHandler: @escaping (URLRequest?) -> Void) {
@@ -20,11 +28,13 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
     }
 
     private func getDataFromServerWithSuccess(request: URLRequest, noRedirect: Bool, success: @escaping (_ response: URLResponse?) -> Void) {
-        var HTTPSessionDelegate: HTTPSession? = nil
+        var urlSessionDelegate: URLSessionDelegate? = nil
         if noRedirect {
-            HTTPSessionDelegate = HTTPSession(authenticationController: authenticationController)
+            urlSessionDelegate = self
         }
-        let session = URLSession(configuration: URLSessionConfiguration.default, delegate: HTTPSessionDelegate, delegateQueue: nil)
+        let session = makeURLSession(URLSessionConfiguration.default,
+                                     urlSessionDelegate,
+                                     nil)
         let task = session.dataTask(with: request) { _, response, error in
             if let error = error {
                 print(error)
@@ -98,15 +108,15 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
                     }
                 }
 
-                if let redirectURL = httpResponse.allHeaderFields["Location"] as? String,
-                   let newURL = URL(string: redirectURL)
-                {
-                    print("リダイレクト先のURL: \(newURL)")
+                if let redirectURL = httpResponse.allHeaderFields["Location"] as? String {
+                    print("リダイレクト先のURL: \(redirectURL)")
                     DispatchQueue.main.async {
-                        UIApplication.shared.open(newURL)
+                        self.authenticationController.open(urlString: redirectURL)
                     }
                 }
             }
         }
     }
 }
+
+extension HTTPSession: HTTPSessionProtocol {}

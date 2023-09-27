@@ -1,5 +1,5 @@
 //
-//  NFCReadingView.swift
+//  NFCReadingForUserVerificationView.swift
 //  MyNumberCardAuth
 //
 //  Created by c3lab on 2023/04/20.
@@ -8,11 +8,10 @@
 import Combine
 import SwiftUI
 
-struct NFCReadingView: View {
-    @Binding var queryDict: [String: String]?
+struct NFCReadingForUserVerificationView: View {
     @ObservedObject var authenticationController: AuthenticationController
     @FocusState private var isActive: Bool
-    @ObservedObject var controller: ViewController
+    @ObservedObject var controller: UserVerificationViewController
 
     var body: some View {
         VStack {
@@ -50,12 +49,8 @@ struct NFCReadingView: View {
                 }
                 .alert(isPresented: self.$authenticationController.isAlert) {
                     Alert(title: Text(self.authenticationController.messageTitle), message: Text(self.authenticationController.messageString), dismissButton: .default(Text("OK"), action: {
-                        if self.authenticationController.isErrorOpenURL == true {
-                            if self.authenticationController.openURL.isEmpty == false {
-                                if let openURL = URL(string: self.authenticationController.openURL) {
-                                    UIApplication.shared.open(openURL)
-                                }
-                            }
+                        if self.authenticationController.isErrorOpenURL {
+                            self.authenticationController.open(urlString: self.authenticationController.openURL)
                         }
                     }))
                 }
@@ -67,11 +62,8 @@ struct NFCReadingView: View {
             }.modifier(SmallButtonModifier(color: controller.getButtonColor()))
                 .alert(isPresented: self.$authenticationController.isLinkAlert) {
                     Alert(title: Text(self.authenticationController.messageTitle), message: Text(self.authenticationController.messageString), primaryButton: .default(Text("Contact page"), action: {
-                        if self.authenticationController.inquiryURL.isEmpty == false {
-                            if let openURL = URL(string: self.authenticationController.inquiryURL) {
-                                UIApplication.shared.open(openURL)
-                            }
-                        }
+                        self.authenticationController
+                            .open(urlString: self.authenticationController.inquiryURL)
                     }), secondaryButton: .default(Text("OK"), action: {}))
                 }
         }
@@ -86,8 +78,8 @@ struct NFCReadingView: View {
 
 struct NFCReadingView_Previews: PreviewProvider {
     @ObservedObject static var authenticationController: AuthenticationController = .init()
-    @ObservedObject static var controlller: ViewController = .init()
+    @ObservedObject static var controlller: UserVerificationViewController = .init()
     static var previews: some View {
-        NFCReadingView(queryDict: .constant([:]), authenticationController: authenticationController, controller: controlller)
+        NFCReadingForUserVerificationView(authenticationController: authenticationController, controller: controlller)
     }
 }

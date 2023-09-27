@@ -1,0 +1,38 @@
+{
+  "configurations" : [
+    {
+      "id" : "AD746B9A-3900-4B7C-9478-0740AB83B709",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:MyNumberCardAuth.xcodeproj",
+          "identifier" : "AD80228829F0B402009EA409",
+          "name" : "MyNumberCardAuth"
+        }
+      ]
+    },
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:MyNumberCardAuth.xcodeproj",
+      "identifier" : "AD80228829F0B402009EA409",
+      "name" : "MyNumberCardAuth"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:MyNumberCardAuth.xcodeproj",
+        "identifier" : "9F1F5DD02AADB6A3002FCD23",
+        "name" : "MyNumberCardAuthTests"
+      }
+    }
+  ],
+  "version" : 1
+}

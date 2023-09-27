@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum Mode {
+enum Mode: CaseIterable {
     case Login // ログイン
     case Registration // 登録
     case Replacement // 変更
@@ -28,7 +28,7 @@ enum Mode {
     }
 }
 
-enum ShowView {
+enum ShowView: CaseIterable {
     case UserVerificationView // 利用者証明用電子証明書読込View
     case SignatureView // 署名用電子証明書読込View
     case ExplanationView // アプリ説明画面
@@ -57,29 +57,8 @@ struct MyNumberCardAuthApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(urlComponents: $urlComponents, queryDict: $queryDict, authenticationController: authenticationController, controller: self.authenticationController.controller, controllerForSignature: self.authenticationController.controllerForSignature).onOpenURL(perform: { url in
-
-                let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
-                self.urlComponents = urlComponents
-                if let urlComponents = urlComponents {
-                    self.queryDict = generateQueryDictionary(from: urlComponents)
-                    if let query = queryDict {
-                        self.authenticationController.viewState = authenticationController.viewState.isViewMode(queryDict: query)
-                        self.authenticationController.runMode = authenticationController.runMode.isMode(queryDict: query)
-                        self.authenticationController.queryDict = query
-                        self.authenticationController.clear()
-                        self.authenticationController.setErrorPageURL(queryDict: query)
-
-                        if let actionURL = query["action_url"], let nonse = query["nonce"] {
-                            self.authenticationController.controller.inputPIN = ""
-                            self.authenticationController.controllerForSignature.inputPIN = ""
-                            self.authenticationController.controller.actionURL = actionURL
-                            self.authenticationController.controllerForSignature.actionURL = actionURL
-                            self.authenticationController.controller.nonce = nonse
-                            self.authenticationController.controllerForSignature.nonce = nonse
-                        }
-                    }
-                }
+            ContentView(authenticationController: authenticationController, controller: self.authenticationController.controllerForUserVerification, controllerForSignature: self.authenticationController.controllerForSignature).onOpenURL(perform: { url in
+                self.authenticationController.onOpenURL(url: url)
             })
         }
     }

@@ -10,36 +10,58 @@ import Foundation
 import JOSESwift
 import TRETJapanNFCReader_MIFARE_IndividualNumber
 
-public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
-    private var authenticationController:AuthenticationController
+public class AuthenticationManager: IndividualNumberReaderSessionDelegate {
+    weak var authenticationController: AuthenticationControllerProtocol?
     private var individualNumberCardSignatureType: IndividualNumberCardSignatureType?
     private var actionURL: String?
-    private var reader: IndividualNumberReader!
+    private let makeReader: (AuthenticationManager) -> IndividualNumberReaderProtocol
+    private var reader: IndividualNumberReaderProtocol!
+    private let makeHTTPSession: (AuthenticationControllerProtocol) -> HTTPSessionProtocol
+    private let makeURLSession: () -> URLSessionProtocol
 
-    init(authenticationController: AuthenticationController) {
-        self.authenticationController = authenticationController
+    convenience init() {
+        self.init(makeReader: { IndividualNumberReader(delegate: $0) },
+                  makeHTTPSession: { HTTPSession(authenticationController: $0) },
+                  makeURLSession: { URLSession.shared })
     }
 
+    init(makeReader: @escaping (AuthenticationManager) -> IndividualNumberReaderProtocol,
+         makeHTTPSession: @escaping (AuthenticationControllerProtocol) -> HTTPSessionProtocol,
+         makeURLSession: @escaping () -> URLSessionProtocol)
+    {
+        self.makeReader = makeReader
+        self.makeHTTPSession = makeHTTPSession
+        self.makeURLSession = makeURLSession
+    }
+
+    /// 本メソッドを呼び出す前に、authenticationController プロパティを設定しておくこと
     public func authenticateForUserVerification(pin: String, nonce: String, actionURL: String) {
+        guard let authenticationController = authenticationController else {
+            return
+        }
         self.actionURL = actionURL
-        self.authenticationController.nonce = nonce
+        authenticationController.nonce = nonce
         individualNumberCardSignatureType = .userAuthentication
         computeDigitalSignatureForUserVerification(userAuthenticationPIN: pin, dataToSign: nonce)
     }
 
+    /// 本メソッドを呼び出す前に、authenticationController プロパティを設定しておくこと
     public func authenticateForSignature(pin: String, nonce: String, actionURL: String) {
+        guard let authenticationController = authenticationController else {
+            return
+        }
         self.actionURL = actionURL
-        self.authenticationController.nonce = nonce
+        authenticationController.nonce = nonce
         individualNumberCardSignatureType = .digitalSignature
         computeDigitalCertificateForSignature(signaturePIN: pin, dataToSign: nonce)
     }
 
     public func individualNumberReaderSession(didRead individualNumberCardData: TRETJapanNFCReader_MIFARE_IndividualNumber.IndividualNumberCardData) {
-        switch self.individualNumberCardSignatureType {
+        switch individualNumberCardSignatureType {
         case .userAuthentication:
             if let digitalSignature = individualNumberCardData.computeDigitalSignatureForUserAuthentication,
                let digitalCertificate = individualNumberCardData.userAuthenticationCertificate,
-               let actionURL = self.actionURL
+               let actionURL = actionURL
             {
                 let digitalSignatureBase64URLEncoded = encodingBase64URL(from: digitalSignature)!
                 let base64DigitalCertificate = Data(digitalCertificate).base64EncodedString()
@@ -47,11 +69,10 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
 
                 sendVerifySignatureRequest(digitalSignature: digitalSignatureBase64URLEncoded, digitalCertificate: pemDigitalCertificate, actionURL: actionURL)
             }
-            break
         case .digitalSignature:
             if let digitalSignature = individualNumberCardData.computeDigitalSignatureForDigitalSignature,
                let digitalCertificate = individualNumberCardData.digitalSignatureCertificate,
-               let actionURL = self.actionURL
+               let actionURL = actionURL
             {
                 let digitalSignatureBase64URLEncoded = encodingBase64URL(from: digitalSignature)!
                 let base64DigitalCertificate = Data(digitalCertificate).base64EncodedString()
@@ -68,7 +89,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
 
     private func computeDigitalSignatureForUserVerification(userAuthenticationPIN: String, dataToSign: String) {
         let dataToSignByteArray = [UInt8](dataToSign.utf8)
-        reader = IndividualNumberReader(delegate: self)
+        reader = makeReader(self)
         // 以下処理はNFC読み取りが非同期で行われ、完了するとindividualNumberReaderSessionが呼び出される
         reader.computeDigitalSignature(signatureType: individualNumberCardSignatureType!,
                                        pin: userAuthenticationPIN,
@@ -77,7 +98,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
 
     private func computeDigitalCertificateForSignature(signaturePIN: String, dataToSign: String) {
         let dataToSignByteArray = [UInt8](dataToSign.utf8)
-        reader = IndividualNumberReader(delegate: self)
+        reader = makeReader(self)
         // 以下処理はNFC読み取りが非同期で行われ、完了するとindividualNumberReaderSessionが呼び出される
         reader.computeDigitalSignature(signatureType: individualNumberCardSignatureType!,
                                        pin: signaturePIN,
@@ -86,12 +107,16 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
 
     private func sendVerifySignatureRequest(digitalSignature: String, digitalCertificate: String, actionURL: String) {
         Task {
+            guard let authenticationController = self.authenticationController else {
+                return
+            }
+
             let payload = "{ \"claim\": \"" + digitalCertificate + "\" }"
             let encryptedCertificate = try? await encryptJWE(from: [UInt8](payload.utf8))
             var request = URLRequest(url: URL(string: actionURL)!)
 
             var mode: String = ""
-            switch self.authenticationController.runMode {
+            switch authenticationController.runMode {
             case .Login:
                 mode = "login"
             case .Registration:
@@ -101,7 +126,7 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
             }
 
             var certificateName: String = ""
-            switch self.authenticationController.viewState {
+            switch authenticationController.viewState {
             case .UserVerificationView:
                 certificateName = "encryptedUserAuthenticationCertificate"
             case .SignatureView:
@@ -115,16 +140,16 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
             var requestBodyComponents = URLComponents()
             requestBodyComponents.queryItems = [URLQueryItem(name: "mode", value: mode),
                                                 URLQueryItem(name: certificateName, value: encryptedCertificate),
-                                                URLQueryItem(name: "applicantData", value: self.authenticationController.nonce),
+                                                URLQueryItem(name: "applicantData", value: authenticationController.nonce),
                                                 URLQueryItem(name: "sign", value: digitalSignature)]
 
             request.httpBody = requestBodyComponents.query?.data(using: .utf8)
 
-            let session = HTTPSession(authenticationController: self.authenticationController)
+            let session = self.makeHTTPSession(authenticationController)
             session.openRedirectURLOnSafari(request: request)
         }
     }
-    
+
     private func encodingBase64URL(from: [UInt8]) -> String? {
         let fromData = Data(from)
         let fromBase64Encoded = fromData.base64EncodedString(options: [])
@@ -144,7 +169,9 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
         let jwksUrl = strUrl + "/protocol/openid-connect/certs"
 
         let request = URLRequest(url: URL(string: jwksUrl)!)
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let urlSession = makeURLSession()
+        let (data, _) = try await urlSession.data(for: request,
+                                                  delegate: nil)
         let jwks = try JWKSet(data: data)
 
         for jwk in jwks {
@@ -162,3 +189,5 @@ public class AuthenticationManager:IndividualNumberReaderSessionDelegate {
         return ""
     }
 }
+
+extension AuthenticationManager: AuthenticationManagerProtocol {}
