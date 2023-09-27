@@ -53,7 +53,8 @@ public class DataModelManager extends AbstractDataModelManager {
                 userRequest.setCertificateType(CertificateType.ENCRYPTED_USER_AUTHENTICATION);
                 break;
             case "registration":
-                // フォールスルー
+                userRequest.setCertificateType(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE);
+                break;
             case "replacement":
                 userRequest.setCertificateType(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE);
                 break;
