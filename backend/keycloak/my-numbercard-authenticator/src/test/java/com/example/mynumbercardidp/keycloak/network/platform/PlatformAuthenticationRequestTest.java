@@ -14,13 +14,15 @@ public class PlatformAuthenticationRequestTest {
     private PlatformAuthenticationRequest platformAuthenticationRequest = new PlatformAuthenticationRequest("sender");
     private PlatformAuthenticationRequest.RequestInfo requestInfo = new RequestInfo("sender");
 
-    public PlatformAuthenticationRequest setTestValues(CertificateType certificateType, String certificate, String applicantData, String sign) {
+    public PlatformAuthenticationRequest setTestValues(CertificateType certificateType, String certificate, String applicantData, String nonceData, String sign, String nonceSign) {
         PlatformAuthenticationRequest expected = new PlatformAuthenticationRequest("sender") {
             {
                 setCertificateType(certificateType);
                 setCertificate(certificate);
                 setApplicantData(applicantData);
+                setNonceData(nonceData);
                 setSign(sign);
+                setNonceSign(nonceSign);
             }
         };
         return expected;
@@ -81,42 +83,74 @@ public class PlatformAuthenticationRequestTest {
 
     @Test
     public void testSetCertificateType() {
-        PlatformAuthenticationRequest expected = setTestValues(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE, null, null, null);
+        PlatformAuthenticationRequest expected = setTestValues(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE, null, null, null, null, null);
         PlatformAuthenticationRequest result = platformAuthenticationRequest.setCertificateType(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE);
         assertEquals(expected.getCertificateType(), result.getCertificateType());
         assertEquals(expected.getCertificate(), result.getCertificate());
         assertEquals(expected.getApplicantData(), result.getApplicantData());
+        assertEquals(expected.getNonceData(), result.getNonceData());
         assertEquals(expected.getSign(), result.getSign());
+        assertEquals(expected.getNonceSign(), result.getNonceSign());
     }
 
     @Test
     public void testSetCertificate() {
-        PlatformAuthenticationRequest expected = setTestValues(null, "certificate", null, null);
+        PlatformAuthenticationRequest expected = setTestValues(null, "certificate", null, null, null, null);
         PlatformAuthenticationRequest result = platformAuthenticationRequest.setCertificate("certificate");
         assertEquals(expected.getCertificateType(), result.getCertificateType());
         assertEquals(expected.getCertificate(), result.getCertificate());
         assertEquals(expected.getApplicantData(), result.getApplicantData());
+        assertEquals(expected.getNonceData(), result.getNonceData());
         assertEquals(expected.getSign(), result.getSign());
+        assertEquals(expected.getNonceSign(), result.getNonceSign());
     }
 
     @Test
     public void testSetApplicantData() {
-        PlatformAuthenticationRequest expected = setTestValues(null, null, "applicantData", null);
+        PlatformAuthenticationRequest expected = setTestValues(null, null, "applicantData", null, null, null);
         PlatformAuthenticationRequest result = platformAuthenticationRequest.setApplicantData("applicantData");
         assertEquals(expected.getCertificateType(), result.getCertificateType());
         assertEquals(expected.getCertificate(), result.getCertificate());
         assertEquals(expected.getApplicantData(), result.getApplicantData());
+        assertEquals(expected.getNonceData(), result.getNonceData());
         assertEquals(expected.getSign(), result.getSign());
+        assertEquals(expected.getNonceSign(), result.getNonceSign());
+    }
+
+        @Test
+    public void testSetNonceData() {
+        PlatformAuthenticationRequest expected = setTestValues(null, null, null, "nonceData", null, null);
+        PlatformAuthenticationRequest result = platformAuthenticationRequest.setNonceData("nonceData");
+        assertEquals(expected.getCertificateType(), result.getCertificateType());
+        assertEquals(expected.getCertificate(), result.getCertificate());
+        assertEquals(expected.getApplicantData(), result.getApplicantData());
+        assertEquals(expected.getNonceData(), result.getNonceData());
+        assertEquals(expected.getSign(), result.getSign());
+        assertEquals(expected.getNonceSign(), result.getNonceSign());
     }
 
     @Test
     public void testSetSign() {
-        PlatformAuthenticationRequest expected = setTestValues(null, null, null, "sign");
+        PlatformAuthenticationRequest expected = setTestValues(null, null, null, null, "sign", null);
         PlatformAuthenticationRequest result = platformAuthenticationRequest.setSign("sign");
         assertEquals(expected.getCertificateType(), result.getCertificateType());
         assertEquals(expected.getCertificate(), result.getCertificate());
         assertEquals(expected.getApplicantData(), result.getApplicantData());
+        assertEquals(expected.getNonceData(), result.getNonceData());
         assertEquals(expected.getSign(), result.getSign());
+        assertEquals(expected.getNonceSign(), result.getNonceSign());
+    }
+
+    @Test
+    public void testNonceSign() {
+        PlatformAuthenticationRequest expected = setTestValues(null, null, null, null, null, "nonceSign");
+        PlatformAuthenticationRequest result = platformAuthenticationRequest.setNonceSign("nonceSign");
+        assertEquals(expected.getCertificateType(), result.getCertificateType());
+        assertEquals(expected.getCertificate(), result.getCertificate());
+        assertEquals(expected.getApplicantData(), result.getApplicantData());
+        assertEquals(expected.getNonceData(), result.getNonceData());
+        assertEquals(expected.getSign(), result.getSign());
+        assertEquals(expected.getNonceSign(), result.getNonceSign());
     }
 
     @Test

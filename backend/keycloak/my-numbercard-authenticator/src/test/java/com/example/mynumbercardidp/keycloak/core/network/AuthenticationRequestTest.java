@@ -218,7 +218,7 @@ public class AuthenticationRequestTest {
     }
 
     @Test
-    public void testValidateHasValuesWithoutApplicantData() {
+    public void testValidateHasValuesWithoutApplicantDataAndNonceData() {
         assertThrows(IllegalStateException.class, () -> {
             authenticationRequest.setCertificateType(CertificateType.ENCRYPTED_USER_AUTHENTICATION);
             authenticationRequest.setCertificate("certificate");
@@ -232,13 +232,69 @@ public class AuthenticationRequestTest {
     }
 
     @Test
-    public void testValidateHasValuesWithoutSign() {
+    public void testValidateHasValuesWithoutApplicantData() {
+        assertDoesNotThrow(() -> {
+            authenticationRequest.setCertificateType(CertificateType.ENCRYPTED_USER_AUTHENTICATION);
+            authenticationRequest.setCertificate("certificate");
+            authenticationRequest.setApplicantData("");
+            authenticationRequest.setNonceData("nonceData");
+            authenticationRequest.setSign("sign");
+            authenticationRequest.setNonceSign("nonceSign");
+            authenticationRequest.setActionMode("login");
+            authenticationRequest.validateHasValues();
+        });
+    }
+
+    @Test
+    public void testValidateHasValuesWithoutNonceData() {
+        assertDoesNotThrow(() -> {
+            authenticationRequest.setCertificateType(CertificateType.ENCRYPTED_USER_AUTHENTICATION);
+            authenticationRequest.setCertificate("certificate");
+            authenticationRequest.setApplicantData("applicantData");
+            authenticationRequest.setNonceData("");
+            authenticationRequest.setSign("sign");
+            authenticationRequest.setNonceSign("nonceSign");
+            authenticationRequest.setActionMode("login");
+            authenticationRequest.validateHasValues();
+        });
+    }
+
+    @Test
+    public void testValidateHasValuesWithoutSignAndNonceSign() {
         assertThrows(IllegalStateException.class, () -> {
             authenticationRequest.setCertificateType(CertificateType.ENCRYPTED_USER_AUTHENTICATION);
             authenticationRequest.setCertificate("certificate");
             authenticationRequest.setApplicantData("applicantData");
             authenticationRequest.setNonceData("nonceData");
             authenticationRequest.setSign("");
+            authenticationRequest.setNonceSign("");
+            authenticationRequest.setActionMode("login");
+            authenticationRequest.validateHasValues();
+        });
+    }
+
+    @Test
+    public void testValidateHasValuesWithoutSign() {
+        assertDoesNotThrow(() -> {
+            authenticationRequest.setCertificateType(CertificateType.ENCRYPTED_USER_AUTHENTICATION);
+            authenticationRequest.setCertificate("certificate");
+            authenticationRequest.setApplicantData("applicantData");
+            authenticationRequest.setNonceData("nonceData");
+            authenticationRequest.setSign("");
+            authenticationRequest.setNonceSign("nonceSign");
+            authenticationRequest.setActionMode("login");
+            authenticationRequest.validateHasValues();
+        });
+    }
+
+    @Test
+    public void testValidateHasValuesWithoutNonceSign() {
+        assertDoesNotThrow(() -> {
+            authenticationRequest.setCertificateType(CertificateType.ENCRYPTED_USER_AUTHENTICATION);
+            authenticationRequest.setCertificate("certificate");
+            authenticationRequest.setApplicantData("applicantData");
+            authenticationRequest.setNonceData("nonceData");
+            authenticationRequest.setSign("sign");
             authenticationRequest.setNonceSign("");
             authenticationRequest.setActionMode("login");
             authenticationRequest.validateHasValues();
