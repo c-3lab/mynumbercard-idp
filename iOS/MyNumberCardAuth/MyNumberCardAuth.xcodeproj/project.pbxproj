@@ -57,13 +57,6 @@
 			remoteGlobalIDString = AD80228829F0B402009EA409;
 			remoteInfo = MyNumberCardAuth;
 		};
-		9F1F5DF42AADBB55002FCD23 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AD80228129F0B402009EA409 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AD80228829F0B402009EA409;
-			remoteInfo = MyNumberCardAuth;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -127,13 +120,6 @@
 
 /* Begin PBXFrameworksBuildPhase section */
 		9F1F5DCE2AADB6A3002FCD23 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9F1F5DEB2AADBB55002FCD23 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -326,24 +312,6 @@
 			productReference = 9F1F5DD12AADB6A3002FCD23 /* MyNumberCardAuthTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		9F1F5DED2AADBB55002FCD23 /* MyNumberCardAuthUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 9F1F5DF82AADBB55002FCD23 /* Build configuration list for PBXNativeTarget "MyNumberCardAuthUITests" */;
-			buildPhases = (
-				9F1F5DEA2AADBB55002FCD23 /* Sources */,
-				9F1F5DEB2AADBB55002FCD23 /* Frameworks */,
-				9F1F5DEC2AADBB55002FCD23 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				9F1F5DF52AADBB55002FCD23 /* PBXTargetDependency */,
-			);
-			name = MyNumberCardAuthUITests;
-			productName = MyNumberCardAuthUITests;
-			productReference = 9F1F5DEE2AADBB55002FCD23 /* MyNumberCardAuthUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 		AD80228829F0B402009EA409 /* MyNumberCardAuth */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AD80229729F0B403009EA409 /* Build configuration list for PBXNativeTarget "MyNumberCardAuth" */;
@@ -382,10 +350,6 @@
 						CreatedOnToolsVersion = 14.3;
 						TestTargetID = AD80228829F0B402009EA409;
 					};
-					9F1F5DED2AADBB55002FCD23 = {
-						CreatedOnToolsVersion = 14.3;
-						TestTargetID = AD80228829F0B402009EA409;
-					};
 					AD80228829F0B402009EA409 = {
 						CreatedOnToolsVersion = 14.2;
 					};
@@ -410,7 +374,6 @@
 			targets = (
 				AD80228829F0B402009EA409 /* MyNumberCardAuth */,
 				9F1F5DD02AADB6A3002FCD23 /* MyNumberCardAuthTests */,
-				9F1F5DED2AADBB55002FCD23 /* MyNumberCardAuthUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -422,13 +385,6 @@
 			files = (
 				9BCF201E2ABA36BA008EEF8D /* AuthenticationManagerCertificate.txt in Resources */,
 				9BCF201B2AB9C031008EEF8D /* AuthenticationManagerJwkSet.json in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9F1F5DEC2AADBB55002FCD23 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -488,13 +444,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9F1F5DEA2AADBB55002FCD23 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		AD80228529F0B402009EA409 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -527,11 +476,6 @@
 			isa = PBXTargetDependency;
 			target = AD80228829F0B402009EA409 /* MyNumberCardAuth */;
 			targetProxy = 9F1F5DD52AADB6A3002FCD23 /* PBXContainerItemProxy */;
-		};
-		9F1F5DF52AADBB55002FCD23 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AD80228829F0B402009EA409 /* MyNumberCardAuth */;
-			targetProxy = 9F1F5DF42AADBB55002FCD23 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -583,42 +527,6 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyNumberCardAuth.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MyNumberCardAuth";
-			};
-			name = Release;
-		};
-		9F1F5DF62AADBB55002FCD23 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8WFPCA36MV;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.MyNumberCardAuthUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = MyNumberCardAuth;
-			};
-			name = Debug;
-		};
-		9F1F5DF72AADBB55002FCD23 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8WFPCA36MV;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.MyNumberCardAuthUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = MyNumberCardAuth;
 			};
 			name = Release;
 		};
@@ -810,15 +718,6 @@
 			buildConfigurations = (
 				9F1F5DD72AADB6A3002FCD23 /* Debug */,
 				9F1F5DD82AADB6A3002FCD23 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		9F1F5DF82AADBB55002FCD23 /* Build configuration list for PBXNativeTarget "MyNumberCardAuthUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				9F1F5DF62AADBB55002FCD23 /* Debug */,
-				9F1F5DF72AADBB55002FCD23 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
