@@ -13,6 +13,16 @@
 - クライアント
   - OS: Windows 10 build 19044.2846
   - ブラウザ: Google Chrome (version 112.0.5615.138)
+
+### Keycloakのテストカバレッジについて
+以下のファイルはユニットテスト(jest)のみで確認できない関数があるため結合テストで確認を行なっています。そのため、ユニットテストにおけるカバレッジは100%を下回ります。  
+- `backend/keycloak/my-numbercard-authenticator/src/test/resources/theme/mynumbercard-auth/login/resources/js/__tests__/login.test.js`  
+・UIに対する確認が必要なため  
+
+以下のファイルは通ることが不可能だと考えられる分岐が存在するため、ユニットテストにおけるカバレッジは100%を下回ります。  
+- `backend/keycloak/my-numbercard-authenticator/src/test/java/com/example/mynumbercardidp/keycloak/rest/CustomAttributeProviderTest.java`  
+・想定されているエラーと違うエラーが発生するため  
+
 ## インストール
 1. このリポジトリをダウンロードします。すでに実行している場合は次へ進んでください。  
    ```
