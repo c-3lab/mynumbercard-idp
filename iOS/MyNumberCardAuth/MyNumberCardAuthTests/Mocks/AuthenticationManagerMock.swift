@@ -15,9 +15,11 @@ class AuthenticationManagerMock: AuthenticationManagerProtocol {
     }
 
     private(set) var authenticationControllerSetCallCount = 0
+    var authenticationControllerStringSetHandler: ((Int) -> Void)?
     var authenticationController: AuthenticationControllerProtocol? = nil {
         didSet {
             authenticationControllerSetCallCount += 1
+            authenticationControllerStringSetHandler?(authenticationControllerSetCallCount)
         }
     }
 

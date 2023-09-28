@@ -73,7 +73,6 @@ public class AuthenticationManager: IndividualNumberReaderSessionDelegate {
             if let digitalSignature = individualNumberCardData.computeDigitalSignatureForDigitalSignature,
                let digitalCertificate = individualNumberCardData.digitalSignatureCertificate,
                let actionURL = actionURL
-
             {
                 let digitalSignatureBase64URLEncoded = encodingBase64URL(from: digitalSignature)!
                 let base64DigitalCertificate = Data(digitalCertificate).base64EncodedString()

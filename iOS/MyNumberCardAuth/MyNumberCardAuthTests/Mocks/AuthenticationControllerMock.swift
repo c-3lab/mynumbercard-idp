@@ -80,13 +80,31 @@ class AuthenticationControllerMock: AuthenticationControllerProtocol {
     }
 
     private(set) var nonceSetCallCount = 0
-    var nonce: String = "" { didSet { nonceSetCallCount += 1 } }
+    var nonceSetHandler: ((String) -> Void)?
+    var nonce: String = "" {
+        didSet {
+            nonceSetCallCount += 1
+            nonceSetHandler?(nonce)
+        }
+    }
 
     private(set) var queryDictSetCallCount = 0
-    var queryDict: [String: String]? = nil { didSet { queryDictSetCallCount += 1 } }
+    var queryDictSetHandler: (([String: String]?) -> Void)?
+    var queryDict: [String: String]? = nil {
+        didSet {
+            queryDictSetCallCount += 1
+            queryDictSetHandler?(queryDict)
+        }
+    }
 
     private(set) var openURLSetCallCount = 0
-    var openURL: String = "" { didSet { openURLSetCallCount += 1 } }
+    var openURLSetHandler: ((String) -> Void)?
+    var openURL: String = "" {
+        didSet {
+            openURLSetCallCount += 1
+            openURLSetHandler?(openURL)
+        }
+    }
 
     private(set) var controllerForUserVerificationSetCallCount = 0
     private var _controllerForUserVerification: UserVerificationViewController! { didSet { controllerForUserVerificationSetCallCount += 1 } }
@@ -103,16 +121,40 @@ class AuthenticationControllerMock: AuthenticationControllerProtocol {
     }
 
     private(set) var termsOfUseURLSetCallCount = 0
-    var termsOfUseURL: String = "" { didSet { termsOfUseURLSetCallCount += 1 } }
+    var termsOfUseURLSetHandler: ((String) -> Void)?
+    var termsOfUseURL: String = "" {
+        didSet {
+            termsOfUseURLSetCallCount += 1
+            termsOfUseURLSetHandler?(termsOfUseURL)
+        }
+    }
 
     private(set) var privacyPolicyURLSetCallCount = 0
-    var privacyPolicyURL: String = "" { didSet { privacyPolicyURLSetCallCount += 1 } }
+    var privacyPolicyURLSetHandler: ((String) -> Void)?
+    var privacyPolicyURL: String = "" {
+        didSet {
+            privacyPolicyURLSetCallCount += 1
+            privacyPolicyURLSetHandler?(privacyPolicyURL)
+        }
+    }
 
     private(set) var protectionPolicyURLSetCallCount = 0
-    var protectionPolicyURL: String = "" { didSet { protectionPolicyURLSetCallCount += 1 } }
+    var protectionPolicyURLSetHandler: ((String) -> Void)?
+    var protectionPolicyURL: String = "" {
+        didSet {
+            protectionPolicyURLSetCallCount += 1
+            protectionPolicyURLSetHandler?(protectionPolicyURL)
+        }
+    }
 
     private(set) var inquiryURLSetCallCount = 0
-    var inquiryURL: String = "" { didSet { inquiryURLSetCallCount += 1 } }
+    var inquiryURLSetHandler: ((String) -> Void)?
+    var inquiryURL: String = "" {
+        didSet {
+            inquiryURLSetCallCount += 1
+            inquiryURLSetHandler?(inquiryURL)
+        }
+    }
 
     private(set) var clearCallCount = 0
     var clearHandler: (() -> Void)?

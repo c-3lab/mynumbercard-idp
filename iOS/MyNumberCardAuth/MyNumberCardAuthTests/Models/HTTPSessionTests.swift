@@ -23,7 +23,7 @@ final class HTTPSessionTests: XCTestCase {
         let controller = AuthenticationControllerMock()
         let error: Error? = NSError(domain: "NSURLErrorDomain", code: NSURLErrorCannotFindHost)
         guard let helper = helperForTestingOpenRedirectURLOnSafari(using: controller,
-                                                                   urlString: "https://cannotfindhost.co.jp",
+                                                                   urlString: "https://cannotfindhost.example.co.jp",
                                                                    responseStatusCode: nil,
                                                                    responseHeaderFields: nil,
                                                                    responseError: error)
@@ -311,6 +311,11 @@ final class HTTPSessionTests: XCTestCase {
             XCTAssertEqual(controller.viewState, .SignatureView)
             XCTAssertEqual(controller.runMode, .Replacement)
             XCTAssertTrue(controller.isAlert)
+            if xActionUrlString == nil {
+                XCTAssertEqual(controller.controllerForSignature.actionURL, "")
+            } else {
+                XCTAssertEqual(controller.controllerForSignature.actionURL, xActionUrlString)
+            }
             XCTAssertEqual(controller.messageTitle,
                            String(localized: "Reloading My Number Card", comment: "マイナンバーカードの再読み込み"))
             XCTAssertEqual(controller.messageString,
@@ -354,9 +359,7 @@ final class HTTPSessionTests: XCTestCase {
         helper.doTest()
 
         // expectation達が条件を満たすのを待つ
-        var expectations = helper.expectations
-        expectations.append(expectation)
-        wait(for: expectations, timeout: 0.3)
+        waitForExpectations(timeout: 0.3)
         // controllerの中身のAssertion
         XCTAssertEqual(openURLString, "https://example.com/redirect")
     }

@@ -16,8 +16,8 @@ final class AuthenticationManagerTests: XCTestCase {
         AuthenticationManagerTests.loadStringFromBundle(forResource: "AuthenticationManagerCertificate",
                                                         withExtension: "txt").flatMap { Data(base64URLEncoded: $0) }
 
-    private static let certs: Data! =
-        AuthenticationManagerTests.loadDataFromBundle(forResource: "AuthenticationManagerCerts", withExtension: "json")
+    private static let jwkSet: Data! =
+        AuthenticationManagerTests.loadDataFromBundle(forResource: "AuthenticationManagerJwkSet", withExtension: "json")
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -39,21 +39,49 @@ final class AuthenticationManagerTests: XCTestCase {
 
                 var manager: AuthenticationManager!
                 let readerMock = IndividualNumberReaderMock()
-                let readerComputeDigitalSignatureExpectation = expectation(description: "reader.computeDigitalSignature")
+                let readerComputeDigitalSignatureForUserAuthenticationExpectation = expectation(description: "reader.computeDigitalSignatureForUserAuthentication")
                 readerMock.computeDigitalSignatureHandler = {
                     XCTAssertEqual($0, .userAuthentication)
                     XCTAssertEqual($1, "1234")
                     XCTAssertEqual($2, [UInt8]("0123456789".utf8))
                     var cardData = TRETJapanNFCReader_MIFARE_IndividualNumber.IndividualNumberCardData()
-                    cardData.computeDigitalSignatureForUserAuthentication = Array("5678".utf8)
-                    cardData.userAuthenticationCertificate = validCertificate ? Array(Self.certificate) : [UInt8]("5678901234".utf8)
+                    cardData.computeDigitalSignatureForUserAuthentication = [UInt8]("5678".utf8)
+                    cardData.userAuthenticationCertificate = validCertificate ? [UInt8](Self.certificate) : [UInt8]("5678901234".utf8)
                     manager.individualNumberReaderSession(didRead: cardData)
-                    readerComputeDigitalSignatureExpectation.fulfill()
+                    readerComputeDigitalSignatureForUserAuthenticationExpectation.fulfill()
                 }
                 let httpSessionMock = HTTPSessionMock()
                 let httpSessionOpenRedirectURLOnSafariExpectation = expectation(description: "httpSession.openRedirectURLOnSafari")
                 httpSessionMock.openRedirectURLOnSafariHandler = { request in
                     XCTAssertEqual(request.url?.absoluteString, "https://example.com/realms/1")
+
+                    guard let httpBody = request.httpBody else {
+                        XCTFail()
+                        return
+                    }
+                    guard let formItems = Self.decodeFormItems(from: httpBody) else {
+                        XCTFail()
+                        return
+                    }
+                    switch runMode {
+                    case .Login:
+                        XCTAssertEqual(formItems["mode"], "login")
+                    case .Registration:
+                        XCTAssertEqual(formItems["mode"], "registration")
+                    case .Replacement:
+                        XCTAssertEqual(formItems["mode"], "replacement")
+                    }
+                    switch viewState {
+                    case .UserVerificationView:
+                        XCTAssertNotNil(formItems["encryptedUserAuthenticationCertificate"])
+                    case .SignatureView:
+                        XCTAssertNotNil(formItems["encryptedDigitalSignatureCertificate"])
+                    case .ExplanationView:
+                        break
+                    }
+                    XCTAssertEqual(formItems["applicantData"], "0123456789")
+                    XCTAssertEqual(formItems["sign"], Data([UInt8]("5678".utf8)).base64EncodedString())
+
                     httpSessionOpenRedirectURLOnSafariExpectation.fulfill()
                 }
                 let urlSessionMock = URLSessionMock()
@@ -62,7 +90,7 @@ final class AuthenticationManagerTests: XCTestCase {
                     request, _ in
                     XCTAssertEqual(request.url?.absoluteString, "https://example.com/realms/1/protocol/openid-connect/certs")
                     urlSessionDataExpectation.fulfill()
-                    return (validCerts ? Self.certs : Data(),
+                    return (validCerts ? Self.jwkSet : Data(),
                             URLResponse())
                 }
                 urlSessionMock.dataHandler = dataHandler
@@ -81,13 +109,10 @@ final class AuthenticationManagerTests: XCTestCase {
                 manager.authenticationController = controller
 
                 manager.authenticateForUserVerification(pin: "1234",
-                                                        nonce: "0123456789",
-                                                        actionURL: "https://example.com/realms/1")
+                                                        nonce: "0123456789", actionURL: "https://example.com/realms/1")
 
                 waitForExpectations(timeout: 0.3)
-                XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 1)
-                XCTAssertEqual(httpSessionMock.openRedirectURLOnSafariCallCount, 1)
-                XCTAssertEqual(urlSessionMock.dataCallCount, 1)
+                XCTAssertEqual(controller.nonce, "0123456789")
         }
 
         for mode in Mode.allCases {
@@ -113,21 +138,49 @@ final class AuthenticationManagerTests: XCTestCase {
 
                 var manager: AuthenticationManager!
                 let readerMock = IndividualNumberReaderMock()
-                let readerComputeDigitalSignatureExpectation = expectation(description: "reader.computeDigitalSignature")
+                let readerComputeDigitalSignatureForSignatureExpectation = expectation(description: "reader.computeDigitalSignatureForSignature")
                 readerMock.computeDigitalSignatureHandler = {
                     XCTAssertEqual($0, .digitalSignature)
                     XCTAssertEqual($1, "7890cd")
                     XCTAssertEqual($2, [UInt8]("7890123456".utf8))
                     var cardData = TRETJapanNFCReader_MIFARE_IndividualNumber.IndividualNumberCardData()
-                    cardData.computeDigitalSignatureForDigitalSignature = Array("0123".utf8)
-                    cardData.digitalSignatureCertificate = validCertificate ? Array(Self.certificate) : [UInt8]("0123456789".utf8)
+                    cardData.computeDigitalSignatureForDigitalSignature = [UInt8]("0123".utf8)
+                    cardData.digitalSignatureCertificate = validCertificate ? [UInt8](Self.certificate) : [UInt8]("0123456789".utf8)
                     manager.individualNumberReaderSession(didRead: cardData)
-                    readerComputeDigitalSignatureExpectation.fulfill()
+                    readerComputeDigitalSignatureForSignatureExpectation.fulfill()
                 }
                 let httpSessionMock = HTTPSessionMock()
                 let httpSessionOpenRedirectURLOnSafariExpectation = expectation(description: "httpSession.openRedirectURLOnSafari")
                 httpSessionMock.openRedirectURLOnSafariHandler = { request in
                     XCTAssertEqual(request.url?.absoluteString, "https://example.com/realms/2")
+
+                    guard let httpBody = request.httpBody else {
+                        XCTFail()
+                        return
+                    }
+                    guard let formItems = Self.decodeFormItems(from: httpBody) else {
+                        XCTFail()
+                        return
+                    }
+                    switch runMode {
+                    case .Login:
+                        XCTAssertEqual(formItems["mode"], "login")
+                    case .Registration:
+                        XCTAssertEqual(formItems["mode"], "registration")
+                    case .Replacement:
+                        XCTAssertEqual(formItems["mode"], "replacement")
+                    }
+                    switch viewState {
+                    case .UserVerificationView:
+                        XCTAssertNotNil(formItems["encryptedUserAuthenticationCertificate"])
+                    case .SignatureView:
+                        XCTAssertNotNil(formItems["encryptedDigitalSignatureCertificate"])
+                    case .ExplanationView:
+                        break
+                    }
+                    XCTAssertEqual(formItems["applicantData"], "7890123456")
+                    XCTAssertEqual(formItems["sign"], Data([UInt8]("0123".utf8)).base64EncodedString())
+
                     httpSessionOpenRedirectURLOnSafariExpectation.fulfill()
                 }
                 let urlSessionMock = URLSessionMock()
@@ -136,7 +189,7 @@ final class AuthenticationManagerTests: XCTestCase {
                     request, _ in
                     XCTAssertEqual(request.url?.absoluteString, "https://example.com/realms/2/protocol/openid-connect/certs")
                     urlSessionDataExpectation.fulfill()
-                    return (validCerts ? Self.certs : Data(),
+                    return (validCerts ? Self.jwkSet : Data(),
                             URLResponse())
                 }
                 urlSessionMock.dataHandler = dataHandler
@@ -154,14 +207,11 @@ final class AuthenticationManagerTests: XCTestCase {
                 controller.viewState = viewState
                 manager.authenticationController = controller
 
-                manager.authenticateForSignature(pin: "7890cd",
-                                                 nonce: "7890123456",
+                manager.authenticateForSignature(pin: "7890cd", nonce: "7890123456",
                                                  actionURL: "https://example.com/realms/2")
 
                 waitForExpectations(timeout: 0.3)
-                XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 1)
-                XCTAssertEqual(httpSessionMock.openRedirectURLOnSafariCallCount, 1)
-                XCTAssertEqual(urlSessionMock.dataCallCount, 1)
+                XCTAssertEqual(controller.nonce, "7890123456")
         }
 
         for mode in Mode.allCases {
@@ -187,8 +237,7 @@ final class AuthenticationManagerTests: XCTestCase {
                                                 URLSessionMock()
                                             })
 
-        manager.authenticateForUserVerification(pin: "1234",
-                                                nonce: "0123456789",
+        manager.authenticateForUserVerification(pin: "1234", nonce: "0123456789",
                                                 actionURL: "https://example.com/realms/1")
 
         XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 0)
@@ -206,9 +255,7 @@ final class AuthenticationManagerTests: XCTestCase {
                                                 URLSessionMock()
                                             })
 
-        manager.authenticateForSignature(pin: "5678cd",
-                                         nonce: "5678901234",
-                                         actionURL: "https://example.com/realms/2")
+        manager.authenticateForSignature(pin: "5678cd", nonce: "5678901234", actionURL: "https://example.com/realms/2")
 
         XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 0)
     }
@@ -225,32 +272,30 @@ final class AuthenticationManagerTests: XCTestCase {
 
                 var manager: AuthenticationManager!
                 let readerMock = IndividualNumberReaderMock()
-                let readerComputeDigitalSignatureExpectation = expectation(description: "reader.computeDigitalSignature")
+                let readerJapanNFCReaderSessionExpectation = expectation(description: "reader.japanNFCReaderSession")
                 readerMock.computeDigitalSignatureHandler = {
                     XCTAssertEqual($0, .userAuthentication)
                     XCTAssertEqual($1, "1234")
                     XCTAssertEqual($2, [UInt8]("0123456789".utf8))
                     var cardData = TRETJapanNFCReader_MIFARE_IndividualNumber.IndividualNumberCardData()
-                    cardData.computeDigitalSignatureForUserAuthentication = Array("5678".utf8)
-                    cardData.userAuthenticationCertificate = validCertificate ? Array(Self.certificate) : [UInt8]("5678901234".utf8)
+                    cardData.computeDigitalSignatureForUserAuthentication = [UInt8]("5678".utf8)
+                    cardData.userAuthenticationCertificate = validCertificate ? [UInt8](Self.certificate) : [UInt8]("5678901234".utf8)
                     manager.japanNFCReaderSession(didInvalidateWithError: JapanNFCReaderError.nfcReadingUnavailable)
-                    readerComputeDigitalSignatureExpectation.fulfill()
+                    readerJapanNFCReaderSessionExpectation.fulfill()
                 }
                 let httpSessionMock = HTTPSessionMock()
                 let httpSessionOpenRedirectURLOnSafariExpectation = expectation(description: "httpSession.openRedirectURLOnSafari")
                 httpSessionOpenRedirectURLOnSafariExpectation.isInverted = true
-                httpSessionMock.openRedirectURLOnSafariHandler = { request in
-                    XCTAssertEqual(request.url?.absoluteString, "https://example.com/realms/1")
+                httpSessionMock.openRedirectURLOnSafariHandler = { _ in
                     httpSessionOpenRedirectURLOnSafariExpectation.fulfill()
                 }
                 let urlSessionMock = URLSessionMock()
                 let urlSessionDataExpectation = expectation(description: "urlSession.data")
                 urlSessionDataExpectation.isInverted = true
                 let dataHandler: ((URLRequest, URLSessionTaskDelegate?) async throws -> (Data, URLResponse))? = {
-                    request, _ in
-                    XCTAssertEqual(request.url?.absoluteString, "https://example.com/realms/1/protocol/openid-connect/certs")
+                    _, _ in
                     urlSessionDataExpectation.fulfill()
-                    return (validCerts ? Self.certs : Data(),
+                    return (validCerts ? Self.jwkSet : Data(),
                             URLResponse())
                 }
                 urlSessionMock.dataHandler = dataHandler
@@ -268,12 +313,11 @@ final class AuthenticationManagerTests: XCTestCase {
                 controller.viewState = viewState
                 manager.authenticationController = controller
 
-                manager.authenticateForUserVerification(pin: "1234",
-                                                        nonce: "0123456789",
+                manager.authenticateForUserVerification(pin: "1234", nonce: "0123456789",
                                                         actionURL: "https://example.com/realms/1")
 
                 waitForExpectations(timeout: 0.3)
-                XCTAssertEqual(readerMock.computeDigitalSignatureCallCount, 1)
+                XCTAssertEqual(controller.nonce, "0123456789")
         }
 
         for mode in Mode.allCases {
@@ -285,6 +329,17 @@ final class AuthenticationManagerTests: XCTestCase {
                 }
             }
         }
+    }
+
+    private static func decodeFormItems(from encodedData: Data) -> [String: String]? {
+        guard let string = String(data: encodedData, encoding: .utf8),
+              let components = URLComponents(string: "?" + string),
+              let queryItems = components.queryItems
+        else {
+            return nil
+        }
+
+        return Dictionary(uniqueKeysWithValues: queryItems.map { ($0.name, $0.value ?? "") })
     }
 
     private static func loadDataFromBundle(forResource resource: String,
