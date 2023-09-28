@@ -17,13 +17,13 @@ iOS 16.4ではユニバーサルリンクが動作しないことを確認しま
 ### iOSアプリのテストカバレッジについて
 以下のファイルはユニットテスト(XCTest)ではなく結合テストで確認を行なっています。そのため、ユニットテストにおけるカバレッジは100%を下回ります。  
 - `iOS/MyNumberCardAuth/MyNumberCardAuth/Views/`以下のファイル  
-・UIに対する確認が必要なため  
+  - UIに対する確認が必要なため  
 - `iOS/MyNumberCardAuth/MyNumberCardAuth/Controllers/AuthenticationController.swift`
 - `iOS/MyNumberCardAuth/MyNumberCardAuth/Models/HTTPSession.swift`  
 - `iOS/MyNumberCardAuth/MyNumberCardAuth/Models/AuthenticationManager.swift`
 - `iOS/MyNumberCardAuth/MyNumberCardAuth/MyNumberCardAuthApp.swift`
 - `iOS/MyNumberCardAuth/MyNumberCardAuth/Protocols/URLSessionProtocol.swift`  
-・テストコードでは動作しない処理が含まれているため
+  - テストコードでは動作しない処理が含まれているため
 
 ## 構築手順
 以下クローン後の手順になります。
@@ -54,7 +54,7 @@ Universal Links
     `applinks:example.com?mode=developer`  
 
 ## ngrokの設定(ローカルで動作確認をする場合)
-ローカルで動作確認をする場合、80番ポートについてはiOS端末からlocalhost環境にアクセスする方法としてngrokを使用することを想定しています。  
+ローカルで動作確認をする場合も、Universal Linksに必要な`apple-app-site-association`はHTTPSでアクセスする必要があるため、ngrokを使用することを想定しています。  
 PCのファイアウォールによってはiPhoneとの通信をブロックする場合があるので、必要に応じてファイアウォールの設定を変更してください。  
 また、WindowsのWSL内でDockerを立ち上げている場合は、ポートフォワーディングの設定が必要なため以下のコマンドを実行してください。
 
@@ -102,7 +102,7 @@ tunnels:
 
 ・以下のような実行結果が表示されます。  
 ```shell
-Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:80
+Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://xxx.xxx.xxx.xxx:80
 ```
 ポート80の`https://XXXXXXXXXX.XXXXX.XXX` が、iOSがWebサービスからアプリを起動する時のホスト名となりますのでAssociated DomainsのDomainsに設定してください。  
 
@@ -118,11 +118,11 @@ realm Oidp＞Configure＞Authentication＞my number card>X509 Relay Authenticato
 を開き、RP1_BASEURLにポート3000、KEYCLOAK_URLにポート8080の「netshコマンド」でポートフォワーディングするよう設定した「WindowsのIPアドレス：Windows側で受け付けるポート」を設定します。
 
 ```shell
-  RP1_BASEURL=https://XXXXXXXXXX.XXXXX.XXX
-  KEYCLOAK_URL=https://XXXXXXXXXX.XXXXX.XXX
+  RP1_BASEURL=http://xxx.xxx.xxx.xxx:3000
+  KEYCLOAK_URL=http://xxx.xxx.xxx.xxx:8080
 ```
 
-※各ポートの`https://XXXXXXXXXX.XXXXX.XXX`はngrok startを行うごとに切り替わりますので、都度、Associated DomainsのDomainsと、上記手順の設定値(.env、Keycloak管理コンソールのFrontend URL、Run URI of iOS application)を書き換えてください。
+※ポート80の`https://XXXXXXXXXX.XXXXX.XXX`はngrok startを行うごとに切り替わりますので、都度、Associated DomainsのDomainsと、上記手順の設定値(Run URI of iOS application)を書き換えてください。
 
 ### 実機にアプリを転送
 lighteningケーブルでiPhoneとMacを接続します。  
