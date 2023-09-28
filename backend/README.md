@@ -303,6 +303,32 @@
 19. エラーや警告が表示されないことを確認します。  
 20. 画面右上部にある `ログアウト` リンクをクリックします。  
 
+## KeycloakのJavaユニットテスト方法  
+1. ディレクトリ `backend/keycloak/my-numbercard-authenticator` へ移動します。  
+   ```
+   cd backend/keycloak/my-numbercard-authenticator
+   ```
+2. テストの実行とカバレッジレポートの出力用コマンドを実行します。  
+   ```
+   mvn jacoco:prepare-agent test install jacoco:report
+   ```
+3. テスト完了後作成される `backend/keycloak/my-numbercard-authenticator/target/site/jacoco/index.html` でカバレッジを確認します。  
+
+## KeycloakのJavaScriptユニットテスト方法  
+1. NodeJSをインストールします。  
+   ```
+   sudo apt install npm
+   ```
+2. テストに必要なパッケージをインストールします。  
+   ```
+   npm install
+   ```
+3. テストの実行とカバレッジレポートの出力用コマンドを実行します。  
+   ```
+   npm test -- --coverage
+   ```
+4. テスト完了後作成される `coverage/lcov-report/login.js.html` でカバレッジを確認します。  
+
 ## Docker コンテナの停止
 1. Docker ホストにて、このリポジトリをダウンロードし、配置したディレクトリへ移動します。  
 2. ディレクトリ `backend` へ移動します。  
