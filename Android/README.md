@@ -8,6 +8,12 @@ Androidでマイナンバーカードを読み取り、公的個人認証を行�
 - Pixel 6a
 - Android バージョン 13
 
+### Androidアプリのテストカバレッジについて
+以下のファイルはユニットテストではなく結合テストで確認を行なっています。そのため、ユニットテストにおけるカバレッジは100%を下回ります。  
+- `Android/MyNumberCardAuth/app/src/main/java/com/example/mynumbercardidp/ui/viewmodel\StateViewModel.kt`
+- `Android/MyNumberCardAuth/app/src/main/java/com/example/mynumbercardidp/ui/screen\CertReadScreen.kt`  
+  - テストコードでは動作しない処理が含まれているため
+
 ## リポジトリクローン後の操作
 以下、本リポジトリをクローン後の手順になります。  
 1. AndroidStudioを開き、「Open」を選択します。  
@@ -99,15 +105,28 @@ Android アプリリンクを用いてアプリを起動できるようにする
 ローカル環境で動作確認する場合は、[backendのREADME.md](../backend/README.md)を参照ください。
 
 ## ngrokの設定(ローカルで動作確認をする場合)
-ローカルで動作確認をする場合、Android端末からlocalhost環境にアクセスする方法としてngrokを使用することを想定しています。
+ローカルで動作確認をする場合、Android アプリリンクに必要なデジタルアセットリンクファイルはHTTPSでアクセスする必要があるため、ngrokを使用することを想定しています。  
+PCのファイアウォールによってはAndroid端末との通信をブロックする場合があるので、必要に応じてファイアウォールの設定を変更してください。  
+また、WindowsのWSL内でDockerを立ち上げている場合は、ポートフォワーディングの設定が必要なため以下のコマンドを実行してください。
+
+1. Windows、WSL内のLinux両方のIPアドレスを調べてメモしておきます。
+1. Windowsのコマンドプロンプト、もしくはPowerShellを管理者として実行します。
+1. 以下のコマンドを実行しサンプルRP（3000番ポート）への通信を転送するように設定します。  
+`netsh.exe interface portproxy add v4tov4 listenaddress=WindowsのIPアドレス listenport=Windows側で受け付けるポート※ connectaddress=LinuxのIPアドレス connectport=3000`
+1. 以下のコマンドを実行しKeycloak（8080番ポート）への通信を転送するように設定します。  
+`netsh.exe interface portproxy add v4tov4 listenaddress=WindowsのIPアドレス listenport=Windows側で受け付けるポート※ connectaddress=LinuxのIPアドレス connectport=8080`
+
+1. 上記の設定ができているか以下のコマンドで確認します。  
+`netsh.exe interface portproxy show v4tov4`  
+
+※ 「Windows側で受け付けるポート」は、他の通信で使われていないポートを指定してください。  
+※ Windows、もしくはLinuxのIPアドレスが変わった場合は、以下コマンドで設定を削除し、上記の手順をやり直す必要があります。  
+`netsh.exe interface portproxy delete v4tov4 listenport=Windows側で受け付けるポート listenaddress=WindowsのIPアドレス`
 
 #### 前提条件
 1. http://[DockerホストのIPアドレス]:8080/より、Keycloak管理コンソールが開ける状態で以降の手順を実施してください。
 1. [ngrok公式](https://ngrok.com/)より、ダウンロードを行い、ngrok.exeを任意のフォルダに配置してください。
-1. サインアップを行ってください。  
-**※有料アカウントの登録が必要になります。**  
-(Android アプリリンクを用いてアプリを起動しますが、  
-無料アカウントの場合、Webサービスがassetlinks.jsonをダウンロードする際に確認画面が出てしまい、jsonがダウンロードできないため。)
+1. サインアップを行ってください。
 1. Authtokenを取得してください。([ngrok公式](https://ngrok.com/)よりログイン後、左側のメニューに「Your Authtoken」という項目があるのでクリックすると、Authtokenが表示されるのでコピーできます。)
 1. コマンドプロンプトでngrok.exeを配置したディレクトリに移動し、`ngrok authtoken xxxxxxxxxxxxxxxxxxxxxxxxx`を実行後、以下のファイルが作成されていることを確認してください。  
 `上記コマンド実行後に表示されたディレクトリ/ngrok.yml`
@@ -123,12 +142,6 @@ authtoken: XXXXXXXXX
 
 // 以下を追加してください
 tunnels:
-  samplerp:
-    proto: http
-    addr: [DockerホストのIPアドレス]:3000
-  keycloak:
-    proto: http
-    addr: [DockerホストのIPアドレス]:8080
   nativeapp:
     proto: http
     addr: [DockerホストのIPアドレス]:80
@@ -136,31 +149,28 @@ tunnels:
 
 3. コマンドプロンプトを開き、ngrok.exeを配置したディレクトリに移動し、以下を実行します。  
 `ngrok start --all`  または  
-`ngrok start samplerp keycloak nativeapp`  (samplerp/keycloak/nativeapp以外にもポートを記載している場合は明示的に指定する必要があります。)  
+`ngrok start nativeapp`
 
     以下のような実行結果が表示されます。
     ```shell
-    Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:80
-    Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:3000
-    Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XX.XX.XXX:8080
+    Forwarding        https://XXXXXXXXXX.XXXXX.XXX -> http://XXX.XXX.XXX.XXX:80
     ```
     ポート80の`https://XXXXXXXXXX.XXXXX.XXX` が、AndroidがWebサービスからアプリを起動する時のホスト名となりますので[Android/MyNumberCardAuth/app/src/main/AndroidManifest.xml](./MyNumberCardAuth/app/src/main/AndroidManifest.xml)に設定してください。  
 
 4. Keycloak管理コンソールを開き、以下の設定を行います。  
 realm Oidp＞Configure＞Realm settings＞General>Frontend URL   
-ポート8080の`https://XXXXXXXXXX.XXXXX.XXX`
+ポート8080の「netshコマンド」でポートフォワーディングするよう設定した「WindowsのIPアドレス：Windows側で受け付けるポート」
 
     realm Oidp＞Configure＞Authentication＞my number card>X509 Relay Authenticatorの右にあるSettings（歯車のアイコン）＞Run URI of Android application  
 ポート80の`https://XXXXXXXXXX.XXXXX.XXX`
 
 5. .envを設定します。  
 ../backend/.env   
-を開き、RP1_BASEURLにポート3000、RP2_BASEURLにポート3001、KEYCLOAK_URLにポート8080の`https://XXXXXXXXXX.XXXXX.XXX` を設定します。
+を開き、RP1_BASEURLにポート3000、KEYCLOAK_URLにポート8080の「netshコマンド」でポートフォワーディングするよう設定した「WindowsのIPアドレス：Windows側で受け付けるポート」を設定します。
 
 ```shell
-  RP1_BASEURL=https://XXXXXXXXXX.XXXXX.XXX
-  RP2_BASEURL=https://XXXXXXXXXX.XXXXX.XXX
-  KEYCLOAK_URL=https://XXXXXXXXXX.XXXXX.XXX
+  RP1_BASEURL=http://xxx.xxx.xxx.xxx:3000
+  KEYCLOAK_URL=http:/xxx.xxx.xxx.xxx:8080
 ```
 
 ※各ポートの`https://XXXXXXXXXX.XXXXX.XXX`はngrok startを行うごとに切り替わりますので、都度、[Android/MyNumberCardAuth/app/src/main/AndroidManifest.xml](./MyNumberCardAuth/app/src/main/AndroidManifest.xml)と、  
@@ -175,7 +185,8 @@ Webサービスからログイン処理を行い、認証成功画面を開く�
 本Androidアプリやブラウザのキャッシュにより、ログイン画面に遷移しない場合があります。  
 動作確認前に本Androidアプリやブラウザのキャッシュを削除してください。  
 
-1. ブラウザからWebサービスへ接続します。
+1. ブラウザからWebサービスへ接続します。  
+   ※Windows側で3000ポートのコンテナにポートフォワーディングするよう設定したIPアドレス：ポート番号で接続します。
 1. 画面右上部にある `ログイン` リンクをタップします。
 1. 画面中央にある `ログイン` ボタンor`利用者登録` ボタンor`登録情報の変更` ボタンをタップします。
 1. 本Androidアプリが起動し、トップ画面が表示されます。
