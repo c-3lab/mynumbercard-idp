@@ -22,10 +22,12 @@ public class ActionResolver extends AbstractActionResolver {
                 platform.getUserRequest().getActionMode().toUpperCase());
         switch (userActionMode) {
             case LOGIN:
-                ActionResolver.LOGIN_ACTION.authenticate(context, platform);
+                LoginAction LOGIN_ACTION = new LoginAction();
+                LOGIN_ACTION.authenticate(context, platform);
                 break;
             case REGISTRATION:
-                ActionResolver.REGISTRATION_ACTION.register(context, platform);
+                RegistrationAction REGISTRATION_ACTION = new RegistrationAction();
+                REGISTRATION_ACTION.register(context, platform);
                 break;
             default:
                 throw new IllegalArgumentException("Action mode " + userActionMode.getName() + " is the undefined.");
