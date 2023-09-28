@@ -19,6 +19,7 @@ import org.keycloak.models.AuthenticatorConfigModel;
 import org.mockito.*;
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.user.LoginAction;
 import com.example.mynumbercardidp.keycloak.authentication.application.procedures.user.RegistrationAction;
+import com.example.mynumbercardidp.keycloak.authentication.application.procedures.user.ReplacementAction;
 import com.example.mynumbercardidp.keycloak.core.network.AuthenticationRequest;
 import com.example.mynumbercardidp.keycloak.core.network.platform.CertificateType;
 import com.example.mynumbercardidp.keycloak.network.platform.PlatformApiClient;
@@ -83,7 +84,7 @@ public class ActionResolverTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"login", "registration", "exception"})
+    @ValueSource(strings = {"login", "registration", "replacement", "exception"})
     public void testExecuteUserAction(String userActionMode) throws Exception {
 
         AuthenticationRequest authenticationRequest = new AuthenticationRequest() {
@@ -104,6 +105,10 @@ public class ActionResolverTest {
             MockedConstruction<RegistrationAction> registrationAction = mockConstruction(RegistrationAction.class,
                                                         (mock, ctx) -> {
                                                             doNothing().when(mock).register(any(), any());
+                                                        });
+            MockedConstruction<ReplacementAction> replacementAction = mockConstruction(ReplacementAction.class,
+                                                        (mock, ctx) -> {
+                                                            doNothing().when(mock).replace(any(), any());
                                                         });
             MockedConstruction<PlatformApiClient> platformApiClient = mockConstruction(PlatformApiClient.class,
                                                         (mock, ctx) -> {
@@ -133,6 +138,9 @@ public class ActionResolverTest {
                 } else if (userActionMode.equals("registration")) {
                     RegistrationAction registrationActionMock = registrationAction.constructed().get(0);
                     verify(registrationActionMock, times(1)).register(any(), any());
+                } else if (userActionMode.equals("replacement")) {
+                    ReplacementAction replacementActionMock = replacementAction.constructed().get(0);
+                    verify(replacementActionMock, times(1)).replace(any(), any());
                 }
             }
         }
