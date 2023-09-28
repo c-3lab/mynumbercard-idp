@@ -187,7 +187,7 @@
 59. ナビゲーションエリアにある `Manage` セクションの `Clients` をクリックします。  
 60. `Clients list`タブの`sample-client02`をクリックします。  
 61. `Settings`タブのCapability configにある`Client Authentication`をOnに変更し、Saveをクリックします。  
-62. `Credntials`タブが表示されるのでクリックし、`Client secret`の値をメモします。  
+62. `Credentials`タブが表示されるのでクリックし、`Client secret`の値をメモします。  
 63. ナビゲーションエリアにある `Manage` セクションの `Client scopes` をクリックし、`profile`リンクをクリックします。  
 64. 画面上部にある `Mappers` タブをクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
 65. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
