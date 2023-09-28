@@ -13,6 +13,16 @@
 - クライアント
   - OS: Windows 10 build 19044.2846
   - ブラウザ: Google Chrome (version 112.0.5615.138)
+
+### Keycloakのテストカバレッジについて
+以下のファイルはユニットテスト(jest)のみで確認できない関数があるため結合テストで確認を行なっています。そのため、ユニットテストにおけるカバレッジは100%を下回ります。  
+- `backend/keycloak/my-numbercard-authenticator/src/test/resources/theme/mynumbercard-auth/login/resources/js/__tests__/login.test.js`  
+・UIに対する確認が必要なため  
+
+以下のファイルは通ることが不可能だと考えられる分岐が存在するため、ユニットテストにおけるカバレッジは100%を下回ります。  
+- `backend/keycloak/my-numbercard-authenticator/src/test/java/com/example/mynumbercardidp/keycloak/rest/CustomAttributeProviderTest.java`  
+・想定されているエラーと違うエラーが発生するため  
+
 ## インストール
 1. このリポジトリをダウンロードします。すでに実行している場合は次へ進んでください。  
    ```
@@ -77,7 +87,7 @@
 20. `My number card Authenticator` の右にある `Settings` （歯車のアイコン）をクリックします。  
 21. 以下のように設定し、 `Save` ボタンをクリックします。  
     - Alias: (任意の文字列。 例えば `my number card auth` など。)
-    - Enable debug mode: On
+    - Enable debug mode: Off
     - Certificate Validator URI: http://platform-gateway
     - Run URI of Android application: (Android アプリ リンクのURL または 入力しない)
     - Run URI of iOS application: (iOS ユニバーサルリンクのURL または 入力しない)
@@ -187,7 +197,7 @@
 59. ナビゲーションエリアにある `Manage` セクションの `Clients` をクリックします。  
 60. `Clients list`タブの`sample-client02`をクリックします。  
 61. `Settings`タブのCapability configにある`Client Authentication`をOnに変更し、Saveをクリックします。  
-62. `Credntials`タブが表示されるのでクリックし、`Client secret`の値をメモします。  
+62. `Credentials`タブが表示されるのでクリックし、`Client secret`の値をメモします。  
 63. ナビゲーションエリアにある `Manage` セクションの `Client scopes` をクリックし、`profile`リンクをクリックします。  
 64. 画面上部にある `Mappers` タブをクリックし、`Add mapper` 、 `By configuration` の順でクリックします。  
 65. `User Attribute` をクリックし、以下のように設定します。設定後、 `Save` ボタンをクリックします。  
@@ -267,6 +277,7 @@
 ローカル環境で実施する場合、以下を実施してください。  
 ・デジタルアセットリンクファイル及びapple-app-site-asociationファイルを以下のディレクトリへ配置します。  
 　配置先ディレクトリ： `(リポジトリの配置ディレクトリ)/backend/native-app-settings/nginx/html/.well-known`
+現状のKeycloakではリトライ機能がないため、処理中に5xx系のエラーが発生した場合対象処理を再度実行してください。  
 
 1. ブラウザでWebサービスへ接続します。  
    Dockerホストの外側から接続する場合、  
@@ -284,32 +295,40 @@
 10. 表示される `これらのアクセス権限を付与しますか？` 画面で `はい` ボタンをクリックします。  
 11. エラーや警告が表示されないことを確認します。  
 12. 画面右上部にある `ログアウト` リンクをクリックします。  
+13. 画面右上部にある `ログイン` リンクをクリックします。  
+14. `ログイン` ボタンをクリックします。  
+15. アプリが起動し、トップ画面が表示されます。  
+16. `パスワード` ボックスへ、4桁の利用者証明用電子証明書のパスワードを入力します。  
+17. `読み取り開始` ボタンをタップします。  
+18. デバイスにマイナンバーカードをかざします。  
+19. エラーや警告が表示されないことを確認します。  
+20. 画面右上部にある `ログアウト` リンクをクリックします。  
 
-## 動作確認（デバッグ用）
-1. ブラウザでWebサービスへ接続します。  
-   Dockerホストの外側から接続する場合、  
-   ブラウザで `http://[DockerホストのIPアドレス または DockerホストのDNS名]:3000` へ接続します。  
+## KeycloakのJavaユニットテスト方法  
+1. ディレクトリ `backend/keycloak/my-numbercard-authenticator` へ移動します。  
+   ```
+   cd backend/keycloak/my-numbercard-authenticator
+   ```
+2. テストの実行とカバレッジレポートの出力用コマンドを実行します。  
+   ```
+   mvn jacoco:prepare-agent test install jacoco:report
+   ```
+3. テスト完了後作成される `backend/keycloak/my-numbercard-authenticator/target/site/jacoco/index.html` でカバレッジを確認します。  
 
-   Dockerホスト自身やSSHポート転送で接続する場合、ブラウザで `http://127.0.0.1:3000` へ接続します。  
-2. 画面右上部にある `ログイン` リンクをクリックします。  
-3. `利用者登録` ボタンをクリックします。  
-4. `利用規約` と `プライバシーポリシー` の同意チェックボックスを押します。  
-5. `X509 privkey file` の `ファイル選択` をクリックし、次のステップで選択する公開鍵（証明書）に対応する秘密鍵を選択します。  
-   サンプル用の秘密鍵は、  
-   このリポジトリの `/backend/keycloak/private.pem` ファイルです。  
-6. `X509 Certificate File` の `ファイル選択` をクリックし、前のステップで選択した秘密鍵に対応する公開鍵（証明書）を選択します。  
-   サンプル用の公開鍵は、このリポジトリの `/backend/keycloak/public.pem` ファイルです。  
-7. `利用者登録へ進む` ボタンをクリックします。  
-8. 表示される `これらのアクセス権限を付与しますか？` 画面で `はい` ボタンをクリックします。  
-9. エラーや警告が表示されないことを確認します。  
-10. 画面右上部にある `ログアウト` リンクをクリックします。  
-11. 画面右上部にある `ログイン` リンクをクリックします。
-12. `Mode change` セレクトボックスで `login` を選択します。  
-13. `X509 privkey file` の `ファイル選択` をクリックし、次のステップで選択する公開鍵（証明書）に対応する秘密鍵を選択します。  
-14. `X509 Certificate File` の `ファイル選択` をクリックし、前のステップで選択した秘密鍵に対応する公開鍵（証明書）を選択します。  
-15. 上の `ログイン` ボタンをクリックします。  
-16. エラーや警告が表示されないことを確認します。  
-17. 画面右上部にある `ログアウト` リンクをクリックします。  
+## KeycloakのJavaScriptユニットテスト方法  
+1. NodeJSをインストールします。  
+   ```
+   sudo apt install npm
+   ```
+2. テストに必要なパッケージをインストールします。  
+   ```
+   npm install
+   ```
+3. テストの実行とカバレッジレポートの出力用コマンドを実行します。  
+   ```
+   npm test -- --coverage
+   ```
+4. テスト完了後作成される `coverage/lcov-report/login.js.html` でカバレッジを確認します。  
 
 ## Docker コンテナの停止
 1. Docker ホストにて、このリポジトリをダウンロードし、配置したディレクトリへ移動します。  
