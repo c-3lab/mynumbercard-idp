@@ -78,7 +78,7 @@
 20. `My number card Authenticator` の右にある `Settings` （歯車のアイコン）をクリックします。  
 21. 以下のように設定し、 `Save` ボタンをクリックします。  
     - Alias: (任意の文字列。 例えば `my number card auth` など。)
-    - Enable debug mode: On
+    - Enable debug mode: Off
     - Certificate Validator URI: http://platform-gateway
     - Run URI of Android application: (Android アプリ リンクのURL または 入力しない)
     - Run URI of iOS application: (iOS ユニバーサルリンクのURL または 入力しない)
@@ -307,43 +307,6 @@
 28. エラーや警告が表示されないことを確認します。  
 29. ユーザー情報変更の結果を確認したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `Manage` - `Users` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し任意の文字列に変更した基本4情報が初期状態に戻されたことを確認してください。  
 30. ユーザー登録をもう一度試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `Manage` - `Users` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を削除してください。  
-
-## 動作確認（デバッグ用）
-1. ブラウザでWebサービスへ接続します。  
-   Dockerホストの外側から接続する場合、  
-   ブラウザで `http://[DockerホストのIPアドレス または DockerホストのDNS名]:3000` へ接続します。  
-
-   Dockerホスト自身やSSHポート転送で接続する場合、ブラウザで `http://127.0.0.1:3000` へ接続します。  
-2. 画面右上部にある `ログイン` リンクをクリックします。  
-3. `利用者登録` ボタンをクリックします。  
-4. `利用規約` と `プライバシーポリシー` の同意チェックボックスを押します。  
-5. `X509 privkey file` の `ファイル選択` をクリックし、次のステップで選択する公開鍵（証明書）に対応する秘密鍵を選択します。  
-   サンプル用の秘密鍵は、  
-   このリポジトリの `/backend/keycloak/private.pem` ファイルです。  
-6. `X509 Certificate File` の `ファイル選択` をクリックし、前のステップで選択した秘密鍵に対応する公開鍵（証明書）を選択します。  
-   サンプル用の公開鍵は、このリポジトリの `/backend/keycloak/public.pem` ファイルです。  
-7. `利用者登録へ進む` ボタンをクリックします。  
-8. 表示される `これらのアクセス権限を付与しますか？` 画面で `はい` ボタンをクリックします。  
-9. エラーや警告が表示されないことを確認します。  
-10. 画面右上部にある `ログアウト` リンクをクリックします。  
-11. 画面右上部にある `ログイン` リンクをクリックします。  
-12. `X509 privkey file` の `ファイル選択` をクリックし、次のステップで選択する公開鍵（証明書）に対応する秘密鍵を選択します。  
-13. `X509 Certificate File` の `ファイル選択` をクリックし、前のステップで選択した秘密鍵に対応する公開鍵（証明書）を選択します。  
-14. `ログイン` ボタンをクリックします。  
-15. エラーや警告が表示されないことを確認します。  
-16. 画面右上部にある `ログアウト` リンクをクリックします。  
-17. ユーザー情報変更を試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `Manage` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し `Attributes` タブで以下の基本4情報を任意の文字列に変更し `Save` ボタンをクリックします。  
-    - user_address
-    - birth_date
-    - name
-    - gender_code
-18. Webサービスの画面右上部にある `ログイン` リンクをクリックします。  
-19. `X509 privkey file` の `ファイル選択` をクリックし、次のステップで選択する公開鍵（証明書）に対応する秘密鍵を選択します。  
-20. `X509 Certificate File` の `ファイル選択` をクリックし、前のステップで選択した秘密鍵に対応する公開鍵（証明書）を選択します。  
-21. `ログイン` ボタンをクリックします。  
-22. エラーや警告が表示されないことを確認します。  
-23. ユーザー情報変更の結果を確認したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `Manage` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を選択し任意の文字列に変更した基本4情報が初期状態に戻されたことを確認してください。  
-24. ユーザー登録をもう一度試したい場合は、Keycloakの `Administration Console` 、 `Realm OIdp` - `Manage` - `User` からユーザー `7910ae5f-a6c1-4117-b890-fc2df2db63f1` を削除してください。  
 
 ## Docker コンテナの停止
 1. Docker ホストにて、このリポジトリをダウンロードし、配置したディレクトリへ移動します。  
