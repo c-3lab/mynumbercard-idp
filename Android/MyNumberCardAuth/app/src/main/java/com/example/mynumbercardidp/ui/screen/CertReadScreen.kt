@@ -316,7 +316,7 @@ private fun createOperationText(screenMode: ScreenModeState?):String {
     } else{
         text = String.format(
             format,
-            stringResource(R.string.description_first_user_verification),
+            stringResource(R.string.description_first_sign),
             stringResource(R.string.digital_cert_for_sign),
             stringResource(R.string.password_input_for_sign)
         )
