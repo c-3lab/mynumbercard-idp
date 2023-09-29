@@ -22,8 +22,6 @@
 		9BCF201B2AB9C031008EEF8D /* AuthenticationManagerJwkSet.json in Resources */ = {isa = PBXBuildFile; fileRef = 9BCF201A2AB9C031008EEF8D /* AuthenticationManagerJwkSet.json */; };
 		9BCF201E2ABA36BA008EEF8D /* AuthenticationManagerCertificate.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9BCF201D2ABA36BA008EEF8D /* AuthenticationManagerCertificate.txt */; };
 		9F1F5DD42AADB6A3002FCD23 /* MyNumberCardAuthAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1F5DD32AADB6A3002FCD23 /* MyNumberCardAuthAppTests.swift */; };
-		9F1F5DFB2AADBBF3002FCD23 /* MyNumberCardAuthUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1F5DF02AADBB55002FCD23 /* MyNumberCardAuthUITests.swift */; };
-		9F1F5DFC2AADBBF7002FCD23 /* MyNumberCardAuthUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1F5DF22AADBB55002FCD23 /* MyNumberCardAuthUITestsLaunchTests.swift */; };
 		9F1F5E002AADCDC4002FCD23 /* AuthenticationControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1F5DFF2AADCDC4002FCD23 /* AuthenticationControllerTests.swift */; };
 		9F3D97972A5BCE2400FAF526 /* AppExplanationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3D97962A5BCE2400FAF526 /* AppExplanationView.swift */; };
 		9F41DCD12A550C7F0078FD7C /* AuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F41DCD02A550C7F0078FD7C /* AuthenticationController.swift */; };
@@ -53,13 +51,6 @@
 
 /* Begin PBXContainerItemProxy section */
 		9F1F5DD52AADB6A3002FCD23 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AD80228129F0B402009EA409 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AD80228829F0B402009EA409;
-			remoteInfo = MyNumberCardAuth;
-		};
-		9F1F5DF42AADBB55002FCD23 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AD80228129F0B402009EA409 /* Project object */;
 			proxyType = 1;
@@ -100,9 +91,6 @@
 		9F1F5DD12AADB6A3002FCD23 /* MyNumberCardAuthTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyNumberCardAuthTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F1F5DD32AADB6A3002FCD23 /* MyNumberCardAuthAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNumberCardAuthAppTests.swift; sourceTree = "<group>"; };
 		9F1F5DDA2AADB70E002FCD23 /* MyNumberCardAuth.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = MyNumberCardAuth.xctestplan; sourceTree = "<group>"; };
-		9F1F5DEE2AADBB55002FCD23 /* MyNumberCardAuthUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyNumberCardAuthUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		9F1F5DF02AADBB55002FCD23 /* MyNumberCardAuthUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNumberCardAuthUITests.swift; sourceTree = "<group>"; };
-		9F1F5DF22AADBB55002FCD23 /* MyNumberCardAuthUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNumberCardAuthUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		9F1F5DFF2AADCDC4002FCD23 /* AuthenticationControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationControllerTests.swift; sourceTree = "<group>"; };
 		9F3D97962A5BCE2400FAF526 /* AppExplanationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppExplanationView.swift; sourceTree = "<group>"; };
 		9F41DCD02A550C7F0078FD7C /* AuthenticationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationController.swift; sourceTree = "<group>"; };
@@ -132,13 +120,6 @@
 
 /* Begin PBXFrameworksBuildPhase section */
 		9F1F5DCE2AADB6A3002FCD23 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9F1F5DEB2AADBB55002FCD23 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -176,15 +157,6 @@
 				9F6D48E72AB42A0900F64FFC /* Mocks */,
 			);
 			path = MyNumberCardAuthTests;
-			sourceTree = "<group>";
-		};
-		9F1F5DEF2AADBB55002FCD23 /* MyNumberCardAuthUITests */ = {
-			isa = PBXGroup;
-			children = (
-				9F1F5DF02AADBB55002FCD23 /* MyNumberCardAuthUITests.swift */,
-				9F1F5DF22AADBB55002FCD23 /* MyNumberCardAuthUITestsLaunchTests.swift */,
-			);
-			path = MyNumberCardAuthUITests;
 			sourceTree = "<group>";
 		};
 		9F1F5DFE2AADCD80002FCD23 /* Controllers */ = {
@@ -250,11 +222,9 @@
 				9F1F5DDA2AADB70E002FCD23 /* MyNumberCardAuth.xctestplan */,
 				AD80228B29F0B402009EA409 /* MyNumberCardAuth */,
 				9F1F5DD22AADB6A3002FCD23 /* MyNumberCardAuthTests */,
-				9F1F5DEF2AADBB55002FCD23 /* MyNumberCardAuthUITests */,
 				AD80229D29F0B666009EA409 /* Frameworks */,
 				9FF1B6F72AAD9EB100793DD6 /* MyNumberCardAuth.app */,
 				9F1F5DD12AADB6A3002FCD23 /* MyNumberCardAuthTests.xctest */,
-				9F1F5DEE2AADBB55002FCD23 /* MyNumberCardAuthUITests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -342,24 +312,6 @@
 			productReference = 9F1F5DD12AADB6A3002FCD23 /* MyNumberCardAuthTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		9F1F5DED2AADBB55002FCD23 /* MyNumberCardAuthUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 9F1F5DF82AADBB55002FCD23 /* Build configuration list for PBXNativeTarget "MyNumberCardAuthUITests" */;
-			buildPhases = (
-				9F1F5DEA2AADBB55002FCD23 /* Sources */,
-				9F1F5DEB2AADBB55002FCD23 /* Frameworks */,
-				9F1F5DEC2AADBB55002FCD23 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				9F1F5DF52AADBB55002FCD23 /* PBXTargetDependency */,
-			);
-			name = MyNumberCardAuthUITests;
-			productName = MyNumberCardAuthUITests;
-			productReference = 9F1F5DEE2AADBB55002FCD23 /* MyNumberCardAuthUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 		AD80228829F0B402009EA409 /* MyNumberCardAuth */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AD80229729F0B403009EA409 /* Build configuration list for PBXNativeTarget "MyNumberCardAuth" */;
@@ -398,10 +350,6 @@
 						CreatedOnToolsVersion = 14.3;
 						TestTargetID = AD80228829F0B402009EA409;
 					};
-					9F1F5DED2AADBB55002FCD23 = {
-						CreatedOnToolsVersion = 14.3;
-						TestTargetID = AD80228829F0B402009EA409;
-					};
 					AD80228829F0B402009EA409 = {
 						CreatedOnToolsVersion = 14.2;
 					};
@@ -426,7 +374,6 @@
 			targets = (
 				AD80228829F0B402009EA409 /* MyNumberCardAuth */,
 				9F1F5DD02AADB6A3002FCD23 /* MyNumberCardAuthTests */,
-				9F1F5DED2AADBB55002FCD23 /* MyNumberCardAuthUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -438,13 +385,6 @@
 			files = (
 				9BCF201E2ABA36BA008EEF8D /* AuthenticationManagerCertificate.txt in Resources */,
 				9BCF201B2AB9C031008EEF8D /* AuthenticationManagerJwkSet.json in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9F1F5DEC2AADBB55002FCD23 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -504,15 +444,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9F1F5DEA2AADBB55002FCD23 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9F1F5DFB2AADBBF3002FCD23 /* MyNumberCardAuthUITests.swift in Sources */,
-				9F1F5DFC2AADBBF7002FCD23 /* MyNumberCardAuthUITestsLaunchTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		AD80228529F0B402009EA409 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -545,11 +476,6 @@
 			isa = PBXTargetDependency;
 			target = AD80228829F0B402009EA409 /* MyNumberCardAuth */;
 			targetProxy = 9F1F5DD52AADB6A3002FCD23 /* PBXContainerItemProxy */;
-		};
-		9F1F5DF52AADBB55002FCD23 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AD80228829F0B402009EA409 /* MyNumberCardAuth */;
-			targetProxy = 9F1F5DF42AADBB55002FCD23 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -601,42 +527,6 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyNumberCardAuth.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MyNumberCardAuth";
-			};
-			name = Release;
-		};
-		9F1F5DF62AADBB55002FCD23 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8WFPCA36MV;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.MyNumberCardAuthUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = MyNumberCardAuth;
-			};
-			name = Debug;
-		};
-		9F1F5DF72AADBB55002FCD23 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8WFPCA36MV;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.MyNumberCardAuthUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = MyNumberCardAuth;
 			};
 			name = Release;
 		};
@@ -828,15 +718,6 @@
 			buildConfigurations = (
 				9F1F5DD72AADB6A3002FCD23 /* Debug */,
 				9F1F5DD82AADB6A3002FCD23 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		9F1F5DF82AADBB55002FCD23 /* Build configuration list for PBXNativeTarget "MyNumberCardAuthUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				9F1F5DF62AADBB55002FCD23 /* Debug */,
-				9F1F5DF72AADBB55002FCD23 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
