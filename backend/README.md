@@ -10,6 +10,7 @@
   - OS: Ubuntu 20.04.6 LTS
   - Docker エンジン:  23.0.4 (Community)
   - Docker Compose: 2.17.2
+  - Keycloak: 21.0.1
 - クライアント
   - OS: Windows 10 build 19044.2846
   - ブラウザ: Google Chrome (version 112.0.5615.138)
