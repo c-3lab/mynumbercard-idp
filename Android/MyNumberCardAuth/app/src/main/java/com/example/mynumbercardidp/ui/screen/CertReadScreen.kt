@@ -147,6 +147,8 @@ fun CertReadScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
 
         ){
+        Text(stringResource(R.string.title))
+
         Text(stringResource(R.string.screen_title),modifier = Modifier.padding(50.dp))
 
         //操作手順
