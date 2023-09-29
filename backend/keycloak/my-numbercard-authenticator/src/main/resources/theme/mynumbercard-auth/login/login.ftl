@@ -11,9 +11,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jose/4.14.5/index.umd.min.js" integrity="sha512-+XkrPdAZTB3KjkApxeYyKfC9sg+3oEflqHSo9+sxqmX8S8IOyzLObGm6M7r1iZv9VsrUv5uy4tVkk5+tz8Xhvg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script>
             function onClickActionButton(mode) {
-                <#if (debug!'false') == 'true'>
-                   submitWhenDebugMode(mode);
-                </#if>
                 let action_url = "${url.loginAction}";
                 action_url = action_url.replace(/\&amp;/gi,'&');
                 action_url = encodeURIComponent(action_url);
@@ -55,26 +52,7 @@
         </script>
         <input type="hidden" id="realm" value="${realm.name!''}" />
         <input type="hidden" id="nonce" value="${nonce!''}" />
-        <form id="kc-form-login" onsubmit="login.disabled = true; return true;" action="${url.loginAction}" method="post">
-            <input type="hidden" name="mode" />
-            <input type="hidden" name="encryptedDigitalSignatureCertificate" />
-            <input type="hidden" name="encryptedUserAuthenticationCertificate" />
-            <input type="hidden" name="applicantData" />
-            <input type="hidden" name="sign" />
-        </form>
         <div id="userLogin" style="display: block;">
-            <#if (debug!'false') == 'true'>
-            <div name="debug-form-block">
-                <div class="${properties.kcFormGroupClass!}">
-                    <label for="privkey" class="${properties.kcLabelClass!}">${msg("[DEBUG] X509 privkey file (.pem, .key)")}</label>
-                    <input tabindex="2" name="privateKey" id="privateKey" type="file" accept=".pem, .key" />
-                </div>
-                <div class="${properties.kcFormGroupClass!}">
-                    <label for="x509upload" class="${properties.kcLabelClass!}">${msg("[DEBUG] X509 certificate file (.der, .cer, .crt, .pem)")}</label>
-                    <input tabindex="2" name="publicCertificate" id="publicCertificate" type="file" accept=".der, .cer, .crt, .pem" />
-                </div>
-            </div>
-            </#if>
             <div id="kc-form-buttons" class="${properties.kcFormGroupClass!}">
                 <label for="login" class="${properties.kcLabelClass!}">${msg("loginLabel")}</label>
                 <input type="hidden" id="login-error-url-hidden-input" name="error_url" value="${refreshUrl}&initialView=registration"/>
