@@ -1,0 +1,58 @@
+{
+  "type": "module",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.17",
+    "@babel/preset-env": "^7.22.15",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "jest": {
+    "testMatch": [
+      "**/__tests__/**/*.js"
+    ],
+    "testEnvironment": "jsdom",
+    "testEnvironmentOptions": {
+      "customExportConditions": []
+    },
+    "verbose": true,
+    "transform": {
+      "^.+\\.(js|jsx)$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!jose)"
+    ],
+    "moduleFileExtensions": [
+      "js"
+    ]
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "modules": "false",
+          "useBuiltIns": "usage",
+          "targets": "> 0.25%, not dead"
+        }
+      ]
+    ],
+    "env": {
+      "test": {
+        "presets": [
+          [
+            "@babel/preset-env",
+            {
+              "targets": {
+                "node": "current"
+              }
+            }
+          ]
+        ]
+      }
+    }
+  }
+}
