@@ -96,8 +96,9 @@ public class HTTPSession: NSObject, URLSessionDelegate, URLSessionTaskDelegate {
 
                 if httpResponse.statusCode == 410 {
                     DispatchQueue.main.async {
-                        if let actionURL = httpResponse.allHeaderFields["x-action-url"] as? String {
-                            self.authenticationController.controllerForSignature.actionURL = actionURL
+                        let keyValues = httpResponse.allHeaderFields.map { (String(describing: $0.key).lowercased(), String(describing: $0.value)) }
+                        if let headerValue = keyValues.filter({ $0.0 == String("X-ACTION-URL").lowercased() }).first {
+                            self.authenticationController.controllerForSignature.actionURL = headerValue.1
                         }
 
                         self.authenticationController.viewState = .SignatureView
