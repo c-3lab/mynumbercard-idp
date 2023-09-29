@@ -1,0 +1,154 @@
+openapi: 3.0.0
+info:
+  version: 0.0.1
+  title: Keycloak Customization APIリスト
+  description: Keycloakが提供するAPIリスト
+servers:
+- url: /
+tags:
+  - name: Customization
+    description: RP側のユーザーに関連した情報をIdP側のユーザーに紐づけるAPI
+paths:
+  /custom-attribute/assign:
+    post:
+      summary: RP側のユーザーに関連した情報をIdP側のユーザーに紐づける
+      description: |-
+        ### 処理  
+        RPから送られたuserAttributes用JSONオブジェクトをユーザー属性に紐づける
+        
+        ### 処理が成功した場合  
+        変更内容が反映されている新しいidToken、refreshToken、accessTokenを再発行して返す
+
+        ### 認証処理が失敗した場合  
+        401エラーを返す
+      operationId: assign
+      tags:
+      - Customization
+      security: 
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: リクエスト時に送るuserAttributes用のJSONオブジェクト情報
+              required:
+                - userAttributes
+              properties:
+                userAttributes:
+                  type: object
+                  description: Keycloak側ユーザーと紐づける、RP側ユーザーに関連した情報
+            example:
+              userAttributes:
+                serviceId: Axvc01_3
+                notes: RP2
+      responses:
+        '200':
+          description: 処理が成功した
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 再発行されたトークン情報
+                properties:
+                  access_token:
+                    type: string
+                    description: 再発行されたアクセストークン
+                  expires_in:
+                    type: integer
+                    description: access_tokenの有効期限
+                  refresh_expires_in:
+                    type: integer
+                    description: refresh_tokenの有効期限
+                  refresh_token:
+                    type: string
+                    description: 再発行されたリフレッシュトークン
+                  token_type:
+                    type: string
+                    description: トークンの種類
+                  id_token:
+                    type: string
+                    description: 再発行されたIDトークン
+                  not-before-policy:
+                    type: integer
+                    description: 適用されているnot-beforeポリシー
+                  session_state:
+                    type: string
+                    description: セッションのID
+                  scope:
+                    type: string
+                    description: 対象スコープ
+              example:
+                accessToken: eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ0NnFVYnlESmYtX0R5NEJieWtDbE...
+                expires_in: 600
+                refresh_expires_in: 1800
+                refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI4NjlhY2M4MC1jZTIwLTRmMGMtO...
+                token_type: bearer
+                idToken: eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ0NnFVYnlESmYtX0R5NEJieWtDbE5yYV...
+                not-before-policy: 0
+                session_state: 11c8278b-2246-338e-4433-f55f22ed264f
+                scope: openid email profile address
+        '400':
+          description: |-
+            リクエストに問題が発生した  
+            原因：リクエスト内容が正しくない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: invalid_request
+                error_description: リクエスト失敗
+        '401':
+          description: |-
+            認証に失敗した  
+            原因：トークンの認証に問題がある
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: invalid_grant
+                error_description: クライアント認証失敗
+        '500':
+          description: |-
+            予期せぬエラーが発生した  
+            原因：サーバーに問題がある
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: server_error
+                error_description: システム異常
+        '503':
+          description: |-
+            サービス利用不可エラーが発生した  
+            原因：サーバーが混んでいるまたはメンテナンス中等
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: server_unavailable
+                error_description: システム利用不可
+      deprecated: false
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      description: 発生したエラー情報
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: エラーの種類
+        error_description:
+          type: string
+          description: エラーメッセージ
+  securitySchemes: 
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

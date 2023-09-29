@@ -1,0 +1,218 @@
+openapi: 3.0.0
+info:
+  version: 0.0.1
+  title: Keycloak Authentication APIリスト
+  description: Keycloakが提供するAPIリスト
+servers:
+- url: /
+tags:
+  - name: Authentication
+    description: 本人確認に利用されるAPI
+paths:
+  /{realm}/authentication/jpki:
+    post:
+      summary: 認証用API
+      description: |-
+        ### 処理  
+        リクエストの内容を元にプラットフォーム事業者の本人確認用APIを呼び出す
+
+        #### modeがregistrationの場合  
+        プラットフォーム事業者側の /verify/registration APIを呼ぶ出す
+
+        #### modeがloginの場合  
+        プラットフォーム事業者側の /verify/login APIを呼ぶ出す
+
+        #### modeがreplacementの場合  
+        プラットフォーム事業者側の /verify/replacement APIを呼ぶ出す
+
+        ### 処理が成功した場合  
+        リダイレクト先のURLと認可コードを返す
+
+        ### 処理が失敗した場合  
+        400エラーを返す
+        
+        ### 検証処理が失敗した場合  
+        401エラーを返す
+
+        ### modeがreplacementかつ旧シリアル番号がないの場合  
+        404エラーを返す
+
+        ### modeがregistrationかつユーザー重複登録の場合  
+        409エラーを返す
+        
+        ### modeがloginかつ個人情報の変更またはマイナンバーカード紛失の場合  
+        410エラーを返す
+      operationId: authentication
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/DigitalSignatureRequest'
+                - $ref: '#/components/schemas/UserAuthenticationRequest'
+      responses:
+        '200':
+          description: プラットフォーム事業者側のAPI呼び出しが成功した
+          content:
+            application/json:
+              schema:
+                type: object
+                description:
+                properties:
+                  redirect_uri:
+                    type: string
+                    description: リダイレクト先
+                  authorization_code:
+                    type: string
+                    description: 認可コード
+              example:
+                redirect_uri: https://rp.example.com/callback
+                authorization_code: 1bbca7b5-b314-2c07-3212-418ca4a7e8d0.f109aa89-cd34-5374-a084-c3c1cf2c8a0a.6dc15d06-d8b9-7f0f-b042-827ebb6a98g8
+        '400':
+          description: |-
+            リクエストに問題が発生した  
+            原因：リクエスト内容が正しくない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: invalid_request
+                error_description: リクエスト失敗
+        '401':
+          description: |-
+            署名の検証に失敗した  
+            原因：本人確認ができない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: unauthorized
+                error_description: クライアント認証失敗
+        '404':
+          description: |-
+            データの取得に失敗した  
+            原因：modeがreplacementかつ旧シリアル番号がない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: not_found
+                error_description: 旧シリアル番号取得失敗
+        '409':
+          description: |-
+            重複登録で問題が発生した  
+            原因：modeがregistrationかつ登録済みユーザーの登録処理が再度実行される
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: conflict
+                error_description: ユーザーの重複登録
+        '410':
+          description: |-
+            署名用電子証明書が失効している  
+            原因：modeがloginかつ個人情報の変更またはマイナンバーカードの紛失
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: gone
+                error_description: 署名用電子証明書が失効している
+        '500':
+          description: |-
+            予期せぬエラーが発生した  
+            原因：サーバーに問題がある
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: server_error
+                error_description: システム異常
+        '503':
+          description: |-
+            サービス利用不可エラーが発生した  
+            原因：サーバーが混んでいるまたはメンテナンス中等
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: server_unavailable
+                error_description: システム利用不可
+      deprecated: false
+components:
+  schemas:
+    DigitalSignatureRequest:
+      type: object
+      description: プラットフォーム事業者のAPIを呼び出すために必要な情報
+      required:
+        - mode
+        - encryptedDigitalSignatureCertificate
+        - applicantData
+        - sign
+      properties:
+        mode:
+          type: string
+          enum: [registration, replacement]
+          description: API呼び出しの判断に利用されるモード
+        encryptedDigitalSignatureCertificate:
+          type: string
+          description: 署名用電子証明書のJWE
+        applicantData:
+          type: string
+          description: nonce文字列データ
+        sign:
+          type: string
+          description: applicantDataを署名用電子証明書の秘密鍵で暗号化した署名データのbase64文字列データ
+      example:
+        mode: registration
+        encryptedDigitalSignatureCertificate: eyJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAtMjU2In0.O01BFr_XxGzKEUb_Z9vQOW3DX2cQFxojrRy2JyM5_nqKnrpAa0rvcPI_ViT2PdPRogBwjHGRDM2uNLd1BberKQlaZYuqPGXnpzDQjosF0tQlgdtY3uEZUMT-9WPP8jCxxQg0AGIm4abkp1cgzAWBQzm1QYL8fwaz16MS48ExRz41dLhA0aEWE4e7TYzjrfaK8M4wIUlQCFIl-wS1N3U8W2XeUc9MLYGmHft_Rd9KJs1c-9KKdUQf6tEzJ92TGEC7TRZX4hGdtszIq3GGGBQaW8P9jPozqaDdrikF18D0btRHNf3_57sR_CPEGYX0O4mY775CLWqB4Y1adNn-fZ0xoA.ln7IYZDF9TdBIK6i.ZhQ3Q5TY827KFQw8DdRRzQVJVFdIE03B6AxMNZ1sQIjlUB4QUxg-UYqjPJESPUmFsODeshGWLa5t4tUri5j6uC4mFDbkbemPmNKIQiY5m8yc.5KKhrggMRm7ydVRQKJaT0g
+        applicantData: c7fdd0dc199fd75a790a1f74183a2b34906f1efae4a0419333daa729f5358f5c
+        sign: YzdmZGQwZGMxOTlmZDc1YTc5MGExZjc0MTgzYTJiMzQ5MDZmMWVmYWU0YTA0MTkzMzNkYWE3MjlmNTM1OGY1Yw==
+    UserAuthenticationRequest:
+      type: object
+      description: プラットフォーム事業者のAPIを呼び出すために必要な情報
+      required:
+        - mode
+        - encryptedUserAuthenticationCertificate
+        - applicantData
+        - sign
+      properties:
+        mode:
+          type: string
+          enum: [login]
+          description: API呼び出しの判断に利用されるモード
+        encryptedUserAuthenticationCertificate:
+          type: string
+          description: 利用者証明用電子証明書のJWE
+        applicantData:
+          type: string
+          description: nonce文字列データ
+        sign:
+          type: string
+          description: applicantDataを利用者証明用証明書の秘密鍵で暗号化した署名データのbase64文字列データ
+      example:
+        mode: login
+        encryptedUserAuthenticationCertificate: eyJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAtMjU2In0.O01BFr_XxGzKEUb_Z9vQOW3DX2cQFxojrRy2JyM5_nqKnrpAa0rvcPI_ViT2PdPRogBwjHGRDM2uNLd1BberKQlaZYuqPGXnpzDQjosF0tQlgdtY3uEZUMT-9WPP8jCxxQg0AGIm4abkp1cgzAWBQzm1QYL8fwaz16MS48ExRz41dLhA0aEWE4e7TYzjrfaK8M4wIUlQCFIl-wS1N3U8W2XeUc9MLYGmHft_Rd9KJs1c-9KKdUQf6tEzJ92TGEC7TRZX4hGdtszIq3GGGBQaW8P9jPozqaDdrikF18D0btRHNf3_57sR_CPEGYX0O4mY775CLWqB4Y1adNn-fZ0xoA.ln7IYZDF9TdBIK6i.ZhQ3Q5TY827KFQw8DdRRzQVJVFdIE03B6AxMNZ1sQIjlUB4QUxg-UYqjPJESPUmFsODeshGWLa5t4tUri5j6uC4mFDbkbemPmNKIQiY5m8yc.5KKhrggMRm7ydVRQKJaT0g
+        applicantData: c7fdd0dc199fd75a790a1f74183a2b34906f1efae4a0419333daa729f5358f5c
+        sign: YzdmZGQwZGMxOTlmZDc1YTc5MGExZjc0MTgzYTJiMzQ5MDZmMWVmYWU0YTA0MTkzMzNkYWE3MjlmNTM1OGY1Yw==
+    ErrorResponse:
+      type: object
+      description: 発生したエラー情報
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: エラーの種類
+        error_description:
+          type: string
+          description: エラーメッセージ
