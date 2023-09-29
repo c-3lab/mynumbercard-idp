@@ -25,7 +25,7 @@ struct NFCReadingForSignatureView: View {
                 .font(.title3)
                 .multilineTextAlignment(.center)
                 .padding(/*@START_MENU_TOKEN@*/ .all/*@END_MENU_TOKEN@*/)
-                .frame(height: 140.0)
+                .frame(height: 160.0)
 
             SecureField("password", text: $controller.inputPIN)
                 .padding(.all)
