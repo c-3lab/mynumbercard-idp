@@ -49,6 +49,7 @@ class MainActivity : ComponentActivity() {
         loadApduCommands()
         Log.i(logTag, "apduCommands: $ApduCommands")
 
+        // コードでパターンは網羅済みだが、ライブラリの不具合により未カバレッジ
         setContent {
             MyNumberCardAuthTheme {
                 Surface(

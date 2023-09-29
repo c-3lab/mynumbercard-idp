@@ -107,6 +107,7 @@ fun CertReadScreen(
     }
 
     // NFCタグの読み取り処理を非同期で実行
+    // androidTest内でモック化が難しいため、Unitテスト対象外
     class MyReaderCallback : NfcAdapter.ReaderCallback {
         @RequiresApi(Build.VERSION_CODES.O)
         override fun onTagDiscovered(tag: Tag) {
@@ -204,7 +205,7 @@ fun CertReadScreen(
             receivedState.uriParameters!!
         )
         AlertDialog(
-            onDismissRequest = {},
+            onDismissRequest = {}, // 未使用だが、AlertDialogの必須項目のため定義
             confirmButton = {
                 if (!errorDialogDetail.linqText.isNullOrEmpty()){
                     TextButton(
@@ -371,6 +372,7 @@ private fun getKeyBoardType(screenMode: ScreenModeState): KeyboardType {
     return keyBoardType
 }
 
+// 以降はデバッグ用のためUnitテスト対象外
 @Preview(
     showBackground = true,
     widthDp = 320)
