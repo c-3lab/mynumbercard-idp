@@ -85,10 +85,17 @@ public class DataModelManager extends AbstractDataModelManager {
         catch(Exception e) {
             e.printStackTrace();
         }
-        platform.setCertificateType(userRequest.getCertificateType())
+        if (userRequest.getCertificateType() == CertificateType.ENCRYPTED_USER_AUTHENTICATION) {
+            platform.setCertificateType(CertificateType.ENCRYPTED_USER_AUTHENTICATION_FOR_PLATFORM)
+                .setCertificate(encryptedJWE)
+                .setNonceData(userRequest.getApplicantData())
+                .setNonceSign(userRequest.getSign());
+        } else {
+            platform.setCertificateType(CertificateType.ENCRYPTED_DIGITAL_SIGNATURE_FOR_PLATFORM)
                 .setCertificate(encryptedJWE)
                 .setApplicantData(userRequest.getApplicantData())
                 .setSign(userRequest.getSign());
+        }
         return (Object) platform;
     }
 
