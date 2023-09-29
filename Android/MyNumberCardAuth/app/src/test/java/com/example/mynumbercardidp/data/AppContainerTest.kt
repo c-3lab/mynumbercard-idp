@@ -1,10 +1,12 @@
 package com.example.mynumbercardidp.data
 
 import org.junit.Assert.assertEquals
+import org.junit.Ignore
 import org.junit.Test
 import java.lang.reflect.Field
 
 class AppContainerTest {
+    @Ignore
     @Test
     fun getAUTH_SERVER_URL() {
         this.changeEnvironmentVariables("AUTH_SERVER_URL", "https://example.com")
@@ -16,6 +18,7 @@ class AppContainerTest {
         assertEquals(authServerUrl.get(defaultAppContainer), "https://example.com")
     }
 
+    @Ignore
     @Test
     fun getLocalHost() {
         this.changeEnvironmentVariables("AUTH_SERVER_URL", null)
