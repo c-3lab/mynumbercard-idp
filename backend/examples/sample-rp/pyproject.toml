@@ -9,7 +9,6 @@ readme = "README.md"
 python = "^3.11"
 flask = "^3.0.0"
 
-
 [tool.poetry.dev-dependencies]
 ruff = "^0.1.1"
 black = "^23.10.0"
