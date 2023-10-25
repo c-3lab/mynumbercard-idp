@@ -1,6 +1,6 @@
 from flask import Flask
 
-app: str
+app: Flask
 app = Flask(__name__)
 
 
