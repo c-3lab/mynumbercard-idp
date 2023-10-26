@@ -1,0 +1,21 @@
+html {
+    overflow: auto;
+}
+
+body {
+    overflow: hidden;
+}
+
+#content {
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media screen and (max-width:480px) {
+    #content {
+        max-width: 480px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
