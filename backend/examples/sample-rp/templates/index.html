@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-store">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" -->
+    <!-- CSS -->
+    <link rel="stylesheet" href="../public/css/style.css">
+    <title>SampleRP Website</title>
+</head>
+<body>
+    <div class="header" id="content">
+        <h1> &#12304;SampleRP&#12305;Sample Webサイト</h1>
+        <ul>
+            <li>ようこそ、<span id="user_name">ゲスト</span> さん。</li>
+            <script>
+                if (user.name !== '') {
+                    const userNameElement = document.getElementById("user_name");
+                    userNameElement.textContent = user.name;
+                }
+            </script>
+            <a href="/login">
+                <li>新規登録・ログイン</li>
+            </a>
+        </ul>
+    </div>
+    <hr>
+    <br>
+        <div class="main">
+            <h2><u>このサイトは、IdP認証を実装したWEBサイトのサンプルです。</u></h2>
+            <br>
+            <div class="mx-auto" style="width:100%;">
+                <p>グルメサイト</p>
+                <p>Sample</p>
+            </div>
+            <br>
+            <div class="images">
+                <img src="画像ファイルのURL"><img src="画像ファイルのURL"> <img src="画像ファイルのURL">
+            </div>
+            <br>
+            <form>
+                <div class="form">
+                    <p><u>お店を探す</u></p>
+                    <label for="InputArea">
+                    <input type="text" placeholder="エリア">
+                    <label for="InputDate">
+                    <input name="text"placeholder="日付">
+                    <label for="InputTime">
+                    <input name="text"placeholder="時間">
+                    <label for="InputNumberOfPeople">
+                    <input name="text"placeholder="人数">
+                    <div class="d-grid gap-2 d-md-block">
+                    <button class="btn btn-primary" type="button">検索する</button>
+                    </div>
+                </div>
+            </form>
+    </div>
+
+    <!-- Bootatrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script> 
+  </body>
+</body>
+</html>
