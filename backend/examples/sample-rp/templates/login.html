@@ -7,20 +7,15 @@
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-        <style>
-            .bi-arrow-right{
-                font-size: 100px;
-            }
-        </style>
 
         <title>新規会員登録/ログイン</title>
     </head>
+   
     <body>
         <header>
             <div class="text-primary">
                 <h2>【SampleRP】Sample Webサイト</h2>
-            </div>   
-            <i class="bi bi-arrow-right"></i>
+            </div>     
             <p class="border border-dark border-bottom-0"></p>                 
         </header>
     
@@ -29,11 +24,12 @@
                 <div class="col-sm-6 align-self-center">
                     <div class="border border-gray rounded">
                         <div class="text-center">
-                            <h2>新規会員登録</h2>
+                            <h4>新規会員登録</h4>
                             <br>
-                            <h3>⬛️簡単な手順で登録！</h3>
-                            <h4>①IDを入力して設定</h4>
-                            <h4>②パスワードを入力して設定</h4>
+                            <h5>⬛️簡単な手順で登録！</h5>
+                            <h6>①IDを入力して設定</h6>
+                            <h6>②パスワードを入力して設定</h6>
+                            <br>
                             <button type="button" class="btn btn-primary">新規会員登録</button>
                             <br>
                         </div>
@@ -43,9 +39,9 @@
                     <div class="float-end">
                         <div class="border border-gray rounded">
                             <div class="text-center">
-                                <h2>ログイン</h2>
+                                <h4>ログイン</h4>
                                 <br>
-                                <h3>⬛️パスワードでログイン</h3>
+                                <h5>⬛️パスワードでログイン</h5>
                                 <form>
                                     <div class="mb-3">
                                         <input type="text" id="text" class="form-control" placeholder="ユーザーID">
@@ -57,7 +53,8 @@
                                 </form>
                                 <br>
                                 <p class="border border-dark border-bottom-0"></p>
-                                <h3>⬛️マイナンバーカード認証登録/ログイン</h3>
+                                <h5>⬛️マイナンバーカード認証登録/ログイン</h5>
+                                <br>
                                 <form action="/Keycloak-login">
                                     <button type="submit" class="btn-primary" formmethod="get">マイナンバーカード認証登録/ログイン</button>
                                 </form>
