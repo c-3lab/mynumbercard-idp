@@ -20,39 +20,45 @@
             <div class="text-primary">
                 <h2>【SampleRP】Sample Webサイト</h2>
             </div>   
-            <i class="bi bi-arrow-right"></i>                 
+            <i class="bi bi-arrow-right"></i>
+            <p class="border border-dark border-bottom-0"></p>                 
         </header>
     
         <div class="container">
             <div class="row">
-                <div class="col-md-5">
-                    <h2>新規会員登録</h2>
-                    <br>
-                    <h3>簡単な手順で登録！</h3>
-                    <h4>①IDを入力して設定</h4>
-                    <h4>②パスワードを入力して設定</h4>
-                    <button type="button" class="btn btn-primary">
-                        <a href="#" class="text-white">新規会員登録</a>
-                    </button>
+                <div class="col-sm-5">
+                    <div class="border border-gray rounded">
+                        <h2>新規会員登録</h2>
+                        <br>
+                        <h3>⬛️簡単な手順で登録！</h3>
+                        <h4>①IDを入力して設定</h4>
+                        <h4>②パスワードを入力して設定</h4>
+                        <button type="button" class="btn btn-primary">
+                            <a href="#" class="text-white">新規会員登録</a>
+                        </button>
+                    </div>
                 </div>
-                <div class="col-md-5">
-                    <h2>ログイン</h2>
-                    <br>
-                    <h3>パスワードでログイン</h3>
-                    <form>
-                        <div class="mb-3">
-                            <input type="text" id="text" class="form-control" placeholder="ユーザーID">
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" id="text" class="form-control" placeholder="パスワード">
-                        </div>
-                        <button type="submit" class="btn btn-primary">送信</button>
-                    </form>
-                    <br>
-                    <h3>マイナンバーカード認証登録/ログイン</h3>
-                    <form action="/Keycloak-login">
-                        <button type="submit" class="btn-primary" formmethod="get">マイナンバーカード認証登録/ログイン</button>
-                    </form>
+                <div class="col-sm-5">
+                    <div class="border border-gray rounded">
+                        <h2>ログイン</h2>
+                        <br>
+                        <h3>⬛️パスワードでログイン</h3>
+                        <form>
+                            <div class="mb-3">
+                                <input type="text" id="text" class="form-control" placeholder="ユーザーID">
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" id="text" class="form-control" placeholder="パスワード">
+                            </div>
+                            <button type="submit" class="btn btn-primary">送信</button>
+                        </form>
+                        <br>
+                        <p class="border border-dark border-bottom-0"></p>
+                        <h3>⬛️マイナンバーカード認証登録/ログイン</h3>
+                        <form action="/Keycloak-login">
+                            <button type="submit" class="btn-primary" formmethod="get">マイナンバーカード認証登録/ログイン</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
