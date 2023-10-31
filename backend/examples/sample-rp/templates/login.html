@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Cache-Control" content="no-store">
+
+        <title>新規会員登録/ログイン</title>
+    </head>
+    <body>
+        <div class="position-absolute top-5 start-5">
+            <div class="top_inner text-blue">
+                <h2>【SampleRP】Sample Webサイト</h2>                    
+            </div>
+        </div>
+
+        <div class="position-absolute top-30 start-10">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="content-box">
+                            <h2>新規会員登録</h2>
+                            <div class="row">
+                                <div class="col">
+                                    <h3>簡単な手順で登録！</h3>
+                                    <h4>①IDを入力して設定</h4>
+                                    <h4>②パスワードを入力して設定</h4>
+                                    <button type="button" class="btn btn-primary">
+                                        <a href="#" class="text-white">新規会員登録</a>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="position-absolute top-30 start-70">
+            <div class="container">
+                <div class="content-box">
+                    <h2>ログイン</h2>
+                    <div class="row">
+                        <div class="col">
+                            <h3>パスワードでログイン</h3>
+                            <form>
+                                <div class="mb-3">
+                                    <input type="text" id="text" class="form-control" placeholder="ユーザーID">
+                                </div>
+                                <div class="mb-3">
+                                    <input type="text" id="text" class="form-control" placeholder="パスワード">
+                                </div>
+                                <button type="submit" class="btn btn-primary">送信</button>
+                            </form>
+                            <h3>マイナンバーカード認証登録/ログイン</h3>
+                            <form action="/Keycloak-login">
+                                <button type="submit" class="btn-primary" formmethod="get">マイナンバーカード認証登録/ログイン</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
