@@ -26,41 +26,43 @@
     
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-6 align-self-center">
                     <div class="border border-gray rounded">
-                        <h2>新規会員登録</h2>
-                        <br>
-                        <h3>⬛️簡単な手順で登録！</h3>
-                        <h4>①IDを入力して設定</h4>
-                        <h4>②パスワードを入力して設定</h4>
-                        <button type="button" class="btn btn-primary">
-                            <a href="#" class="text-white">新規会員登録</a>
-                        </button>
-                        <br>
+                        <div class="text-center">
+                            <h2>新規会員登録</h2>
+                            <br>
+                            <h3>⬛️簡単な手順で登録！</h3>
+                            <h4>①IDを入力して設定</h4>
+                            <h4>②パスワードを入力して設定</h4>
+                            <button type="button" class="btn btn-primary">新規会員登録</button>
+                            <br>
+                        </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-6 align-self-center">
                     <div class="float-end">
                         <div class="border border-gray rounded">
-                            <h2>ログイン</h2>
-                            <br>
-                            <h3>⬛️パスワードでログイン</h3>
-                            <form>
-                                <div class="mb-3">
-                                    <input type="text" id="text" class="form-control" placeholder="ユーザーID">
-                                </div>
-                                <div class="mb-3">
-                                    <input type="text" id="text" class="form-control" placeholder="パスワード">
-                                </div>
-                                <button type="submit" class="btn btn-primary">送信</button>
-                            </form>
-                            <br>
-                            <p class="border border-dark border-bottom-0"></p>
-                            <h3>⬛️マイナンバーカード認証登録/ログイン</h3>
-                            <form action="/Keycloak-login">
-                                <button type="submit" class="btn-primary" formmethod="get">マイナンバーカード認証登録/ログイン</button>
-                            </form>
-                            <br>
+                            <div class="text-center">
+                                <h2>ログイン</h2>
+                                <br>
+                                <h3>⬛️パスワードでログイン</h3>
+                                <form>
+                                    <div class="mb-3">
+                                        <input type="text" id="text" class="form-control" placeholder="ユーザーID">
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="text" id="text" class="form-control" placeholder="パスワード">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">送信</button>
+                                </form>
+                                <br>
+                                <p class="border border-dark border-bottom-0"></p>
+                                <h3>⬛️マイナンバーカード認証登録/ログイン</h3>
+                                <form action="/Keycloak-login">
+                                    <button type="submit" class="btn-primary" formmethod="get">マイナンバーカード認証登録/ログイン</button>
+                                </form>
+                                <br>
+                            </div>
                         </div>
                     </div>
                 </div>
