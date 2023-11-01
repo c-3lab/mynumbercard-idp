@@ -41,8 +41,9 @@
         </header>
     
         <div class="container-fluid">
+
             <div class="row">
-                <div class="col-sm-6 align-self-center">
+                <div class="col-sm align-self-center">
                     <div class="border border-gray rounded">
                         <div class="text-center">
                             <h4 class="title">新規会員登録</h4>
@@ -61,35 +62,36 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 align-self-center">
-                    <div class="float-end">
-                        <div class="border border-gray rounded">
-                            <div class="text-center">
-                                <h4 class="title">ログイン</h4>
-                                <h5 class="subtitle">⬛️パスワードでログイン</h5>
-                                <form>
-                                    <div class="mb-3">
-                                        <input type="text" id="text" class="form-control" placeholder="ユーザーID">
-                                    </div>
-                                    <div class="mb-3">
-                                        <input type="text" id="text" class="form-control" placeholder="パスワード">
-                                    </div>
-                                </form>
-                                <button type="submit" class="btn btn-primary" onclick="showToastlogin()">ログイン</button>
-                                <div class="toast text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                                    <div class="d-flex">
-                                        <div class="toast-body">
-                                            この機能は実装されていません。
-                                        </div>
-                                        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                                    </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm align-self-center">
+                    <div class="border border-gray rounded">
+                        <div class="text-center">
+                            <h4 class="title">ログイン</h4>
+                            <h5 class="subtitle">⬛️パスワードでログイン</h5>
+                            <form>
+                                <div class="mb-6">
+                                    <input type="text" id="text" class="form-control" placeholder="ユーザーID">
                                 </div>
-                                <p class="border border-dark border-bottom-0"></p>
-                                <h5 class="subtitle">⬛️マイナンバーカード認証登録/ログイン</h5>
-                                <form action="/Keycloak-login">
-                                    <button type="submit" class="btn btn-primary" formmethod="get">マイナンバーカード認証登録/ログイン</button>
-                                </form>
+                                <div class="mb-6">
+                                    <input type="text" id="text" class="form-control" placeholder="パスワード">
+                                </div>
+                            </form>
+                            <button type="submit" class="btn btn-primary" onclick="showToastlogin()">ログイン</button>
+                            <div class="toast text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="d-flex">
+                                    <div class="toast-body">
+                                        この機能は実装されていません。
+                                    </div>
+                                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
                             </div>
+                            <p class="border border-dark border-bottom-0"></p>
+                            <h5 class="subtitle">⬛️マイナンバーカード認証登録/ログイン</h5>
+                            <form action="/Keycloak-login">
+                                <button type="submit" class="btn btn-primary" formmethod="get">マイナンバーカード認証登録/ログイン</button>
+                            </form>
                         </div>
                     </div>
                 </div>
