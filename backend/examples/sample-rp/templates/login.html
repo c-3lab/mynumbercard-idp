@@ -7,7 +7,7 @@
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         <title>新規会員登録/ログイン</title>
     </head>
    
@@ -29,7 +29,15 @@
                             <h5>⬛️簡単な手順で登録！</h5>
                             <p>①IDを入力して設定<br>②パスワードを入力して設定</p>
                             <br>
-                            <button type="button" class="btn btn-primary">新規会員登録</button>
+                            <button type="button" class="btn btn-primary" onclick="showToast()">新規会員登録</button>
+                            <div class="toast text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="d-flex">
+                                    <div class="toast-body">
+                                        この機能は実装されていません。
+                                    </div>
+                                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                            </div>
                             <br>
                             <br>
                         </div>
@@ -49,7 +57,15 @@
                                     <div class="mb-3">
                                         <input type="text" id="text" class="form-control" placeholder="パスワード">
                                     </div>
-                                    <button type="submit" class="btn btn-primary">ログイン</button>
+                                    <button type="submit" class="btn btn-primary" onclick="showToastlogin()">ログイン</button>
+                                    <div class="toast text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                                        <div class="d-flex">
+                                            <div class="toast-body">
+                                                この機能は実装されていません。
+                                            </div>
+                                            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                                        </div>
+                                    </div>
                                 </form>
                                 <br>
                                 <p class="border border-dark border-bottom-0"></p>
@@ -66,6 +82,25 @@
             </div>
         </div>
         
+        <script>
+            // toastクラスがついている要素にBootStrapのトーストを適用する
+            var toastElList = [].slice.call(document.querySelectorAll(".toast"));
+            var toastList = toastElList.map(function (toastEl) {
+                return new bootstrap.Toast(toastEl, {
+                    // オプション
+                    delay: 10000,
+                });
+            });
+            // ボタンをクリックしたときに実行される関数
+            function showToast() {
+                // トーストを表示する
+                toastList[0].show();
+            }
+
+            function showToastlogin(){
+                toastList[1].show();
+                        }
+        </script>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
