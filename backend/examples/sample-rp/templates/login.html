@@ -8,7 +8,28 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        
         <title>新規会員登録/ログイン</title>
+
+        <style>
+            .con{
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
+
+            .subtitle{
+                margin-bottom: 20px;
+            }
+
+            .title{
+                margin-bottom: 50px;
+            }
+
+            button{
+                margin-top: 20px;
+                margin-bottom: 35px;
+            }
+        </style>
     </head>
    
     <body>
@@ -24,11 +45,10 @@
                 <div class="col-sm-6 align-self-center">
                     <div class="border border-gray rounded">
                         <div class="text-center">
-                            <h4>新規会員登録</h4>
-                            <br>
-                            <h5>⬛️簡単な手順で登録！</h5>
-                            <p>①IDを入力して設定<br>②パスワードを入力して設定</p>
-                            <br>
+                            <h4 class="title">新規会員登録</h4>
+                            <h5 class="subtitle">⬛️簡単な手順で登録！</h5>
+                            <p class="con">①IDを入力して設定</p>
+                            <p class="con">②パスワードを入力して設定</p>
                             <button type="button" class="btn btn-primary" onclick="showToast()">新規会員登録</button>
                             <div class="toast text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
                                 <div class="d-flex">
@@ -38,8 +58,6 @@
                                     <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                                 </div>
                             </div>
-                            <br>
-                            <br>
                         </div>
                     </div>
                 </div>
@@ -47,9 +65,8 @@
                     <div class="float-end">
                         <div class="border border-gray rounded">
                             <div class="text-center">
-                                <h4>ログイン</h4>
-                                <br>
-                                <h5>⬛️パスワードでログイン</h5>
+                                <h4 class="title">ログイン</h4>
+                                <h5 class="subtitle">⬛️パスワードでログイン</h5>
                                 <form>
                                     <div class="mb-3">
                                         <input type="text" id="text" class="form-control" placeholder="ユーザーID">
@@ -67,14 +84,11 @@
                                         <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                                     </div>
                                 </div>
-                                <br>
                                 <p class="border border-dark border-bottom-0"></p>
-                                <h5>⬛️マイナンバーカード認証登録/ログイン</h5>
-                                <br>
+                                <h5 class="subtitle">⬛️マイナンバーカード認証登録/ログイン</h5>
                                 <form action="/Keycloak-login">
                                     <button type="submit" class="btn btn-primary" formmethod="get">マイナンバーカード認証登録/ログイン</button>
                                 </form>
-                                <br>
                             </div>
                         </div>
                     </div>
