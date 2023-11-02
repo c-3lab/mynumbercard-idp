@@ -50,7 +50,7 @@
                             <h5 class="subtitle">⬛️簡単な手順で登録！</h5>
                             <p class="procedure">①IDを入力して設定</p>
                             <p class="procedure">②パスワードを入力して設定</p>
-                            <button type="button" class="btn btn-primary" onclick="showToast()">新規会員登録</button>
+                            <button type="button" class="btn btn-primary" onclick="showToast(0)">新規会員登録</button>
                             <div class="toast text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
                                 <div class="d-flex">
                                     <div class="toast-body">
@@ -78,7 +78,7 @@
                                     <input type="text" id="text" class="form-control" placeholder="パスワード">
                                 </div>
                             </form>
-                            <button type="submit" class="btn btn-primary" onclick="showToastlogin()">ログイン</button>
+                            <button type="submit" class="btn btn-primary" onclick="showToast(1)">ログイン</button>
                             <div class="toast text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
                                 <div class="d-flex">
                                     <div class="toast-body">
@@ -108,13 +108,9 @@
                 });
             });
             // ボタンをクリックしたときに実行される関数
-            function showToast() {
+            function showToast(num) {
                 // トーストを表示する
-                toastList[0].show();
-            }
-
-            function showToastlogin(){
-                toastList[1].show();
+                toastList[num].show();
             }
         </script>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
