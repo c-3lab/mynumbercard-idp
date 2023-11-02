@@ -100,8 +100,8 @@
 
         <script>
             // toastクラスがついている要素にBootStrapのトーストを適用する
-            var toastElList = [].slice.call(document.querySelectorAll(".toast"));
-            var toastList = toastElList.map(function (toastEl) {
+            const toastElList = [].slice.call(document.querySelectorAll(".toast"));
+            const toastList = toastElList.map(function (toastEl) {
                 return new bootstrap.Toast(toastEl, {
                     // オプション
                     delay: 10000,
