@@ -1,8 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, session
 from authlib.integrations.flask_client import OAuth
 import os
-import logging
-from logging.config import dictConfig
 
 
 # config
@@ -129,6 +127,9 @@ def index() -> str:
 def login() -> str:
     return render_template("login.html")
 
+@app.route("/")
+def index():
+    return render_template("index.html")
 
 @app.route("/connect")
 def connect() -> str:
