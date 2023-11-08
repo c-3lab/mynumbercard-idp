@@ -42,6 +42,7 @@ def login() -> str:
     return render_template("login.html")
 
 
+<<<<<<< HEAD
 @app.route('/Keycloak-login')
 def loginKeycloak():
     redirect_uri = url_for('auth', _external=True)
@@ -58,6 +59,11 @@ def auth():
         session['token'] = token
 
     return redirect(url_for('index'))
+=======
+@app.route("/connected")
+def connected() -> str:
+    return render_template("connected.html")
+>>>>>>> 4a2bd00 (・OKボタンを追加)
 
 
 if __name__ == "__main__":
