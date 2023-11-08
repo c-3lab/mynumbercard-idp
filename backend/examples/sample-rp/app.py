@@ -76,5 +76,10 @@ def token() -> str:
     return render_template("token.html")
 
 
+@app.route("/connected")
+def connected() -> str:
+    return render_template("connected.html")
+
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=3000)  # noqa: S104
