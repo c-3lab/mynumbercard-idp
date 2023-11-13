@@ -1,6 +1,8 @@
-from flask import Flask, render_template, redirect, url_for, session
+from flask import Flask, render_template, redirect, url_for, session,request
 from authlib.integrations.flask_client import OAuth
 import os
+import logging
+from logging.config import dictConfig
 
 
 # config
@@ -29,6 +31,22 @@ oauth.register(
     client_kwargs={
         "scope": "openid",
     },
+)
+
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'INFO',
+        'handlers': ['wsgi']
+    }
 )
 
 #config
@@ -127,9 +145,6 @@ def index() -> str:
 def login() -> str:
     return render_template("login.html")
 
-@app.route("/")
-def index():
-    return render_template("index.html")
 
 @app.route("/connect")
 def connect() -> str:
