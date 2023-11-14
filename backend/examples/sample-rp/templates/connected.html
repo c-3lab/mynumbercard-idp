@@ -51,6 +51,7 @@
                 <div class="col-sm" style="text-align: center;">
                     <div class="border border-dark rounded">
                         <h3 class="success" style="border-bottom: solid 5px gray">アカウントの連携に成功しました</h3>
+                        <div id = "connect_time"></div>
                         <script type="text/JavaScript">
                             
                             var Now = new Date();
@@ -69,7 +70,7 @@
                             if(mm < 10) { mm = "0" + mm; }
                             if(ss < 10) { ss = "0" + ss; }
                             
-                            document.write(" " + YY + "年" + MM + "月" + DD + "日" + " " + hh + ':' + mm + ':' + ss + ' ');
+                            document.getElementById("connect_time").textContent = " " + YY + "年" + MM + "月" + DD + "日" + " " + hh + ":" + mm + ":" + ss + " ";
                             
                         </script>
                     </div>
