@@ -61,19 +61,23 @@ def getUser(req):
 
     # 認証を確認し、個人情報を対応する変数に格納する
     if accessToken != "":
-        
-        idTokenContent = req.oidc.id_token_claims
+        token = oauth.keycloak.authorize_access_token()        
+        userinfo = token['userinfo']
 
-        username = req.oidc.user.preferred_username
-        name = req.oidc.user.name
-        address = req.oidc.user.user_address
-        gender = req.oidc.user.gender_code
-        dateOfBirth = req.oidc.user.birth_date
-        sub = req.oidc.user.sub
-        uniqueId = req.oidc.user.unique_id
+        # userinfo の内容確認
+        print("userinfo:", userinfo)
 
-        accessToken = req.oidc.access_token.access_token
+        # userinfo から必要な情報を取り出す
+        idTokenContent = userinfo.get('id_token_content', '')
+        username = userinfo.get('username', '')
+        name = userinfo.get('name', '')
+        address = userinfo.get('address', '')
+        gender = userinfo.get('gender', '')
+        dateOfBirth = userinfo.get('date_of_birth', '')
+        sub = userinfo.get('sub', '')
+        uniqueId = userinfo.get('unique_id', '')
         
+        # log取得
         app.logger.debug('This is a debug message')
         app.logger.info('This is an info message')
         app.logger.warning('This is a warning message')
@@ -82,6 +86,7 @@ def getUser(req):
 
         print("接続済み",flush=True)
     else:
+        # log取得
         app.logger.debug('This is a debug message')
         app.logger.info('This is an info message')
         app.logger.warning('This is a warning message')
@@ -90,7 +95,8 @@ def getUser(req):
 
         print("未接続",flush=True)
 
-    user={
+    # userinfo に情報を格納
+    userinfo={
         "id_token_content": idTokenContent,
         "username": username,
         "name": name,
@@ -102,12 +108,14 @@ def getUser(req):
         "access_token": accessToken
     }
 
-    return user
+    print(userinfo)
+
+    return userinfo
 
 
 @app.route("/")
 def index() -> str:
-    user = getUser(None)
+    userinfo = getUser(None)
     return render_template("index.html")
 
 
