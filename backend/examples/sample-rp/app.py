@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, session, request, jsonify
+from flask import Flask, render_template, redirect, url_for, session,request
 from authlib.integrations.flask_client import OAuth
 import os
 import logging
@@ -22,10 +22,9 @@ dictConfig({
 
 #config
 app: Flask = Flask(__name__)
+app.secret_key = 'your_random_secret_key_here'
 logging.basicConfig(level=logging.DEBUG)
 app.config.update(    
-    OIDC_CLIENT_ID=os.getenv("KEYCLOAK_CLIENT_ID"),
-    OIDC_CLIENT_SECRETS=os.getenv("KEYCLOAK_CLIENT_SECRET"),
     OIDC_ID_TOKEN_COOKIE_SECURE=False,
     OIDC_USER_INFO_ENABLED=True,
     SERVICE_ID=os.getenv("SERVICE_ID"),
@@ -34,18 +33,20 @@ app.config.update(
 
 oauth: OAuth = OAuth(app)
 oauth.register(
-    name='rp',
-    server_metadata_url=f'https://{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("REALM")}',
+    name='keycloak',
+    client_id=os.getenv("KEYCLOAK_CLIENT_ID"),
+    client_secret=os.getenv("KEYCLOAK_CLIENT_SECRET"),
+    server_metadata_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}',
+    authorize_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/auth',
     client_kwargs={
         "scope": "openid",
     },
-    api_base_url=os.getenv("KEYCLOAK_URL")
 )
 
 print(oauth)
 
 
-def getUser(req):
+def getUser(request):
     # RP側に個人情報を格納する変数を定義
     idTokenContent = {}
     
@@ -115,13 +116,19 @@ def getUser(req):
 
 @app.route("/")
 def index() -> str:
-    userinfo = getUser(None)
+    userinfo = getUser(request)
     return render_template("index.html")
 
 
 @app.route("/login")
 def login() -> str:
     return render_template("login.html")
+
+
+@app.route('/login-keycloak')
+def loginKeycloak():
+    redirect_uri = url_for('index', _external=True)
+    return oauth.keycloak.authorize_redirect(redirect_uri)
 
 
 if __name__ == "__main__":
