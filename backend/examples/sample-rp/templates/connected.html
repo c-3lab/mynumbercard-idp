@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Cache-Control" content="no-store">
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+        <title>連携後</title>
+
+        <style>
+            .bi-check-circle-fill{
+                font-size: 150px;
+                color: #0074d9;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                padding: auto;
+            }
+            .h3{
+                padding: auto;
+                margin-bottom: 30px;
+            }
+            button{
+                margin-top: 40px;
+                margin-bottom: 40px;
+                width: 150px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <header>
+            <div class="text-primary">
+                <h2>【SampleRP】Sample Webサイト</h2>
+            </div>
+            <p class="border border-dark border-bottom-0"></p>
+        </header>
+
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-sm" style="text-align: center;">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm" style="text-align: center;">
+                    <div class="border border-dark rounded">
+                        <h3 class="success" style="border-bottom: solid 5px gray">アカウントの連携に成功しました</h3>
+                        <div id = "connect_time"></div>
+                        <h5>ID/トークン情報画面で連携の確認を行って下さい</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm" style="text-align: center;">
+                    <form action="/">
+                        <button type="submit" class="btn btn-primary">OK</button>
+                    </form>
+                </div>
+            </div>
+    </body>
+</html>
