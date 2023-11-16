@@ -52,27 +52,7 @@
                     <div class="border border-dark rounded">
                         <h3 class="success" style="border-bottom: solid 5px gray">アカウントの連携に成功しました</h3>
                         <div id = "connect_time"></div>
-                        <script type="text/JavaScript">
-                            
-                            var Now = new Date();
-                            var YY = Now.getYear();
-                            var MM = Now.getMonth() + 1;
-                            var DD = Now.getDate();
-                            var hh = Now.getHours();
-                            var mm = Now.getMinutes();
-                            var ss = Now.getSeconds();
-                            
-                            if(YY < 2000) { YY += 1900; }
-                            
-                            if(MM < 10) { MM = "0" + MM; }
-                            if(DD < 10) { DD = "0" + DD; }
-                            if(hh < 10) { hh = "0" + hh; }
-                            if(mm < 10) { mm = "0" + mm; }
-                            if(ss < 10) { ss = "0" + ss; }
-                            
-                            document.getElementById("connect_time").textContent = " " + YY + "年" + MM + "月" + DD + "日" + " " + hh + ":" + mm + ":" + ss + " ";
-                            
-                        </script>
+                        <h5>ID/トークン情報画面で連携の確認を行って下さい</h5>
                     </div>
                 </div>
             </div>
