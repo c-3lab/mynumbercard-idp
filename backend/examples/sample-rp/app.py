@@ -65,10 +65,5 @@ def auth() -> str:
     return redirect(url_for("index"))
 
 
-@app.route("/connect")
-def connect() -> str:
-    return render_template("connect.html")
-
-
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=3000)
