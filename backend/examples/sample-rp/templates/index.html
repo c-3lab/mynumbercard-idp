@@ -41,7 +41,7 @@
             float:left;
         }
         .container{
-            margin-top:5px
+            margin-top:5px;
         }
         ul {
             list-style: none;
@@ -52,6 +52,15 @@
         li {
             margin: 10px 0 0 10px;
             font-size: 10px;
+        }
+        .bi-a1{
+            font-size: 10px;
+        }
+        .bi-a2{
+            font-size: 30px;
+        }
+        .bi-a3{
+            font-size: 50px;
         }
     </style>
     <title>SampleRP Website</title>
@@ -69,16 +78,16 @@
                             <li>ようこそ、<span id="user_name">ゲスト</span> さん。</li>
                                 {% if True %} 
                                 <li>
-                                     <i class="bi bi-person-circle" style="font-size: 10px;"></i>
+                                     <i class="bi-a1 bi-person-circle"></i>
                                      <a href="/login">新規登録・ログイン</a>
                                 </li>
                                 {% else %}
                                 <li>
-                                     <i class="bi bi-file-earmark-person" style="font-size: 10px;"></i>
+                                     <i class="bi-a1 bi-file-earmark-person"></i>
                                      <a href="#">アカウント情報照会</a>
                                 </li>
                                 <li>
-                                     <i class="bi bi-box-arrow-right" style="font-size: 10px;"></i>
+                                     <i class="bi-a1 bi-box-arrow-right"></i>
                                      <a href="#">ログアウト</a>
                                     </li>
                                 {% endif %}
@@ -92,14 +101,14 @@
         <div class="container text-center auto">
             <h6><u>このサイトは、IdP認証を実装したWEBサイトのサンプルです。</u></h6>
             <div class="paper">
-                <i class="bi bi-cup-hot" style="font-size: 30px;"></i>
+                <i class="bi-a2 bi-cup-hot"></i>
                 グルメサイト
                 <div class="bold">Sample</div>
             </div>
             <div class="images">
-                <i class="bi bi-search" style="font-size: 50px;"></i>
-                <i class="bi bi-shop" style="font-size: 50px;"></i>
-                <i class="bi bi-egg-fried" style="font-size: 50px;"></i>
+                <i class="bi-a3 bi-search"></i>
+                <i class="bi-a3 bi-shop"></i>
+                <i class="bi-a3 bi-egg-fried"></i>
             </div>
         </div>
         <form>
