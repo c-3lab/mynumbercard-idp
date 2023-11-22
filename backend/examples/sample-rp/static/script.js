@@ -7,7 +7,7 @@ const toastList = toastElList.map(function (toastEl) {
     });
 });
 // ボタンをクリックしたときに実行される関数
-function showToast() {
+function showToast(num) {
     // トーストを表示する
-    toastList[0].show();
+    toastList[num].show();
 }
