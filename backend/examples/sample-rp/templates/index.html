@@ -125,23 +125,9 @@
                             <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                         </div>
                     </div>
-                    <script>
-                        // toastクラスがついている要素にBootStrapのトーストを適用する
-                        const toastElList = [].slice.call(document.querySelectorAll(".toast"));
-                        const toastList = toastElList.map(function (toastEl) {
-                            return new bootstrap.Toast(toastEl, {
-                                // オプション
-                                delay: 10000,
-                            });
-                        });
-                        // ボタンをクリックしたときに実行される関数
-                        function showToast() {
-                            // トーストを表示する
-                            toastList[0].show();
-                        }
-                    </script>
                 </div>
             </div>
         </form>
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
     </body>
 </html>
