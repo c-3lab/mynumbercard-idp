@@ -1,8 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, session,request
 from authlib.integrations.flask_client import OAuth
 import os
-import logging
-from logging.config import dictConfig
 
 
 # config
