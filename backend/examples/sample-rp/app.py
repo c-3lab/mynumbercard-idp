@@ -172,6 +172,7 @@ def login() -> str:
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 @app.route('/Keycloak-login')
 def loginKeycloak():
     redirect_uri = url_for('auth', _external=True)
@@ -193,6 +194,17 @@ def auth():
 def connected() -> str:
     return render_template("connected.html")
 >>>>>>> 4a2bd00 (・OKボタンを追加)
+=======
+@app.route("/connected")
+def connected() -> str:
+    return render_template("connected.html")
+=======
+@app.route('/Keycloak-login')
+def loginKeycloak():
+    redirect_uri = url_for('index', _external=True)
+    return oauth.keycloak.authorize_redirect(redirect_uri)
+>>>>>>> fc3b9c1 (遷移先のリンクの記述を既存のものに統一)
+>>>>>>> a35a3f6 (遷移先のリンクの記述を既存のものに統一)
 
 
 if __name__ == "__main__":
