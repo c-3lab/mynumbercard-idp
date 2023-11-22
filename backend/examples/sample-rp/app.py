@@ -125,7 +125,7 @@ def login() -> str:
     return render_template("login.html")
 
 
-@app.route('/login-keycloak')
+@app.route('/Keycloak-login')
 def loginKeycloak():
     redirect_uri = url_for('index', _external=True)
     return oauth.keycloak.authorize_redirect(redirect_uri)
