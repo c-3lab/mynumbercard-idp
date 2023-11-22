@@ -71,14 +71,36 @@ def auth() -> Response:
     return redirect(url_for("index"))
 
 
-@app.route("/token")
-def token() -> str:
-    return render_template("token.html")
+@app.route("/connect")
+def connect() -> str:
+    return render_template("connect.html")
 
 
 @app.route("/connected")
 def connected() -> str:
     return render_template("connected.html")
+
+
+@app.route("/Keycloak-login")
+def login_keycloak() -> str:
+    redirect_uri: str = url_for("auth", _external=True)
+    return oauth.keycloak.authorize_redirect(redirect_uri)
+
+
+@app.route("/auth")
+def auth() -> Response:
+    token: OAuth = oauth.keycloak.authorize_access_token()
+    userinfo: OAuth = token["userinfo"]
+    if userinfo:
+        session["user"] = userinfo
+        session["token"] = token
+
+    return redirect(url_for("index"))
+
+
+@app.route("/token")
+def token() -> str:
+    return render_template("token.html")
 
 
 if __name__ == "__main__":
