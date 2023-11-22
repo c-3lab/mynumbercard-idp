@@ -13,6 +13,11 @@ def login() -> str:
     return render_template("login.html")
 
 
+@app.route("/connect")
+def connect() -> str:
+    return render_template("connect.html")
+
+
 @app.route("/connected")
 def connected() -> str:
     return render_template("connected.html")
