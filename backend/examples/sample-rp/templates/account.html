@@ -46,10 +46,10 @@
             </div>
             <table id="user-info" class="table table-bordered">
                 <tbody>
-                    <tr><td class="topic bg-primary">お名前</td><td><%= user.name %></td></tr>
-                    <tr><td class="topic bg-primary">生年月日</td><td><%= user.dateOfBirth %></td></tr>
-                    <tr><td class="topic bg-primary">性別</td><td><%= user.gender %></td></tr>
-                    <tr><td class="topic bg-primary">住所</td><td><%= user.address %></td></tr>
+                    <tr><td class="topic bg-primary">お名前</td><td>{{ user.name }}</td></tr>
+                    <tr><td class="topic bg-primary">生年月日</td><td>{{ user.birth_date }}</td></tr>
+                    <tr><td class="topic bg-primary">性別</td><td>{{ user.gender_code }}</td></tr>
+                    <tr><td class="topic bg-primary">住所</td><td>{{ user.user_address }}</td></tr>
                 </tbody>
             </table>
             <div class="row">
