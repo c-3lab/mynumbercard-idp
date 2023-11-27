@@ -32,35 +32,6 @@ oauth.register(
 )
 
 
-#config
-app: Flask = Flask(__name__)
-app.secret_key = 'your_random_secret_key_here'
-
-app.config.update(    
-    OIDC_ID_TOKEN_COOKIE_SECURE=False,
-    OIDC_USER_INFO_ENABLED=True,
-    SERVICE_ID=os.getenv("SERVICE_ID"),
-    NOTE=os.getenv("NOTE"),
-)
-
-
-oauth: OAuth = OAuth(app)
-oauth.register(
-    name='keycloak',
-    client_id=os.getenv("KEYCLOAK_CLIENT_ID"),
-    client_secret=os.getenv("KEYCLOAK_CLIENT_SECRET"),
-    authorize_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/auth',
-    authorize_params=None,    
-    server_metadata_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/.well-known/openid-configuration',
-    access_token_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/token',
-    access_token_params=None,   
-    api_base_url=f'{os.getenv("BASE_URL")}', 
-    client_kwargs={
-        "scope": "openid",
-    }
-)
-
-
 @app.route("/")
 def index() -> str:
     user = session.get('user')
