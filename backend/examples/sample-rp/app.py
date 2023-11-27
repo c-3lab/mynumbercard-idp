@@ -23,7 +23,9 @@ dictConfig({
 #config
 app: Flask = Flask(__name__)
 app.secret_key = 'your_random_secret_key_here'
+
 logging.basicConfig(level=logging.DEBUG)
+
 app.config.update(    
     OIDC_ID_TOKEN_COOKIE_SECURE=False,
     OIDC_USER_INFO_ENABLED=True,
@@ -31,93 +33,28 @@ app.config.update(
     NOTE=os.getenv("NOTE"),
 )
 
+
 oauth: OAuth = OAuth(app)
 oauth.register(
     name='keycloak',
     client_id=os.getenv("KEYCLOAK_CLIENT_ID"),
     client_secret=os.getenv("KEYCLOAK_CLIENT_SECRET"),
-    server_metadata_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}',
     authorize_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/auth',
+    authorize_params=None,    
+    server_metadata_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/.well-known/openid-configuration',
+    access_token_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/token',
+    access_token_params=None,   
+    api_base_url=f'{os.getenv("BASE_URL")}', 
     client_kwargs={
         "scope": "openid",
-    },
-)
-
-print(oauth)
-
-
-def getUser(request):
-    # RP側に個人情報を格納する変数を定義
-    idTokenContent = {}
-    
-    username = ""
-    name = ""
-    address = ""
-    gender = ""
-    dateOfBirth = ""
-    sub = ""
-    nickname = ""
-    uniqueId = ""
-    accessToken = ""
-
-    # 認証を確認し、個人情報を対応する変数に格納する
-    if accessToken != "":
-        token = oauth.keycloak.authorize_access_token()        
-        userinfo = token['userinfo']
-
-        # userinfo の内容確認
-        print("userinfo:", userinfo)
-
-        # userinfo から必要な情報を取り出す
-        idTokenContent = userinfo.get('id_token_content', '')
-        username = userinfo.get('username', '')
-        name = userinfo.get('name', '')
-        address = userinfo.get('address', '')
-        gender = userinfo.get('gender', '')
-        dateOfBirth = userinfo.get('date_of_birth', '')
-        sub = userinfo.get('sub', '')
-        uniqueId = userinfo.get('unique_id', '')
-        
-        # log取得
-        app.logger.debug('This is a debug message')
-        app.logger.info('This is an info message')
-        app.logger.warning('This is a warning message')
-        app.logger.error('This is an error message')
-        app.logger.critical('This is a critical message')
-
-        print("接続済み",flush=True)
-    else:
-        # log取得
-        app.logger.debug('This is a debug message')
-        app.logger.info('This is an info message')
-        app.logger.warning('This is a warning message')
-        app.logger.error('This is an error message')
-        app.logger.critical('This is a critical message')
-
-        print("未接続",flush=True)
-
-    # userinfo に情報を格納
-    userinfo={
-        "id_token_content": idTokenContent,
-        "username": username,
-        "name": name,
-        "address": address,
-        "gender": gender,
-        "date_of_birth": dateOfBirth,
-        "sub": sub,
-        "unique_id": uniqueId,
-        "access_token": accessToken
     }
-
-    print(userinfo)
-
-    return userinfo
+)
 
 
 @app.route("/")
 def index() -> str:
-    userinfo = getUser(request)
-    return render_template("index.html")
+    user = session.get('user')
+    return render_template("index.html",user=user)
 
 
 @app.route("/login")
@@ -127,8 +64,20 @@ def login() -> str:
 
 @app.route('/Keycloak-login')
 def loginKeycloak():
-    redirect_uri = url_for('index', _external=True)
+    redirect_uri = url_for('auth', _external=True)
     return oauth.keycloak.authorize_redirect(redirect_uri)
+
+
+@app.route('/auth')
+def auth():
+    token = oauth.keycloak.authorize_access_token()
+    print(token)
+    userinfo = token['userinfo']
+    if userinfo:
+        session['user'] = userinfo
+        session['token'] = token
+
+    return redirect(url_for('index'))
 
 
 if __name__ == "__main__":
