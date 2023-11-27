@@ -74,21 +74,28 @@
                     </div>
                     <div class="col col-md-6">
                         <ul>
-                            <li>ようこそ、<span id="user_name">ゲスト</span> さん。</li>
-                                {% if True %} 
+                            <li>ようこそ、 
+                                {% if user %}
+                                {{ user.name }}
+                                {% else %}
+                                ゲスト
+                                {% endif %}
+                                さん。
+                            </li>
+                                {% if user %} 
                                 <li>
-                                     <i class="bi-a1 bi-person-circle"></i>
-                                     <a href="/login">新規登録・ログイン</a>
-                                </li>
+                                    <i class="bi-a1 bi-file-earmark-person"></i>
+                                    <a href="#">アカウント情報照会</a>
+                               </li>
+                               <li>
+                                    <i class="bi-a1 bi-box-arrow-right"></i>
+                                    <a href="#">ログアウト</a>
+                               </li>
                                 {% else %}
                                 <li>
-                                     <i class="bi-a1 bi-file-earmark-person"></i>
-                                     <a href="#">アカウント情報照会</a>
+                                    <i class="bi-a1 bi-person-circle"></i>
+                                    <a href="/login">新規登録・ログイン</a>
                                 </li>
-                                <li>
-                                     <i class="bi-a1 bi-box-arrow-right"></i>
-                                     <a href="#">ログアウト</a>
-                                    </li>
                                 {% endif %}
                         </ul>
                     </div>
