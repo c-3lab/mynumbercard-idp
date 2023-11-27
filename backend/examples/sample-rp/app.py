@@ -57,7 +57,6 @@ def loginKeycloak():
 @app.route('/auth')
 def auth():
     token = oauth.keycloak.authorize_access_token()
-    print(token)
     userinfo = token['userinfo']
     if userinfo:
         session['user'] = userinfo
