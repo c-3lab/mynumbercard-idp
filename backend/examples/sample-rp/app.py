@@ -68,7 +68,9 @@ dictConfig({
 #config
 app: Flask = Flask(__name__)
 app.secret_key = 'your_random_secret_key_here'
+
 logging.basicConfig(level=logging.DEBUG)
+
 app.config.update(    
     OIDC_ID_TOKEN_COOKIE_SECURE=False,
     OIDC_USER_INFO_ENABLED=True,
@@ -76,15 +78,21 @@ app.config.update(
     NOTE=os.getenv("NOTE"),
 )
 
+
 oauth: OAuth = OAuth(app)
 oauth.register(
     name='keycloak',
     client_id=os.getenv("KEYCLOAK_CLIENT_ID"),
     client_secret=os.getenv("KEYCLOAK_CLIENT_SECRET"),
-    server_metadata_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}',
     authorize_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/auth',
+    authorize_params=None,    
+    server_metadata_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/.well-known/openid-configuration',
+    access_token_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/token',
+    access_token_params=None,   
+    api_base_url=f'{os.getenv("BASE_URL")}', 
     client_kwargs={
         "scope": "openid",
+<<<<<<< HEAD
     },
 )
 
@@ -149,10 +157,15 @@ def getUser(request):
     }
 
     return user
+=======
+    }
+)
+>>>>>>> 9c266d5 (ユーザーを取得する処理の記述追加)
 
 
 @app.route("/")
 def index() -> str:
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     user = session.get('user')
@@ -164,6 +177,10 @@ def index() -> str:
 >>>>>>> 79ebb57 (oidc接続configの修正)
     return render_template("index.html")
 >>>>>>> 79d0bb0 (keycloakとの接続のための設定記述/ユーザー取得処理記述)
+=======
+    user = session.get('user')
+    return render_template("index.html",user=user)
+>>>>>>> 9c266d5 (ユーザーを取得する処理の記述追加)
 
 
 @app.route("/login")
@@ -201,10 +218,22 @@ def connected() -> str:
 =======
 @app.route('/Keycloak-login')
 def loginKeycloak():
-    redirect_uri = url_for('index', _external=True)
+    redirect_uri = url_for('auth', _external=True)
     return oauth.keycloak.authorize_redirect(redirect_uri)
 >>>>>>> fc3b9c1 (遷移先のリンクの記述を既存のものに統一)
 >>>>>>> a35a3f6 (遷移先のリンクの記述を既存のものに統一)
+
+
+@app.route('/auth')
+def auth():
+    token = oauth.keycloak.authorize_access_token()
+    print(token)
+    userinfo = token['userinfo']
+    if userinfo:
+        session['user'] = userinfo
+        session['token'] = token
+
+    return redirect(url_for('index'))
 
 
 if __name__ == "__main__":
