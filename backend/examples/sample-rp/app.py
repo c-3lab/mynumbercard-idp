@@ -1,30 +1,10 @@
 from flask import Flask, render_template, redirect, url_for, session,request
 from authlib.integrations.flask_client import OAuth
 import os
-import logging
-from logging.config import dictConfig
-
-dictConfig({
-    'version': 1,
-    'formatters': {'default': {
-        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-    }},
-    'handlers': {'wsgi': {
-        'class': 'logging.StreamHandler',
-        'stream': 'ext://flask.logging.wsgi_errors_stream',
-        'formatter': 'default'
-    }},
-    'root': {
-        'level': 'INFO',
-        'handlers': ['wsgi']
-    }
-})
 
 #config
 app: Flask = Flask(__name__)
 app.secret_key = 'your_random_secret_key_here'
-
-logging.basicConfig(level=logging.DEBUG)
 
 app.config.update(    
     OIDC_ID_TOKEN_COOKIE_SECURE=False,
