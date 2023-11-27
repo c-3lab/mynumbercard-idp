@@ -47,7 +47,7 @@ def login() -> str:
 def connected() -> str:
     return render_template("connected.html")
 
-
+  
 @app.route('/Keycloak-login')
 def loginKeycloak():
     redirect_uri = url_for('auth', _external=True)
@@ -64,7 +64,6 @@ def auth():
         session['token'] = token
 
     return redirect(url_for('index'))
-
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=3000)
