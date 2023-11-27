@@ -1,25 +1,8 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 from flask import Flask, render_template, redirect, url_for, session,request
 from authlib.integrations.flask_client import OAuth
-=======
-
-from flask import Flask, render_template
-from flask_oidc import OpenIDConnect
->>>>>>> be443b1 (fixed conflict)
-=======
-from flask import Flask, render_template, redirect, url_for, session, request, jsonify
-=======
-from flask import Flask, render_template, redirect, url_for, session,request
->>>>>>> 79ebb57 (oidc接続configの修正)
-from authlib.integrations.flask_client import OAuth
->>>>>>> 79d0bb0 (keycloakとの接続のための設定記述/ユーザー取得処理記述)
 import os
-import logging
-from logging.config import dictConfig
 
-<<<<<<< HEAD
+
 #config
 app: Flask = Flask(__name__)
 app.secret_key = 'your_random_secret_key_here'
@@ -47,29 +30,11 @@ oauth.register(
         "scope": "openid",
     }
 )
-=======
-dictConfig({
-    'version': 1,
-    'formatters': {'default': {
-        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-    }},
-    'handlers': {'wsgi': {
-        'class': 'logging.StreamHandler',
-        'stream': 'ext://flask.logging.wsgi_errors_stream',
-        'formatter': 'default'
-    }},
-    'root': {
-        'level': 'INFO',
-        'handlers': ['wsgi']
-    }
-})
->>>>>>> 79d0bb0 (keycloakとの接続のための設定記述/ユーザー取得処理記述)
+
 
 #config
 app: Flask = Flask(__name__)
 app.secret_key = 'your_random_secret_key_here'
-
-logging.basicConfig(level=logging.DEBUG)
 
 app.config.update(    
     OIDC_ID_TOKEN_COOKIE_SECURE=False,
@@ -92,95 +57,14 @@ oauth.register(
     api_base_url=f'{os.getenv("BASE_URL")}', 
     client_kwargs={
         "scope": "openid",
-<<<<<<< HEAD
-    },
-)
-
-print(oauth)
-
-
-def getUser(request):
-    # RP側に個人情報を格納する変数を定義
-    idTokenContent = {}
-    
-    username = ""
-    name = ""
-    address = ""
-    gender = ""
-    dateOfBirth = ""
-    sub = ""
-    nickname = ""
-    uniqueId = ""
-    accessToken = ""
-
-    # 認証を確認し、個人情報を対応する変数に格納する
-    if accessToken != "":
-        
-        idTokenContent = req.oidc.id_token_claims
-
-        username = req.oidc.user.preferred_username
-        name = req.oidc.user.name
-        address = req.oidc.user.user_address
-        gender = req.oidc.user.gender_code
-        dateOfBirth = req.oidc.user.birth_date
-        sub = req.oidc.user.sub
-        uniqueId = req.oidc.user.unique_id
-
-        accessToken = req.oidc.access_token.access_token
-        
-        app.logger.debug('This is a debug message')
-        app.logger.info('This is an info message')
-        app.logger.warning('This is a warning message')
-        app.logger.error('This is an error message')
-        app.logger.critical('This is a critical message')
-
-        print("接続済み",flush=True)
-    else:
-        app.logger.debug('This is a debug message')
-        app.logger.info('This is an info message')
-        app.logger.warning('This is a warning message')
-        app.logger.error('This is an error message')
-        app.logger.critical('This is a critical message')
-
-        print("未接続",flush=True)
-
-    user={
-        "id_token_content": idTokenContent,
-        "username": username,
-        "name": name,
-        "address": address,
-        "gender": gender,
-        "date_of_birth": dateOfBirth,
-        "sub": sub,
-        "unique_id": uniqueId,
-        "access_token": accessToken
-    }
-
-    return user
-=======
     }
 )
->>>>>>> 9c266d5 (ユーザーを取得する処理の記述追加)
 
 
 @app.route("/")
 def index() -> str:
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     user = session.get('user')
     return render_template("index.html",user=user)
-=======
-    user = getUser(None)
-=======
-    userinfo = getUser(request)
->>>>>>> 79ebb57 (oidc接続configの修正)
-    return render_template("index.html")
->>>>>>> 79d0bb0 (keycloakとの接続のための設定記述/ユーザー取得処理記述)
-=======
-    user = session.get('user')
-    return render_template("index.html",user=user)
->>>>>>> 9c266d5 (ユーザーを取得する処理の記述追加)
 
 
 @app.route("/login")
@@ -188,40 +72,15 @@ def login() -> str:
     return render_template("login.html")
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+@app.route("/connected")
+def connected() -> str:
+    return render_template("connected.html")
+
+
 @app.route('/Keycloak-login')
 def loginKeycloak():
     redirect_uri = url_for('auth', _external=True)
     return oauth.keycloak.authorize_redirect(redirect_uri)
-
-
-@app.route('/auth')
-def auth():
-    token = oauth.keycloak.authorize_access_token()
-    print(token)
-    userinfo = token['userinfo']
-    if userinfo:
-        session['user'] = userinfo
-        session['token'] = token
-
-    return redirect(url_for('index'))
-=======
-@app.route("/connected")
-def connected() -> str:
-    return render_template("connected.html")
->>>>>>> 4a2bd00 (・OKボタンを追加)
-=======
-@app.route("/connected")
-def connected() -> str:
-    return render_template("connected.html")
-=======
-@app.route('/Keycloak-login')
-def loginKeycloak():
-    redirect_uri = url_for('auth', _external=True)
-    return oauth.keycloak.authorize_redirect(redirect_uri)
->>>>>>> fc3b9c1 (遷移先のリンクの記述を既存のものに統一)
->>>>>>> a35a3f6 (遷移先のリンクの記述を既存のものに統一)
 
 
 @app.route('/auth')
