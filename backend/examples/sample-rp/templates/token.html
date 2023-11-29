@@ -24,19 +24,19 @@
             <table id="user-info">
                 <tr>
                     <td>プラットフォーム ユニークID:</td>
-                    <td><%= user.uniqueID %></td>
+                    <td>{{user.unique_id}}</td>
                 </tr>
                 <tr>
                     <td>User ID:</td>
-                    <td><%= user.sub %></td>
+                    <td>{{ user.sub }}</td>
                 </tr>
                 <tr>
                     <td>Access Token:</td>
-                    <td><div class="word-break-all"><%= user.accessToken %></div></td>
+                    <td><div class="word-break-all">{{ token.access_token }}</div></td>
                 </tr>
             </table>
             <div id="token-info">
-                <p>keycloak-id-token: <br><%= JSON.stringify(user.idTokenContent) %></p>
+                <p>keycloak-id-token: <br>{{ user }}</p>
               </div>
             </div>
         </div>
