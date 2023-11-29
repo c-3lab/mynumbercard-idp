@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-store">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <style>
+        @media screen and (max-width:480px) {
+            #content {
+                max-width: 480px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+        .header{
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        .images{
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        .paper {
+            width: auto;
+            height: auto;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 10px 6px -6px #777;
+            background: #f5f5f5;
+        }
+        .bold{
+            font-weight: bold;
+            font-size: 35px;
+        }
+        .text-primary{
+            margin:10px 0 0 10px;
+            float:left;
+        }
+        .container{
+            margin-top:5px;
+        }
+        ul {
+            list-style: none;
+            margin: 0;
+            display: flex;
+            justify-content: flex-end;
+        }
+        li {
+            margin: 10px 0 0 10px;
+            font-size: 10px;
+        }
+        .bi-a1{
+            font-size: 10px;
+        }
+        .bi-a2{
+            font-size: 30px;
+        }
+        .bi-a3{
+            font-size: 50px;
+        }
+    </style>
+    <title>SampleRP Website</title>
+</head>
+<body>
+    <header>
+        <div class="header" id="content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="text-primary"> &#12304;SampleRP&#12305;Sample Webサイト</h4>
+                    </div>
+                    <div class="col col-md-6">
+                        <ul>
+                            <li>
+                                ようこそ、 
+                                {% if user %}
+                                    {{ user.name }}
+                                {% else %}
+                                    ゲスト
+                                {% endif %}
+                                さん。
+                            </li>
+                            {% if user %} 
+                            <li>
+                                <i class="bi-a1 bi-file-earmark-person"></i>
+                                <a href="/account">アカウント情報照会</a>
+                            </li>
+                            <li>
+                                <i class="bi-a1 bi-box-arrow-right"></i>
+                                <a href="/logout">ログアウト</a>
+                            </li>
+                            {% else %}
+                            <li>
+                                <i class="bi-a1 bi-person-circle"></i>
+                                <a href="/login">新規登録・ログイン</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <hr>
+        <div class="container text-center auto">
+            <h6><u>このサイトは、IdP認証を実装したWEBサイトのサンプルです。</u></h6>
+            <div class="paper">
+                <i class="bi-a2 bi-cup-hot"></i>
+                グルメサイト
+                <div class="bold">Sample</div>
+            </div>
+            <div class="images">
+                <i class="bi-a3 bi-search"></i>
+                <i class="bi-a3 bi-shop"></i>
+                <i class="bi-a3 bi-egg-fried"></i>
+            </div>
+        </div>
+        <form>
+            <div class="container mr-3 border border-4 border-primary">
+                <u>お店を探す</u>
+                <div class="row row-cols-lg-auto g-3 align-items-center">
+                    <input type="text" placeholder="エリア">
+                    <input type="text" placeholder="日付">
+                    <input type="text" placeholder="時間">
+                    <input type="text" placeholder="人数">
+                    <button class="d-grid gap-2 d-md-block btn btn-primary" type="button" onclick="showToast(0)">検索する</button>
+                    <div class="toast text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                この機能は実装されていません。
+                            </div>
+                            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
+    </body>
+</html>
