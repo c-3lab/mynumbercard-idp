@@ -5,7 +5,7 @@ import os
 
 #config
 app: Flask = Flask(__name__)
-app.secret_key = 'your_random_secret_key_here'
+app.secret_key = os.getenv("APP_SECRET_KEY")
 
 app.config.update(    
     OIDC_ID_TOKEN_COOKIE_SECURE=False,
@@ -63,6 +63,7 @@ def auth():
         session['token'] = token
 
     return redirect(url_for('index'))
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=3000)
