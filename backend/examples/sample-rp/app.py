@@ -1,7 +1,8 @@
 import os
+from typing import Any
 
 from authlib.integrations.flask_client import OAuth
-from flask import Flask, Response, redirect, render_template, session, url_for
+from flask import Flask, redirect, render_template, session, url_for
 
 # config
 app: Flask = Flask(__name__)
@@ -60,7 +61,7 @@ def login_keycloak() -> str:
 
 
 @app.route("/auth")
-def auth() -> str:
+def auth() -> Any:  # noqa: ANN401
     token: OAuth = oauth.keycloak.authorize_access_token()
     userinfo: OAuth = token["userinfo"]
     if userinfo:
