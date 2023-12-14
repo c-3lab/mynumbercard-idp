@@ -18,6 +18,18 @@ mypy = "^1.6.1"
 autoflake = "^2.2.1"
 isort = "^5.12.0"
 
+[tool.ruff]
+line-length = 119
+select = ["ALL"]
+ignore = [
+    "D",
+    "PLR0913",
+    "ANN002",
+    "ANN003",
+    "ANN101",
+]
+target-version = "py311"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
