@@ -1,8 +1,7 @@
 import os
 
-import werkzeug
 from authlib.integrations.flask_client import OAuth
-from flask import Flask, redirect, render_template, session, url_for
+from flask import BaseResponse, Flask, redirect, render_template, session, url_for
 
 # config
 app: Flask = Flask(__name__)
@@ -61,7 +60,7 @@ def login_keycloak() -> str:
 
 
 @app.route("/auth")
-def auth() -> werkzeug.Response:
+def auth() -> BaseResponse:
     token: OAuth = oauth.keycloak.authorize_access_token()
     userinfo: OAuth = token["userinfo"]
     if userinfo:
