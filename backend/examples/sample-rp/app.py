@@ -71,5 +71,11 @@ def auth() -> Response:
     return redirect(url_for("index"))
 
 
+@app.route("/logout")
+def logout() -> Response:
+    session.pop("user", None)
+    return redirect("/")
+
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=3000)  # noqa: S104
