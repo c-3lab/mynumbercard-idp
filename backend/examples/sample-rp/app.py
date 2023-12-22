@@ -102,7 +102,7 @@ def refresh():
         )
         session["token"] = new_token
         return redirect(url_for("index"))
-    else:
+    else:  # noqa: RET505
         return redirect(url_for("login"))
 
 
@@ -128,7 +128,7 @@ def replace() -> str:
 
     if "Location" in response.headers:
         return redirect(response.headers["Location"])
-    else:
+    else:  # noqa: RET505
         return "Userinfo replacement completed."
 
 
