@@ -76,5 +76,11 @@ def token() -> str:
     return render_template("token.html")
 
 
+@app.route("/logout")
+def logout() -> Response:
+    session.pop("user", None)
+    return redirect("/")
+
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=3000)  # noqa: S104
