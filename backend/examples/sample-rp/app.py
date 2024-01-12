@@ -71,5 +71,10 @@ def auth() -> Response:
     return redirect(url_for("index"))
 
 
+@app.route("/token")
+def token() -> str:
+    return render_template("token.html")
+
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=3000)  # noqa: S104
