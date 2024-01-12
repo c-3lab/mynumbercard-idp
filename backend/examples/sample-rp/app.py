@@ -71,10 +71,9 @@ def auth() -> Response:
     return redirect(url_for("index"))
 
 
-@app.route("/logout")
-def logout() -> Response:
-    session.pop("user", None)
-    return redirect("/")
+@app.route("/token")
+def token() -> str:
+    return render_template("token.html")
 
 
 if __name__ == "__main__":
