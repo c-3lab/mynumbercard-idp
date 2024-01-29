@@ -7,7 +7,7 @@ from werkzeug import Response
 
 # config
 app: Flask = Flask(__name__)
-app.secret_key = "your_random_secret_key_here"
+app.secret_key = os.getenv("APP_SECRET_KEY")
 
 
 app.config.update(
@@ -24,9 +24,9 @@ oauth.register(
     client_id=os.getenv("KEYCLOAK_CLIENT_ID"),
     client_secret=os.getenv("KEYCLOAK_CLIENT_SECRET"),
     authorize_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/auth',
-    authorize_params=None,
     server_metadata_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/.well-known/openid-configuration',
     access_token_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/token',
+    authorize_params=None,
     access_token_params=None,
     api_base_url=f'{os.getenv("BASE_URL")}',
     client_kwargs={
@@ -93,16 +93,15 @@ def logout() -> Response:
 
 
 @app.route("/refresh")
-def refresh():
+def refresh() -> str:
     token = session.get("token")
     if token and "refresh_token" in token:
-        # 新しいトークンを取得
         new_token = oauth.keycloak.fetch_access_token(
-            refresh_token=token["refresh_token"]
+            refresh_token=token["refresh_token"], grant_type="refresh_token"
         )
-        session["token"] = new_token
+        session["token"].update(new_token)
         return redirect(url_for("index"))
-    else:  # noqa: RET505
+    else:
         return redirect(url_for("login"))
 
 
@@ -123,14 +122,17 @@ def replace() -> str:
 
     # ユーザー情報の更新を行うためにPOSTリクエストを送信
     response = requests.post(
-        replaceAPIURL, headers=headers, data={}, allow_redirects=False
+        replaceAPIURL,
+        headers=headers,
+        data={},
+        allow_redirects=False,
     )
 
     if "Location" in response.headers:
         return redirect(response.headers["Location"])
-    else:  # noqa: RET505
+    else:
         return "Userinfo replacement completed."
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=3000)  # noqa: S104
+    app.run(debug=True, host="0.0.0.0", port=3000)
