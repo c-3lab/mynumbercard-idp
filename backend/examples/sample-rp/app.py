@@ -1,5 +1,6 @@
 import os
 
+import requests
 from authlib.integrations.flask_client import OAuth
 from flask import Flask, redirect, render_template, session, url_for
 from werkzeug import Response
@@ -47,6 +48,43 @@ def login() -> str:
 @app.route("/connect")
 def connect() -> str:
     return render_template("connect.html")
+
+
+@app.route("/assign", methods=["GET", "POST"])
+def assign() -> Response:
+    token = session.get("token")
+
+    service_id_value: str | None = os.getenv("SERVICE_ID")
+    note_value: str | None = os.getenv("NOTE")
+    assign_api_url: str = (
+        os.getenv("KEYCLOAK_URL")
+        + "/realms/"
+        + os.getenv("KEYCLOAK_REALM")
+        + "/custom-attribute/assign"
+    )
+
+    headers = {
+        "Content-type": "application/json",
+        "Authorization": f"Bearer {token['access_token']}",
+    }
+    data = {
+        "user_attributes": {
+            "service_id": service_id_value,
+            "notes": note_value,
+        },
+    }
+
+    requests.post(assign_api_url, headers=headers, json=data)
+
+    # refresh token
+    if token and "refresh_token" in token:
+        new_token : OAuth = oauth.keycloak.fetch_access_token(
+            refresh_token = token["refresh_token"],
+            grant_type = "refresh_token",
+        )
+        session["token"].update(new_token)
+
+    return redirect("/connected")
 
 
 @app.route("/connected")
