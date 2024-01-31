@@ -54,8 +54,8 @@ def connect() -> str:
 def assign() -> Response:
     token: dict[str, str] | None = session.get("token")
 
-    service_id: str = os.getenv("SERVICE_ID") or ""  # デフォルト値を設定
-    note: str = os.getenv("NOTE") or ""  # デフォルト値を設定
+    service_id: str = os.getenv("SERVICE_ID") or ""
+    note: str = os.getenv("NOTE") or ""
     assign_api_url: str = (
         os.getenv("KEYCLOAK_URL", "")
         + "/realms/"
