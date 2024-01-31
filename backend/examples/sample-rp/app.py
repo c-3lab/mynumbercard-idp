@@ -2,7 +2,7 @@ import os
 
 import requests  # type: ignore  # noqa: PGH003
 from authlib.integrations.flask_client import OAuth
-from flask import Flask, redirect, render_template, session, url_for
+from flask import Flask, abort, redirect, render_template, session, url_for
 from werkzeug import Response
 
 # config
@@ -52,45 +52,49 @@ def connect() -> str:
 
 @app.route("/assign", methods=["POST"])
 def assign() -> Response:
-    token: dict[str, str] | None = session.get("token")
+    try:
+        token: dict[str, str] | None = session.get("token")
 
-    service_id: str = os.getenv("SERVICE_ID", "")
-    note: str = os.getenv("NOTE", "")
-    assign_api_url: str = (
-        os.getenv("KEYCLOAK_URL", "")
-        + "/realms/"
-        + os.getenv("KEYCLOAK_REALM", "")
-        + "/custom-attribute/assign"
-    )
+        service_id: str = os.getenv("SERVICE_ID", "")
+        note: str = os.getenv("NOTE", "")
+        assign_api_url: str = (
+            os.getenv("KEYCLOAK_URL", "")
+            + "/realms/"
+            + os.getenv("KEYCLOAK_REALM", "")
+            + "/custom-attribute/assign"
+            )
 
-    headers: dict[str, str] = {
-        "Content-type": "application/json",
-        "Authorization": f"Bearer {token['access_token']}" if token else "",
-    }
+        headers: dict[str, str] = {
+            "Content-type": "application/json",
+            "Authorization": f"Bearer {token['access_token']}" if token else "",
+        }
 
-    data: dict[str, dict[str, str]] = {
-        "user_attributes": {
-            "service_id": service_id,
-            "notes": note,
-        },
-    }
+        data: dict[str, dict[str, str]] = {
+            "user_attributes": {
+                "service_id": service_id,
+                "notes": note,
+            },
+        }
 
-    requests.post(
-        assign_api_url,
-        headers=headers,
-        json=data,
-        timeout=(3.0, 7.5),
-    )
-
-    # refresh token
-    if token and token.get("refresh_token"):
-        new_token: OAuth = oauth.keycloak.fetch_access_token(
-            refresh_token=token["refresh_token"],
-            grant_type="refresh_token",
+        requests.post(
+            assign_api_url,
+            headers=headers,
+            json=data,
+            timeout=(3.0, 7.5),
         )
-        session["token"] = new_token
 
-    return redirect("/connected")
+        # refresh token
+        if token and token.get("refresh_token"):
+            new_token: OAuth = oauth.keycloak.fetch_access_token(
+                refresh_token=token["refresh_token"],
+                grant_type="refresh_token",
+            )
+            session["token"] = new_token
+
+        return redirect("/connected")
+
+    except KeyError:
+        abort(401, description="Token is missing or invalid")
 
 
 @app.route("/connected")
