@@ -1,3 +1,4 @@
+import logging
 import os
 
 import requests
@@ -53,7 +54,6 @@ def connect() -> str:
 @app.route("/assign", methods=["GET", "POST"])
 def assign() -> Response:
     token = session.get("token")
-    print(f"Token: {token}")
 
     service_id = os.getenv("SERVICE_ID")
     note = os.getenv("NOTE")
@@ -74,13 +74,9 @@ def assign() -> Response:
             "notes": note,
         },
     }
-    print(f"Headers: {headers}")
-    print(f"Data: {data}")
 
     response = requests.post(assign_api_url, headers=headers, json=data)
     response.raise_for_status()
-    print(f"Response Status Code: {response.status_code}")
-    print(f"Response Content: {response.text}")
 
     # refresh token
     if token and token.get("refresh_token"):
@@ -88,10 +84,7 @@ def assign() -> Response:
             refresh_token=token["refresh_token"],
             grant_type="refresh_token",
             )
-        if new_token:
-            session["token"] = new_token
-        else:
-            print("New token is None or empty.")
+        session["token"] = new_token
 
     return redirect("/connected")
 
