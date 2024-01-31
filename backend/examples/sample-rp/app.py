@@ -1,6 +1,6 @@
 import os
 
-import requests  # type: ignore
+import requests  # type: ignore  # noqa: PGH003
 from authlib.integrations.flask_client import OAuth
 from flask import Flask, redirect, render_template, session, url_for
 from werkzeug import Response
@@ -54,8 +54,8 @@ def connect() -> str:
 def assign() -> Response:
     token: dict[str, str] | None = session.get("token")
 
-    service_id: str = os.getenv("SERVICE_ID") or ""
-    note: str = os.getenv("NOTE") or ""
+    service_id: str = os.getenv("SERVICE_ID", "")
+    note: str = os.getenv("NOTE", "")
     assign_api_url: str = (
         os.getenv("KEYCLOAK_URL", "")
         + "/realms/"
@@ -68,7 +68,7 @@ def assign() -> Response:
         "Authorization": f"Bearer {token['access_token']}" if token else "",
     }
 
-    data: dict[str, dict[str, str]]  = {
+    data: dict[str, dict[str, str]] = {
         "user_attributes": {
             "service_id": service_id,
             "notes": note,
