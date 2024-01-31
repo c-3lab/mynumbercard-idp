@@ -50,7 +50,7 @@ def connect() -> str:
     return render_template("connect.html")
 
 
-@app.route("/assign", methods=["GET", "POST"])
+@app.route("/assign", methods=["POST"])
 def assign() -> Response:
     token: dict[str, str] | None = session.get("token")
 
