@@ -1,7 +1,6 @@
 import os
 
-
-import requests # type: ignore
+import requests  # type: ignore
 from authlib.integrations.flask_client import OAuth
 from flask import Flask, redirect, render_template, session, url_for
 from werkzeug import Response
