@@ -1,7 +1,7 @@
-import logging
 import os
 
-import requests
+
+import requests # type: ignore
 from authlib.integrations.flask_client import OAuth
 from flask import Flask, redirect, render_template, session, url_for
 from werkzeug import Response
@@ -53,37 +53,42 @@ def connect() -> str:
 
 @app.route("/assign", methods=["GET", "POST"])
 def assign() -> Response:
-    token = session.get("token")
+    token: dict[str, str] | None = session.get("token")
 
-    service_id = os.getenv("SERVICE_ID")
-    note = os.getenv("NOTE")
-    assign_api_url = (
-        os.getenv("KEYCLOAK_URL")
+    service_id: str = os.getenv("SERVICE_ID") or ""  # デフォルト値を設定
+    note: str = os.getenv("NOTE") or ""  # デフォルト値を設定
+    assign_api_url: str = (
+        os.getenv("KEYCLOAK_URL", "")
         + "/realms/"
-        + os.getenv("KEYCLOAK_REALM")
+        + os.getenv("KEYCLOAK_REALM", "")
         + "/custom-attribute/assign"
     )
 
-    headers = {
+    headers: dict[str, str] = {
         "Content-type": "application/json",
-        "Authorization": f"Bearer {token['access_token']}",
+        "Authorization": f"Bearer {token['access_token']}" if token else "",
     }
-    data = {
+
+    data: dict[str, dict[str, str]]  = {
         "user_attributes": {
             "service_id": service_id,
             "notes": note,
         },
     }
 
-    response = requests.post(assign_api_url, headers=headers, json=data)
-    response.raise_for_status()
+    requests.post(
+        assign_api_url,
+        headers=headers,
+        json=data,
+        timeout=(3.0, 7.5),
+    )
 
     # refresh token
     if token and token.get("refresh_token"):
-        new_token = oauth.keycloak.fetch_access_token(
+        new_token: OAuth = oauth.keycloak.fetch_access_token(
             refresh_token=token["refresh_token"],
             grant_type="refresh_token",
-            )
+        )
         session["token"] = new_token
 
     return redirect("/connected")
