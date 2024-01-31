@@ -53,10 +53,11 @@ def connect() -> str:
 @app.route("/assign", methods=["GET", "POST"])
 def assign() -> Response:
     token = session.get("token")
+    print(f"Token: {token}")
 
-    service_id_value: str | None = os.getenv("SERVICE_ID")
-    note_value: str | None = os.getenv("NOTE")
-    assign_api_url: str = (
+    service_id = os.getenv("SERVICE_ID")
+    note = os.getenv("NOTE")
+    assign_api_url = (
         os.getenv("KEYCLOAK_URL")
         + "/realms/"
         + os.getenv("KEYCLOAK_REALM")
@@ -69,20 +70,28 @@ def assign() -> Response:
     }
     data = {
         "user_attributes": {
-            "service_id": service_id_value,
-            "notes": note_value,
+            "service_id": service_id,
+            "notes": note,
         },
     }
+    print(f"Headers: {headers}")
+    print(f"Data: {data}")
 
-    requests.post(assign_api_url, headers=headers, json=data)
+    response = requests.post(assign_api_url, headers=headers, json=data)
+    response.raise_for_status()
+    print(f"Response Status Code: {response.status_code}")
+    print(f"Response Content: {response.text}")
 
     # refresh token
-    if token and "refresh_token" in token:
-        new_token : OAuth = oauth.keycloak.fetch_access_token(
-            refresh_token = token["refresh_token"],
-            grant_type = "refresh_token",
-        )
-        session["token"].update(new_token)
+    if token and token.get("refresh_token"):
+        new_token = oauth.keycloak.fetch_access_token(
+            refresh_token=token["refresh_token"],
+            grant_type="refresh_token",
+            )
+        if new_token:
+            session["token"] = new_token
+        else:
+            print("New token is None or empty.")
 
     return redirect("/connected")
 
