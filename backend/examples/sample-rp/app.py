@@ -26,6 +26,7 @@ oauth.register(
     authorize_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/auth',
     server_metadata_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/.well-known/openid-configuration',
     access_token_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/token',
+    userinfo_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/userinfo',
     authorize_params=None,
     access_token_params=None,
     api_base_url=f'{os.getenv("BASE_URL")}',
@@ -94,20 +95,19 @@ def logout() -> Response:
 
 @app.route("/refresh")
 def refresh() -> str:
-    token = session.get("token")
-    if token and "refresh_token" in token:
-        new_token = oauth.keycloak.fetch_access_token(
-            refresh_token=token["refresh_token"], grant_type="refresh_token"
+    token = session.get("token", {})
+    if token and token.get("refresh_token"):
+        new_token: OAuth = oauth.keycloak.fetch_access_token(
+            refresh_token=token["refresh_token"],
+            grant_type="refresh_token",
         )
-        session["token"].update(new_token)
-        return redirect(url_for("index"))
-    else:
-        return redirect(url_for("login"))
+        session["token"] = new_token
+    return redirect(url_for("index"))
 
 
 @app.route("/replace", methods=["GET", "POST"])
-def replace() -> str:
-    token = session.get("token")
+def replace() -> Response:
+    token: dict[str, str] | None = session.get("token")
 
     replaceAPIURL = (
         f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/userinfo-replacement/login'
@@ -120,7 +120,6 @@ def replace() -> str:
         "User-Agent": request.headers.get("User-Agent"),
     }
 
-    # ユーザー情報の更新を行うためにPOSTリクエストを送信
     response = requests.post(
         replaceAPIURL,
         headers=headers,
@@ -129,6 +128,17 @@ def replace() -> str:
     )
 
     if "Location" in response.headers:
+        userinfo_response = requests.get(
+            f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/userinfo',
+            headers={"Authorization": f"Bearer {token['access_token']}"},
+        )
+
+        if userinfo_response.status_code == 200:
+            userinfo = userinfo_response.json()
+            merged_userinfo = {**session.get("user", {}), **userinfo}
+            session["user"] = merged_userinfo
+            session["token"] = token
+
         return redirect(response.headers["Location"])
     else:
         return "Userinfo replacement completed."
