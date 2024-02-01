@@ -52,6 +52,52 @@ def connect() -> str:
     return render_template("connect.html")
 
 
+@app.route("/assign", methods=["POST"])
+def assign() -> Response:
+    token: dict[str, str] | None = session.get("token")
+
+    if token is None:
+        abort(400, "Token not available")
+
+    service_id: str = os.getenv("SERVICE_ID", "")
+    note: str = os.getenv("NOTE", "")
+    assign_api_url: str = (
+        os.getenv("KEYCLOAK_URL", "")
+        + "/realms/"
+        + os.getenv("KEYCLOAK_REALM", "")
+        + "/custom-attribute/assign"
+    )
+
+    headers: dict[str, str] = {
+        "Content-type": "application/json",
+        "Authorization": f"Bearer {token['access_token']}" if token else "",
+    }
+
+    data: dict[str, dict[str, str]] = {
+        "user_attributes": {
+            "service_id": service_id,
+            "notes": note,
+        },
+    }
+
+    requests.post(
+        assign_api_url,
+        headers=headers,
+        json=data,
+        timeout=(3.0, 7.5),
+    )
+
+    # refresh token
+    if token and token.get("refresh_token"):
+        new_token: OAuth = oauth.keycloak.fetch_access_token(
+            refresh_token=token["refresh_token"],
+            grant_type="refresh_token",
+        )
+        session["token"] = new_token
+
+    return redirect("/connected")
+
+
 @app.route("/connected")
 def connected() -> str:
     return render_template("connected.html")
