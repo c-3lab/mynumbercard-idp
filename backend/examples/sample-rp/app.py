@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, session, request
+from flask import Flask, abort, render_template, redirect, url_for, session, request
 from authlib.integrations.flask_client import OAuth
 from urllib.parse import quote
 import os
@@ -105,43 +105,47 @@ def refresh() -> str:
     return redirect(url_for("index"))
 
 
-@app.route("/replace", methods=["GET", "POST"])
+@app.route("/replace", methods=["POST"])
 def replace() -> Response:
-    token: dict[str, str] | None = session.get("token")
+    try:
+        token: dict[str, str] | None = session.get("token")
 
-    replaceAPIURL = (
-        f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/userinfo-replacement/login'
-        f'?redirect_uri={quote(os.getenv("BASE_URL") + "/refresh")}&scope=openid&response_type=code'
-    )
-
-    headers = {
-        "Content-type": "application/x-www-form-urlencoded",
-        "Authorization": f"Bearer {token['access_token']}",
-        "User-Agent": request.headers.get("User-Agent"),
-    }
-
-    response = requests.post(
-        replaceAPIURL,
-        headers=headers,
-        data={},
-        allow_redirects=False,
-    )
-
-    if "Location" in response.headers:
-        userinfo_response = requests.get(
-            f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/userinfo',
-            headers={"Authorization": f"Bearer {token['access_token']}"},
+        replaceAPIURL = (
+            f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/userinfo-replacement/login'
+            f'?redirect_uri={quote(os.getenv("BASE_URL") + "/refresh")}&scope=openid&response_type=code'
         )
 
-        if userinfo_response.status_code == 200:
-            userinfo = userinfo_response.json()
-            merged_userinfo = {**session.get("user", {}), **userinfo}
-            session["user"] = merged_userinfo
-            session["token"] = token
+        headers = {
+            "Content-type": "application/x-www-form-urlencoded",
+            "Authorization": f"Bearer {token['access_token']}",
+            "User-Agent": request.headers.get("User-Agent"),
+        }
 
-        return redirect(response.headers["Location"])
-    else:
-        return "Userinfo replacement completed."
+        response = requests.post(
+            replaceAPIURL,
+            headers=headers,
+            data={},
+            allow_redirects=False,
+        )
+
+        if "Location" in response.headers:
+            userinfo_response = requests.get(
+                f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/userinfo',
+                headers={"Authorization": f"Bearer {token['access_token']}"},
+            )
+
+            if userinfo_response.status_code == 200:
+                userinfo = userinfo_response.json()
+                merged_userinfo = {**session.get("user", {}), **userinfo}
+                session["user"] = merged_userinfo
+                session["token"] = token
+
+            return redirect(response.headers["Location"])
+        else:
+            return "Userinfo replacement completed."
+
+    except TypeError:
+        abort(401, description="Token is missing or invalid")
 
 
 if __name__ == "__main__":
