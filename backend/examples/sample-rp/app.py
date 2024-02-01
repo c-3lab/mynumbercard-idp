@@ -1,13 +1,14 @@
-import os
-
-import requests  # type: ignore  # noqa: PGH003
+from flask import Flask, abort, render_template, redirect, url_for, session, request
 from authlib.integrations.flask_client import OAuth
-from flask import Flask, abort, redirect, render_template, session, url_for
+from urllib.parse import quote
+import os
+import requests
 from werkzeug import Response
 
 # config
 app: Flask = Flask(__name__)
 app.secret_key = os.getenv("APP_SECRET_KEY")
+
 
 app.config.update(
     OIDC_ID_TOKEN_COOKIE_SECURE=False,
@@ -25,6 +26,7 @@ oauth.register(
     authorize_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/auth',
     server_metadata_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/.well-known/openid-configuration',
     access_token_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/token',
+    userinfo_url=f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/userinfo',
     authorize_params=None,
     access_token_params=None,
     api_base_url=f'{os.getenv("BASE_URL")}',
@@ -118,9 +120,17 @@ def auth() -> Response:
     return redirect(url_for("index"))
 
 
+@app.route("/account")
+def account() -> str:
+    user = session.get("user")
+    return render_template("account.html", user=user)
+
+
 @app.route("/token")
 def token() -> str:
-    return render_template("token.html")
+    token = session.get("token")
+    user = session.get("user")
+    return render_template("token.html", token=token, user=user)
 
 
 @app.route("/logout")
@@ -129,5 +139,59 @@ def logout() -> Response:
     return redirect("/")
 
 
+@app.route("/refresh")
+def refresh() -> str:
+    token = session.get("token", {})
+    if token and token.get("refresh_token"):
+        new_token: OAuth = oauth.keycloak.fetch_access_token(
+            refresh_token=token["refresh_token"],
+            grant_type="refresh_token",
+        )
+        session["token"] = new_token
+    return redirect(url_for("index"))
+
+
+@app.route("/replace", methods=["POST"])
+def replace() -> Response:
+    token: dict[str, str] | None = session.get("token")
+
+    if token is None:
+        abort(400, "Token not available")
+
+    replaceAPIURL = (
+        f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/userinfo-replacement/login'
+        f'?redirect_uri={quote(os.getenv("BASE_URL") + "/refresh")}&scope=openid&response_type=code'
+    )
+
+    headers = {
+        "Content-type": "application/x-www-form-urlencoded",
+        "Authorization": f"Bearer {token['access_token']}",
+        "User-Agent": request.headers.get("User-Agent"),
+    }
+
+    response = requests.post(
+        replaceAPIURL,
+        headers=headers,
+        data={},
+        allow_redirects=False,
+    )
+
+    if "Location" in response.headers:
+        userinfo_response = requests.get(
+            f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/userinfo',
+            headers={"Authorization": f"Bearer {token['access_token']}"},
+        )
+
+        if userinfo_response.status_code == 200:
+            userinfo = userinfo_response.json()
+            merged_userinfo = {**session.get("user", {}), **userinfo}
+            session["user"] = merged_userinfo
+            session["token"] = token
+
+        return redirect(response.headers["Location"])
+    else:
+        return "Userinfo replacement completed."
+
+
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=3000)  # noqa: S104
+    app.run(debug=True, host="0.0.0.0", port=3000)
