@@ -93,8 +93,8 @@ def assign() -> Response:
 
         return redirect("/connected")
 
-    except KeyError:
-        abort(401, description="Token is missing or invalid")
+    except TypeError:
+        abort(401, description="'NoneType' object is not subscriptable")
 
 
 @app.route("/connected")
