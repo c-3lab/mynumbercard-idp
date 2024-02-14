@@ -47,10 +47,14 @@ def test_connected(client):
     assert "<title>連携後</title>".encode() in response.data
 
 
-def test_account(client):
-    response = client.get("/account")
-    assert response.status_code == 200
-    assert "<title>アカウント情報照会</title>".encode() in response.data
+def test_account_with_user(client):
+    with client:
+        with client.session_transaction() as sess:
+            sess["user"] = {"name": "test_user"}
+        response = client.get("/account")
+        assert response.status_code == 200
+        assert '<tr><td class="topic bg-primary">お名前</td><td>test_user</td></tr>'.encode() in response.data
+
 
 
 def test_token(client):
