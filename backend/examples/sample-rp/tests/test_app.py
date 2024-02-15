@@ -73,4 +73,9 @@ def test_token_with_user(client):
     assert b"<td>test_id</td>" in response.data
 
 
-
+def test_token_without_user(client):
+    with client.session_transaction() as sess:
+        sess["user"] = None
+    response = client.get("/token")
+    assert response.status_code == 200
+    assert b"<td></td>" in response.data
