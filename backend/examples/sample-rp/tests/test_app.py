@@ -64,9 +64,13 @@ def test_account_without_user(client):
     assert '<tr><td class="topic bg-primary">お名前</td><td></td></tr>'.encode() in response.data
 
 
-def test_token(client):
-    response = client.get("/token")
+def test_token_with_user(client):
+    with client:
+        with client.session_transaction() as sess:
+            sess["user"] = {"unique_id": "test_id"}
+        response = client.get("/token")
     assert response.status_code == 200
-    assert "<title>ID/トークン情報</title>".encode() in response.data
+    assert b"<td>test_id</td>" in response.data
+
 
 
