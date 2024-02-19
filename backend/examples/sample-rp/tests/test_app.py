@@ -70,6 +70,9 @@ def test_account_without_user(client):
     response = client.get("/account")
     assert response.status_code == 200
     assert '<tr><td class="topic bg-primary">お名前</td><td></td></tr>'.encode() in response.data
+    assert '<tr><td class="topic bg-primary">生年月日</td><td></td></tr>'.encode() in response.data
+    assert '<tr><td class="topic bg-primary">性別</td><td></td></tr>'.encode() in response.data
+    assert '<tr><td class="topic bg-primary">住所</td><td></td></tr>'.encode() in response.data
 
 
 def test_token_with_user(client):
@@ -90,6 +93,10 @@ def test_token_with_user(client):
 def test_token_without_user(client):
     with client.session_transaction() as sess:
         sess["user"] = None
+        sess["token"] = None
     response = client.get("/token")
     assert response.status_code == 200
-    assert b"<td></td>" in response.data
+    assert b"<td></td>" in response.data # assert unique_id
+    assert b"<td></td>" in response.data # assert sub
+    assert b'<td><div class="word-break-all"></div></td>' in response.data
+    assert b" <p>keycloak-id-token: <br>None</p>" in response.data
