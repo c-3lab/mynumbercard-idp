@@ -1,4 +1,6 @@
 import pytest
+from flask.testing import FlaskClient
+from unittest.mock import MagicMock, patch
 from authlib.integrations.flask_client import OAuth
 
 from app import app
@@ -7,9 +9,10 @@ app.config["SECRET_KEY"] = "your_secret_key_for_testing"
 
 oauth: OAuth = OAuth(app)
 
+
 @pytest.fixture
-def client():
-    app.config['TESTING'] = True
+def client() -> FlaskClient:
+    app.config["TESTING"] = True
     return app.test_client()
 
 
@@ -24,7 +27,7 @@ def test_index_with_user(client):
     with client.session_transaction() as sess:
         sess["user"] = {"name": "test_user"}
 
-    response = client.get('/')
+    response = client.get("/")
     assert response.status_code == 200
     assert b"test_user" in response.data
     assert "アカウント情報照会".encode() in response.data
@@ -58,10 +61,22 @@ def test_account_with_user(client):
         }
     response = client.get("/account")
     assert response.status_code == 200
-    assert '<tr><td class="topic bg-primary">お名前</td><td>test_user</td></tr>'.encode() in response.data
-    assert '<tr><td class="topic bg-primary">生年月日</td><td>test_birthdate</td></tr>'.encode() in response.data
-    assert '<tr><td class="topic bg-primary">性別</td><td>test_gender</td></tr>'.encode() in response.data
-    assert '<tr><td class="topic bg-primary">住所</td><td>test_address</td></tr>'.encode() in response.data
+    assert (
+        '<tr><td class="topic bg-primary">お名前</td><td>test_user</td></tr>'.encode()
+        in response.data
+    )
+    assert (
+        '<tr><td class="topic bg-primary">生年月日</td><td>test_birthdate</td></tr>'.encode()
+        in response.data
+    )
+    assert (
+        '<tr><td class="topic bg-primary">性別</td><td>test_gender</td></tr>'.encode()
+        in response.data
+    )
+    assert (
+        '<tr><td class="topic bg-primary">住所</td><td>test_address</td></tr>'.encode()
+        in response.data
+    )
 
 
 def test_account_without_user(client):
@@ -69,10 +84,22 @@ def test_account_without_user(client):
         sess["user"] = None
     response = client.get("/account")
     assert response.status_code == 200
-    assert '<tr><td class="topic bg-primary">お名前</td><td></td></tr>'.encode() in response.data
-    assert '<tr><td class="topic bg-primary">生年月日</td><td></td></tr>'.encode() in response.data
-    assert '<tr><td class="topic bg-primary">性別</td><td></td></tr>'.encode() in response.data
-    assert '<tr><td class="topic bg-primary">住所</td><td></td></tr>'.encode() in response.data
+    assert (
+        '<tr><td class="topic bg-primary">お名前</td><td></td></tr>'.encode()
+        in response.data
+    )
+    assert (
+        '<tr><td class="topic bg-primary">生年月日</td><td></td></tr>'.encode()
+        in response.data
+    )
+    assert (
+        '<tr><td class="topic bg-primary">性別</td><td></td></tr>'.encode()
+        in response.data
+    )
+    assert (
+        '<tr><td class="topic bg-primary">住所</td><td></td></tr>'.encode()
+        in response.data
+    )
 
 
 def test_token_with_user(client):
@@ -80,13 +107,15 @@ def test_token_with_user(client):
         sess["user"] = {
             "unique_id": "test_id",
             "sub": "test_sub",
-            }
+        }
         sess["token"] = {"access_token": "test_access_token"}
     response = client.get("/token")
     assert response.status_code == 200
     assert b"<td>test_id</td>" in response.data
     assert b"<td>test_sub</td>" in response.data
-    assert b'<td><div class="word-break-all">test_access_token</div></td>' in response.data
+    assert (
+        b'<td><div class="word-break-all">test_access_token</div></td>' in response.data
+    )
     assert b"user" in response.data
 
 
@@ -96,7 +125,16 @@ def test_token_without_user(client):
         sess["token"] = None
     response = client.get("/token")
     assert response.status_code == 200
-    assert b"<td></td>" in response.data # assert unique_id
-    assert b"<td></td>" in response.data # assert sub
+    assert b"<td></td>" in response.data  # assert unique_id
+    assert b"<td></td>" in response.data  # assert sub
     assert b'<td><div class="word-break-all"></div></td>' in response.data
     assert b" <p>keycloak-id-token: <br>None</p>" in response.data
+
+
+@patch("app.oauth", MagicMock())
+def test_login_keycloak(client: FlaskClient):
+    with patch("app.oauth.keycloak.authorize_redirect") as mock_authorize_redirect:
+        response = client.get("/Keycloak-login")
+
+    assert response.status_code == 200
+    assert mock_authorize_redirect.called
