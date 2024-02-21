@@ -129,8 +129,10 @@ def test_token_without_user(client):
     assert b" <p>keycloak-id-token: <br>None</p>" in response.data
 
 
-@pytest.mark.parametrize("url, expected_status", [("/Keycloak-login", 200)])
-def test_login_keycloak(client, mocker, url, expected_status):
+def test_login_keycloak(client, mocker):
+    url = "/Keycloak-login"
+    expected_status = 200
+
     oauth_mock = mocker.patch("app.oauth")
     authorize_redirect_mock = oauth_mock.keycloak.authorize_redirect
 
