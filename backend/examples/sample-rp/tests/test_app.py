@@ -176,7 +176,7 @@ def test_logout(client):
     assert "ゲスト".encode() in response.data
 
 
-def test_auth(client, mocker):
+def test_auth_with_user(client, mocker):
     oauth_mock = mocker.patch("app.oauth")
     authorize_access_token_mock = oauth_mock.keycloak.authorize_access_token
     mock_token = {"access_token": "test_access_token", "userinfo": {"name": "test_user"}}
@@ -198,3 +198,25 @@ def test_auth(client, mocker):
     assert response_after_redirect.status_code == 200
     assert "test_user".encode() in response_after_redirect.data
 
+
+def test_auth_without_user(client, mocker):
+    oauth_mock = mocker.patch("app.oauth")
+    authorize_access_token_mock = oauth_mock.keycloak.authorize_access_token
+    mock_token = {"access_token": "test_access_token", "userinfo": None}
+    mock_userinfo = mock_token["userinfo"]
+    authorize_access_token_mock.return_value = mock_token
+
+    response = client.get("/auth")
+
+    with client.session_transaction() as sess:
+        sess["user"] = mock_userinfo
+        sess["token"] = mock_token
+
+    assert response.status_code == 302
+    assert authorize_access_token_mock.called
+    assert response.location == "/"
+
+    # Check if session information is NOT stored correctly after redirecting to "/"
+    response_after_redirect = client.get(response.location)
+    assert response_after_redirect.status_code == 200
+    assert "ゲスト".encode() in response_after_redirect.data
