@@ -100,3 +100,13 @@ def test_token_without_user(client):
     assert b"<td></td>" in response.data # assert sub
     assert b'<td><div class="word-break-all"></div></td>' in response.data
     assert b" <p>keycloak-id-token: <br>None</p>" in response.data
+
+
+def test_logout(client):
+    with client.session_transaction() as sess:
+        sess['user'] = {'name': 'test_user'}
+
+    response = client.get("/logout", follow_redirects=True)
+
+    assert response.status_code == 200
+    assert "ゲスト".encode() in response.data
