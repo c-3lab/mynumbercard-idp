@@ -27,7 +27,7 @@ def test_index_with_user(client):
 
     response = client.get("/")
     assert response.status_code == 200
-    assert b"test_user" in response.data
+    assert "test_user".encode() in response.data
     assert "アカウント情報照会".encode() in response.data
 
 
@@ -109,12 +109,12 @@ def test_token_with_user(client):
         sess["token"] = {"access_token": "test_access_token"}
     response = client.get("/token")
     assert response.status_code == 200
-    assert b"<td>test_id</td>" in response.data
-    assert b"<td>test_sub</td>" in response.data
+    assert "<td>test_id</td>".encode() in response.data
+    assert "<td>test_sub</td>".encode() in response.data
     assert (
-        b'<td><div class="word-break-all">test_access_token</div></td>' in response.data
+        '<td><div class="word-break-all">test_access_token</div></td>' in response.data
     )
-    assert b"user" in response.data
+    assert "user".encode() in response.data
 
 
 def test_token_without_user(client):
@@ -123,10 +123,10 @@ def test_token_without_user(client):
         sess["token"] = None
     response = client.get("/token")
     assert response.status_code == 200
-    assert b"<td></td>" in response.data  # assert unique_id
-    assert b"<td></td>" in response.data  # assert sub
-    assert b'<td><div class="word-break-all"></div></td>' in response.data
-    assert b" <p>keycloak-id-token: <br>None</p>" in response.data
+    assert "<td></td>".encode() in response.data  # assert unique_id
+    assert "<td></td>".encode() in response.data  # assert sub
+    assert '<td><div class="word-break-all"></div></td>'.encode() in response.data
+    assert "<p>keycloak-id-token: <br>None</p>".encode() in response.data
 
 
 def test_login_keycloak(client, mocker):
@@ -164,3 +164,14 @@ def test_refresh_without_token(client, mocker):
 
     assert response.status_code == 302
     assert not fetch_access_token_mock.called
+
+
+def test_logout(client):
+    with client.session_transaction() as sess:
+        sess["user"] = {"name": "test_user"}
+
+    response = client.get("/logout", follow_redirects=True)
+
+    assert response.status_code == 200
+    assert "ゲスト".encode() in response.data
+
