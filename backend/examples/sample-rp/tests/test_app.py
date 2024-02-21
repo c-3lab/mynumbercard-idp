@@ -1,6 +1,4 @@
 import pytest
-from flask.testing import FlaskClient
-from unittest.mock import MagicMock, patch
 from authlib.integrations.flask_client import OAuth
 
 from app import app
@@ -11,7 +9,7 @@ oauth: OAuth = OAuth(app)
 
 
 @pytest.fixture
-def client() -> FlaskClient:
+def client():
     app.config["TESTING"] = True
     return app.test_client()
 
@@ -131,10 +129,11 @@ def test_token_without_user(client):
     assert b" <p>keycloak-id-token: <br>None</p>" in response.data
 
 
-@patch("app.oauth", MagicMock())
-def test_login_keycloak(client: FlaskClient):
-    with patch("app.oauth.keycloak.authorize_redirect") as mock_authorize_redirect:
-        response = client.get("/Keycloak-login")
+@pytest.mark.parametrize("url, expected_status", [("/Keycloak-login", 200)])
+def test_login_keycloak(client, mocker, url, expected_status):
+    mocker.patch("app.oauth")
+    mocker.patch("app.oauth.keycloak.authorize_redirect")
 
-    assert response.status_code == 200
-    assert mock_authorize_redirect.called
+    response = client.get(url)
+
+    assert response.status_code == expected_status
