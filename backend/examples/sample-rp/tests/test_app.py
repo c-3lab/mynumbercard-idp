@@ -7,9 +7,10 @@ app.config["SECRET_KEY"] = "your_secret_key_for_testing"
 
 oauth: OAuth = OAuth(app)
 
+
 @pytest.fixture
 def client():
-    app.config['TESTING'] = True
+    app.config["TESTING"] = True
     return app.test_client()
 
 
@@ -24,7 +25,7 @@ def test_index_with_user(client):
     with client.session_transaction() as sess:
         sess["user"] = {"name": "test_user"}
 
-    response = client.get('/')
+    response = client.get("/")
     assert response.status_code == 200
     assert b"test_user" in response.data
     assert "アカウント情報照会".encode() in response.data
@@ -58,10 +59,22 @@ def test_account_with_user(client):
         }
     response = client.get("/account")
     assert response.status_code == 200
-    assert '<tr><td class="topic bg-primary">お名前</td><td>test_user</td></tr>'.encode() in response.data
-    assert '<tr><td class="topic bg-primary">生年月日</td><td>test_birthdate</td></tr>'.encode() in response.data
-    assert '<tr><td class="topic bg-primary">性別</td><td>test_gender</td></tr>'.encode() in response.data
-    assert '<tr><td class="topic bg-primary">住所</td><td>test_address</td></tr>'.encode() in response.data
+    assert (
+        '<tr><td class="topic bg-primary">お名前</td><td>test_user</td></tr>'.encode()
+        in response.data
+    )
+    assert (
+        '<tr><td class="topic bg-primary">生年月日</td><td>test_birthdate</td></tr>'.encode()
+        in response.data
+    )
+    assert (
+        '<tr><td class="topic bg-primary">性別</td><td>test_gender</td></tr>'.encode()
+        in response.data
+    )
+    assert (
+        '<tr><td class="topic bg-primary">住所</td><td>test_address</td></tr>'.encode()
+        in response.data
+    )
 
 
 def test_account_without_user(client):
@@ -69,10 +82,22 @@ def test_account_without_user(client):
         sess["user"] = None
     response = client.get("/account")
     assert response.status_code == 200
-    assert '<tr><td class="topic bg-primary">お名前</td><td></td></tr>'.encode() in response.data
-    assert '<tr><td class="topic bg-primary">生年月日</td><td></td></tr>'.encode() in response.data
-    assert '<tr><td class="topic bg-primary">性別</td><td></td></tr>'.encode() in response.data
-    assert '<tr><td class="topic bg-primary">住所</td><td></td></tr>'.encode() in response.data
+    assert (
+        '<tr><td class="topic bg-primary">お名前</td><td></td></tr>'.encode()
+        in response.data
+    )
+    assert (
+        '<tr><td class="topic bg-primary">生年月日</td><td></td></tr>'.encode()
+        in response.data
+    )
+    assert (
+        '<tr><td class="topic bg-primary">性別</td><td></td></tr>'.encode()
+        in response.data
+    )
+    assert (
+        '<tr><td class="topic bg-primary">住所</td><td></td></tr>'.encode()
+        in response.data
+    )
 
 
 def test_token_with_user(client):
@@ -80,13 +105,15 @@ def test_token_with_user(client):
         sess["user"] = {
             "unique_id": "test_id",
             "sub": "test_sub",
-            }
+        }
         sess["token"] = {"access_token": "test_access_token"}
     response = client.get("/token")
     assert response.status_code == 200
     assert b"<td>test_id</td>" in response.data
     assert b"<td>test_sub</td>" in response.data
-    assert b'<td><div class="word-break-all">test_access_token</div></td>' in response.data
+    assert (
+        b'<td><div class="word-break-all">test_access_token</div></td>' in response.data
+    )
     assert b"user" in response.data
 
 
@@ -96,7 +123,44 @@ def test_token_without_user(client):
         sess["token"] = None
     response = client.get("/token")
     assert response.status_code == 200
-    assert b"<td></td>" in response.data # assert unique_id
-    assert b"<td></td>" in response.data # assert sub
+    assert b"<td></td>" in response.data  # assert unique_id
+    assert b"<td></td>" in response.data  # assert sub
     assert b'<td><div class="word-break-all"></div></td>' in response.data
     assert b" <p>keycloak-id-token: <br>None</p>" in response.data
+
+
+def test_login_keycloak(client, mocker):
+    url = "/Keycloak-login"
+    expected_status = 200
+
+    oauth_mock = mocker.patch("app.oauth")
+    authorize_redirect_mock = oauth_mock.keycloak.authorize_redirect
+
+    response = client.get(url)
+
+    assert response.status_code == expected_status
+    assert authorize_redirect_mock.called
+
+
+def test_refresh_with_token(client, mocker):
+    oauth_mock = mocker.patch("app.oauth")
+    fetch_access_token_mock = oauth_mock.keycloak.fetch_access_token
+    fetch_access_token_mock.return_value = {"your_token_key": "your_token_value"}
+
+    with client.session_transaction() as sess:
+        sess["token"] = {"refresh_token": "test_refresh_token"}
+
+    response = client.get("/refresh")
+
+    assert response.status_code == 302
+    assert fetch_access_token_mock.called
+
+
+def test_refresh_without_token(client, mocker):
+    oauth_mock = mocker.patch("app.oauth")
+    fetch_access_token_mock = oauth_mock.keycloak.fetch_access_token
+
+    response = client.get("/refresh")
+
+    assert response.status_code == 302
+    assert not fetch_access_token_mock.called
