@@ -109,12 +109,12 @@ def test_token_with_user(client):
         sess["token"] = {"access_token": "test_access_token"}
     response = client.get("/token")
     assert response.status_code == 200
-    assert "<td>test_id</td>".encode() in response.data
-    assert "<td>test_sub</td>".encode() in response.data
+    assert b"<td>test_id</td>" in response.data
+    assert b"<td>test_sub</td>" in response.data
     assert (
-        '<td><div class="word-break-all">test_access_token</div></td>'.encode() in response.data
+        b'<td><div class="word-break-all">test_access_token</div></td>' in response.data
     )
-    assert "user".encode() in response.data
+    assert b"user" in response.data
 
 
 def test_token_without_user(client):
@@ -123,17 +123,44 @@ def test_token_without_user(client):
         sess["token"] = None
     response = client.get("/token")
     assert response.status_code == 200
-    assert "<td></td>".encode() in response.data  # assert unique_id
-    assert "<td></td>".encode() in response.data  # assert sub
-    assert '<td><div class="word-break-all"></div></td>'.encode() in response.data
-    assert " <p>keycloak-id-token: <br>None</p>".encode() in response.data
+    assert b"<td></td>" in response.data  # assert unique_id
+    assert b"<td></td>" in response.data  # assert sub
+    assert b'<td><div class="word-break-all"></div></td>' in response.data
+    assert b" <p>keycloak-id-token: <br>None</p>" in response.data
 
 
-def test_logout(client):
+def test_login_keycloak(client, mocker):
+    url = "/Keycloak-login"
+    expected_status = 200
+
+    oauth_mock = mocker.patch("app.oauth")
+    authorize_redirect_mock = oauth_mock.keycloak.authorize_redirect
+
+    response = client.get(url)
+
+    assert response.status_code == expected_status
+    assert authorize_redirect_mock.called
+
+
+def test_refresh_with_token(client, mocker):
+    oauth_mock = mocker.patch("app.oauth")
+    fetch_access_token_mock = oauth_mock.keycloak.fetch_access_token
+    fetch_access_token_mock.return_value = {"your_token_key": "your_token_value"}
+
     with client.session_transaction() as sess:
-        sess["user"] = {"name": "test_user"}
+        sess["token"] = {"refresh_token": "test_refresh_token"}
 
-    response = client.get("/logout", follow_redirects=True)
+    response = client.get("/refresh")
 
-    assert response.status_code == 200
-    assert "ゲスト".encode() in response.data
+    assert response.status_code == 302
+    assert fetch_access_token_mock.called
+
+
+def test_refresh_without_token(client, mocker):
+    oauth_mock = mocker.patch("app.oauth")
+    fetch_access_token_mock = oauth_mock.keycloak.fetch_access_token
+
+    response = client.get("/refresh")
+
+    assert response.status_code == 302
+    assert not fetch_access_token_mock.called
