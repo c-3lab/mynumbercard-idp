@@ -131,9 +131,34 @@ def test_token_without_user(client):
 
 @pytest.mark.parametrize("url, expected_status", [("/Keycloak-login", 200)])
 def test_login_keycloak(client, mocker, url, expected_status):
-    mocker.patch("app.oauth")
-    mocker.patch("app.oauth.keycloak.authorize_redirect")
+    oauth_mock = mocker.patch("app.oauth")
+    authorize_redirect_mock = oauth_mock.keycloak.authorize_redirect
 
     response = client.get(url)
 
     assert response.status_code == expected_status
+    assert authorize_redirect_mock.called
+
+
+def test_refresh_with_token(client, mocker):
+    oauth_mock = mocker.patch("app.oauth")
+    fetch_access_token_mock = oauth_mock.keycloak.fetch_access_token
+    fetch_access_token_mock.return_value = {"your_token_key": "your_token_value"}
+
+    with client.session_transaction() as sess:
+        sess["token"] = {"refresh_token": "test_refresh_token"}
+
+    response = client.get("/refresh")
+
+    assert response.status_code == 302
+    assert fetch_access_token_mock.called
+
+
+def test_refresh_without_token(client, mocker):
+    oauth_mock = mocker.patch("app.oauth")
+    fetch_access_token_mock = oauth_mock.keycloak.fetch_access_token
+
+    response = client.get("/refresh")
+
+    assert response.status_code == 302
+    assert not fetch_access_token_mock.called
