@@ -220,3 +220,79 @@ def test_auth_without_user(client, mocker):
     response_after_redirect = client.get(response.location)
     assert response_after_redirect.status_code == 200
     assert "ゲスト".encode() in response_after_redirect.data
+
+
+def test_assign_with_token(client, mocker):
+    # mock environment variables
+    mocker.patch(
+        "os.getenv",
+        side_effect=lambda key, default=None: {
+            "SERVICE_ID": "mock_service_id",
+            "NOTE": "mock_note",
+            "KEYCLOAK_URL": "mock_keycloak_url",
+            "KEYCLOAK_REALM": "mock_keycloak_realm",
+        }.get(key, default),
+    )
+
+    # mock methods
+    oauth_mock = mocker.patch("app.oauth")
+    fetch_access_token_mock = oauth_mock.keycloak.fetch_access_token
+    fetch_access_token_mock.return_value = {
+        "access_token": "mock_new_access_token",
+        "refresh_token": "mock_new_refresh_token",
+    }
+    requests_post_mock = mocker.patch("requests.post")
+
+    with client.session_transaction() as sess:
+        new_token = fetch_access_token_mock.return_value
+        sess["token"] = new_token
+
+    response = client.post("/assign")
+
+    assert response.status_code == 302
+    assert fetch_access_token_mock.called
+    assert requests_post_mock.called
+
+    # Check the contents of the POST
+    requests_post_mock.assert_called_with(
+        "mock_keycloak_url/realms/mock_keycloak_realm/custom-attribute/assign",
+        headers={
+            "Content-type": "application/json",
+            "Authorization": f"Bearer {new_token['access_token']}",
+        },
+        json={
+            "user_attributes": {
+                "service_id": "mock_service_id",
+                "notes": "mock_note",
+            },
+        },
+        timeout=(3.0, 7.5),
+    )
+
+def test_assign_without_token(client, mocker):
+    # Mock environment variables
+    mocker.patch(
+        "os.getenv",
+        side_effect=lambda key, default=None: {
+            "SERVICE_ID": "mock_service_id",
+            "NOTE": "mock_note",
+            "KEYCLOAK_URL": "mock_keycloak_url",
+            "KEYCLOAK_REALM": "mock_keycloak_realm",
+        }.get(key, default),
+    )
+
+    # Mock methods
+    oauth_mock = mocker.patch("app.oauth")
+    fetch_access_token_mock = oauth_mock.keycloak.fetch_access_token
+    fetch_access_token_mock.return_value = None  # Simulate no token
+
+    requests_post_mock = mocker.patch("requests.post")
+
+    # Perform request without setting token
+    response = client.post("/assign")
+
+    # Assert that the response status code is 400
+    assert response.status_code == 400
+    assert fetch_access_token_mock.called is False
+    requests_post_mock = mocker.patch("requests.post")
+    assert requests_post_mock.called is False
