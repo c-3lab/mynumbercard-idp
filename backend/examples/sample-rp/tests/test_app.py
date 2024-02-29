@@ -244,8 +244,8 @@ def test_assign_with_token(client, mocker):
     requests_post_mock = mocker.patch("requests.post")
 
     with client.session_transaction() as sess:
-        new_token = fetch_access_token_mock.return_value
-        sess["token"] = new_token
+        init_token = fetch_access_token_mock.return_value
+        sess["token"] = init_token
 
     response = client.post("/assign")
 
@@ -258,7 +258,7 @@ def test_assign_with_token(client, mocker):
         "mock_keycloak_url/realms/mock_keycloak_realm/custom-attribute/assign",
         headers={
             "Content-type": "application/json",
-            "Authorization": f"Bearer {new_token['access_token']}",
+            "Authorization": f"Bearer {init_token['access_token']}",
         },
         json={
             "user_attributes": {
@@ -268,6 +268,12 @@ def test_assign_with_token(client, mocker):
         },
         timeout=(3.0, 7.5),
     )
+
+    # Check that the new token is set in the session after refresh
+    with client.session_transaction() as sess:
+        new_token = fetch_access_token_mock.return_value
+        assert sess["token"] == new_token
+
 
 def test_assign_without_token(client, mocker):
     # Mock environment variables
