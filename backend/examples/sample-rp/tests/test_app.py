@@ -302,3 +302,81 @@ def test_assign_without_token(client, mocker):
     assert fetch_access_token_mock.called is False
     requests_post_mock = mocker.patch("requests.post")
     assert requests_post_mock.called is False
+
+
+def test_replace_with_token(client, mocker):
+    mocker.patch("flask.session", {"token": {"access_token": "mock_access_token"}})
+    mocker.patch("requests.post")
+    mocker.patch("requests.get")
+    mocker.patch("app.quote", return_value="mock_quoted_url")
+    
+    mocker.patch.dict(
+        "os.environ",
+        {
+            "KEYCLOAK_URL": "mock_keycloak_url",
+            "KEYCLOAK_REALM": "mock_keycloak_realm",
+            "BASE_URL": "http://localhost",
+        },
+    )
+    
+    with app.test_request_context('/replace'):
+        mocker.patch("app.request.headers.get", return_value="test-agent")
+        with client.session_transaction():
+            response = client.post("/replace")
+    
+    assert response.status_code == 400
+    
+    if response.status_code == 302:
+        assert response.headers["Location"] == "mock_location"
+
+
+
+
+def test_replace_without_token(client, mocker):
+    mocker.patch("flask.session", {"token": None})
+    mocker.patch("requests.post")
+    mocker.patch("requests.get")
+
+    mocker.patch.dict(
+        "os.environ",
+        {
+            "KEYCLOAK_URL": "mock_keycloak_url",
+            "KEYCLOAK_REALM": "mock_keycloak_realm",
+            "BASE_URL": "http://localhost",
+        },
+    )
+
+    with client.session_transaction():
+        response = client.post("/replace")
+
+    assert response.status_code == 400
+
+# ...
+
+def test_refresh_with_valid_token(client, mocker):
+    # テスト用のトークンをセットアップ
+    mocker.patch("flask.session", {"token": {"refresh_token": "mock_refresh_token"}})
+
+    # リフレッシュトークン取得のモック
+    oauth_mock = mocker.patch("app.oauth")
+    fetch_access_token_mock = oauth_mock.keycloak.fetch_access_token
+
+    # ここに追加: メソッドが呼び出されることを期待する
+    fetch_access_token_mock.return_value = {
+        "access_token": "mock_new_access_token",
+        "refresh_token": "mock_new_refresh_token",
+    }
+
+    # テスト実行
+    with app.test_request_context('/refresh'):
+        with client.session_transaction():
+            response = client.get("/refresh")
+
+    # ここに追加: メソッドが呼び出されたことを確認する
+    fetch_access_token_mock.assert_called_once()
+
+    # アサーション
+    assert response.status_code == 302  # リダイレクト
+
+# ...
+
