@@ -305,29 +305,53 @@ def test_assign_without_token(client, mocker):
 
 
 def test_replace_with_token(client, mocker):
-    mocker.patch("flask.session", {"token": {"access_token": "mock_access_token"}})
-    mocker.patch("requests.post")
-    mocker.patch("requests.get")
-    mocker.patch("app.quote", return_value="mock_quoted_url")
-    
-    mocker.patch.dict(
-        "os.environ",
-        {
+    mocker.patch(
+        "os.getenv",
+        side_effect=lambda key, default=None: {
             "KEYCLOAK_URL": "mock_keycloak_url",
             "KEYCLOAK_REALM": "mock_keycloak_realm",
-            "BASE_URL": "http://localhost",
-        },
+            "BASE_URL": "mock_base_url",
+        }.get(key, default),
     )
-    
-    with app.test_request_context('/replace'):
-        mocker.patch("app.request.headers.get", return_value="test-agent")
-        with client.session_transaction():
-            response = client.post("/replace")
-    
-    assert response.status_code == 400
-    
-    if response.status_code == 302:
-        assert response.headers["Location"] == "mock_location"
+
+    with app.test_client() as client:
+        with client.session_transaction() as sess:
+            init_token = {
+                "access_token": "mock_old_access_token",
+                "refresh_token": "mock_old_refresh_token",
+            }
+            sess["token"] = init_token
+
+        requests_post_mock = mocker.patch("requests.post")
+        requests_post_mock.return_value.headers = {"Location": "mock_redirect_location"}
+
+        userinfo_response_mock = mocker.Mock()
+        userinfo_response_mock.status_code = 200
+        userinfo_response_mock.json.return_value = {"user_info_key": "user_info_value"}
+
+        requests_get_mock = mocker.patch("requests.get")
+        requests_get_mock.return_value = userinfo_response_mock
+
+        response = client.post("/replace")
+
+        assert response.status_code == 302
+        assert requests_post_mock.called
+        assert requests_get_mock.called
+
+        requests_post_mock.assert_called_with(
+            "mock_keycloak_url/realms/mock_keycloak_realm/userinfo-replacement/login"
+            "?redirect_uri=mock_base_url/refresh&scope=openid&response_type=code",
+            headers={
+                "Content-type": "application/x-www-form-urlencoded",
+                "Authorization": "Bearer mock_old_access_token",
+                "User-Agent": mocker.ANY,
+            },
+            data={},
+            allow_redirects=False,
+        )
+
+        response_after_redirect = client.get(response.headers["Location"])
+        assert response_after_redirect.status_code == 404
 
 
 def test_replace_without_token(client, mocker):
