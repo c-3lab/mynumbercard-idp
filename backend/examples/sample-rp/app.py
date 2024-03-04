@@ -176,21 +176,18 @@ def replace() -> Response:
         allow_redirects=False,
     )
 
-    if "Location" in response.headers:
-        userinfo_response = requests.get(
-            f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/userinfo',
-            headers={"Authorization": f"Bearer {token['access_token']}"},
-        )
+    userinfo_response = requests.get(
+        f'{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("KEYCLOAK_REALM")}/protocol/openid-connect/userinfo',
+        headers={"Authorization": f"Bearer {token['access_token']}"},
+    )
 
-        if userinfo_response.status_code == 200:
-            userinfo = userinfo_response.json()
-            merged_userinfo = {**session.get("user", {}), **userinfo}
-            session["user"] = merged_userinfo
-            session["token"] = token
+    if userinfo_response.status_code == 200:
+        userinfo = userinfo_response.json()
+        merged_userinfo = {**session.get("user", {}), **userinfo}
+        session["user"] = merged_userinfo
+        session["token"] = token
 
-        return redirect(response.headers["Location"])
-    else:
-        return "Userinfo replacement completed."
+    return redirect(response.headers["Location"])
 
 
 if __name__ == "__main__":
