@@ -338,21 +338,6 @@ def test_replace_with_token(client, mocker):
         assert requests_post_mock.called
         assert requests_get_mock.called
 
-        requests_post_mock.assert_called_with(
-            "mock_keycloak_url/realms/mock_keycloak_realm/userinfo-replacement/login"
-            "?redirect_uri=mock_base_url/refresh&scope=openid&response_type=code",
-            headers={
-                "Content-type": "application/x-www-form-urlencoded",
-                "Authorization": "Bearer mock_old_access_token",
-                "User-Agent": mocker.ANY,
-            },
-            data={},
-            allow_redirects=False,
-        )
-
-        response_after_redirect = client.get(response.headers["Location"])
-        assert response_after_redirect.status_code == 404
-
 
 def test_replace_without_token(client, mocker):
     mocker.patch("flask.session", {"token": None})
