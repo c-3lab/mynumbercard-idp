@@ -302,3 +302,58 @@ def test_assign_without_token(client, mocker):
     assert fetch_access_token_mock.called is False
     requests_post_mock = mocker.patch("requests.post")
     assert requests_post_mock.called is False
+
+
+def test_replace_with_token(client, mocker):
+    mocker.patch(
+        "os.getenv",
+        side_effect=lambda key, default=None: {
+            "KEYCLOAK_URL": "mock_keycloak_url",
+            "KEYCLOAK_REALM": "mock_keycloak_realm",
+            "BASE_URL": "mock_base_url",
+        }.get(key, default),
+    )
+
+    with app.test_client() as client:
+        with client.session_transaction() as sess:
+            init_token = {
+                "access_token": "mock_old_access_token",
+                "refresh_token": "mock_old_refresh_token",
+            }
+            sess["token"] = init_token
+
+        requests_post_mock = mocker.patch("requests.post")
+        requests_post_mock.return_value.headers = {"Location": "mock_redirect_location"}
+
+        userinfo_response_mock = mocker.Mock()
+        userinfo_response_mock.status_code = 200
+        userinfo_response_mock.json.return_value = {"user_info_key": "user_info_value"}
+
+        requests_get_mock = mocker.patch("requests.get")
+        requests_get_mock.return_value = userinfo_response_mock
+
+        response = client.post("/replace")
+
+        assert response.status_code == 302
+        assert requests_post_mock.called
+        assert requests_get_mock.called
+
+
+def test_replace_without_token(client, mocker):
+    mocker.patch("flask.session", {"token": None})
+    mocker.patch("requests.post")
+    mocker.patch("requests.get")
+
+    mocker.patch.dict(
+        "os.environ",
+        {
+            "KEYCLOAK_URL": "mock_keycloak_url",
+            "KEYCLOAK_REALM": "mock_keycloak_realm",
+            "BASE_URL": "http://localhost",
+        },
+    )
+
+    with client.session_transaction():
+        response = client.post("/replace")
+
+    assert response.status_code == 400
