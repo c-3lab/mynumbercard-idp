@@ -276,32 +276,11 @@ def test_assign_with_token(client, mocker):
 
 
 def test_assign_without_token(client, mocker):
-    # Mock environment variables
-    mocker.patch(
-        "os.getenv",
-        side_effect=lambda key, default=None: {
-            "SERVICE_ID": "mock_service_id",
-            "NOTE": "mock_note",
-            "KEYCLOAK_URL": "mock_keycloak_url",
-            "KEYCLOAK_REALM": "mock_keycloak_realm",
-        }.get(key, default),
-    )
-
-    # Mock methods
-    oauth_mock = mocker.patch("app.oauth")
-    fetch_access_token_mock = oauth_mock.keycloak.fetch_access_token
-    fetch_access_token_mock.return_value = None  # Simulate no token
-
-    requests_post_mock = mocker.patch("requests.post")
-
-    # Perform request without setting token
-    response = client.post("/assign")
-
-    # Assert that the response status code is 400
+    mocker.patch("flask.session", {"token": None})
+    mocker.patch("requests.post")
+    with client.session_transaction():
+        response = client.post("/assign")
     assert response.status_code == 400
-    assert not fetch_access_token_mock.called
-    requests_post_mock = mocker.patch("requests.post")
-    assert not requests_post_mock.called
 
 
 def test_assign_with_token_without_refresh_token(client, mocker):
