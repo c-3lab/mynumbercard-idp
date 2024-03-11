@@ -299,9 +299,41 @@ def test_assign_without_token(client, mocker):
 
     # Assert that the response status code is 400
     assert response.status_code == 400
-    assert fetch_access_token_mock.called is False
+    assert not fetch_access_token_mock.called
     requests_post_mock = mocker.patch("requests.post")
-    assert requests_post_mock.called is False
+    assert not requests_post_mock.called
+
+
+def test_assign_with_token_without_refresh_token(client, mocker):
+    # mock environment variables
+    mocker.patch(
+        "os.getenv",
+        side_effect=lambda key, default=None: {
+            "SERVICE_ID": "mock_service_id",
+            "NOTE": "mock_note",
+            "KEYCLOAK_URL": "mock_keycloak_url",
+            "KEYCLOAK_REALM": "mock_keycloak_realm",
+        }.get(key, default),
+    )
+
+    # mock methods
+    oauth_mock = mocker.patch("app.oauth")
+    fetch_access_token_mock = oauth_mock.keycloak.fetch_access_token
+    fetch_access_token_mock.return_value = {
+        "access_token": "mock_new_access_token",
+        "refresh_token": None,
+    }
+    requests_post_mock = mocker.patch("requests.post")
+
+    with client.session_transaction() as sess:
+        init_token = fetch_access_token_mock.return_value
+        sess["token"] = init_token
+
+    response = client.post("/assign")
+
+    assert response.status_code == 302
+    assert not fetch_access_token_mock.called
+    assert requests_post_mock.called
 
 
 def test_replace_with_token(client, mocker):
