@@ -29,4 +29,4 @@ jobs:
       - name: PyTest
         run: |
           python -m pytest backend/examples/sample-rp/tests
-        continue-on-error: true
+        continue-on-error: false
