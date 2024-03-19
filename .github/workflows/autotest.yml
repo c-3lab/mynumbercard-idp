@@ -25,8 +25,16 @@ jobs:
           pip install werkzeug
           pip install requests
           pip install pytest-mock
+          pip install black
+          pip install ruff
 
       - name: PyTest
         run: |
           python -m pytest backend/examples/sample-rp/tests
         continue-on-error: false
+
+      - name: Lint and Format check
+        run: |
+          black --diff .
+          ruff --fix .
+        continue-on-error: true
