@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "samplerp"
+version = "0.1.0"
+description = ""
+authors = ["hiromu-bit <hiromu0621@icloud.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+flask = "^3.0.0"
+authlib = "^1.2.1"
+
+[tool.poetry.group.develop.dependencies]
+ruff = "^0.1.2"
+black = "^23.10.1"
+pytest = "^7.4.3"
+mypy = "^1.6.1"
+autoflake = "^2.2.1"
+isort = "^5.12.0"
+
+[tool.ruff]
+line-length = 125
+select = ["ALL"]
+ignore = [
+    "D",
+    "PLR0913",
+    "ANN002",
+    "ANN003",
+    "ANN101",
+]
+target-version = "py311"
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

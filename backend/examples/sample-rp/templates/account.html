@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Cache-Control" content="no-store">
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+        <title>アカウント情報照会</title>
+
+        <style>
+            h3{
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
+            .bi-record-circle-fill{
+                color: #0074d9;
+            }
+            .table{
+                font-size: 14pt;
+            }
+            .topic{
+                font-weight: bold;
+                color: white;
+            }
+        </style>
+
+    </head>
+
+    <body>
+        <header>
+            <div class="text-primary">
+                <h2>【SampleRP】Sample Webサイト</h2>
+            </div>     
+            <p class="border border-dark border-bottom-0"></p>                 
+        </header>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <h3><i class="bi bi-record-circle-fill"></i>アカウント情報</h3>
+                </div>
+            </div>
+            <table id="user-info" class="table table-bordered">
+                <tbody>
+                    <tr><td class="topic bg-primary">お名前</td><td>{{ user.name }}</td></tr>
+                    <tr><td class="topic bg-primary">生年月日</td><td>{{ user.birth_date }}</td></tr>
+                    <tr><td class="topic bg-primary">性別</td><td>{{ user.gender_code }}</td></tr>
+                    <tr><td class="topic bg-primary">住所</td><td>{{ user.user_address }}</td></tr>
+                </tbody>
+            </table>
+            <div class="row">
+                <div class="col-4">
+                    <form action="/token">
+                        <button type="submit" class="btn btn-primary">ID/トークン情報</button>
+                    </form>
+                </div>
+                <div class="col-4">
+                    <form action="/replace">
+                        <button type="submit" class="btn btn-primary" formmethod="post">登録情報の変更</button>
+                    </form>
+                </div>
+                <div class="col-4">
+                    <form action="/connect">
+                        <button type="submit" class="btn btn-primary">アカウント連携</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

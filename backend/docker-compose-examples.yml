@@ -33,6 +33,7 @@ services:
         KEYCLOAK_CLIENT_SECRET: "${RP1_CLIENT_SECRET}"
         KEYCLOAK_URL: "${KEYCLOAK_URL}"
         KEYCLOAK_REALM: "${REALM}"
+        APP_SECRET_KEY: "${APP_SECRET_KEY}"
     ports:
       - "0.0.0.0:3000:3000"
   sample-rp02:
@@ -48,5 +49,6 @@ services:
         KEYCLOAK_CLIENT_SECRET: "${RP2_CLIENT_SECRET}"
         KEYCLOAK_URL: "${KEYCLOAK_URL}"
         KEYCLOAK_REALM: "${REALM}"
+        APP_SECRET_KEY: "${APP_SECRET_KEY}"
     ports:
       - "0.0.0.0:3001:3000"

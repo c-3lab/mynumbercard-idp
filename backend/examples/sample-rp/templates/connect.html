@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Cache-Control" content="no-store">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.2/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        <title>連携前画面</title>
+        <style>
+            .procedure{
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
+
+            .subtitle{
+                margin-bottom: 20px;
+            }
+
+            .title{
+                margin-bottom: 50px;
+            }
+
+            button{
+                margin-top: 20px;
+                margin-bottom: 35px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <header>
+            <div class="text-primary">
+                <h2>【SampleRP】Sample Webサイト</h2>
+            </div>
+            <p class="border border-dark border-bottom-0"></p>
+        </header>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm align-self-center">
+                    <div class="border border-gray rounded">
+                        <div class="text-center">
+                            <h6 class="title">【RPですでにアカウントを持っている方へ】</h6>
+                            <h5 class="title">マイナンバーカードとRPを連携する</h5>
+                            <p class="procedure">①以下にRPサイトのユーザーのIDとパスワードを入力してください。</p>
+                            <p class="procedure">②画面下部の連携ボタンを押すと、次回以降マイナンバーカードでログインできます。</p>
+                            <form>
+                                <div class="mb-6">
+                                    <input type="text" id="text" class="form-control" placeholder="ユーザーID">
+                                </div>
+                                <div class="mb-6">
+                                    <input type="text" id="text" class="form-control" placeholder="パスワード">
+                                </div>
+                            </form>
+                            <form action="/assign" method="post">
+                                <button type="submit" class="btn btn-primary">連携</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </body>
+</html>

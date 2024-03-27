@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Cache-Control" content="no-store">
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+        <title>新規会員登録/ログイン</title>
+
+        <style>
+            .procedure{
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
+
+            .subtitle{
+                margin-bottom: 20px;
+            }
+
+            .title{
+                margin-bottom: 50px;
+            }
+
+            button{
+                margin-top: 20px;
+                margin-bottom: 35px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <header>
+            <div class="text-primary">
+                <h2>【SampleRP】Sample Webサイト</h2>
+            </div>
+            <p class="border border-dark border-bottom-0"></p>
+        </header>
+        <div class="container-fluid">
+            <h3>こちらのSampleRPではマイナンバーカードでログインを行ってからのみ連携を行うことができます</h3>
+        </div>
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-sm align-self-center">
+                    <div class="border border-gray rounded">
+                        <div class="text-center">
+                            <h4 class="title">新規会員登録</h4>
+                            <h5 class="subtitle">⬛️簡単な手順で登録！</h5>
+                            <p class="procedure">①IDを入力して設定</p>
+                            <p class="procedure">②パスワードを入力して設定</p>
+                            <button type="button" class="btn btn-primary" onclick="showToast(0)">新規会員登録</button>
+                            <div class="toast text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="d-flex">
+                                    <div class="toast-body">
+                                        この機能は実装されていません。
+                                    </div>
+                                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm align-self-center">
+                    <div class="border border-gray rounded">
+                        <div class="text-center">
+                            <h4 class="title">ログイン</h4>
+                            <h5 class="subtitle">⬛️パスワードでログイン</h5>
+                            <form>
+                                <div class="mb-6">
+                                    <input type="text" id="text" class="form-control" placeholder="ユーザーID">
+                                </div>
+                                <div class="mb-6">
+                                    <input type="text" id="text" class="form-control" placeholder="パスワード">
+                                </div>
+                            </form>
+                            <button type="submit" class="btn btn-primary" onclick="showToast(1)">ログイン</button>
+                            <div class="toast text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="d-flex">
+                                    <div class="toast-body">
+                                        この機能は実装されていません。
+                                    </div>
+                                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                            </div>
+                            <p class="border border-dark border-bottom-0"></p>
+                            <h5 class="subtitle">⬛️マイナンバーカード認証登録/ログイン</h5>
+                            <a href="/Keycloak-login">
+                                <button class="btn btn-primary">マイナンバーカード認証登録/ログイン</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
+    </body>
+</html>
